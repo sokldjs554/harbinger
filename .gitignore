@@ -1,0 +1,23 @@
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+# generated data and model binaries — regenerate with `make pipeline`
+data/*.parquet
+data/*.csv
+models/*.joblib
+models/*.pt
+models/*.keras
+!models/.gitkeep
+!data/.gitkeep
+artifacts/*.png
+!artifacts/.gitkeep
+.env
+*.log
+.DS_Store

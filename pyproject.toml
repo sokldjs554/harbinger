@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "harbinger"
+version = "0.1.0"
+description = "사람이 쓴 점검 기록에서 설비 고장의 전조를 읽는다 — 센서 없는 시설의 예지보전·순찰 처방 엔진"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=2.0",
+  "pandas>=2.2,<3",
+  "pyarrow>=17",
+  "scipy>=1.13",
+  "scikit-learn>=1.5",
+  "lifelines>=0.30",
+  "shap>=0.46",
+  "torch>=2.4",
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.30",
+  "pydantic>=2.8",
+  "pydantic-settings>=2.4",
+  "prometheus-client>=0.20",
+  "matplotlib>=3.9",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-cov", "httpx>=0.27", "ruff>=0.6"]
+tf = ["tensorflow-cpu>=2.17; sys_platform == 'linux'", "tensorflow>=2.17; sys_platform != 'linux'"]
+
+[project.scripts]
+harbinger = "harbinger.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"harbinger.console" = ["*.html", "*.js", "*.css"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "W"]
+ignore = ["E501", "B008", "B905"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -p no:cacheprovider"
+filterwarnings = ["ignore::DeprecationWarning", "ignore::FutureWarning", "ignore::UserWarning"]
