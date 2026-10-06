@@ -1,0 +1,17 @@
+# AWS App Runner 소스 설정 (apprunner.yaml) — ECR 이미지를 쓸 때는 아래 push 스크립트 후 콘솔/CLI 에서 서비스 생성
+version: 1.0
+runtime: python3
+build:
+  commands:
+    build:
+      - pip install --index-url https://download.pytorch.org/whl/cpu "torch>=2.4"
+      - pip install .
+run:
+  command: sh -c "harbinger bootstrap && uvicorn harbinger.api.main:app --host 0.0.0.0 --port 8000"
+  network:
+    port: 8000
+  env:
+    - name: HARBINGER_DEMO_BOOTSTRAP
+      value: "1"
+    - name: HARBINGER_LOG_LEVEL
+      value: INFO

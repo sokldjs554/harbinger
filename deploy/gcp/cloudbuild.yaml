@@ -1,0 +1,18 @@
+# gcloud builds submit --config deploy/gcp/cloudbuild.yaml --substitutions=_REGION=asia-northeast3
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "-t", "${_REGION}-docker.pkg.dev/$PROJECT_ID/harbinger/api:$SHORT_SHA", "-t", "${_REGION}-docker.pkg.dev/$PROJECT_ID/harbinger/api:latest", "."]
+  - name: gcr.io/cloud-builders/docker
+    args: ["push", "--all-tags", "${_REGION}-docker.pkg.dev/$PROJECT_ID/harbinger/api"]
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args: ["run", "deploy", "harbinger-api", "--image", "${_REGION}-docker.pkg.dev/$PROJECT_ID/harbinger/api:$SHORT_SHA",
+           "--region", "${_REGION}", "--platform", "managed", "--allow-unauthenticated",
+           "--memory", "2Gi", "--cpu", "2", "--min-instances", "0", "--max-instances", "3", "--timeout", "300",
+           "--set-env-vars", "HARBINGER_DEMO_BOOTSTRAP=1,HARBINGER_LOG_LEVEL=INFO"]
+substitutions:
+  _REGION: asia-northeast3
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/harbinger/api:$SHORT_SHA
+options:
+  logging: CLOUD_LOGGING_ONLY

@@ -1,0 +1,30 @@
+services:
+  api:
+    build: .
+    image: harbinger:local
+    ports: ["8000:8000"]
+    environment:
+      HARBINGER_DEMO_BOOTSTRAP: "1"
+      HARBINGER_LOG_LEVEL: INFO
+    volumes:
+      # 로컬에서 `make pipeline` 으로 만든 전체 번들·데이터를 그대로 쓰려면 주석을 푼다
+      # - ./data:/app/data
+      # - ./models:/app/models
+      # - ./artifacts:/app/artifacts
+      - harbinger-data:/app/data
+      - harbinger-models:/app/models
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:8000/health').read()"]
+      interval: 30s
+      timeout: 5s
+      start_period: 240s
+      retries: 3
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    ports: ["9090:9090"]
+    volumes:
+      - ./deploy/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on: [api]
+volumes:
+  harbinger-data:
+  harbinger-models:
