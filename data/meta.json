@@ -1,0 +1,17 @@
+{
+  "seed": 20260101,
+  "start": "2023-01-01",
+  "months": 36,
+  "scale": 1.0,
+  "rows": {
+    "sites": 25,
+    "inspectors": 124,
+    "assets": 2312,
+    "inspections": 131201,
+    "workorders": 18666,
+    "energy": 27400,
+    "latent": 2533952
+  },
+  "generated_at": "2026-10-06T11:08:34",
+  "synthetic": true
+}

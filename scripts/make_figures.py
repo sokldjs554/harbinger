@@ -342,7 +342,7 @@ def fig_energy(data: Path, art: Path, out: Path, models: Path = Path("models")) 
             linewidth=1.5,
             label=f"이상일 z>2.5 ({len(bad)}일)",
         )
-        ax.legend(frameon=False, fontsize=8, loc="upper left")
+        ax.legend(frameon=False, fontsize=8, loc="upper right")
         ax.set_title(
             f"{sid} — 날씨·재실을 감안한 기대 전기사용량과 잔차 이상", loc="left", color=INK, fontsize=11
         )

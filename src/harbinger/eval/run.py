@@ -354,6 +354,12 @@ def loso(X: pd.DataFrame, split, full_cols: list[str], seed: int, quick: bool) -
         print(
             f"[loso] {s}: cold={per['0']['auroc']:.3f} brier={per['0']['brier']:.4f} → 12mo brier={per['12']['brier']:.4f} warm={per['warm_in_sample_site']['auroc']:.3f}"
         )
+    warm_rows = [v["warm_in_sample_site"] for v in out["per_site"].values()]
+    out["mean_warm"] = (
+        {k: float(np.nanmean([w[k] for w in warm_rows])) for k in ("auroc", "pr_auc", "brier", "ece")}
+        if warm_rows
+        else {}
+    )
     out["mean_by_months"] = {
         str(m): {k: float(np.nanmean([x[k] for x in v])) for k in ("auroc", "pr_auc", "brier", "ece")}
         for m, v in agg.items()

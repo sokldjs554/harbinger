@@ -55,4 +55,13 @@
 
 ## 7. 선택적 패리티 — Keras
 
-위험 네트의 수치 부분을 Keras 로 한 번 더 구현해(`models/keras_parity.py`) 같은 데이터에서 val NLL 과 AUROC 가 근접하는지 확인하는 테스트가 있다(TensorFlow 가 설치된 환경에서만 실행). 모델 명세가 프레임워크에 묶여 있지 않다는 것을 보이기 위한 것이지, 두 프레임워크를 운영에 함께 쓰자는 뜻이 아니다.
+위험 네트의 수치 부분을 Keras 로 한 번 더 구현해(`models/keras_parity.py`) 같은 분할에서 val NLL 과 AUROC 가 근접하는지 확인한다. TensorFlow 와 PyTorch 를 한 프로세스에 올리면 torch 옵티마이저 초기화에서 세그폴트가 나서, 검사는 `scripts/keras_parity_check.py` 를 **별도 프로세스**로 돌린다(테스트도 그렇게 한다; TF 가 없으면 건너뛴다).
+
+7개 사이트·24개월 데이터(학습 <!-- num:keras_parity.rows.train|,d -->16,582<!-- /num --> 행, 검증 <!-- num:keras_parity.rows.val|,d -->4,738<!-- /num --> 행)에서:
+
+| | val NLL | val P30 AUROC | 파라미터 |
+|---|---:|---:|---:|
+| PyTorch 위험 네트 (메모·사이트 없음) | <!-- num:keras_parity.torch.val_nll|.3f -->1.648<!-- /num --> | <!-- num:keras_parity.torch.val_auroc_p30|.3f -->0.787<!-- /num --> | <!-- num:keras_parity.torch.n_params|,d -->44,636<!-- /num --> |
+| Keras 동일 명세 | <!-- num:keras_parity.keras.val_nll|.3f -->1.683<!-- /num --> | <!-- num:keras_parity.keras.val_auroc_p30|.3f -->0.762<!-- /num --> | <!-- num:keras_parity.keras.n_params|,d -->44,572<!-- /num --> |
+
+두 구현의 차이는 초기화·조기종료 시점에서 오는 수준이다. 모델 명세가 프레임워크에 묶여 있지 않다는 것을 보이기 위한 것이지, 두 프레임워크를 운영에 함께 쓰자는 뜻이 아니다.

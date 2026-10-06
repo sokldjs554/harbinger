@@ -11,9 +11,7 @@ htmlcov/
 # generated data and model binaries — regenerate with `make pipeline`
 data/*.parquet
 data/*.csv
-models/*.joblib
-models/*.pt
-models/*.keras
+models/**
 !models/.gitkeep
 !data/.gitkeep
 artifacts/*.png

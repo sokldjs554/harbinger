@@ -43,34 +43,34 @@ harbinger 는 그 데이터 형태를 그대로 받아들입니다. 조사 과�
 
 숫자는 `scripts/fill_numbers.py` 가 `artifacts/*.json` 에서 채우고 CI 가 불일치를 검사합니다. 전체 표와 읽는 법은 [docs/evaluation.md](docs/evaluation.md).
 
-**30일 내 비계획 고장 (점검 행 <!-- num:metrics.classifier.hgb_full.n|,d -->0<!-- /num -->개, 양성 <!-- num:metrics.classifier.hgb_full.pos_rate|.1% -->0<!-- /num -->)**
+**30일 내 비계획 고장 (점검 행 <!-- num:metrics.classifier.hgb_full.n|,d -->19,501<!-- /num -->개, 양성 <!-- num:metrics.classifier.hgb_full.pos_rate|.1% -->8.1%<!-- /num -->)**
 
 | | AUROC | PR-AUC | Brier | ECE |
 |---|---:|---:|---:|---:|
-| 마지막 점검 판정만 (현장의 현재 규칙) | <!-- num:metrics.baselines.last_inspection.auroc|.3f -->0<!-- /num --> | <!-- num:metrics.baselines.last_inspection.pr_auc|.3f -->0<!-- /num --> | <!-- num:metrics.baselines.last_inspection.brier|.4f -->0<!-- /num --> | – |
-| **harbinger HGB** | **<!-- num:metrics.classifier.hgb_full.auroc|.3f -->0<!-- /num -->** | **<!-- num:metrics.classifier.hgb_full.pr_auc|.3f -->0<!-- /num -->** | **<!-- num:metrics.classifier.hgb_full.brier|.4f -->0<!-- /num -->** | **<!-- num:metrics.classifier.hgb_full.ece|.4f -->0<!-- /num -->** |
-| 이산시간 위험 네트 (P30) | <!-- num:survival.deep.text+site.p30.auroc|.3f -->0<!-- /num --> | <!-- num:survival.deep.text+site.p30.pr_auc|.3f -->0<!-- /num --> | <!-- num:survival.deep.text+site.p30.brier|.4f -->0<!-- /num --> | <!-- num:survival.deep.text+site.p30.ece|.4f -->0<!-- /num --> |
-| 오라클 — 숨은 열화 상태를 아는 상한 | <!-- num:metrics.baselines.oracle_latent_state.auroc|.3f -->0<!-- /num --> | <!-- num:metrics.baselines.oracle_latent_state.pr_auc|.3f -->0<!-- /num --> | <!-- num:metrics.baselines.oracle_latent_state.brier|.4f -->0<!-- /num --> | – |
+| 마지막 점검 판정만 (현장의 현재 규칙) | <!-- num:metrics.baselines.last_inspection.auroc|.3f -->0.635<!-- /num --> | <!-- num:metrics.baselines.last_inspection.pr_auc|.3f -->0.153<!-- /num --> | <!-- num:metrics.baselines.last_inspection.brier|.4f -->0.0716<!-- /num --> | – |
+| **harbinger HGB** | **<!-- num:metrics.classifier.hgb_full.auroc|.3f -->0.772<!-- /num -->** | **<!-- num:metrics.classifier.hgb_full.pr_auc|.3f -->0.251<!-- /num -->** | **<!-- num:metrics.classifier.hgb_full.brier|.4f -->0.0683<!-- /num -->** | **<!-- num:metrics.classifier.hgb_full.ece|.4f -->0.0084<!-- /num -->** |
+| 이산시간 위험 네트 (P30) | <!-- num:survival.deep.text+site.p30.auroc|.3f -->0.768<!-- /num --> | <!-- num:survival.deep.text+site.p30.pr_auc|.3f -->0.234<!-- /num --> | <!-- num:survival.deep.text+site.p30.brier|.4f -->0.0682<!-- /num --> | <!-- num:survival.deep.text+site.p30.ece|.4f -->0.0062<!-- /num --> |
+| 오라클 — 숨은 열화 상태를 아는 상한 | <!-- num:metrics.baselines.oracle_latent_state.auroc|.3f -->0.797<!-- /num --> | <!-- num:metrics.baselines.oracle_latent_state.pr_auc|.3f -->0.273<!-- /num --> | <!-- num:metrics.baselines.oracle_latent_state.brier|.4f -->0.0667<!-- /num --> | – |
 
-**어떤 데이터가 기여하나 (절제, AUROC)**: 체크리스트만 <!-- num:ablation.checklist_only.auroc|.3f -->0<!-- /num --> → +메모 텍스트 <!-- num:ablation.+text.auroc|.3f -->0<!-- /num --> → +점검 품질 <!-- num:ablation.+text+quality.auroc|.3f -->0<!-- /num --> → +고장 이력 <!-- num:ablation.+text+quality+history.auroc|.3f -->0<!-- /num --> → +에너지 <!-- num:ablation.full(+energy).auroc|.3f -->0<!-- /num -->.
-전체에서 메모를 빼면 <!-- num:ablation.full−text.auroc|.3f -->0<!-- /num -->.
+**어떤 데이터가 기여하나 (절제, AUROC)**: 체크리스트만 <!-- num:ablation.checklist_only.auroc|.3f -->0.702<!-- /num --> → +메모 텍스트 <!-- num:ablation.+text.auroc|.3f -->0.739<!-- /num --> → +점검 품질 <!-- num:ablation.+text+quality.auroc|.3f -->0.745<!-- /num --> → +고장 이력 <!-- num:ablation.+text+quality+history.auroc|.3f -->0.775<!-- /num --> → +에너지 <!-- num:ablation.full(+energy).auroc|.3f -->0.772<!-- /num -->.
+전체에서 메모를 빼면 <!-- num:ablation.full−text.auroc|.3f -->0.771<!-- /num -->.
 
 ![ablation](docs/images/ablation.png)
 
-**오늘 순찰 상위 10개 — 그 뒤 30일에 실제로 고장난 비율** (<!-- num:patrol.days -->0<!-- /num -->일 × 25 사이트, 기본 고장률 <!-- num:patrol.base_rate|.1% -->0<!-- /num -->)
+**오늘 순찰 상위 10개 — 그 뒤 30일에 실제로 고장난 비율** (<!-- num:patrol.days -->18<!-- /num -->일 × 25 사이트, 기본 고장률 <!-- num:patrol.base_rate|.1% -->7.2%<!-- /num -->)
 
 | 라운드로빈(가장 오래 안 본 순) | 무작위 | 마지막 점검 판정순 | **harbinger** |
 |---:|---:|---:|---:|
-| <!-- num:patrol.methods.round_robin.precision_at_k|.1% -->0<!-- /num --> | <!-- num:patrol.methods.random.precision_at_k|.1% -->0<!-- /num --> | <!-- num:patrol.methods.last_inspection.precision_at_k|.1% -->0<!-- /num --> | **<!-- num:patrol.methods.harbinger_hgb.precision_at_k|.1% -->0<!-- /num -->** (라운드로빈 ×<!-- num:patrol.methods.harbinger_hgb.lift_vs_round_robin|.1f -->0<!-- /num -->) |
+| <!-- num:patrol.methods.round_robin.precision_at_k|.1% -->4.3%<!-- /num --> | <!-- num:patrol.methods.random.precision_at_k|.1% -->6.5%<!-- /num --> | <!-- num:patrol.methods.last_inspection.precision_at_k|.1% -->12.2%<!-- /num --> | **<!-- num:patrol.methods.harbinger_hgb.precision_at_k|.1% -->22.3%<!-- /num -->** (라운드로빈 ×<!-- num:patrol.methods.harbinger_hgb.lift_vs_round_robin|.1f -->5.2<!-- /num -->) |
 
-테스트 기간 고장 <!-- num:patrol.recall_top20pct.breakdowns_evaluated|,d -->0<!-- /num -->건 중 <!-- num:patrol.recall_top20pct.recall|.0% -->0<!-- /num --> 는 고장 직전 마지막 점검 때 이미 사이트 위험 상위 20 % 안에 있었습니다.
+테스트 기간 고장 <!-- num:patrol.recall_top20pct.breakdowns_evaluated|,d -->895<!-- /num -->건 중 <!-- num:patrol.recall_top20pct.recall|.0% -->59%<!-- /num --> 는 고장 직전 마지막 점검 때 이미 사이트 위험 상위 20 % 안에 있었습니다.
 
-**생존·콜드스타트·에너지**: Cox C-index <!-- num:survival.lifelines.cox.c_index|.3f -->0<!-- /num --> · 위험 네트 C-index <!-- num:survival.deep.text+site.c_index|.3f -->0<!-- /num --> (IBS <!-- num:survival.deep.text+site.ibs|.4f -->0<!-- /num -->) ·
-처음 보는 사이트(LOSO, 자체 데이터 0개월) AUROC <!-- num:loso.mean_by_months.0.auroc|.3f -->0<!-- /num --> → 12개월 <!-- num:loso.mean_by_months.12.auroc|.3f -->0<!-- /num --> ·
-일 전기 kWh 회귀 MAPE <!-- num:energy.test.mape|.1% -->0<!-- /num -->, 여름 잔차와 숨은 냉방설비 열화의 상관 <!-- num:energy.oracle_check.summer_corr_resid_vs_cooling_degradation|.2f -->0<!-- /num -->.
+**생존·콜드스타트·에너지**: Cox C-index <!-- num:survival.lifelines.cox.c_index|.3f -->0.689<!-- /num --> · 위험 네트 C-index <!-- num:survival.deep.text+site.c_index|.3f -->0.658<!-- /num --> (IBS <!-- num:survival.deep.text+site.ibs|.4f -->0.0648<!-- /num -->) ·
+처음 보는 사이트(leave-one-site-out, 자체 데이터 없음) AUROC <!-- num:loso.mean_by_months.0.auroc|.3f -->0.769<!-- /num --> vs 그 사이트를 포함해 학습한 모델 <!-- num:loso.mean_warm.auroc|.3f -->0.767<!-- /num --> ·
+일 전기 kWh 회귀 MAPE <!-- num:energy.test.mape|.1% -->2.6%<!-- /num -->, 여름 잔차와 숨은 냉방설비 열화의 상관 <!-- num:energy.oracle_check.summer_corr_resid_vs_cooling_degradation|.2f -->0.14<!-- /num -->.
 
 **정직하게 적어야 할 것**: 오라클 상한은 생성 모델의 열화-고장 결합 강도(`BETA_SCALE`)에 달려 있고, 그 값은 "모델 간 차이가 보이도록" 올린 것입니다([왜 그랬는지](docs/synthetic-generator.md#2-숨은-열화와-고장)).
-콜드스타트 오프셋은 Brier 를 거의 바꾸지 못했습니다. 로그손실로 학습한 HGB 는 이미 잘 캘리브레이션돼 있어 isotonic 은 검증 구간에서 Brier 가 좋아질 때만 채택합니다(이번 번들: <!-- num:metrics.classifier.hgb_full.calibration_adopted -->-<!-- /num -->). 메모 **문자 CNN** 은 렉시콘 피처가 이미 있는 상태에서 AUROC 를 <!-- num:survival.deep.notext+site.p30.auroc|.3f -->0<!-- /num --> → <!-- num:survival.deep.text+site.p30.auroc|.3f -->0<!-- /num --> 로밖에 올리지 못했고 학습 시간은 수십 배였습니다 — 템플릿으로 만든 합성 메모에서는 렉시콘이 거의 전부를 잡기 때문이고, 실제 현장 메모에서는 다시 재야 합니다. 메모 피처의 기여는 "성실한 점검자는 체크리스트가 넘어가기 전에 메모에 먼저 쓴다"는 가정에서 나옵니다. 실데이터에서 **가장 먼저 확인할 것들**이 [docs/real-data-checklist.md](docs/real-data-checklist.md) 에 있습니다.
+콜드스타트 오프셋은 Brier 를 거의 바꾸지 못했습니다. 로그손실로 학습한 HGB 는 이미 잘 캘리브레이션돼 있어 isotonic 은 검증 구간에서 Brier 가 좋아질 때만 채택합니다(이번 번들: <!-- num:metrics.classifier.hgb_full.calibration_adopted -->채택<!-- /num -->). 메모 **문자 CNN** 은 렉시콘 피처가 이미 있는 상태에서 AUROC 를 <!-- num:survival.deep.notext+site.p30.auroc|.3f -->0.765<!-- /num --> → <!-- num:survival.deep.text+site.p30.auroc|.3f -->0.768<!-- /num --> 로밖에 올리지 못했고 학습 시간은 수십 배였습니다 — 템플릿으로 만든 합성 메모에서는 렉시콘이 거의 전부를 잡기 때문이고, 실제 현장 메모에서는 다시 재야 합니다. 메모 피처의 기여는 "성실한 점검자는 체크리스트가 넘어가기 전에 메모에 먼저 쓴다"는 가정에서 나옵니다. 실데이터에서 **가장 먼저 확인할 것들**이 [docs/real-data-checklist.md](docs/real-data-checklist.md) 에 있습니다.
 
 ## 공고의 요구 기술이 저장소 어디에 있나
 
