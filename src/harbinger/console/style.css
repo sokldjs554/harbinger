@@ -1,0 +1,102 @@
+/* harbinger console — 팔레트는 dataviz 레퍼런스 인스턴스를 그대로 쓴다 (라이트/다크 모두 선택된 스텝) */
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface-1: #fcfcfb; --text-primary: #0b0b0b; --text-secondary: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7; --border: rgba(11, 11, 11, 0.10);
+  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; --deemph: #c3c2b7;
+  --seq-250: #86b6ef; --seq-450: #2a78d6; --seq-600: #184f95;
+  --div-neg: #2a78d6; --div-pos: #e34948; --div-mid: #f0efec;
+  --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b; --success-text: #006300;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface-1: #1a1a19; --text-primary: #ffffff; --text-secondary: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --border: rgba(255, 255, 255, 0.10);
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --deemph: #52514e;
+    --seq-250: #184f95; --seq-450: #3987e5; --seq-600: #86b6ef;
+    --div-neg: #3987e5; --div-pos: #e66767; --div-mid: #383835; --success-text: #0ca30c;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface-1: #1a1a19; --text-primary: #ffffff; --text-secondary: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --border: rgba(255, 255, 255, 0.10);
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --deemph: #52514e;
+  --seq-250: #184f95; --seq-450: #3987e5; --seq-600: #86b6ef;
+  --div-neg: #3987e5; --div-pos: #e66767; --div-mid: #383835; --success-text: #0ca30c;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--page); color: var(--text-primary); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+a { color: inherit; }
+.banner { background: var(--surface-1); border-bottom: 1px solid var(--border); padding: 8px 16px; color: var(--text-secondary); font-size: 12px; }
+header.top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding: 14px 16px 6px; }
+header.top h1 { margin: 0; font-size: 20px; font-weight: 650; letter-spacing: -0.01em; }
+header.top h1 small { color: var(--muted); font-weight: 400; font-size: 13px; margin-left: 8px; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; padding: 6px 16px 10px; }
+.filters label { color: var(--text-secondary); font-size: 12px; display: flex; gap: 6px; align-items: center; }
+.filters select, .filters input, .filters button { font: inherit; padding: 6px 8px; border: 1px solid var(--axis); border-radius: 6px; background: var(--surface-1); color: var(--text-primary); }
+.filters button { cursor: pointer; }
+nav.tabs { display: flex; gap: 2px; padding: 0 16px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+nav.tabs button { font: inherit; background: none; border: 0; border-bottom: 2px solid transparent; padding: 10px 12px; color: var(--text-secondary); cursor: pointer; white-space: nowrap; }
+nav.tabs button[aria-selected="true"] { color: var(--text-primary); border-bottom-color: var(--series-1); font-weight: 600; }
+main { padding: 16px; max-width: 1240px; margin: 0 auto; }
+section[hidden] { display: none; }
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; min-width: 0; }
+.card h2 { margin: 0 0 4px; font-size: 14px; font-weight: 600; }
+.card .sub { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+.kpis { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom: 16px; }
+.tile { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+.tile .label { color: var(--text-secondary); font-size: 12px; }
+.tile .value { font-size: 28px; font-weight: 600; margin-top: 2px; }
+.tile .delta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.tile .delta.good { color: var(--success-text); }
+.tile .delta.bad { color: var(--critical); }
+table.data { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.data th { text-align: left; color: var(--muted); font-weight: 500; font-size: 12px; padding: 6px 8px; border-bottom: 1px solid var(--grid); }
+table.data td { padding: 7px 8px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+table.data td.nowrap, table.data th.nowrap { white-space: nowrap; }
+table.data td.num, table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.data tr.clickable { cursor: pointer; }
+table.data tr.clickable:hover td { background: color-mix(in srgb, var(--series-1) 6%, transparent); }
+.bar { display: inline-block; height: 10px; border-radius: 0 4px 4px 0; background: var(--series-1); vertical-align: middle; }
+.bar-track { display: inline-block; width: 110px; height: 10px; background: color-mix(in srgb, var(--series-1) 14%, transparent); border-radius: 0 4px 4px 0; vertical-align: middle; margin-right: 8px; }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600; border: 1px solid var(--border); color: var(--text-primary); }
+.badge .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.badge.legal .dot { background: var(--warning); }
+.badge.urgent .dot { background: var(--critical); }
+.badge.good .dot { background: var(--good); }
+.reasons { color: var(--text-secondary); font-size: 12px; }
+.meter { position: relative; height: 10px; width: 120px; border-radius: 5px; background: color-mix(in srgb, var(--series-1) 14%, transparent); display: inline-block; vertical-align: middle; margin-right: 8px; }
+.meter > span { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; background: var(--series-1); }
+.meter.warn > span { background: var(--warning); } .meter.bad > span { background: var(--critical); }
+svg.chart { width: 100%; height: auto; display: block; overflow: visible; }
+svg.chart text { font: 11px system-ui, -apple-system, "Segoe UI", sans-serif; fill: var(--muted); font-variant-numeric: tabular-nums; }
+svg.chart .grid line { stroke: var(--grid); stroke-width: 1; }
+svg.chart .axis line, svg.chart .axis path { stroke: var(--axis); stroke-width: 1; fill: none; }
+svg.chart .line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+svg.chart .area { opacity: 0.10; }
+svg.chart .marker { stroke: var(--surface-1); stroke-width: 2; }
+svg.chart .crosshair { stroke: var(--axis); stroke-width: 1; }
+svg.chart .hit { fill: transparent; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary); margin: 4px 0 8px; }
+.legend .key { display: inline-block; width: 14px; height: 2px; vertical-align: middle; margin-right: 6px; border-radius: 1px; }
+.legend .key.rect { height: 10px; border-radius: 2px; }
+.tooltip { position: fixed; pointer-events: none; background: var(--surface-1); color: var(--text-primary); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12); z-index: 10; min-width: 140px; }
+.tooltip .t { color: var(--muted); margin-bottom: 4px; }
+.tooltip .row { display: flex; justify-content: space-between; gap: 12px; }
+.tooltip .row b { font-weight: 600; }
+.tooltip .row .k { display: inline-block; width: 10px; height: 2px; vertical-align: middle; margin-right: 6px; }
+.evidence .memo { padding: 8px 10px; border: 1px solid var(--grid); border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
+.evidence .memo .meta { color: var(--muted); font-size: 11px; margin-bottom: 3px; }
+.evidence mark { background: color-mix(in srgb, var(--series-2) 22%, transparent); color: inherit; padding: 0 2px; border-radius: 3px; }
+.muted { color: var(--muted); }
+.empty { color: var(--muted); padding: 24px; text-align: center; }
+.detail-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.hero { font-size: 48px; font-weight: 600; line-height: 1; }
+.hero small { font-size: 13px; color: var(--text-secondary); font-weight: 400; margin-left: 8px; }
+.dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 13px; }
+.dl dt { color: var(--muted); } .dl dd { margin: 0; font-variant-numeric: tabular-nums; }
+.loading { opacity: 0.55; transition: opacity 0.2s; }
+@media (max-width: 640px) { .tile .value { font-size: 22px; } .hero { font-size: 36px; } main { padding: 12px; } }

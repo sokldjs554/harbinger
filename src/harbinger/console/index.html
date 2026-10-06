@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>harbinger 콘솔</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="banner">모든 데이터는 <b>합성(SYNTHETIC)</b>입니다 — 실제 고객·설비 정보 없음. 생성 모델은 저장소 문서(docs/synthetic-generator.md)에 공개되어 있습니다.</div>
+<header class="top">
+  <h1>harbinger <small>사람이 쓴 점검 기록에서 고장의 전조를 읽는다</small></h1>
+  <span id="version" class="muted" style="font-size:12px"></span>
+</header>
+<div class="filters" role="group" aria-label="필터">
+  <label>사이트 <select id="site"></select></label>
+  <label>기준일 <input id="asof" type="date"></label>
+  <label>순찰 K <input id="k" type="number" min="1" max="50" value="10" style="width:64px"></label>
+  <button id="apply">적용</button>
+  <button id="theme" title="테마 전환">테마</button>
+</div>
+<nav class="tabs" role="tablist">
+  <button role="tab" aria-selected="true" data-tab="overview">개요</button>
+  <button role="tab" aria-selected="false" data-tab="patrol">오늘 순찰</button>
+  <button role="tab" aria-selected="false" data-tab="assets">설비 위험</button>
+  <button role="tab" aria-selected="false" data-tab="energy">에너지</button>
+  <button role="tab" aria-selected="false" data-tab="quality">점검 품질</button>
+  <button role="tab" aria-selected="false" data-tab="model">모델</button>
+</nav>
+<main>
+  <section id="tab-overview">
+    <div class="kpis" id="kpis"></div>
+    <div class="grid">
+      <div class="card"><h2>설비 종류별 30일 고장확률</h2><div class="sub">평균 P30 · 괄호는 설비 수</div><div id="cat-bars"></div></div>
+      <div class="card"><h2>오늘 순찰 기대 적중</h2><div class="sub">상위 K 설비의 P30 합 — 라운드로빈(가장 오래 안 본 순)과 비교</div><div id="patrol-expect"></div></div>
+    </div>
+  </section>
+  <section id="tab-patrol" hidden>
+    <div class="card"><h2>오늘 먼저 볼 설비</h2><div class="sub">기대손실(P30×중요도) 순 · 법정점검 기한 임박은 무조건 포함 · 표는 동선(지하→고층, 구역) 순</div><div id="patrol-table"></div></div>
+  </section>
+  <section id="tab-assets" hidden>
+    <div class="grid">
+      <div class="card"><h2>상위 위험 설비</h2><div class="sub">행을 누르면 근거를 봅니다</div><div id="asset-table"></div></div>
+      <div class="card" id="asset-detail"><h2>설비 상세</h2><div class="empty">왼쪽에서 설비를 선택하세요.</div></div>
+    </div>
+  </section>
+  <section id="tab-energy" hidden>
+    <div class="card"><h2>전기 사용량 — 실측 vs 기대치</h2><div class="sub">기대치 = 기온·재실·요일·계절로 학습한 회귀 모델 · 최근 120일</div><div id="energy-line"></div></div>
+    <div class="card" style="margin-top:16px"><h2>잔차 7일 이동평균 z-score</h2><div class="sub">z &gt; 2.5 인 날을 이상일로 표시 (상태색 + 표식)</div><div id="energy-z"></div></div>
+  </section>
+  <section id="tab-quality" hidden>
+    <div class="card"><h2>점검자별 기록 신뢰도</h2><div class="sub">최근 180일 · 형식적 메모 비율·20초 미만 체류·7일 초과 지연으로 계산 · 낮은 순</div><div id="quality-table"></div></div>
+  </section>
+  <section id="tab-model" hidden>
+    <div class="grid">
+      <div class="card"><h2>모델 정보</h2><div id="model-info"></div></div>
+      <div class="card"><h2>캘리브레이션 (테스트 기간)</h2><div class="sub">예측 확률 분위 구간별 실제 고장률 · 대각선이 완벽</div><div id="calib"></div></div>
+      <div class="card"><h2>절제 실험 (AUROC)</h2><div class="sub">피처 그룹을 더해 갈 때</div><div id="ablation"></div></div>
+      <div class="card"><h2>드리프트</h2><div class="sub">학습 참조 분포 대비 최근 60일 PSI</div><div id="drift"></div></div>
+    </div>
+  </section>
+</main>
+<div id="tooltip" class="tooltip" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>
