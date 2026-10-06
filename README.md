@@ -5,6 +5,15 @@
 
 > 모든 데이터는 **합성(SYNTHETIC)** 입니다. 실제 고객·설비·점검자 정보 없음. 생성 모델은 [docs/synthetic-generator.md](docs/synthetic-generator.md) 에 전부 공개되어 있고, 아래 숫자는 그 모델 아래에서의 값입니다.
 
+## 데모
+
+**바로 열기**: <https://sokldjs554.github.io/harbinger/> — 백엔드 없이 동작하는 정적 데모입니다. 전체 합성 번들(25 사이트·2,312 설비)로 미리 계산한 API 응답을 콘솔이 그대로 읽습니다.
+기준일 2025-12-31, 순찰 K=10 고정이며, 사이트 전환·설비 상세(생존곡선·SHAP·메모 원문 근거)·에너지·점검 품질·모델 탭이 모두 동작합니다. 사이트별 실증 리포트는 [docs/demo/reports](docs/demo/reports) 에 있습니다.
+
+![demo](docs/images/demo.gif)
+
+**전체 기능(인제스트·임의 시점 조회·리포트 API)**: `docker compose up --build` 후 <http://localhost:8000/console/> · <http://localhost:8000/docs>. 번들이 없으면 기동 시 축소 합성 번들을 만듭니다(2~4분).
+
 ![console](docs/images/console.png)
 
 ## 왜 이 주제인가

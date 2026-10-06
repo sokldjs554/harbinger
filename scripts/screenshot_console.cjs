@@ -1,4 +1,4 @@
-// 콘솔 스크린샷 — `node scripts/screenshot_console.cjs http://localhost:8000 docs/images`
+// 콘솔 스크린샷 — `node scripts/screenshot_console.cjs http://localhost:8000 docs/images [/console/]` (정적 데모는 마지막 인자에 "/")
 // Playwright(Chromium) 로 탭별 화면을 찍는다. 실행 중인 API 가 필요하다.
 const { chromium } = require("playwright");
 const { mkdirSync } = require("node:fs");
@@ -7,12 +7,13 @@ const { mkdirSync } = require("node:fs");
 
 const base = process.argv[2] || "http://localhost:8000";
 const out = process.argv[3] || "docs/images";
+const pagePath = process.argv[4] || "/console/";
 mkdirSync(out, { recursive: true });
 const exe = process.env.CHROMIUM_PATH || undefined;
 const browser = await chromium.launch({ executablePath: exe, args: ["--no-sandbox"] });
 const page = await browser.newPage({ viewport: { width: 1280, height: 860 }, deviceScaleFactor: 1.5, colorScheme: "light" });
 page.on("pageerror", (e) => console.error("pageerror", e.message));
-await page.goto(`${base}/console/`, { waitUntil: "networkidle" });
+await page.goto(`${base}${pagePath}`, { waitUntil: "networkidle" });
 await page.waitForSelector("#kpis .tile", { timeout: 60000 });
 await page.waitForTimeout(600);
 await page.screenshot({ path: `${out}/console.png`, fullPage: false });

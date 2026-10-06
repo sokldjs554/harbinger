@@ -1,0 +1,44 @@
+// 데모 GIF 녹화 — `node scripts/record_demo.cjs http://localhost:8020 /tmp/demo` 뒤 ffmpeg 로 GIF 변환 (Makefile: make demo-gif)
+const { chromium } = require("playwright");
+const { mkdirSync } = require("node:fs");
+
+(async () => {
+  const base = process.argv[2] || "http://localhost:8000";
+  const out = process.argv[3] || "/tmp/demo";
+  const pagePath = process.argv[4] || "/";
+  mkdirSync(out, { recursive: true });
+  const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined, args: ["--no-sandbox"] });
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, recordVideo: { dir: out, size: { width: 1280, height: 800 } }, colorScheme: "light" });
+  const page = await ctx.newPage();
+  const pause = (ms) => page.waitForTimeout(ms);
+  await page.goto(`${base}${pagePath}`, { waitUntil: "networkidle" });
+  await page.waitForSelector("#kpis .tile", { timeout: 60000 });
+  await pause(2200);
+  await page.click('nav.tabs button[data-tab="patrol"]');
+  await page.waitForSelector("#patrol-table table", { timeout: 60000 });
+  await pause(2600);
+  await page.mouse.wheel(0, 500);
+  await pause(1600);
+  await page.click('nav.tabs button[data-tab="assets"]');
+  await page.waitForSelector("#asset-table table", { timeout: 60000 });
+  await pause(1200);
+  await page.locator("#asset-table tr.clickable").first().click();
+  await page.waitForSelector("#asset-detail .hero", { timeout: 60000 });
+  await pause(2600);
+  await page.mouse.wheel(0, 600);
+  await pause(2200);
+  await page.click('nav.tabs button[data-tab="energy"]');
+  await page.waitForSelector("#energy-line svg", { timeout: 60000 });
+  await pause(2400);
+  await page.click('nav.tabs button[data-tab="quality"]');
+  await page.waitForSelector("#quality-table table", { timeout: 60000 });
+  await pause(2000);
+  await page.click('nav.tabs button[data-tab="model"]');
+  await page.waitForSelector("#model-info dl", { timeout: 60000 });
+  await pause(2600);
+  const video = page.video();
+  await ctx.close();
+  const path = await video.path();
+  await browser.close();
+  console.log(path);
+})().catch((e) => { console.error(e); process.exit(1); });
