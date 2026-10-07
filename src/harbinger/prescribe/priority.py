@@ -7,6 +7,7 @@ from dataclasses import asdict, dataclass, field
 import numpy as np
 import pandas as pd
 
+from harbinger.features.text import highlight
 from harbinger.schema import LEGAL_MAX_INTERVAL_DAYS, AssetCategory
 
 CRITICALITY_WEIGHT = {1: 1.0, 2: 1.8, 3: 3.0}
@@ -27,6 +28,10 @@ class PatrolItem:
     mandatory: bool
     days_since_inspection: float
     reasons: list[str] = field(default_factory=list)
+    last_overall: int = 0
+    last_memo: str = ""
+    last_memo_highlighted: str = ""
+    last_inspected_at: str = ""
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -107,6 +112,10 @@ def rank_patrol(
                 mandatory=bool(r["mandatory"]),
                 days_since_inspection=float(r["days_since_inspection"]),
                 reasons=reasons[:5],
+                last_overall=int(r.get("ck_overall", 0) or 0),
+                last_memo=str(r.get("memo", "") or ""),
+                last_memo_highlighted=highlight(str(r.get("memo", "") or "")),
+                last_inspected_at=r["t"].isoformat(timespec="minutes"),
             )
         )
     return items

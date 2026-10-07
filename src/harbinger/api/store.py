@@ -13,8 +13,11 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from harbinger.api import backtest, whatif
+from harbinger.api.records import inspection_frame, site_tables
 from harbinger.config import Settings
 from harbinger.features.build import build_features, load_tables
+from harbinger.features.refresh import Refresher
 from harbinger.features.text import LAZY_MEMOS
 from harbinger.models.registry import list_versions, load_bundle
 from harbinger.monitoring.drift import feature_drift, prediction_drift
@@ -35,6 +38,7 @@ class Store:
         self._explainer: Explainer | None = None
         self.loaded_at: float | None = None
         self.data_meta: dict = {}
+        self._refresher: Refresher | None = None
 
     # ---------- 로드 ----------
     def load(self) -> None:
@@ -64,6 +68,12 @@ class Store:
             self.bundle["version"],
             time.time() - t0,
         )
+
+    @property
+    def refresher(self) -> Refresher:
+        if self._refresher is None:
+            self._refresher = Refresher(self.tables)
+        return self._refresher
 
     @property
     def explainer(self) -> Explainer | None:
@@ -96,6 +106,8 @@ class Store:
             return sub
         rows = sub.loc[sub.groupby("asset_id")["t"].idxmax()].copy()
         rows = rows.merge(self.tables["assets"][["asset_id", "name", "zone"]], on="asset_id", how="left")
+        # 점검 뒤에 생긴 고장·정비와 시간 경과를 기준 시각에 맞춰 반영한다 (features/refresh.py)
+        rows = self.refresher.apply(rows, as_of)
         rows["p30"] = self.bundle["classifier"].predict_proba(rows)
         return rows
 
@@ -364,28 +376,21 @@ class Store:
         }
 
     # ---------- 인제스트 ----------
+    # ---------- 재현·시뮬레이션 ----------
+    def replay(self, site: str, start, end, step_days: int = 7, k: int = 10) -> dict:
+        return backtest.replay(self, site, start, end, step_days, k)
+
+    def whatif(self, site_id: str, asset_id: str, scenarios: list[dict]) -> dict:
+        return whatif.run_whatif(self, site_id, asset_id, scenarios)
+
     def ingest_inspections(self, site_id: str, records: list[dict]) -> dict:
         """새 점검 기록을 받아 테이블에 붙이고, 영향 받은 설비의 피처를 다시 계산한다 (사이트 단위 재계산)."""
         ins = self.tables["inspections"]
-        new = pd.DataFrame(records)
-        new["site_id"] = site_id
-        for c in ("scheduled_at", "performed_at"):
-            new[c] = pd.to_datetime(new[c])
-        known = set(self.tables["assets"].loc[self.tables["assets"]["site_id"] == site_id, "asset_id"])
-        bad = sorted(set(new["asset_id"]) - known)
-        if bad:
-            raise ValueError(f"알 수 없는 설비: {bad[:5]}")
-        for c in ins.columns:
-            if c not in new:
-                new[c] = pd.NA
-        new = new[ins.columns]
-        for c in [c for c in ins.columns if c.startswith("chk_")]:
-            new[c] = new[c].astype("Int8")
+        new = inspection_frame(ins, self.tables["assets"], site_id, records)
         self.tables["inspections"] = pd.concat([ins, new], ignore_index=True)
+        self._refresher = None
         # 사이트만 잘라 피처 재계산 (에너지 잔차 적합 구간은 기존과 동일하게 1년)
-        sub = {
-            k: (v[v["site_id"] == site_id] if "site_id" in v.columns else v) for k, v in self.tables.items()
-        }
+        sub = site_tables(self.tables, site_id)
         Xs = build_features(
             sub,
             data_end=max(self.tables["inspections"]["performed_at"].max(), self.X["t"].max()),

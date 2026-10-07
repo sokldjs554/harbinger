@@ -13,7 +13,7 @@ from fastapi.responses import FileResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from harbinger import __version__
-from harbinger.api.routers import admin, energy, health, patrol, report, risk, sites
+from harbinger.api.routers import admin, energy, health, patrol, replay, report, risk, sites, text
 from harbinger.api.store import Store, console_dir
 from harbinger.config import settings
 from harbinger.monitoring.metrics import LATENCY, REQUESTS, render
@@ -90,6 +90,8 @@ for r in (
     patrol.router,
     energy.router,
     report.router,
+    replay.router,
+    text.router,
     admin.router,
 ):
     app.include_router(r)

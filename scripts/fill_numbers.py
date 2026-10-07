@@ -18,6 +18,7 @@ DOCS = [
     "docs/modeling.md",
     "docs/limitations.md",
     "docs/synthetic-generator.md",
+    "docs/data-model.md",
 ]
 PAT = re.compile(r"<!-- num:([^ ]+?) -->(.*?)<!-- /num -->", re.S)
 

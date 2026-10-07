@@ -5,10 +5,13 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 import numpy as np
 import pandas as pd
 
 from harbinger.config import HORIZON_DAYS
+from harbinger.features.refresh import Refresher
 
 
 def latest_rows_asof(X: pd.DataFrame, day: pd.Timestamp, max_age_days: int = 120) -> pd.DataFrame:
@@ -22,30 +25,34 @@ def latest_rows_asof(X: pd.DataFrame, day: pd.Timestamp, max_age_days: int = 120
 
 def simulate_patrol(
     X_test: pd.DataFrame,
-    scores: dict[str, np.ndarray],
+    score_fns: dict[str, Callable[[pd.DataFrame], np.ndarray]],
     breakdowns: pd.DataFrame,
+    refresher: Refresher,
     k: int = 10,
     step_days: int = 7,
     seed: int = 0,
 ) -> dict:
-    """scores: 이름 → X_test 와 같은 길이의 점수 배열. 반환: 방법별 precision@k, 라운드로빈 대비 lift, 날 수."""
+    """매주 사이트마다 방법별 상위 k 를 뽑아 이후 30일의 실제 고장 비율을 센다.
+
+    score_fns: 이름 → (행 DataFrame → 확률). 점수는 **그날(as_of)에 맞춰 시간 의존 피처를 갱신한 행**으로 매기므로,
+    점검 뒤에 고장나 수리된 설비가 계속 고위험으로 남지 않는다. 운영 경로(Store.latest_rows)와 같은 갱신을 쓴다.
+    """
     rng = np.random.default_rng(seed)
-    X = X_test.copy()
-    for name, s in scores.items():
-        X[f"score__{name}"] = s
-    X["score__random"] = rng.random(len(X))
     bd = {k_: v["opened_at"].to_numpy() for k_, v in breakdowns.groupby("asset_id")}
     days = pd.date_range(
-        X["t"].min().normalize() + pd.Timedelta(days=30),
-        X["t"].max().normalize() - pd.Timedelta(days=HORIZON_DAYS),
+        X_test["t"].min().normalize() + pd.Timedelta(days=30),
+        X_test["t"].max().normalize() - pd.Timedelta(days=HORIZON_DAYS),
         freq=f"{step_days}D",
     )
     rows = []
     for d in days:
-        latest = latest_rows_asof(X, d)
+        latest = latest_rows_asof(X_test, d)
         if latest.empty:
             continue
-        latest = latest.copy()
+        latest = refresher.apply(latest, d).copy()
+        for name, fn in score_fns.items():
+            latest[f"score__{name}"] = fn(latest)
+        latest["score__random"] = rng.random(len(latest))
         latest["score__round_robin"] = (d - latest["t"]).dt.total_seconds()
         latest["score__age"] = latest["st_age_years"]
         latest["score__last_inspection"] = (
@@ -53,31 +60,20 @@ def simulate_patrol(
         )
         end = (d + pd.Timedelta(days=HORIZON_DAYS)).to_datetime64()
         d64 = d.to_datetime64()
-        hit = np.array(
-            [
-                bool(
-                    np.any(
-                        (bd.get(a, np.array([], dtype="datetime64[ns]")) > d64)
-                        & (bd.get(a, np.array([], dtype="datetime64[ns]")) <= end)
-                    )
-                )
-                for a in latest["asset_id"]
-            ]
-        )
-        latest["hit"] = hit
-        for sid, g in latest.groupby("site_id"):
+        empty = np.array([], dtype="datetime64[ns]")
+        latest["hit"] = [
+            bool(np.any((bd.get(a, empty) > d64) & (bd.get(a, empty) <= end))) for a in latest["asset_id"]
+        ]
+        for _sid, g in latest.groupby("site_id"):
             kk = min(k, len(g))
             for col in [c for c in g.columns if c.startswith("score__")]:
                 top = g.nlargest(kk, col)
                 rows.append(
                     {
                         "day": d,
-                        "site_id": sid,
                         "method": col[7:],
                         "precision": float(top["hit"].mean()),
-                        "k": kk,
                         "base_rate": float(g["hit"].mean()),
-                        "n_assets": int(len(g)),
                     }
                 )
     res = pd.DataFrame(rows)
@@ -89,6 +85,11 @@ def simulate_patrol(
         if (summary["method"] == "round_robin").any()
         else float("nan")
     )
+    rnd = (
+        float(summary.loc[summary["method"] == "random", "mean"].iloc[0])
+        if (summary["method"] == "random").any()
+        else float("nan")
+    )
     methods = {}
     for _, r in summary.iterrows():
         methods[r["method"]] = {
@@ -96,14 +97,15 @@ def simulate_patrol(
             "std": float(r["std"]),
             "n_site_days": int(r["count"]),
             "lift_vs_round_robin": float(r["mean"] / rr) if rr and rr > 0 else float("nan"),
+            "lift_vs_random": float(r["mean"] / rnd) if rnd and rnd > 0 else float("nan"),
         }
-    per_arch = None
     return {
         "k": k,
         "days": int(res["day"].nunique()),
         "base_rate": float(res["base_rate"].mean()),
         "methods": methods,
-        "per_archetype": per_arch,
+        "per_archetype": None,
+        "scored_at": "as_of(시간 의존 피처 갱신)",
     }
 
 

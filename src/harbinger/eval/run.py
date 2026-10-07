@@ -14,7 +14,9 @@ import pandas as pd
 from harbinger.config import DEFAULT_SEED
 from harbinger.eval.metrics import c_index_from_risk, censoring_km, classification_metrics, integrated_brier
 from harbinger.eval.patrol import breakdown_recall_at_top, simulate_patrol
+from harbinger.eval.signals import signal_tables
 from harbinger.features.build import FEATURE_GROUPS, build_features, load_tables
+from harbinger.features.refresh import Refresher
 from harbinger.models.calibration import reliability_table
 from harbinger.models.classify import BASELINE_FEATURES, train_hgb, train_logistic
 from harbinger.models.coldstart import apply_offset, site_offset
@@ -72,6 +74,7 @@ def run(
     print(
         f"[eval] split={split.describe()} features={len(full_cols)} labeled train/val/test={len(trL)}/{len(vaL)}/{len(teL)}"
     )
+    _dump(artifact_dir / "signals.json", signal_tables(X))
     results: dict = {"split": split.describe(), "n_features": len(full_cols), "seed": seed, "quick": quick}
 
     # ---------- 1. 메인 분류기 ----------
@@ -90,11 +93,15 @@ def run(
         teL["tte_days"].to_numpy(), teL["event"].to_numpy(), p_cal
     )
     cal = hgb.meta.get("calibration") or {}
-    results["classifier"]["hgb_full"]["calibration_adopted"] = (
-        "채택" if cal.get("adopted") else "미채택(원시 확률 사용)"
-    )
-    results["classifier"]["hgb_full"]["calibration_val_brier_raw"] = cal.get("val_brier_raw")
-    results["classifier"]["hgb_full"]["calibration_val_brier_isotonic"] = cal.get("val_brier_isotonic")
+    hf = results["classifier"]["hgb_full"]
+    hf["calibration_method"] = {
+        "raw": "원시 확률(보정 없음)",
+        "platt": "Platt 스케일링",
+        "isotonic": "isotonic",
+    }[cal.get("method", "raw")]
+    for k in ("raw", "platt", "isotonic"):
+        hf[f"calibration_val_logloss_{k}"] = (cal.get("val_logloss") or {}).get(k)
+        hf[f"calibration_val_brier_{k}"] = (cal.get("val_brier") or {}).get(k)
     print(f"[eval] HGB full: {results['classifier']['hgb_full']}")
     _dump(
         artifact_dir / "calibration.json",
@@ -256,10 +263,14 @@ def run(
 
     # ---------- 7. 순찰 시뮬레이션 ----------
     bd_test = tables["workorders"][(tables["workorders"]["type"] == "breakdown")]
-    scores = {"harbinger_hgb": hgb.predict_proba(te_all)}
+    refresher = Refresher(tables)
+    score_fns = {"harbinger_hgb": hgb.predict_proba}
     if deep_full is not None:
-        scores["harbinger_deep"] = deep_full.p_fail_within(te_all, 30)
-    patrol = simulate_patrol(te_all, scores, bd_test, k=10, step_days=7, seed=seed)
+        score_fns["harbinger_deep"] = lambda df: deep_full.p_fail_within(df, 30)
+    patrol = simulate_patrol(te_all, score_fns, bd_test, refresher, k=10, step_days=7, seed=seed)
+    scores = {
+        "harbinger_hgb": hgb.predict_proba(te_all)
+    }  # 행 시점 점수 — 직전 점검 기준 재현율(breakdown_recall_at_top)용
     bd_in_test = bd_test[(bd_test["opened_at"] >= split.val_end + pd.Timedelta(days=30))]
     patrol["recall_top20pct"] = breakdown_recall_at_top(
         te_all, scores["harbinger_hgb"], bd_in_test.head(400 if quick else 2000), 0.2

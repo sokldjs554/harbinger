@@ -1,0 +1,17 @@
+{
+  "k": 10,
+  "step_days": 7,
+  "horizon_days": 30,
+  "n_sites": 25,
+  "heldout_start": "2025-07-01",
+  "weeks": 22,
+  "harbinger_hits": 1189,
+  "harbinger_picks": 5500,
+  "harbinger_rate": 0.21618181818181817,
+  "round_robin_hits": 231,
+  "round_robin_picks": 5500,
+  "round_robin_rate": 0.042,
+  "base_rate": 0.07561340044039006,
+  "lift_vs_round_robin": 5.147186147186146,
+  "lift_vs_base": 2.859041081643266
+}

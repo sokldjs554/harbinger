@@ -25,7 +25,11 @@ def test_patrol_and_risk_and_schedule(client):
     p = client.get(f"/v1/sites/{sid}/patrol/today?k=5").json()
     assert 1 <= len(p["items"]) <= max(5, sum(i["mandatory"] for i in p["items"]))
     assert p["expected_breakdowns_in_list"] >= 0
-    aid = p["items"][0]["asset_id"]
+    first = p["items"][0]
+    assert {"last_memo", "last_memo_highlighted", "last_overall", "last_inspected_at"} <= set(first), (
+        "현장 앱 카드에 최근 메모가 있어야 한다"
+    )
+    aid = first["asset_id"]
     r = client.get(f"/v1/sites/{sid}/assets/{aid}/risk").json()
     assert 0 < r["p30"] < 1 and r["recommendation"]["recommended_interval_days"] >= 7
     assert r["explanation"]["evidence"]["recent_inspections"]

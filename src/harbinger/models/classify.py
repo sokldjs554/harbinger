@@ -8,11 +8,12 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.impute import SimpleImputer
+from sklearn.isotonic import IsotonicRegression
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-from harbinger.models.calibration import fit_isotonic
+from harbinger.models.calibration import choose_calibrator, fit_isotonic
 from harbinger.models.common import to_matrix
 
 
@@ -33,8 +34,9 @@ class ClassifierBundle:
     def predict_proba(self, X: pd.DataFrame) -> np.ndarray:
         p = self.predict_raw(X)
         if self.calibrator is not None:
+            q = self.calibrator.predict(p)
             # isotonic 은 계단함수라 동점이 많이 생긴다. 원 점수를 0.1 % 섞어 순위를 보존한다(둘 다 단조라 캘리브레이션은 유지).
-            p = 0.999 * self.calibrator.predict(p) + 0.001 * p
+            p = 0.999 * q + 0.001 * p if isinstance(self.calibrator, IsotonicRegression) else q
         return np.clip(p, 1e-6, 1 - 1e-6)
 
 
@@ -70,19 +72,9 @@ def train_hgb(
         {"n_iter": int(clf.n_iter_), "params": {k: v for k, v in hp.items() if k != "random_state"}},
     )
     if calibrate and len(val) > 0:
-        # 검증 구간에서 isotonic 이 Brier 를 실제로 낮출 때만 채택한다. 로그손실로 학습한 HGB 는 이미 잘 맞춰져 있는 경우가 많다.
-        p_val = bundle.predict_raw(val)
-        y_val = val["y30"].to_numpy()
-        iso = fit_isotonic(p_val, y_val)
-        brier_raw = float(np.mean((p_val - y_val) ** 2))
-        brier_iso = float(np.mean((iso.predict(p_val) - y_val) ** 2))
-        bundle.meta["calibration"] = {
-            "val_brier_raw": brier_raw,
-            "val_brier_isotonic": brier_iso,
-            "adopted": brier_iso < brier_raw - 1e-5,
-        }
-        if bundle.meta["calibration"]["adopted"]:
-            bundle.calibrator = iso
+        calibrator, info = choose_calibrator(bundle.predict_raw(val), val["y30"].to_numpy(), seed=seed)
+        bundle.meta["calibration"] = info
+        bundle.calibrator = calibrator
     return bundle
 
 

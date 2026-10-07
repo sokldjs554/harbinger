@@ -125,3 +125,89 @@ def novelty(prev: pd.Series, cur: pd.Series) -> pd.Series:
         u = len(a | b)
         vals.append(1.0 - (len(a & b) / u if u else 0.0))
     return pd.Series(vals, index=cur.index, dtype=float)
+
+
+GROUP_KO = {
+    "noise": "소음",
+    "vibration": "진동",
+    "leak": "누유·누수",
+    "thermal": "온도",
+    "pressure": "압력",
+    "electric": "전기",
+    "operation": "작동",
+    "wear": "마모·소모품",
+    "smell_smoke": "냄새·연기",
+    "corrosion": "부식·외관",
+    "power_fuel": "전원·연료",
+    "level_door": "수위·도어·센서",
+}
+SYMPTOM_KEYWORDS = sorted({kw for kws in SYMPTOM_GROUPS.values() for kw in kws}, key=lambda w: (-len(w), w))
+_SYMPTOM_RE = re.compile("|".join(map(re.escape, SYMPTOM_KEYWORDS)))
+_KEYWORD_GROUP: dict[str, str] = {}
+for _g, _kws in SYMPTOM_GROUPS.items():
+    for _kw in _kws:
+        _KEYWORD_GROUP.setdefault(_kw, _g)
+_KIND_PRIORITY = {"strong": 0, "weak": 1, "symptom": 2}
+
+
+def lexicon() -> dict:
+    """브라우저(JS) 포트가 같은 렉시콘을 쓰도록 내보낸다 — 단일 출처는 이 파일."""
+    return {
+        "symptom_groups": {g: {"label": GROUP_KO[g], "keywords": kws} for g, kws in SYMPTOM_GROUPS.items()},
+        "symptom_keywords": SYMPTOM_KEYWORDS,
+        "weak_modifiers": WEAK_MODIFIERS,
+        "strong_modifiers": STRONG_MODIFIERS,
+        "lazy_memos": sorted(LAZY_MEMOS),
+    }
+
+
+def segments(memo: str) -> list[dict]:
+    """메모를 [{text, kind, group?}] 로 쪼갠다. kind: strong | weak | symptom | None.
+
+    겹치면 시작이 빠른 것, 같으면 strong > weak > symptom, 같으면 긴 것이 이긴다 (JS 포트와 같은 규칙).
+    """
+    text = memo or ""
+    spans: list[tuple[int, int, int, str]] = []
+    for kind, rx in (("strong", _STRONG_RE), ("weak", _WEAK_RE), ("symptom", _SYMPTOM_RE)):
+        for m in rx.finditer(text):
+            spans.append((m.start(), m.end(), _KIND_PRIORITY[kind], kind))
+    spans.sort(key=lambda t: (t[0], t[2], -(t[1] - t[0])))
+    out: list[dict] = []
+    pos = 0
+    for start, end, _prio, kind in spans:
+        if start < pos:
+            continue
+        if start > pos:
+            out.append({"text": text[pos:start], "kind": None})
+        piece = {"text": text[start:end], "kind": kind}
+        if kind == "symptom":
+            piece["group"] = _KEYWORD_GROUP.get(text[start:end])
+        out.append(piece)
+        pos = end
+    if pos < len(text):
+        out.append({"text": text[pos:], "kind": None})
+    return out
+
+
+def analyze_memo(memo: str) -> dict:
+    """메모 한 건이 모델에 어떤 피처로 들어가는지 — 점수는 memo_features 와 같은 값이다."""
+    text = memo or ""
+    f = memo_features(pd.Series([text])).iloc[0]
+    groups = [g for g, rx in _GROUP_RE.items() if rx.search(text)]
+    return {
+        "memo": text,
+        "length": int(f["tx_len"]),
+        "lazy": bool(f["tx_lazy"]),
+        "n_groups": int(f["tx_n_groups"]),
+        "groups": [{"id": g, "label": GROUP_KO[g]} for g in groups],
+        "weak_hits": [m.group(0) for m in _WEAK_RE.finditer(text)],
+        "strong_hits": [m.group(0) for m in _STRONG_RE.finditer(text)],
+        "weak_score": float(f["tx_weak_score"]),
+        "strong_score": float(f["tx_strong_score"]),
+        "segments": segments(text),
+    }
+
+
+def highlight(memo: str) -> str:
+    """수식어(약·강)를 [단어] 로 감싼 문자열 — 설명 응답에서 쓴다."""
+    return "".join(f"[{s['text']}]" if s["kind"] in ("weak", "strong") else s["text"] for s in segments(memo))

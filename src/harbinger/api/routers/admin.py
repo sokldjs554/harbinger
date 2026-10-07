@@ -7,7 +7,18 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from harbinger.api.deps import get_store
 from harbinger.api.store import Store
 
-ARTIFACTS = {"metrics", "ablation", "calibration", "survival", "energy", "patrol", "loso", "importance"}
+ARTIFACTS = {
+    "metrics",
+    "ablation",
+    "calibration",
+    "survival",
+    "energy",
+    "patrol",
+    "loso",
+    "importance",
+    "signals",
+    "keras_parity",
+}
 
 router = APIRouter(prefix="/v1", tags=["admin"])
 

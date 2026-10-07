@@ -4,43 +4,50 @@
   "base_rate": 0.07185351621541208,
   "methods": {
     "age": {
-      "precision_at_k": 0.09866666666666667,
-      "std": 0.09670748952416675,
+      "precision_at_k": 0.09955555555555556,
+      "std": 0.09717514680281923,
       "n_site_days": 450,
-      "lift_vs_round_robin": 2.3125
+      "lift_vs_round_robin": 2.3333333333333335,
+      "lift_vs_random": 1.4640522875816993
     },
     "harbinger_deep": {
-      "precision_at_k": 0.20333333333333334,
-      "std": 0.14240223466127772,
+      "precision_at_k": 0.22822222222222222,
+      "std": 0.1531523091389918,
       "n_site_days": 450,
-      "lift_vs_round_robin": 4.765625
+      "lift_vs_round_robin": 5.348958333333333,
+      "lift_vs_random": 3.356209150326797
     },
     "harbinger_hgb": {
-      "precision_at_k": 0.2228888888888889,
-      "std": 0.15244294594819396,
+      "precision_at_k": 0.2544444444444444,
+      "std": 0.1622236290291653,
       "n_site_days": 450,
-      "lift_vs_round_robin": 5.223958333333333
+      "lift_vs_round_robin": 5.963541666666666,
+      "lift_vs_random": 3.7418300653594763
     },
     "last_inspection": {
       "precision_at_k": 0.12177777777777779,
       "std": 0.11013838003504225,
       "n_site_days": 450,
-      "lift_vs_round_robin": 2.854166666666667
+      "lift_vs_round_robin": 2.854166666666667,
+      "lift_vs_random": 1.7908496732026145
     },
     "random": {
-      "precision_at_k": 0.06466666666666666,
-      "std": 0.07384146021860642,
+      "precision_at_k": 0.068,
+      "std": 0.08007791306194456,
       "n_site_days": 450,
-      "lift_vs_round_robin": 1.515625
+      "lift_vs_round_robin": 1.5937500000000002,
+      "lift_vs_random": 1.0
     },
     "round_robin": {
       "precision_at_k": 0.042666666666666665,
       "std": 0.06226604318270345,
       "n_site_days": 450,
-      "lift_vs_round_robin": 1.0
+      "lift_vs_round_robin": 1.0,
+      "lift_vs_random": 0.6274509803921567
     }
   },
   "per_archetype": null,
+  "scored_at": "as_of(시간 의존 피처 갱신)",
   "recall_top20pct": {
     "top_frac": 0.2,
     "breakdowns_evaluated": 895,

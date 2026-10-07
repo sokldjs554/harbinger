@@ -2,12 +2,10 @@
 
 from __future__ import annotations
 
-import re
-
 import numpy as np
 import pandas as pd
 
-from harbinger.features.text import STRONG_MODIFIERS, WEAK_MODIFIERS
+from harbinger.features.text import highlight
 from harbinger.models.common import to_matrix
 from harbinger.schema import CHECK_ITEM_KO
 
@@ -153,15 +151,6 @@ class Explainer:
             }
             for j in order
         ]
-
-
-_HL = re.compile(
-    "|".join(map(re.escape, sorted(set(WEAK_MODIFIERS + STRONG_MODIFIERS), key=len, reverse=True)))
-)
-
-
-def highlight(memo: str) -> str:
-    return _HL.sub(lambda m: f"[{m.group(0)}]", memo or "")
 
 
 def evidence_for_asset(

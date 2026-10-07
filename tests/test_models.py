@@ -3,7 +3,7 @@ import pandas as pd
 import torch
 
 from harbinger.config import SURVIVAL_BINS
-from harbinger.models.calibration import ece, fit_isotonic
+from harbinger.models.calibration import PlattCalibrator, choose_calibrator, ece, fit_isotonic
 from harbinger.models.coldstart import apply_offset, site_offset
 from harbinger.models.common import model_columns, split_by_time, to_matrix
 from harbinger.models.deep import discrete_nll
@@ -93,3 +93,21 @@ def test_registry_roundtrip(trained):
         assert S.shape == (20, SURVIVAL_BINS) and np.all(np.diff(S, axis=1) <= 1e-9)
     assert list_versions(trained["models"])[0]["version"] == b["version"]
     assert isinstance(pd.Timestamp(b["entry"]["created_at"]), pd.Timestamp)
+
+
+def test_calibrator_selection_keeps_good_probabilities_and_fixes_bad_ones():
+    rng = np.random.default_rng(0)
+    p = rng.beta(1, 12, 20000)
+    y = (rng.random(20000) < p).astype(int)
+    cal, info = choose_calibrator(p, y)
+    assert info["method"] == "raw" and cal is None and not info["adopted"], (
+        "이미 맞는 확률에는 보정을 씌우지 않는다"
+    )
+    over = np.clip(p * 1.6, 0, 1)
+    cal2, info2 = choose_calibrator(over, y)
+    assert info2["method"] == "platt" and isinstance(cal2, PlattCalibrator)
+    fixed = cal2.predict(over)
+    assert abs(fixed.mean() - y.mean()) < abs(over.mean() - y.mean()), (
+        "과신된 확률은 보정 뒤 평균이 실제에 가까워져야 한다"
+    )
+    assert len(np.unique(np.round(fixed, 6))) > 1000, "Platt 은 계단(동점 구간)을 만들지 않는다"

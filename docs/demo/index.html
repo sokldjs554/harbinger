@@ -3,65 +3,136 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>harbinger 콘솔 (정적 데모)</title>
+<title>harbinger — 정적 데모</title>
+<link rel="icon" href="data:,">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="banner">모든 데이터는 <b>합성(SYNTHETIC)</b>입니다 — 실제 고객·설비 정보 없음. 생성 모델은 저장소 문서(docs/synthetic-generator.md)에 공개되어 있습니다.</div>
+<div class="banner">모든 데이터는 <b>합성(SYNTHETIC)</b>입니다 — 실제 고객·설비·점검자 정보 없음. 메모가 체크리스트보다 먼저 움직인다는 핵심 가정을 <b>생성기에 직접 넣었기 때문에</b> 아래 결과는 성능 주장이 아니라 파이프라인과 설계의 시연입니다. <a href="https://github.com/sokldjs554/harbinger/blob/main/docs/synthetic-generator.md" target="_blank" rel="noopener">가정 전부 보기</a></div>
 <header class="top">
-  <h1>harbinger <small>사람이 쓴 점검 기록에서 고장의 전조를 읽는다</small></h1>
-  <span id="version" class="muted" style="font-size:12px"></span>
+  <h1>harbinger<small>사람이 쓴 점검 기록에서 고장의 전조를 읽고, 오늘 어디부터 볼지 알려 준다</small></h1>
+  <span class="spacer"></span>
+  <div class="ctrl" role="group" aria-label="보기 설정">
+    <label>사이트 <select id="site" aria-label="사이트"></select></label>
+    <span id="live-ctrl" class="ctrl" hidden>
+      <label>기준일 <input id="asof" type="date"></label>
+      <label>순찰 K <input id="k" type="number" min="1" max="50" value="10" style="width:64px"></label>
+      <button id="apply" type="button">적용</button>
+    </span>
+    <button id="theme" type="button" title="테마 전환" aria-label="테마 전환">테마</button>
+  </div>
 </header>
-<div class="filters" role="group" aria-label="필터">
-  <label>사이트 <select id="site"></select></label>
-  <label>기준일 <input id="asof" type="date"></label>
-  <label>순찰 K <input id="k" type="number" min="1" max="50" value="10" style="width:64px"></label>
-  <button id="apply">적용</button>
-  <button id="theme" title="테마 전환">테마</button>
-</div>
-<nav class="tabs" role="tablist">
-  <button role="tab" aria-selected="true" data-tab="overview">개요</button>
-  <button role="tab" aria-selected="false" data-tab="patrol">오늘 순찰</button>
-  <button role="tab" aria-selected="false" data-tab="assets">설비 위험</button>
-  <button role="tab" aria-selected="false" data-tab="energy">에너지</button>
+<nav class="tabs" role="tablist" aria-label="화면">
+  <button role="tab" aria-selected="true" data-tab="today">오늘</button>
+  <button role="tab" aria-selected="false" data-tab="replay">과거 재현</button>
+  <button role="tab" aria-selected="false" data-tab="assets">설비</button>
+  <button role="tab" aria-selected="false" data-tab="memo">메모 읽기</button>
   <button role="tab" aria-selected="false" data-tab="quality">점검 품질</button>
-  <button role="tab" aria-selected="false" data-tab="model">모델</button>
+  <button role="tab" aria-selected="false" data-tab="energy">에너지</button>
+  <button role="tab" aria-selected="false" data-tab="model">모델·가정</button>
 </nav>
 <main>
-  <section id="tab-overview">
-    <div class="kpis" id="kpis"></div>
-    <div class="grid">
-      <div class="card"><h2>설비 종류별 30일 고장확률</h2><div class="sub">평균 P30 · 괄호는 설비 수</div><div id="cat-bars"></div></div>
-      <div class="card"><h2>오늘 순찰 기대 적중</h2><div class="sub">상위 K 설비의 P30 합 — 라운드로빈(가장 오래 안 본 순)과 비교</div><div id="patrol-expect"></div></div>
+  <section id="tab-today" class="tab">
+  <details id="guide" class="guide">
+    <summary>이 데모를 읽는 법</summary>
+    <div class="guide-body">
+      <button class="step" data-go="today" type="button"><b>① 오늘</b><span>점검 기록을 읽어 오늘 먼저 볼 설비를 고릅니다. 오른쪽은 점검자가 휴대폰으로 보는 화면입니다.</span></button>
+      <button class="step" data-go="replay" type="button"><b>② 과거 재현</b><span>그 주에 이 목록을 줬다면 이후 30일에 무슨 일이 났나 — 실증(PoC)이 보여 줘야 하는 것.</span></button>
+      <button class="step" data-go="assets" type="button"><b>③ 설비 → What-if</b><span>같은 체크리스트에서 메모만 바꾸면 위험도가 어떻게 달라지나를 직접 비교합니다.</span></button>
+      <button class="step" data-go="memo" type="button"><b>④ 메모 읽기</b><span>왜 메모인가 — 메모를 직접 써 보고, 데이터에서 그 신호가 실제로 있는지 봅니다(약한 결과 포함).</span></button>
+      <div class="caveat">숫자를 그대로 믿지 마세요. 어디까지가 데이터이고 어디부터가 가정인지는 <button class="chip" data-go="model" type="button">모델·가정</button> 탭에 적어 두었습니다.</div>
+    </div>
+  </details>
+
+    <div class="headline" id="today-head"></div>
+    <div class="kpis" id="today-kpis"></div>
+    <div class="today-grid">
+      <div class="card today-table"><h2>오늘 먼저 볼 설비</h2><div class="sub">기대손실(P30 × 중요도) 순으로 고르고, 법정점검 기한이 임박한 설비는 무조건 포함 · 표는 동선(지하 → 고층) 순</div><div id="today-table"></div></div>
+      <div>
+        <div class="phone" aria-label="현장 앱 미리보기">
+          <div class="status"><span id="ph-time">9:41</span><span>유비스형 현장 앱 · 미리보기</span></div>
+          <div class="appbar"><b id="ph-title">오늘 순찰</b><span id="ph-sub"></span><div class="prog"><i id="ph-prog"></i></div></div>
+          <div class="scroll" id="ph-list"></div>
+        </div>
+      </div>
     </div>
   </section>
-  <section id="tab-patrol" hidden>
-    <div class="card"><h2>오늘 먼저 볼 설비</h2><div class="sub">기대손실(P30×중요도) 순 · 법정점검 기한 임박은 무조건 포함 · 표는 동선(지하→고층, 구역) 순</div><div id="patrol-table"></div></div>
+
+  <section id="tab-replay" class="tab" hidden>
+    <div class="headline"><h2>과거로 돌려 봤을 때, 맞았나</h2><p>매주 그 시점의 데이터만으로 상위 K 를 뽑고, 이후 30일의 실제 비계획 고장과 대조합니다. 모델이 학습·보정에 쓰지 않은 기간만 봅니다.</p></div>
+    <div class="ctrl" style="margin-bottom:12px"><div class="seg" role="group" aria-label="범위"><button id="scope-all" aria-pressed="true" type="button">전체 사이트</button><button id="scope-site" aria-pressed="false" type="button">이 사이트</button></div><span class="muted" id="replay-scope-note"></span></div>
+    <div class="kpis" id="replay-kpis"></div>
+    <div class="card"><h2>주별 적중률</h2><div class="sub">그 주 상위 K 중 이후 30일 안에 실제로 고장난 비율 · 점을 누르거나 아래 슬라이더로 주를 고릅니다</div><div id="replay-chart"></div><label class="muted" style="display:block;margin-top:6px">주 선택 <input id="replay-week" type="range" min="0" max="0" value="0" aria-label="주 선택"></label></div>
+    <div id="replay-detail" style="margin-top:16px"></div>
+    <div class="callout warn" id="replay-caveat"></div>
   </section>
-  <section id="tab-assets" hidden>
-    <div class="grid">
-      <div class="card"><h2>상위 위험 설비</h2><div class="sub">행을 누르면 근거를 봅니다</div><div id="asset-table"></div></div>
+
+  <section id="tab-assets" class="tab" hidden>
+    <div class="grid" style="grid-template-columns: minmax(300px, 5fr) minmax(320px, 7fr);">
+      <div>
+        <div class="card"><h2>설비 종류별 30일 고장확률</h2><div class="sub">평균 P30 · 괄호는 설비 수</div><div id="cat-bars"></div></div>
+        <div class="card"><h2>상위 위험 설비</h2><div class="sub">행을 누르면 근거와 What-if 를 봅니다</div><div id="asset-table"></div></div>
+      </div>
       <div class="card" id="asset-detail"><h2>설비 상세</h2><div class="empty">왼쪽에서 설비를 선택하세요.</div></div>
     </div>
   </section>
-  <section id="tab-energy" hidden>
-    <div class="card"><h2>전기 사용량 — 실측 vs 기대치</h2><div class="sub">기대치 = 기온·재실·요일·계절로 학습한 회귀 모델 · 최근 120일</div><div id="energy-line"></div></div>
-    <div class="card" style="margin-top:16px"><h2>잔차 7일 이동평균 z-score</h2><div class="sub">z &gt; 2.5 인 날을 이상일로 표시 (상태색 + 표식)</div><div id="energy-z"></div></div>
-  </section>
-  <section id="tab-quality" hidden>
-    <div class="card"><h2>점검자별 기록 신뢰도</h2><div class="sub">최근 180일 · 형식적 메모 비율·20초 미만 체류·7일 초과 지연으로 계산 · 낮은 순</div><div id="quality-table"></div></div>
-  </section>
-  <section id="tab-model" hidden>
-    <div class="grid">
-      <div class="card"><h2>모델 정보</h2><div id="model-info"></div></div>
-      <div class="card"><h2>캘리브레이션 (테스트 기간)</h2><div class="sub">예측 확률 분위 구간별 실제 고장률 · 대각선이 완벽</div><div id="calib"></div></div>
-      <div class="card"><h2>절제 실험 (AUROC)</h2><div class="sub">피처 그룹을 더해 갈 때</div><div id="ablation"></div></div>
-      <div class="card"><h2>드리프트</h2><div class="sub">학습 참조 분포 대비 최근 60일 PSI</div><div id="drift"></div></div>
+
+  <section id="tab-memo" class="tab" hidden>
+    <div class="headline"><h2>모델은 메모를 이렇게 읽습니다</h2><p>왼쪽에 점검 메모를 써 보세요. 학습에 쓴 것과 같은 규칙(증상군 · 약한/강한 강도어 · 형식적 메모)이 브라우저에서 그대로 돌아갑니다. 오른쪽은 그 신호가 데이터에 실제로 있는지의 기술통계입니다.</p></div>
+    <div class="grid" style="grid-template-columns: minmax(300px, 5fr) minmax(320px, 6fr);">
+      <div class="card">
+        <h2>메모 분석기</h2>
+        <div class="chips" id="memo-presets"></div>
+        <textarea id="memo-in" class="memo-in" rows="3" maxlength="500" aria-label="점검 메모" placeholder="예: 약간의 소음 감지, 미세 진동 감지"></textarea>
+        <div class="keyline"><span><mark class="m-symptom">증상어</mark></span><span><mark class="m-weak">약한 강도어</mark> 약간·미세·간헐…</span><span><mark class="m-strong">강한 강도어</mark> 심함·긴급·수리…</span></div>
+        <div class="memo-box" id="memo-out" aria-live="polite"></div>
+        <div class="chips" id="memo-groups"></div>
+        <div class="mini" id="memo-scores"></div>
+        <div class="callout" id="memo-reading"></div>
+      </div>
+      <div class="card">
+        <h2>이 신호가 데이터에 있나</h2>
+        <div class="sub" id="signals-sub"></div>
+        <h3>체크리스트 판정별 30일 내 고장률 — 메모에 약신호가 있을 때와 없을 때</h3>
+        <div id="sig-judge"></div>
+        <h3>"양호"로 판정된 점검만 — 직전 6회 중 ‘양호인데 메모에 약신호’ 횟수</h3>
+        <div id="sig-count"></div>
+        <h3>"양호" 판정의 믿을 만함 — 점검 품질별</h3>
+        <div id="sig-quality"></div>
+        <div class="callout warn" id="sig-caveat"></div>
+      </div>
     </div>
   </section>
+
+  <section id="tab-quality" class="tab" hidden>
+    <div class="card"><h2>점검자별 기록 신뢰도</h2><div class="sub" id="quality-sub">최근 180일 · 형식적 메모·20초 미만 체류·7일 초과 지연으로 계산 · 낮은 순</div><div id="quality-table"></div><div class="callout" id="quality-note"></div></div>
+  </section>
+
+  <section id="tab-energy" class="tab" hidden>
+    <div class="card"><h2>전기 사용량 — 실측 vs 기대치</h2><div class="sub">기대치 = 기온·재실·요일·계절로 학습한 회귀 모델 · 최근 120일</div><div id="energy-line"></div></div>
+    <div class="card"><h2>잔차 7일 이동평균 z-score</h2><div class="sub">z &gt; 2.5 인 날을 이상일로 표시 (표식 + 상태색)</div><div id="energy-z"></div><div class="callout warn" id="energy-note"></div></div>
+  </section>
+
+  <section id="tab-model" class="tab" hidden>
+    <div class="grid wide">
+      <div class="card"><h2>모델 정보</h2><div id="model-info"></div></div>
+      <div class="card"><h2>예측과 실제 (테스트 기간)</h2><div class="sub">예측 확률 분위 구간별 실제 고장률 · 대각선이 완벽</div><div id="calib"></div></div>
+      <div class="card"><h2>절제 실험 (AUROC)</h2><div class="sub">피처 그룹을 더해 갈 때 — 오라클은 숨은 열화 상태를 아는 상한</div><div id="ablation"></div></div>
+      <div class="card"><h2>드리프트</h2><div class="sub">학습 참조 분포 대비 최근 60일 PSI</div><div id="drift"></div></div>
+    </div>
+    <div class="card" id="assumptions"></div>
+  </section>
 </main>
-<div id="tooltip" class="tooltip" hidden></div>
+<footer>
+  <a href="https://github.com/sokldjs554/harbinger" target="_blank" rel="noopener">GitHub</a>
+  <a href="https://github.com/sokldjs554/harbinger/blob/main/docs/company-research.md" target="_blank" rel="noopener">회사 조사 — 왜 이 주제인가</a>
+  <a href="https://github.com/sokldjs554/harbinger/blob/main/docs/synthetic-generator.md" target="_blank" rel="noopener">합성 데이터 생성 모델</a>
+  <a href="https://github.com/sokldjs554/harbinger/blob/main/docs/limitations.md" target="_blank" rel="noopener">한계</a>
+  <span id="version"></span>
+</footer>
 <script>window.HARBINGER_STATIC = true;</script>
+<script src="charts.js"></script>
+<script src="memo.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
