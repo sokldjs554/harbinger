@@ -60,3 +60,22 @@ def test_example_download_is_supported_csv(client):
     assert csv.status_code == 200
     tables, summary = parse_csv(csv.content, info["observation_end"])
     assert len(tables["inspections"]) > 10 and summary["assets"] > 1
+
+
+def test_example_download_excludes_records_beyond_declared_end(client, monkeypatch):
+    import pandas as pd
+
+    from harbinger.api.upload import parse_csv
+
+    info = client.get("/v1/workbench/info").json()
+    store = client.app.state.store
+    inspections = store.tables["inspections"]
+    late = inspections.query("site_id == 'S01'").iloc[[0]].copy()
+    late["inspection_id"] = "outside-observation"
+    late["performed_at"] = pd.Timestamp(info["observation_end"]) + pd.Timedelta(days=1)
+    monkeypatch.setitem(store.tables, "inspections", pd.concat([inspections, late], ignore_index=True))
+    response = client.get("/v1/workbench/example.csv")
+    assert response.status_code == 200
+    tables, _ = parse_csv(response.content, info["latest_as_of_date"])
+    assert "outside-observation" not in set(tables["inspections"].inspection_id)
+    assert len(tables["inspections"]) > 10
