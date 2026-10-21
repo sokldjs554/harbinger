@@ -15,8 +15,8 @@ help:
 
 install:
 	$(PY) -m pip install --upgrade pip
-	$(PY) -m pip install --index-url https://download.pytorch.org/whl/cpu "torch>=2.4"
-	$(PY) -m pip install -e ".[dev]"
+	$(PY) -m pip install --index-url https://download.pytorch.org/whl/cpu 'torch==2.14.1+cpu'
+	$(PY) -m pip install -c constraints.txt -e ".[dev]"
 
 synth:
 	harbinger synth --out $(DATA) --seed $(SEED)
@@ -66,14 +66,9 @@ clean:
 
 .PHONY: demo demo-gif
 demo:
-	$(PY) scripts/build_static_demo.py --out docs/demo --data $(DATA) --models $(MODELS) --artifacts $(ARTIFACTS)
+	$(PY) scripts/build_workbench_demo.py --out docs/demo --data $(DATA) --models $(MODELS) --artifacts $(ARTIFACTS)
 
-# 정적 데모를 로컬로 띄워 녹화한다 (Playwright + ffmpeg). CHROMIUM_PATH 로 브라우저 지정 가능.
+# 실행 중인 API를 80초 녹화한다. Playwright Chromium 및 ffmpeg가 필요하다.
 demo-gif:
-	mkdir -p /tmp/harbinger-demo
-	cd docs/demo && { $(PY) -m http.server 8020 >/dev/null 2>&1 & echo $$! > /tmp/harbinger-demo/server.pid; }
-	sleep 2
-	node scripts/record_demo.cjs http://localhost:8020 /tmp/harbinger-demo / > /tmp/harbinger-demo/video.txt 2>&1; \
-	kill $$(cat /tmp/harbinger-demo/server.pid); \
-	ffmpeg -y -loglevel error -ss 0.5 -i "$$(tail -1 /tmp/harbinger-demo/video.txt)" -vf "fps=8,scale=960:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=128[p];[s1][p]paletteuse=dither=bayer:bayer_scale=4" docs/images/demo.gif; \
-	ls -la docs/images/demo.gif
+	$(PY) scripts/record_workbench.py
+	@echo "docs/verification/video의 WebM을 확인하고 필요하면 ffmpeg로 변환하세요."

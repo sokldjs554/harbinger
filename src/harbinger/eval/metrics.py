@@ -67,9 +67,23 @@ def ipcw_brier(
 def integrated_brier(
     surv_matrix: np.ndarray, times: list[float], tte: np.ndarray, event: np.ndarray, km_c: KaplanMeierFitter
 ) -> dict:
-    scores = [ipcw_brier(surv_matrix[:, i], tte, event, t, km_c) for i, t in enumerate(times)]
+    supported = [(i, t) for i, t in enumerate(times) if t < np.max(tte) and float(km_c.predict(t)) > 0.05]
+    skipped = [t for t in times if t not in [v for _, v in supported]]
+    if not supported:
+        return {
+            "brier_at": {},
+            "ibs": float("nan"),
+            "withheld_horizons": skipped,
+            "reason": "insufficient follow-up or censoring support",
+        }
+    scores = [ipcw_brier(surv_matrix[:, i], tte, event, t, km_c) for i, t in supported]
+    times = [t for _, t in supported]
     ibs = float(np.trapezoid(scores, times) / (times[-1] - times[0])) if len(times) > 1 else scores[0]
-    return {"brier_at": {str(int(t)): s for t, s in zip(times, scores)}, "ibs": ibs}
+    return {
+        "brier_at": {str(int(t)): s for t, s in zip(times, scores)},
+        "ibs": ibs,
+        "withheld_horizons": skipped,
+    }
 
 
 def precision_at_k(groups: pd.DataFrame, score_col: str, k: int) -> float:

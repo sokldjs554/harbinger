@@ -1,0 +1,22 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________ test_discrete_nll_event_at_right_edge_is_observed_in_that_bin _________
+
+    def test_discrete_nll_event_at_right_edge_is_observed_in_that_bin():
+        hazards = torch.tensor([[0.2, 0.7]])
+        logits = torch.logit(hazards)
+>       assert torch.allclose(discrete_nll(logits, torch.tensor([30.0]), torch.tensor([1])), -torch.log(hazards[0, 0]))
+E       assert False
+E        +  where False = <built-in method allclose of type object at 0x7fd52bf81300>(tensor(0.5798), -tensor(-1.6094))
+E        +    where <built-in method allclose of type object at 0x7fd52bf81300> = torch.allclose
+E        +    and   tensor(0.5798) = discrete_nll(tensor([[-1.3863,  0.8473]]), tensor([30.]), tensor([1]))
+E        +      where tensor([30.]) = <built-in method tensor of type object at 0x7fd52bf81300>([30.0])
+E        +        where <built-in method tensor of type object at 0x7fd52bf81300> = torch.tensor
+E        +      and   tensor([1]) = <built-in method tensor of type object at 0x7fd52bf81300>([1])
+E        +        where <built-in method tensor of type object at 0x7fd52bf81300> = torch.tensor
+E        +    and   tensor(-1.6094) = <built-in method log of type object at 0x7fd52bf81300>(tensor(0.2000))
+E        +      where <built-in method log of type object at 0x7fd52bf81300> = torch.log
+
+tests/test_models.py:27: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_models.py::test_discrete_nll_event_at_right_edge_is_observed_in_that_bin

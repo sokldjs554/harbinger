@@ -1,0 +1,9 @@
+pooled all 5 calibration training folds retain both classes; sparse fallback not activated
+S01 all 5 calibration training folds retain both classes; sparse fallback not activated
+S02 all 5 calibration training folds retain both classes; sparse fallback not activated
+S09 all 5 calibration training folds retain both classes; sparse fallback not activated
+S10 all 5 calibration training folds retain both classes; sparse fallback not activated
+S12 all 5 calibration training folds retain both classes; sparse fallback not activated
+S13 all 5 calibration training folds retain both classes; sparse fallback not activated
+S16 all 5 calibration training folds retain both classes; sparse fallback not activated
+S17 all 5 calibration training folds retain both classes; sparse fallback not activated

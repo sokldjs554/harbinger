@@ -55,6 +55,7 @@ def simulate_patrol(
         latest["score__random"] = rng.random(len(latest))
         latest["score__round_robin"] = (d - latest["t"]).dt.total_seconds()
         latest["score__age"] = latest["st_age_years"]
+        latest["score__recent_repair"] = -latest["wo_days_since_bd"].fillna(10000)
         latest["score__last_inspection"] = (
             latest["ck_overall"] * 1000 + (d - latest["t"]).dt.total_seconds() / 86400
         )
@@ -71,6 +72,10 @@ def simulate_patrol(
                 rows.append(
                     {
                         "day": d,
+                        "site_id": _sid,
+                        "hits": int(top["hit"].sum()),
+                        "positives": int(g["hit"].sum()),
+                        "picks": kk,
                         "method": col[7:],
                         "precision": float(top["hit"].mean()),
                         "base_rate": float(g["hit"].mean()),
@@ -99,7 +104,24 @@ def simulate_patrol(
             "lift_vs_round_robin": float(r["mean"] / rr) if rr and rr > 0 else float("nan"),
             "lift_vs_random": float(r["mean"] / rnd) if rnd and rnd > 0 else float("nan"),
         }
+    # Paired site-cluster bootstrap keeps all overlapping weeks and assets
+    # within each site together. It does not assume weekly rows independent.
+    wide = res.pivot_table(index="site_id", columns="method", values="precision", aggfunc="mean")
+    boot_rng = np.random.default_rng(seed)
+    for name, m in methods.items():
+        per_site = wide[name].to_numpy()
+        ix = boot_rng.integers(0, len(wide), size=(2000, len(wide)))
+        means = per_site[ix].mean(axis=1)
+        diff = (wide[name] - wide["last_inspection"]).to_numpy()[ix].mean(axis=1)
+        m["site_cluster_ci95"] = np.quantile(means, [0.025, 0.975]).tolist()
+        m["delta_vs_last_inspection_ci95"] = np.quantile(diff, [0.025, 0.975]).tolist()
+        subset = res[res.method == name]
+        m["recall_at_k"] = (
+            float(subset.hits.sum() / subset.positives.sum()) if subset.positives.sum() else None
+        )
     return {
+        "uncertainty": "2000 paired site-cluster bootstrap; weeks/assets kept together; synthetic sites only",
+        "random_expected_precision": float(res.base_rate.mean()),
         "k": k,
         "days": int(res["day"].nunique()),
         "base_rate": float(res["base_rate"].mean()),

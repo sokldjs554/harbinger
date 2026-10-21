@@ -87,7 +87,14 @@ class Store:
 
     @property
     def data_end(self) -> pd.Timestamp:
-        return self.X["t"].max()
+        if getattr(self, "_observation_end", None) is not None:
+            return self._observation_end
+        provenance = (self.bundle or {}).get("entry", {}).get("metrics", {}).get("observation", {})
+        return (
+            pd.Timestamp(provenance["observation_end"])
+            if provenance.get("observation_end")
+            else self.X["t"].max()
+        )
 
     def resolve_as_of(self, as_of: str | None) -> pd.Timestamp:
         if not as_of:

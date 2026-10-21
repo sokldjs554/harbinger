@@ -4,6 +4,7 @@ import json
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 
+from harbinger.api.analysis import safe_json
 from harbinger.api.deps import get_store
 from harbinger.api.store import Store
 
@@ -17,7 +18,8 @@ ARTIFACTS = {
     "loso",
     "importance",
     "signals",
-    "keras_parity",
+    "before_after",
+    "release",
 }
 
 router = APIRouter(prefix="/v1", tags=["admin"])
@@ -41,4 +43,4 @@ def artifact(name: str, store: Store = Depends(get_store)) -> dict:
     p = store.settings.artifact_dir / f"{name}.json"
     if not p.exists():
         raise HTTPException(404, f"산출물 없음: {name}")
-    return json.loads(p.read_text())
+    return safe_json(json.loads(p.read_text()))

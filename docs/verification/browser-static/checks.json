@@ -1,0 +1,15 @@
+{
+  "url": "http://127.0.0.1:8020/",
+  "static": true,
+  "page_errors": [],
+  "checks": [
+    "load",
+    "evidence",
+    "all tabs",
+    "site selection",
+    "pending outcomes",
+    "downloads",
+    "mobile",
+    "session close"
+  ]
+}

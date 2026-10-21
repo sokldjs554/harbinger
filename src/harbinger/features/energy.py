@@ -20,20 +20,30 @@ def _design(df: pd.DataFrame) -> np.ndarray:
 
 def energy_residuals(energy: pd.DataFrame, fit_until: pd.Timestamp) -> pd.DataFrame:
     """site_id, day, en_resid_ratio(전기), en_gas_resid_ratio 를 돌려준다."""
+    # Refit on prior calendar months only, freezing at fit_until. This also
+    # makes training rows point-in-time and requires no future-data fallback.
     rows = []
     for _sid, g in energy.sort_values("day").groupby("site_id"):
         X = _design(g)
-        fit = g["day"] < fit_until
-        if fit.sum() < 60:
-            fit = np.ones(len(g), dtype=bool)
         out = g[["site_id", "day"]].copy()
         for col, name in (("electricity_kwh", "en_resid_ratio"), ("gas_m3", "en_gas_resid_ratio")):
+            out[name] = np.nan
             y = g[col].to_numpy()
-            coef, *_ = np.linalg.lstsq(X[fit], y[fit], rcond=None)
-            yhat = np.maximum(X @ coef, 1e-6)
-            out[name] = (y - yhat) / yhat
+            for period in g["day"].dt.to_period("M").unique():
+                cutoff = min(period.start_time, pd.Timestamp(fit_until))
+                fit = (g["day"] < cutoff).to_numpy()
+                predict = (g["day"].dt.to_period("M") == period).to_numpy()
+                if fit.sum() < 60:
+                    continue
+                coef, *_ = np.linalg.lstsq(X[fit], y[fit], rcond=None)
+                yhat = np.maximum(X[predict] @ coef, 1e-6)
+                out.loc[predict, name] = (y[predict] - yhat) / yhat
         rows.append(out)
-    return pd.concat(rows, ignore_index=True)
+    return (
+        pd.concat(rows, ignore_index=True)
+        if rows
+        else pd.DataFrame(columns=["site_id", "day", "en_resid_ratio", "en_gas_resid_ratio"])
+    )
 
 
 def rolling_energy_features(resid: pd.DataFrame) -> pd.DataFrame:

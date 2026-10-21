@@ -46,6 +46,7 @@ def client(trained):
     os.environ["HARBINGER_MODEL_DIR"] = str(trained["models"])
     os.environ["HARBINGER_ARTIFACT_DIR"] = str(trained["artifacts"])
     os.environ["HARBINGER_DEMO_BOOTSTRAP"] = "0"
+    os.environ["HARBINGER_ALLOW_SHARED_INGEST"] = "1"  # legacy ingestion contract tests
     from harbinger import config
     from harbinger.api import main as api_main
 

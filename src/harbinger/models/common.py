@@ -25,12 +25,35 @@ class Split:
         return {
             "train": {
                 "rows": int(len(self.train)),
+                "mature_labels": int(self.train.label_valid.sum()),
+                "immature_labels": int((~self.train.label_valid).sum()),
                 "from": str(self.train["t"].min().date()),
                 "to": str(self.train_end.date()),
             },
-            "val": {"rows": int(len(self.val)), "to": str(self.val_end.date())},
+            "val": {
+                "rows": int(len(self.val)),
+                "to": str(self.val_end.date()),
+                "mature_labels": int(self.val.label_valid.sum()),
+                "immature_labels": int((~self.val.label_valid).sum()),
+            },
             "test": {"rows": int(len(self.test)), "to": str(self.test["t"].max().date())},
         }
+
+
+def observe_until(X: pd.DataFrame, cutoff: pd.Timestamp) -> pd.DataFrame:
+    """Targets available at cutoff (inclusive). Never expose an immature y30.
+
+    Keep censored rows for survival; classification uses labeled().
+    Event exactly at cutoff is observed. Feature rows must precede cutoff.
+    """
+    out = X.loc[X["t"] < cutoff].copy()
+    followup = (cutoff - out["t"]).dt.total_seconds() / 86400
+    out["label_valid"] = out["label_valid"] & (followup >= 30)
+    out.loc[~out["label_valid"], "y30"] = 0  # masked, never a scored negative
+    if "tte_days" in out and "event" in out:
+        out["event"] = ((out["event"] == 1) & (out["tte_days"] <= followup)).astype(int)
+        out["tte_days"] = np.minimum(out["tte_days"], followup)
+    return out
 
 
 def split_by_time(X: pd.DataFrame, train_months: int = 24, val_months: int = 6) -> Split:
@@ -38,8 +61,8 @@ def split_by_time(X: pd.DataFrame, train_months: int = 24, val_months: int = 6) 
     t0 = X["t"].min().normalize()
     train_end = t0 + pd.DateOffset(months=train_months)
     val_end = train_end + pd.DateOffset(months=val_months)
-    tr = X[X["t"] < train_end]
-    va = X[(X["t"] >= train_end) & (X["t"] < val_end)]
+    tr = observe_until(X, train_end)
+    va = observe_until(X[X["t"] >= train_end], val_end)
     te = X[X["t"] >= val_end]
     return Split(tr, va, te, train_end, val_end)
 
@@ -53,6 +76,14 @@ def one_hot_columns() -> list[str]:
 def model_columns(X: pd.DataFrame, groups: tuple[str, ...] = FEATURE_GROUPS) -> list[str]:
     """범주형은 원-핫 열 이름으로 바꾼 최종 피처 목록 (SHAP 호환을 위해 HGB 에도 원-핫을 쓴다)."""
     cols = [c for c in feature_columns(X, groups) if c not in CATEGORICAL]
+    if "tx" not in groups:
+        cols = [
+            c
+            for c in cols
+            if c not in {"q_inspector_lazy_rate", "q_evidence_weight", "q_evidence_sum6", "ck_overall_wmean6"}
+        ]
+    if "q" not in groups:
+        cols = [c for c in cols if c != "ck_overall_wmean6"]
     if "st" in groups:
         cols += one_hot_columns()
     return cols

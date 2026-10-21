@@ -51,6 +51,8 @@ def ingest(
     store: Store = Depends(get_store),
 ) -> dict:
     """새 점검 기록 인제스트 → 영향 받은 설비의 피처·위험도 즉시 갱신. (메모리 상태만 바꾼다. 영속화는 FMS DB 몫.)"""
+    if not store.settings.allow_shared_ingest:
+        raise HTTPException(403, "공유 예제 변경은 비활성화되어 있습니다. 작업실 CSV 업로드를 사용하세요.")
     ensure_site(store, site_id)
     rows = []
     for r in records:

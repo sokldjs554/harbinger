@@ -1,0 +1,62 @@
+{
+  "seed": 20260101,
+  "synthetic": true,
+  "same_test_rows": 18439,
+  "same_data_rows": true,
+  "data": {
+    "assets.parquet": "0eb613982dd86b65c390c29410c62ae2cc90cfb78a0af57ffcc43bb760c51556",
+    "energy.parquet": "c1916c3d3ee1a9f99728ecdf0382688ae781c88483ca4b15226b2603e34e46c3",
+    "inspections.parquet": "1f02ac47df40ae56190baeafa158adbc618a97e748350d3bc8f6e10371bd3800",
+    "inspectors.parquet": "2439a21bda3230166347da5300e2fc72353b511bd754ee579ead9eb44a189e5d",
+    "latent.parquet": "fb3e80ef0cde51c937633f6974631565ac825b512968599a0d8945da04f763ae",
+    "sites.parquet": "2eaf44f4ee4fac94f015343ee67039ecb406900abe8355e769131cf730c83bc5",
+    "workorders.parquet": "f6f90901c6fe61e3dddc9f3a58b211ab54ee21f71a7226df0eaf6912b0ed61a8"
+  },
+  "before_source": "fd346c75ddae39fa6383096d7dd6adabccfdb044",
+  "before_bundle": "v20261021-102542",
+  "after_bundle": "v20261021-103259",
+  "before": {
+    "n": 18439,
+    "pos_rate": 0.08156624545799664,
+    "auroc": 0.7735925535055814,
+    "pr_auc": 0.25198897988342933,
+    "brier": 0.06803712143017923,
+    "ece": 0.006120781494812028,
+    "pr_auc_lift": 3.089378191536272
+  },
+  "after": {
+    "n": 18439,
+    "pos_rate": 0.08156624545799664,
+    "auroc": 0.7696088847219343,
+    "pr_auc": 0.24449641253191173,
+    "brier": 0.0683772795542356,
+    "ece": 0.00919572851961906,
+    "pr_auc_lift": 2.997519515077075
+  },
+  "before_reexecuted_full": {
+    "n": 19501,
+    "pos_rate": 0.08097020665606892,
+    "auroc": 0.7723119938705609,
+    "pr_auc": 0.2511150728338818,
+    "brier": 0.06764363542116053,
+    "ece": 0.006000541188078088,
+    "pr_auc_lift": 3.1013268114841854,
+    "c_index": 0.7069509089183974,
+    "calibration_method": "원시 확률(보정 없음)",
+    "calibration_val_logloss_raw": 0.23607787368428096,
+    "calibration_val_brier_raw": 0.0656988972578454,
+    "calibration_val_logloss_platt": 0.23603746862655353,
+    "calibration_val_brier_platt": 0.06566829458223386,
+    "calibration_val_logloss_isotonic": 0.23755706078661126,
+    "calibration_val_brier_isotonic": 0.06585601962532053
+  },
+  "excluded_train_labels": 3575,
+  "excluded_val_labels": 3568,
+  "train_survival_events_censored": 22293,
+  "val_survival_events_censored": 7354,
+  "notes": [
+    "Old published numbers are not used as the rerun baseline.",
+    "Includes boundary, energy preprocessing and supported observation-end fixes; not a causal attribution to one patch.",
+    "Identical generator seed/scale/months and model hyperparameters. Runtime threads may differ; dependency lock recorded."
+  ]
+}

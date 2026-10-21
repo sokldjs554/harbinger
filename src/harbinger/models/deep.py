@@ -104,8 +104,11 @@ def discrete_nll(
 ) -> torch.Tensor:
     """이산시간 생존 NLL. 사건 구간 k: −log h_k − Σ_{j<k} log(1−h_j). 중도절단: −Σ_{j<k} log(1−h_j) (k 구간은 부분 관측이라 제외)."""
     K = logits.shape[1]
-    k = torch.clamp((tte_days / bin_days).floor().long(), 0, K - 1)
-    beyond = (tte_days / bin_days).floor().long() >= K  # 마지막 구간 이후 — 전 구간 생존으로 처리
+    # Events belong to (left, right]; censoring contributes only complete bins.
+    scaled = tte_days / bin_days
+    raw_k = torch.where(event.bool(), scaled.ceil() - 1, scaled.floor()).long()
+    k = torch.clamp(raw_k, 0, K - 1)
+    beyond = raw_k >= K
     log_h = nn.functional.logsigmoid(logits)
     log_1mh = nn.functional.logsigmoid(-logits)
     ar = torch.arange(K, device=logits.device).unsqueeze(0)
@@ -138,7 +141,7 @@ class DeepBundle:
         site_dropout: float = 0.0,
         rng: np.random.Generator | None = None,
     ):
-        M = to_matrix(X, self.features).fillna(self.medians)
+        M = to_matrix(X, self.features).fillna(self.medians).fillna(0)
         Z = ((M - self.means) / self.stds.replace(0, 1.0)).to_numpy(dtype=np.float32)
         cat = (
             X["st_category"]
@@ -203,10 +206,10 @@ def train_deep(
     patience: int = 6,
 ) -> DeepBundle:
     torch.manual_seed(seed)
-    torch.set_num_threads(max(1, os.cpu_count() or 1))
+    torch.set_num_threads(max(1, int(os.environ.get("OMP_NUM_THREADS", min(4, os.cpu_count() or 1)))))
     rng = np.random.default_rng(seed)
     M = to_matrix(train, features)
-    medians = M.median()
+    medians = M.median().fillna(0)
     M = M.fillna(medians)
     means, stds = M.mean(), M.std().replace(0, 1.0)
     vocab = CharVocab(train["memo"].fillna("").astype(str).tolist())

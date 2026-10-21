@@ -3,15 +3,15 @@
   "step_days": 7,
   "horizon_days": 30,
   "n_sites": 25,
-  "heldout_start": "2025-07-01",
+  "heldout_start": "2025-07-01T00:00:00",
   "weeks": 22,
-  "harbinger_hits": 1189,
+  "harbinger_hits": 1150,
   "harbinger_picks": 5500,
-  "harbinger_rate": 0.21618181818181817,
+  "harbinger_rate": 0.20909090909090908,
   "round_robin_hits": 231,
   "round_robin_picks": 5500,
   "round_robin_rate": 0.042,
   "base_rate": 0.07561340044039006,
-  "lift_vs_round_robin": 5.147186147186146,
-  "lift_vs_base": 2.859041081643266
+  "lift_vs_round_robin": 4.978354978354978,
+  "lift_vs_base": 2.7652626105044202
 }

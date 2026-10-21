@@ -47,7 +47,7 @@ def test_energy_quality_report(client):
     r = client.get(f"/v1/sites/{sid}/report")
     assert r.status_code == 200 and r.json()["top_risk_assets"]
     md = client.get(f"/v1/sites/{sid}/report?format=md")
-    assert md.status_code == 200 and "실증 리포트" in md.text
+    assert md.status_code == 200 and "합성 실험 리포트" in md.text
 
 
 def test_admin_and_metrics(client):

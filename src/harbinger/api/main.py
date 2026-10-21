@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import asyncio
+import contextlib
 import json
 import logging
 import time
@@ -13,7 +15,7 @@ from fastapi.responses import FileResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from harbinger import __version__
-from harbinger.api.routers import admin, energy, health, patrol, replay, report, risk, sites, text
+from harbinger.api.routers import admin, energy, health, patrol, replay, report, risk, sites, text, workbench
 from harbinger.api.store import Store, console_dir
 from harbinger.config import settings
 from harbinger.monitoring.metrics import LATENCY, REQUESTS, render
@@ -46,7 +48,20 @@ async def lifespan(app: FastAPI):
     store = Store(settings)
     store.load()
     app.state.store = store
-    yield
+
+    async def expire_sessions():
+        while True:
+            await asyncio.sleep(60)
+            with workbench.lock:
+                workbench.cleanup()
+
+    reaper = asyncio.create_task(expire_sessions())
+    try:
+        yield
+    finally:
+        reaper.cancel()
+        with contextlib.suppress(asyncio.CancelledError):
+            await reaper
 
 
 app = FastAPI(
@@ -60,21 +75,20 @@ app = FastAPI(
 @app.middleware("http")
 async def metrics_middleware(request: Request, call_next):
     t0 = time.perf_counter()
-    route = request.scope.get("path", "?")
-    # 경로 파라미터 카디널리티를 줄인다
-    for seg in ("/sites/", "/assets/"):
-        if seg in route:
-            head, _, tail = route.partition(seg)
-            rest = tail.split("/", 1)
-            route = head + seg + "{id}" + ("/" + rest[1] if len(rest) > 1 else "")
+
+    def route_label():
+        # Never expose bearer session IDs or arbitrary paths through public metrics.
+        matched = request.scope.get("route")
+        return getattr(matched, "path", "/static-or-unmatched")
+
     try:
         resp = await call_next(request)
         status = resp.status_code
     except Exception:
-        REQUESTS.labels(route=route, status="500").inc()
+        REQUESTS.labels(route=route_label(), status="500").inc()
         raise
-    REQUESTS.labels(route=route, status=str(status)).inc()
-    LATENCY.labels(route=route).observe(time.perf_counter() - t0)
+    REQUESTS.labels(route=route_label(), status=str(status)).inc()
+    LATENCY.labels(route=route_label()).observe(time.perf_counter() - t0)
     return resp
 
 
@@ -84,6 +98,7 @@ def metrics() -> Response:
 
 
 for r in (
+    workbench.router,
     health.router,
     sites.router,
     risk.router,

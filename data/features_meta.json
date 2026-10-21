@@ -1,13 +1,17 @@
 {
   "rows": 131201,
-  "n_features": 102,
-  "groups": {
-    "st": 7,
-    "ck": 39,
-    "wo": 10,
-    "tx": 28,
-    "q": 11,
-    "en": 5,
-    "se": 2
+  "provenance": {
+    "boundary_version": 2,
+    "source_sha256": {
+      "assets.parquet": "0eb613982dd86b65c390c29410c62ae2cc90cfb78a0af57ffcc43bb760c51556",
+      "energy.parquet": "c1916c3d3ee1a9f99728ecdf0382688ae781c88483ca4b15226b2603e34e46c3",
+      "inspections.parquet": "1f02ac47df40ae56190baeafa158adbc618a97e748350d3bc8f6e10371bd3800",
+      "inspectors.parquet": "2439a21bda3230166347da5300e2fc72353b511bd754ee579ead9eb44a189e5d",
+      "latent.parquet": "fb3e80ef0cde51c937633f6974631565ac825b512968599a0d8945da04f763ae",
+      "sites.parquet": "2eaf44f4ee4fac94f015343ee67039ecb406900abe8355e769131cf730c83bc5",
+      "workorders.parquet": "f6f90901c6fe61e3dddc9f3a58b211ab54ee21f71a7226df0eaf6912b0ed61a8"
+    },
+    "fit_until": "2024-01-01T08:06:28.400500",
+    "observation_end": "2026-01-01T00:00:00"
   }
 }

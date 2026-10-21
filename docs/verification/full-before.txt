@@ -1,0 +1,33 @@
+[eval] split={'train': {'rows': 87577, 'from': '2023-01-01', 'to': '2025-01-01'}, 'val': {'rows': 21623, 'to': '2025-07-01'}, 'test': {'rows': 22001, 'to': '2025-12-31'}} features=116 labeled train/val/test=87577/21623/19501
+[eval] HGB full: {'n': 19501, 'pos_rate': 0.08097020665606892, 'auroc': 0.7723119938705609, 'pr_auc': 0.2511150728338818, 'brier': 0.06764363542116053, 'ece': 0.006000541188078088, 'pr_auc_lift': 3.1013268114841854, 'c_index': 0.7069509089183974, 'calibration_method': '원시 확률(보정 없음)', 'calibration_val_logloss_raw': 0.23607787368428096, 'calibration_val_brier_raw': 0.0656988972578454, 'calibration_val_logloss_platt': 0.23603746862655353, 'calibration_val_brier_platt': 0.06566829458223386, 'calibration_val_logloss_isotonic': 0.23755706078661126, 'calibration_val_brier_isotonic': 0.06585601962532053}
+[eval] baselines: {'logistic_full': 0.756, 'age_only': 0.631, 'last_inspection': 0.635, 'oracle_latent_state': 0.797, 'constant_prior': 0.5}
+[eval] ablation: {'checklist_only': 0.702, '+text': 0.739, '+text+quality': 0.745, '+text+quality+history': 0.775, 'full(+energy)': 0.772, 'full−text': 0.771, 'full−quality': 0.772}
+[eval] survival cox: c=0.689 ibs=0.0611 p30_auroc=0.704
+[eval] survival aft: c=0.689 ibs=0.0609 p30_auroc=0.704
+[deep:text] epoch 1 train=2.3288 val=1.7636
+[deep:text] epoch 6 train=2.0234 val=1.7580
+[deep:text] epoch 11 train=1.9524 val=1.8054
+[eval] deep text+site: p30_auroc=0.769 c=0.657 ibs=0.0648
+[deep:notext] epoch 1 train=2.4637 val=1.7689
+[deep:notext] epoch 6 train=2.0328 val=1.7529
+[deep:notext] epoch 11 train=1.9907 val=1.7711
+[eval] deep notext+site: p30_auroc=0.765 c=0.660 ibs=0.0665
+[deep:text,nosite] epoch 1 train=2.3372 val=1.7708
+[deep:text,nosite] epoch 6 train=2.0248 val=1.7599
+[deep:text,nosite] epoch 11 train=1.9598 val=1.8098
+[eval] deep text+nosite: p30_auroc=0.769 c=0.658 ibs=0.0629
+[eval] energy: {'mae': 335.7359364119677, 'mape': 0.025541058456592894, 'r2': 0.9969996586606829, 'rows': 4600} oracle={'summer_corr_resid_vs_cooling_degradation': 0.1372127908999237, 'auroc_z_vs_high_degradation': 0.5807307158176463, 'anomaly_day_rate': 0.034666666666666665, 'rows': 2250}
+[eval] patrol@10: {'age': 0.1, 'harbinger_deep': 0.227, 'harbinger_hgb': 0.254, 'last_inspection': 0.122, 'random': 0.068, 'round_robin': 0.043} recall@20%={'top_frac': 0.2, 'breakdowns_evaluated': 895, 'recall': 0.5888268156424581}
+mkdir -p failed for path /home/agent/.config/matplotlib: [Errno 30] Read-only file system: '/home/agent/.config/matplotlib'
+Matplotlib created a temporary cache directory at /tmp/matplotlib-24t957c3 because there was an issue with the default path (/home/agent/.config/matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+Fontconfig error: No writable cache directories
+[eval] top features: [('wo_days_since_pm', 0.353), ('wo_days_since_bd', 0.299), ('st_age_years', 0.206), ('tx_n_groups', 0.155), ('ck_noise', 0.124), ('tx_n_groups_ewm', 0.108), ('tx_n_groups_sum3', 0.094), ('ck_interval_days', 0.091)]
+[loso] S01: cold=0.842 brier=0.0520 → 12mo brier=0.0520 warm=0.817
+[loso] S02: cold=0.718 brier=0.0652 → 12mo brier=0.0652 warm=0.708
+[loso] S09: cold=0.763 brier=0.0788 → 12mo brier=0.0797 warm=0.769
+[loso] S10: cold=0.780 brier=0.0846 → 12mo brier=0.0848 warm=0.796
+[loso] S12: cold=0.787 brier=0.0772 → 12mo brier=0.0769 warm=0.791
+[loso] S13: cold=0.789 brier=0.0757 → 12mo brier=0.0759 warm=0.786
+[loso] S16: cold=0.692 brier=0.0489 → 12mo brier=0.0506 warm=0.693
+[loso] S17: cold=0.783 brier=0.0675 → 12mo brier=0.0673 warm=0.775
+[eval] saved bundle v20261021-102542; total 1097.5s

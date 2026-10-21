@@ -1,0 +1,146 @@
+FFFFFF                                                                   [100%]
+=================================== FAILURES ===================================
+____________________ test_mature_classification_labels_only ____________________
+
+    def test_mature_classification_labels_only():
+        split = split_by_time(frame())
+>       assert (labeled(split.train).t + pd.Timedelta(days=30) <= split.train_end).all()
+E       AssertionError: assert np.False_
+E        +  where np.False_ = all()
+E        +    where all = (0   2023-01-01\n1   2024-12-02\n2   2024-12-31\nName: t, dtype: datetime64[ns] + Timedelta('30 days 00:00:00')) <= Timestamp('2025-01-01 00:00:00').all
+E        +      where 0   2023-01-01\n1   2024-12-02\n2   2024-12-31\nName: t, dtype: datetime64[ns] =            t  label_valid  y30  tte_days  event\n0 2023-01-01         True    0    1000.0      1\n1 2024-12-02         True    1      30.0      1\n2 2024-12-31         True    1       5.0      1.t
+E        +        where            t  label_valid  y30  tte_days  event\n0 2023-01-01         True    0    1000.0      1\n1 2024-12-02         True    1      30.0      1\n2 2024-12-31         True    1       5.0      1 = labeled(           t  label_valid  y30  tte_days  event\n0 2023-01-01         True    0    1000.0      1\n1 2024-12-02         True    1      30.0      1\n2 2024-12-31         True    1       5.0      1)
+E        +          where            t  label_valid  y30  tte_days  event\n0 2023-01-01         True    0    1000.0      1\n1 2024-12-02         True    1      30.0      1\n2 2024-12-31         True    1       5.0      1 = Split(train=           t  label_valid  y30  tte_days  event\n0 2023-01-01         True    0    1000.0      1\n1 2024-12-...      True    0     100.0      1, train_end=Timestamp('2025-01-01 00:00:00'), val_end=Timestamp('2025-07-01 00:00:00')).train
+E        +      and   Timedelta('30 days 00:00:00') = <class 'pandas._libs.tslibs.timedeltas.Timedelta'>(days=30)
+E        +        where <class 'pandas._libs.tslibs.timedeltas.Timedelta'> = pd.Timedelta
+E        +      and   Timestamp('2025-01-01 00:00:00') = Split(train=           t  label_valid  y30  tte_days  event\n0 2023-01-01         True    0    1000.0      1\n1 2024-12-...      True    0     100.0      1, train_end=Timestamp('2025-01-01 00:00:00'), val_end=Timestamp('2025-07-01 00:00:00')).train_end
+
+tests/test_observation_boundary.py:20: AssertionError
+__________________ test_survival_is_censored_at_each_boundary __________________
+
+    def test_survival_is_censored_at_each_boundary():
+        split = split_by_time(frame())
+        for part, cutoff in [(split.train, split.train_end), (split.val, split.val_end)]:
+>           assert (part.t + pd.to_timedelta(part.tte_days, unit="D") <= cutoff).all()
+E           AssertionError: assert np.False_
+E            +  where np.False_ = all()
+E            +    where all = (0   2023-01-01\n1   2024-12-02\n2   2024-12-31\nName: t, dtype: datetime64[ns] + 0   1000 days\n1     30 days\n2      5 days\nName: tte_days, dtype: timedelta64[ns]) <= Timestamp('2025-01-01 00:00:00').all
+E            +      where 0   2023-01-01\n1   2024-12-02\n2   2024-12-31\nName: t, dtype: datetime64[ns] =            t  label_valid  y30  tte_days  event\n0 2023-01-01         True    0    1000.0      1\n1 2024-12-02         True    1      30.0      1\n2 2024-12-31         True    1       5.0      1.t
+E            +      and   0   1000 days\n1     30 days\n2      5 days\nName: tte_days, dtype: timedelta64[ns] = <function to_timedelta at 0x7fb56c331bc0>(0    1000.0\n1      30.0\n2       5.0\nName: tte_days, dtype: float64, unit='D')
+E            +        where <function to_timedelta at 0x7fb56c331bc0> = pd.to_timedelta
+E            +        and   0    1000.0\n1      30.0\n2       5.0\nName: tte_days, dtype: float64 =            t  label_valid  y30  tte_days  event\n0 2023-01-01         True    0    1000.0      1\n1 2024-12-02         True    1      30.0      1\n2 2024-12-31         True    1       5.0      1.tte_days
+
+tests/test_observation_boundary.py:28: AssertionError
+_____________ test_future_outcomes_do_not_change_training_targets ______________
+
+    def test_future_outcomes_do_not_change_training_targets():
+        before = frame()
+        after = before.copy()
+        after.loc[[0, 2, 3, 4], "tte_days"] = 2000.
+        after.loc[[0, 2, 3, 4], "event"] = 0
+        after.loc[[2, 4], "y30"] = 0
+        a, b = split_by_time(before), split_by_time(after)
+        for name in ("train", "val"):
+>           pd.testing.assert_frame_equal(getattr(a, name), getattr(b, name))
+
+tests/test_observation_boundary.py:42: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+left = array([0, 1, 1]), right = array([0, 1, 0]), err_msg = None
+
+    def _raise(left, right, err_msg) -> NoReturn:
+        if err_msg is None:
+            if left.shape != right.shape:
+                raise_assert_detail(
+                    obj, f"{obj} shapes are different", left.shape, right.shape
+                )
+    
+            diff = 0
+            for left_arr, right_arr in zip(left, right):
+                # count up differences
+                if not array_equivalent(left_arr, right_arr, strict_nan=strict_nan):
+                    diff += 1
+    
+            diff = diff * 100.0 / left.size
+            msg = f"{obj} values are different ({np.round(diff, 5)} %)"
+>           raise_assert_detail(obj, msg, left, right, index_values=index_values)
+E           AssertionError: DataFrame.iloc[:, 2] (column name="y30") are different
+E           
+E           DataFrame.iloc[:, 2] (column name="y30") values are different (33.33333 %)
+E           [index]: [0, 1, 2]
+E           [left]:  [0, 1, 1]
+E           [right]: [0, 1, 0]
+
+.venv/lib/python3.12/site-packages/pandas/_testing/asserters.py:690: AssertionError
+____________________ test_energy_never_falls_back_to_future ____________________
+
+    def test_energy_never_falls_back_to_future():
+        from harbinger.features.energy import energy_residuals
+        en = pd.DataFrame({"site_id": "s", "day": pd.date_range("2024-01-01", periods=100),
+                           "temp_mean_c": 20., "occupancy_index": 1., "electricity_kwh": 100., "gas_m3": 20.})
+        cutoff = pd.Timestamp("2024-01-20")
+        a = energy_residuals(en, cutoff)
+        en.loc[en.day >= cutoff, ["electricity_kwh", "gas_m3"]] *= 100
+        b = energy_residuals(en, cutoff)
+>       pd.testing.assert_frame_equal(a[a.day < cutoff], b[b.day < cutoff])
+
+tests/test_observation_boundary.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/testing.pyx:55: in pandas._libs.testing.assert_almost_equal
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   AssertionError: DataFrame.iloc[:, 2] (column name="en_resid_ratio") are different
+E   
+E   DataFrame.iloc[:, 2] (column name="en_resid_ratio") values are different (100.0 %)
+E   [index]: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+E   [left]:  [-4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16, -4.2632564145605995e-16]
+E   [right]: [-0.9876832122182535, -0.9876832122182535, -0.9876832122182535, -0.9876832122182535, -0.9876832122182535, -0.9876832122182535, -0.9876832122182535, -0.9876832122182535, -0.9876832122182535, -0.9876832122182535, -0.9876832122182535, -0.9876832122182535, -0.9876832122182535, -0.9876832122182535, -0.9876832122182535, -0.9876832122182535, -0.9876832122182535, -0.9876832122182535, -0.9876832122182535]
+E   At positional index 0, first diff: -4.2632564145605995e-16 != -0.9876832122182535
+
+pandas/_libs/testing.pyx:173: AssertionError
+__________________ test_unknown_model_cutoff_is_not_invented ___________________
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-0/test_unknown_model_cutoff_is_n0')
+
+    def test_unknown_model_cutoff_is_not_invented(tmp_path):
+        from harbinger.api.backtest import heldout_start
+        store = SimpleNamespace(settings=SimpleNamespace(artifact_dir=tmp_path),
+                                bundle={"entry": {}}, data_end=pd.Timestamp("2025-12-31"))
+>       assert heldout_start(store) is None
+E       AssertionError: assert Timestamp('2025-07-04 00:00:00') is None
+E        +  where Timestamp('2025-07-04 00:00:00') = <function heldout_start at 0x7fb566e25ee0>(namespace(settings=namespace(artifact_dir=PosixPath('/tmp/pytest-of-agent/pytest-0/test_unknown_model_cutoff_is_n0')), bundle={'entry': {}}, data_end=Timestamp('2025-12-31 00:00:00')))
+
+tests/test_observation_boundary.py:61: AssertionError
+_______________ test_explicit_data_end_censors_future_workorders _______________
+
+tiny = {'root': PosixPath('/tmp/pytest-of-agent/pytest-0/tiny0'), 'data': PosixPath('/tmp/pytest-of-agent/pytest-0/tiny0/data...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+
+    def test_explicit_data_end_censors_future_workorders(tiny):
+        from harbinger.features.build import build_features
+        cutoff = pd.Timestamp("2024-06-01")
+        tables = {k: v.copy() for k, v in tiny["tables"].items()}
+        tables["inspections"] = tables["inspections"].query("performed_at < @cutoff")
+        x = build_features(tables, data_end=cutoff, fit_until=cutoff, verbose=False)
+>       assert np.all(x.tte_days <= (cutoff - x.t).dt.total_seconds() / 86400 + 1e-8)
+E       AssertionError: assert np.False_
+E        +  where np.False_ = <function all at 0x7fb57b54e4b0>(0       151.653398\n1        73.182462\n2       151.627623\n3       151.625665\n4       143.964144\n           ...    \n3505...506      0.276255\n3507      0.258758\n3508      0.258678\n3509     37.935071\nName: tte_days, Length: 3510, dtype: float64 <= ((0       1.310285e+07\n1       1.310085e+07\n2       1.310063e+07\n3       1.310046e+07\n4       1.309879e+07\n            ....06    2.386844e+04\n3507    2.235668e+04\n3508    2.234978e+04\n3509    2.223278e+04\nName: t, Length: 3510, dtype: float64 / 86400) + 1e-08))
+E        +    where <function all at 0x7fb57b54e4b0> = np.all
+E        +    and   0       151.653398\n1        73.182462\n2       151.627623\n3       151.625665\n4       143.964144\n           ...    \n3505...506      0.276255\n3507      0.258758\n3508      0.258678\n3509     37.935071\nName: tte_days, Length: 3510, dtype: float64 =      inspection_id    asset_id site_id  ... event y30 label_valid\n0        N00000004  A-S01-0057     S01  ...     0   ... ...     0   0       False\n3509     N00003503  A-S02-0048     S02  ...     1   0       False\n\n[3510 rows x 114 columns].tte_days
+E        +    and   0       1.310285e+07\n1       1.310085e+07\n2       1.310063e+07\n3       1.310046e+07\n4       1.309879e+07\n            ....06    2.386844e+04\n3507    2.235668e+04\n3508    2.234978e+04\n3509    2.223278e+04\nName: t, Length: 3510, dtype: float64 = total_seconds()
+E        +      where total_seconds = <pandas.core.indexes.accessors.TimedeltaProperties object at 0x7fb564a16ff0>.total_seconds
+E        +        where <pandas.core.indexes.accessors.TimedeltaProperties object at 0x7fb564a16ff0> = (Timestamp('2024-06-01 00:00:00') - 0      2024-01-01 08:19:06.389913\n1      2024-01-01 08:52:30.568586\n2      2024-01-01 08:56:13.370751\n3      2024-01-0...324528\n3508   2024-05-31 17:47:30.216908\n3509   2024-05-31 17:49:27.219507\nName: t, Length: 3510, dtype: datetime64[ns]).dt
+E        +          where 0      2024-01-01 08:19:06.389913\n1      2024-01-01 08:52:30.568586\n2      2024-01-01 08:56:13.370751\n3      2024-01-0...324528\n3508   2024-05-31 17:47:30.216908\n3509   2024-05-31 17:49:27.219507\nName: t, Length: 3510, dtype: datetime64[ns] =      inspection_id    asset_id site_id  ... event y30 label_valid\n0        N00000004  A-S01-0057     S01  ...     0   ... ...     0   0       False\n3509     N00003503  A-S02-0048     S02  ...     1   0       False\n\n[3510 rows x 114 columns].t
+
+tests/test_observation_boundary.py:70: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_observation_boundary.py::test_mature_classification_labels_only
+FAILED tests/test_observation_boundary.py::test_survival_is_censored_at_each_boundary
+FAILED tests/test_observation_boundary.py::test_future_outcomes_do_not_change_training_targets
+FAILED tests/test_observation_boundary.py::test_energy_never_falls_back_to_future
+FAILED tests/test_observation_boundary.py::test_unknown_model_cutoff_is_not_invented
+FAILED tests/test_observation_boundary.py::test_explicit_data_end_censors_future_workorders

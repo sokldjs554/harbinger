@@ -7,8 +7,6 @@
 
 from __future__ import annotations
 
-import json
-
 import numpy as np
 import pandas as pd
 
@@ -39,15 +37,12 @@ def days_to_next_breakdown(
     return d if d <= horizon else None
 
 
-def heldout_start(store) -> pd.Timestamp:
-    """모델이 학습·캘리브레이션에 쓰지 않은 첫 날. 평가 산출물에 없으면 데이터 끝 180일 전."""
-    p = store.settings.artifact_dir / "metrics.json"
-    if p.exists():
-        try:
-            return pd.Timestamp(json.loads(p.read_text())["split"]["val"]["to"])
-        except Exception:
-            pass
-    return store.data_end.normalize() - pd.Timedelta(days=180)
+def heldout_start(store) -> pd.Timestamp | None:
+    """Trust only the loaded model's observation provenance; never guess."""
+    entry = (getattr(store, "bundle", None) or {}).get("entry", {})
+    provenance = entry.get("metrics", {}).get("observation", {})
+    value = provenance.get("max_observed_at")
+    return pd.Timestamp(value) if value and provenance.get("boundary_version") == 2 else None
 
 
 def last_scorable_day(store, horizon: int = HORIZON_DAYS) -> pd.Timestamp:
@@ -88,6 +83,8 @@ def replay_site(
         if d > last_ok:
             break
         as_of = d + pd.Timedelta(hours=23, minutes=59)
+        if as_of + pd.Timedelta(days=HORIZON_DAYS) > store.data_end:
+            break
         rows = store.latest_rows(site_id, as_of)
         if len(rows) < max(5, k):
             continue
@@ -111,7 +108,7 @@ def replay_site(
         rr_items = [_item(r, days[r["asset_id"]]) for r in rr_rows.to_dict("records")]
         week = {
             "as_of": d.date().isoformat(),
-            "held_out": bool(d >= held),
+            "held_out": bool(held is not None and as_of >= held),
             "n_assets": int(len(rows)),
             "base_rate": float(np.mean([v is not None for v in days.values()])),
             "harbinger": {"n": len(harb_items), "hits": int(sum(i["failed_within_30d"] for i in harb_items))},
@@ -159,7 +156,7 @@ def replay(
     store, site: str, start: pd.Timestamp | None, end: pd.Timestamp | None, step_days: int = 7, k: int = 10
 ) -> dict:
     """site='all' 이면 사이트별 결과를 주 단위로 합산한다(목록은 생략). 첫 계산은 오래 걸려 결과를 캐시한다."""
-    start = start if start is not None else heldout_start(store)
+    start = start if start is not None else (heldout_start(store) or store.X["t"].min())
     end = end if end is not None else last_scorable_day(store)
     key = (site, start.date().isoformat(), end.date().isoformat(), step_days, k)
     cache = store.__dict__.setdefault("_replay_cache", {})
@@ -204,7 +201,15 @@ def replay(
             "weeks": weeks,
             "summary": summarize(weeks),
         }
-    out["heldout_start"] = heldout_start(store).date().isoformat()
+    held = heldout_start(store)
+    out["heldout_start"] = held.isoformat() if held is not None else None
+    eligible = [w for w in out["weeks"] if held is not None and w["held_out"]]
+    out["summary"] = summarize(eligible)
+    out["evaluation_status"] = "available" if eligible else "withheld"
+    out["excluded_weeks"] = len(out["weeks"]) - len(eligible)
+    out["evaluation_reason"] = (
+        None if eligible else "모델 관측 종료 이후이면서 30일 결과가 관측된 주가 없습니다."
+    )
     cache[key] = out
     return out
 
