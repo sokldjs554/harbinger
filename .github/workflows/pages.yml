@@ -52,5 +52,8 @@ jobs:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v4
       - id: deploy
         uses: actions/deploy-pages@v4
+      - name: Check public assets and model version
+        run: python scripts/check_public_demo.py --url '${{ steps.deploy.outputs.page_url }}'
