@@ -1,0 +1,23 @@
+[synth] day 1/365 inspections=36 workorders=1 elapsed=0.0s
+[synth] day 181/365 inspections=5154 workorders=574 elapsed=0.5s
+[synth] day 361/365 inspections=10255 workorders=1333 elapsed=1.0s
+[synth] day 365/365 inspections=10381 workorders=1350 elapsed=1.0s
+[synth] done sites=5 assets=533 inspections=10381 workorders=1350 breakdowns=424 energy_rows=1825 in 1.1s
+mkdir -p failed for path /home/agent/.config/matplotlib: [Errno 30] Read-only file system: '/home/agent/.config/matplotlib'
+Matplotlib created a temporary cache directory at /tmp/matplotlib-bp_dc86u because there was an issue with the default path (/home/agent/.config/matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+Fontconfig error: No writable cache directories
+[features] rows=10381 features=102 pos_rate(valid)=0.0722 in 1.9s
+[eval] split={'train': {'rows': 6037, 'mature_labels': 5182, 'immature_labels': 855, 'from': '2023-01-01', 'to': '2023-08-01'}, 'val': {'rows': 875, 'to': '2023-09-01', 'mature_labels': 24, 'immature_labels': 851}, 'test': {'rows': 3469, 'to': '2023-12-31'}} features=116 labeled train/val/test=5182/24/2612
+[eval] HGB full: {'n': 2612, 'pos_rate': 0.09686064318529862, 'auroc': 0.7107134898387639, 'pr_auc': 0.20253517677758692, 'brier': 0.08608208997001321, 'ece': 0.03344033007155976, 'pr_auc_lift': 2.090995580012083, 'c_index': 0.6862046058458813, 'calibration_method': '원시 확률(보정 없음)', 'calibration_val_logloss_raw': None, 'calibration_val_brier_raw': None, 'calibration_val_logloss_platt': None, 'calibration_val_brier_platt': None, 'calibration_val_logloss_isotonic': None, 'calibration_val_brier_isotonic': None}
+[eval] baselines: {'logistic_full': 0.63, 'age_only': 0.588, 'last_inspection': 0.617, 'oracle_latent_state': 0.761, 'constant_prior': 0.5}
+[eval] ablation: {'checklist_only': 0.648, '+text': 0.674, '+text+quality': 0.683, '+text+quality+history': 0.708, 'full(+energy)': 0.711, 'full−text': 0.703, 'full−quality': 0.705, 'full−history': 0.678}
+[eval] survival cox: c=0.674 ibs=0.1089 p30_auroc=0.689
+[eval] survival aft: c=0.668 ibs=0.1112 p30_auroc=0.685
+[deep:text] epoch 1 train=1.3784 val=0.1552
+[deep:text] epoch 6 train=0.7336 val=0.0769
+[deep:text] epoch 8 train=0.7266 val=0.0767
+[eval] deep text+site: p30_auroc=0.682 c=0.653 ibs=0.1209
+[eval] energy: {'mae': 428.95341160128424, 'mape': 0.03281823393012043, 'r2': 0.9952577042386007, 'rows': 610} oracle={'summer_corr_resid_vs_cooling_degradation': 0.2700605232746366, 'auroc_z_vs_high_degradation': 0.7014965986394557, 'anomaly_day_rate': 0.02142857142857143, 'rows': 140}
+[eval] patrol@10: {'age': 0.122, 'harbinger_deep': 0.189, 'harbinger_hgb': 0.22, 'last_inspection': 0.104, 'logistic': 0.176, 'random': 0.084, 'recent_repair': 0.018, 'round_robin': 0.056, 'without_history': 0.142, 'without_text': 0.253} recall@20%={'top_frac': 0.2, 'breakdowns_evaluated': 142, 'recall': 0.5211267605633803}
+[eval] top features: [('wo_days_since_bd', 0.405), ('wo_days_since_pm', 0.377), ('ck_interval_days', 0.181), ('st_age_years', 0.174), ('wo_site_bd_180d_per_asset', 0.164), ('tx_len', 0.16), ('tx_weak_score_ewm', 0.159), ('tx_n_groups_ewm', 0.152)]
+[eval] saved bundle v20261021-115634; total 32.3s

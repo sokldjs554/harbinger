@@ -1,0 +1,57 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____ test_calibration_is_withheld_when_folds_cannot_contain_both_classes ______
+
+    def test_calibration_is_withheld_when_folds_cannot_contain_both_classes():
+        for y in [np.array([]), np.zeros(24), np.r_[1, np.zeros(23)], np.array([0, 1])]:
+>           cal, info = choose_calibrator(np.full(len(y), 0.1), y, seed=20260101)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_models.py:132: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/harbinger/models/calibration.py:59: in choose_calibrator
+    for tr, te in KFold(folds, shuffle=True, random_state=seed).split(p):
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = KFold(n_splits=5, random_state=20260101, shuffle=True)
+X = array([], dtype=float64), y = None, groups = None
+
+    def split(self, X, y=None, groups=None):
+        """Generate indices to split data into training and test set.
+    
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Training data, where `n_samples` is the number of samples
+            and `n_features` is the number of features.
+    
+        y : array-like of shape (n_samples,), default=None
+            The target variable for supervised learning problems.
+    
+        groups : array-like of shape (n_samples,), default=None
+            Group labels for the samples used while splitting the dataset into
+            train/test set.
+    
+        Yields
+        ------
+        train : ndarray
+            The training set indices for that split.
+    
+        test : ndarray
+            The testing set indices for that split.
+        """
+        X, y, groups = indexable(X, y, groups)
+        n_samples = _num_samples(X)
+        if self.n_splits > n_samples:
+>           raise ValueError(
+                (
+                    "Cannot have number of splits n_splits={0} greater"
+                    " than the number of samples: n_samples={1}."
+                ).format(self.n_splits, n_samples)
+            )
+E           ValueError: Cannot have number of splits n_splits=5 greater than the number of samples: n_samples=0.
+
+.venv/lib/python3.12/site-packages/sklearn/model_selection/_split.py:404: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_models.py::test_calibration_is_withheld_when_folds_cannot_contain_both_classes

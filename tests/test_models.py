@@ -125,3 +125,12 @@ def test_calibrator_selection_keeps_good_probabilities_and_fixes_bad_ones():
         "과신된 확률은 보정 뒤 평균이 실제에 가까워져야 한다"
     )
     assert len(np.unique(np.round(fixed, 6))) > 1000, "Platt 은 계단(동점 구간)을 만들지 않는다"
+
+
+def test_calibration_is_withheld_when_folds_cannot_contain_both_classes():
+    for y in [np.array([]), np.zeros(24), np.r_[1, np.zeros(23)], np.array([0, 1])]:
+        cal, info = choose_calibrator(np.full(len(y), 0.1), y, seed=20260101)
+        assert cal is None
+        assert info["method"] == "raw" and info["adopted"] is False
+        assert info["status"] == "withheld"
+        assert info["val_logloss"] == {}

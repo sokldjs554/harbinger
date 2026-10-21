@@ -14,6 +14,10 @@
 
 [공개 데모 주소](https://sokldjs554.github.io/harbinger/)는 **저장된 합성 모델 응답을 재생하는 정적 사이트**입니다. 이 브랜치의 새 배포 확인 여부는 [검증 기록](docs/verification/README.md)에 명시합니다. 공개 페이지는 CSV를 서버에 보내거나 임의 날짜의 모델을 계산하지 않습니다. **실제 업로드·추론은 아래 로컬 서버에서 동작합니다.**
 
+[80초 사용 영상](docs/demo/walkthrough.mp4) · [모바일 검증 화면](docs/verification/browser-static/mobile.png)
+
+![전체 합성 모델의 저장 응답과 원문 근거](docs/verification/browser-static/priority.png)
+
 ## 실행
 
 Python 3.12 / Linux CPU를 기준으로 의존성을 고정했습니다. 최초 설치에는 패키지 다운로드가 필요합니다. 데이터·모델은 Git에 포함하지 않고 재현 명령으로 생성합니다.

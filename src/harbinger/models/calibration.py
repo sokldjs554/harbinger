@@ -55,8 +55,20 @@ def choose_calibrator(p: np.ndarray, y: np.ndarray, min_gain: float = 0.005, fol
     """
     p = np.asarray(p, dtype=float)
     y = np.asarray(y).astype(float)
+    splits = list(KFold(folds, shuffle=True, random_state=seed).split(p)) if len(p) >= folds else []
+    if not splits or any(len(np.unique(y[tr])) < 2 for tr, _ in splits):
+        return None, {
+            "method": "raw",
+            "adopted": False,
+            "status": "withheld",
+            "reason": "insufficient mature outcomes for both classes in every calibration training fold",
+            "val_logloss": {},
+            "val_brier": {},
+            "min_gain": min_gain,
+            "folds": 0,
+        }
     oof = {"platt": np.zeros(len(p)), "isotonic": np.zeros(len(p))}
-    for tr, te in KFold(folds, shuffle=True, random_state=seed).split(p):
+    for tr, te in splits:
         oof["platt"][te] = fit_platt(p[tr], y[tr]).predict(p[te])
         oof["isotonic"][te] = fit_isotonic(p[tr], y[tr]).predict(p[te])
     ll = {"raw": logloss(p, y), **{k: logloss(v, y) for k, v in oof.items()}}
