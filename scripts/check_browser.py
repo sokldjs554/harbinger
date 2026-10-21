@@ -79,6 +79,7 @@ def main():
         assert "평가 보류" in page.locator("#evaluation-note").inner_text()
         page.screenshot(path=str(out / "withheld.png"), full_page=True)
         if not args.static:
+            page.click('[data-tab="priority"]')
             page.fill("#date", "2000-01-01")
             page.locator("#analysis-form button").click()
             page.wait_for_selector("#empty:visible")
