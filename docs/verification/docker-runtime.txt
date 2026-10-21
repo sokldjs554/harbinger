@@ -1,0 +1,12 @@
+Source commit: 524879a17fdb43f2a9b412cb2e8e50beb7973c59
+Run: https://github.com/sokldjs554/harbinger/actions/runs/39597165426/job/119213518062
+Build image and Container runtime and API steps: success.
+Selected output (full log retained by GitHub Actions):
+2026-10-21T12:14:49.5558586Z test "$(docker exec hb-ci id -u)" = 10001
+2026-10-21T12:16:20.0018113Z {"status":"ok","service":"harbinger","version":"0.1.0"}{"status":"ok","service":"harbinger","version":"0.1.0"}{"mode":"live","synthetic_example":true,"model_version":"v20261021-121613","limits":{"bytes":5242880,"rows":20000,"assets":500,"sites":10,"years":5,"ttl_seconds":1800},"observation_end":"2025-01-01T00:00:00","latest_as_of_date":"2024-12-31"}[synth] day 1/731 inspections=31 workorders=1 elapsed=0.0s
+2026-10-21T12:16:20.0022833Z INFO:     Application startup complete.
+2026-10-21T12:16:20.0059979Z [eval] saved bundle v20261021-121613; total 72.8s
+2026-10-21T12:16:20.0060333Z INFO:     127.0.0.1:53106 - "GET /health HTTP/1.1" 200 OK
+2026-10-21T12:16:20.0060702Z INFO:     172.17.0.1:60068 - "GET /health HTTP/1.1" 200 OK
+2026-10-21T12:16:20.0061049Z INFO:     172.17.0.1:60084 - "GET /health HTTP/1.1" 200 OK
+2026-10-21T12:16:20.0061416Z INFO:     172.17.0.1:60094 - "GET /v1/workbench/info HTTP/1.1" 200 OK

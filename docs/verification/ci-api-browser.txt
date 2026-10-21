@@ -1,0 +1,11 @@
+Source commit: 524879a17fdb43f2a9b412cb2e8e50beb7973c59
+Run: https://github.com/sokldjs554/harbinger/actions/runs/39597165426
+Selected output (full log retained by GitHub Actions).
+70 tests collected; progress has 69 dots and 1 s (optional TensorFlow).
+2026-10-21T12:09:22.0679270Z All checks passed!
+2026-10-21T12:09:22.0814952Z 87 files already formatted
+2026-10-21T12:10:03.3364923Z ...............s......................................................   [100%]
+2026-10-21T12:10:32.9136652Z [eval] saved bundle v20261021-121032; total 22.7s
+2026-10-21T12:10:37.4859940Z api smoke ok
+2026-10-21T12:10:47.2868718Z {"status":"ok","service":"harbinger","version":"0.1.0"}browser checks passed
+2026-10-21T12:10:48.1716184Z release artifact hashes and model versions match

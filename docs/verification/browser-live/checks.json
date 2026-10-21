@@ -1,0 +1,18 @@
+{
+  "url": "http://127.0.0.1:8000/console/",
+  "static": false,
+  "page_errors": [],
+  "checks": [
+    "load",
+    "evidence",
+    "all tabs",
+    "site selection",
+    "pending outcomes",
+    "downloads",
+    "mobile",
+    "session close",
+    "empty",
+    "invalid CSV",
+    "valid CSV"
+  ]
+}
