@@ -257,26 +257,36 @@ def build_features(
     )
 
     # ---- 에너지 ----
-    resid = energy_residuals(energy, fit_until)
-    roll = rolling_energy_features(resid)
-    X["_day"] = X["t"].dt.normalize()
-    roll = roll.rename(columns={"day": "_day"})
-    X = X.merge(
-        roll[
-            [
-                "site_id",
-                "_day",
-                "en_resid_ratio_14d",
-                "en_resid_ratio_30d",
-                "en_gas_resid_ratio_14d",
-                "en_gas_resid_ratio_30d",
-            ]
-        ],
-        on=["site_id", "_day"],
-        how="left",
-    )
-    X["en_hvac_x_resid30"] = X["st_is_hvac"] * X["en_resid_ratio_30d"].fillna(0)
-    X = X.drop(columns=["_day"])
+    if energy.empty:
+        for name in (
+            "en_resid_ratio_14d",
+            "en_resid_ratio_30d",
+            "en_gas_resid_ratio_14d",
+            "en_gas_resid_ratio_30d",
+            "en_hvac_x_resid30",
+        ):
+            X[name] = np.nan
+    else:
+        resid = energy_residuals(energy, fit_until)
+        roll = rolling_energy_features(resid)
+        X["_day"] = X["t"].dt.normalize()
+        roll = roll.rename(columns={"day": "_day"})
+        X = X.merge(
+            roll[
+                [
+                    "site_id",
+                    "_day",
+                    "en_resid_ratio_14d",
+                    "en_resid_ratio_30d",
+                    "en_gas_resid_ratio_14d",
+                    "en_gas_resid_ratio_30d",
+                ]
+            ],
+            on=["site_id", "_day"],
+            how="left",
+        )
+        X["en_hvac_x_resid30"] = X["st_is_hvac"] * X["en_resid_ratio_30d"].fillna(0)
+        X = X.drop(columns=["_day"])
 
     # ---- 계절 ----
     doy = X["t"].dt.dayofyear
@@ -285,6 +295,8 @@ def build_features(
 
     # ---- 라벨 ----
     nxt = _next_event(bd, keys, ts)
+    followup = (data_end - X["t"]).dt.total_seconds().to_numpy() / 86400
+    nxt = np.where(nxt <= followup, nxt, np.nan)
     X["tte_days"] = np.where(np.isnan(nxt), (data_end - X["t"]).dt.total_seconds() / 86400, nxt)
     X["event"] = (~np.isnan(nxt)).astype(int)
     X["y30"] = ((~np.isnan(nxt)) & (nxt <= HORIZON_DAYS)).astype(int)

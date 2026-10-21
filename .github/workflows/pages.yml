@@ -1,7 +1,7 @@
 name: pages
 on:
   push:
-    branches: [main]
+    branches: [main, codex/dwi-evaluation-web]
     paths: ["docs/demo/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 permissions:
@@ -19,6 +19,28 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify saved demo and record an 80-second walkthrough
+        run: |
+          sudo apt-get update && sudo apt-get install -y ffmpeg
+          pip install playwright
+          playwright install --with-deps chromium
+          python -m http.server 8020 --directory docs/demo > /tmp/static-server.txt 2>&1 &
+          python scripts/check_browser.py --static --url http://127.0.0.1:8020/ --out /tmp/static-browser
+          python scripts/record_workbench.py --url http://127.0.0.1:8020/ --out /tmp/walkthrough
+          VIDEO=$(python -c "import json; print(json.load(open('/tmp/walkthrough/recording.json'))['raw_video'])")
+          ffmpeg -y -i "$VIDEO" -vf scale=1280:-2 -c:v libx264 -crf 26 -pix_fmt yuv420p -movflags +faststart docs/demo/walkthrough.mp4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 docs/demo/walkthrough.mp4
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: saved-demo-verification
+          path: |
+            /tmp/static-browser
+            /tmp/walkthrough
+            docs/demo/walkthrough.mp4
       - uses: actions/configure-pages@v5
         with:
           enablement: true

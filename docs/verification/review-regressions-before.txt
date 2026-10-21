@@ -1,0 +1,146 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_____________ test_random_comparator_uses_same_per_customer_budget _____________
+
+    def test_random_comparator_uses_same_per_customer_budget():
+        ids = [f"a{i}" for i in range(12)]
+        rows = pd.DataFrame(
+            {
+                "asset_id": ids,
+                "site_id": ["small"] * 3 + ["large"] * 9,
+                "t": pd.Timestamp("2025-08-30"),
+                "p30": 0.1,
+                "name": ids,
+                "category": "pump",
+                "memo": "",
+                "ck_overall": 0,
+                "st_age_years": 5.0,
+                "wo_days_since_bd": 100.0,
+                "wo_bd_90d": 0,
+            }
+        )
+        wo = pd.DataFrame({"asset_id": ids[:3], "type": "breakdown", "opened_at": pd.Timestamp("2025-09-10")})
+        store = SimpleNamespace(
+            latest_rows=lambda *a, **kw: rows.copy(),
+            data_end=pd.Timestamp("2025-11-01"),
+            tables={"workorders": wo},
+            bundle={
+                "version": "test",
+                "comparators": {},
+                "entry": {"metrics": {"observation": {"boundary_version": 2, "max_observed_at": "2025-07-01"}}},
+            },
+        )
+        result = analyze(store, pd.Timestamp("2025-09-01"), k=1)
+        row = next(r for r in result["comparisons"] if r["method"] == "random_expectation")
+>       assert row["precision_at_k"] == 0.5  # 1 random pick from each site, not from pooled assets
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       assert 0.25 == 0.5
+
+tests/test_analysis_contract.py:40: AssertionError
+__________ test_replay_summary_excludes_nonheldout_weeks[None-flags0] __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f2e69478ec0>
+cutoff = None, flags = [False, False]
+
+    @pytest.mark.parametrize(
+        "cutoff, flags", [(None, [False, False]), ("2025-07-01", [False, False]), ("2025-07-01", [False, True])]
+    )
+    def test_replay_summary_excludes_nonheldout_weeks(monkeypatch, cutoff, flags):
+        weeks = [
+            {
+                "as_of": f"2025-07-0{i + 1}",
+                "held_out": flag,
+                "n_assets": 10,
+                "base_rate": 0.2,
+                "harbinger": {"n": 2, "hits": 1},
+                "round_robin": {"n": 2, "hits": 0},
+            }
+            for i, flag in enumerate(flags)
+        ]
+        monkeypatch.setattr(
+            "harbinger.api.backtest.replay_site", lambda *a, **kw: {"weeks": weeks, "summary": {}}
+        )
+        store = SimpleNamespace(
+            X=pd.DataFrame({"t": [pd.Timestamp("2025-01-01")]}),
+            data_end=pd.Timestamp("2025-10-01"),
+            bundle={"entry": {"metrics": {"observation": {"boundary_version": 2, "max_observed_at": cutoff}}}},
+        )
+        result = replay(store, "S01", None, None)
+>       assert result["summary"]["weeks"] == sum(flags)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'weeks'
+
+tests/test_analysis_contract.py:67: KeyError
+_______ test_replay_summary_excludes_nonheldout_weeks[2025-07-01-flags1] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f2e693f8e90>
+cutoff = '2025-07-01', flags = [False, False]
+
+    @pytest.mark.parametrize(
+        "cutoff, flags", [(None, [False, False]), ("2025-07-01", [False, False]), ("2025-07-01", [False, True])]
+    )
+    def test_replay_summary_excludes_nonheldout_weeks(monkeypatch, cutoff, flags):
+        weeks = [
+            {
+                "as_of": f"2025-07-0{i + 1}",
+                "held_out": flag,
+                "n_assets": 10,
+                "base_rate": 0.2,
+                "harbinger": {"n": 2, "hits": 1},
+                "round_robin": {"n": 2, "hits": 0},
+            }
+            for i, flag in enumerate(flags)
+        ]
+        monkeypatch.setattr(
+            "harbinger.api.backtest.replay_site", lambda *a, **kw: {"weeks": weeks, "summary": {}}
+        )
+        store = SimpleNamespace(
+            X=pd.DataFrame({"t": [pd.Timestamp("2025-01-01")]}),
+            data_end=pd.Timestamp("2025-10-01"),
+            bundle={"entry": {"metrics": {"observation": {"boundary_version": 2, "max_observed_at": cutoff}}}},
+        )
+        result = replay(store, "S01", None, None)
+>       assert result["summary"]["weeks"] == sum(flags)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'weeks'
+
+tests/test_analysis_contract.py:67: KeyError
+_______ test_replay_summary_excludes_nonheldout_weeks[2025-07-01-flags2] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f2e6915d910>
+cutoff = '2025-07-01', flags = [False, True]
+
+    @pytest.mark.parametrize(
+        "cutoff, flags", [(None, [False, False]), ("2025-07-01", [False, False]), ("2025-07-01", [False, True])]
+    )
+    def test_replay_summary_excludes_nonheldout_weeks(monkeypatch, cutoff, flags):
+        weeks = [
+            {
+                "as_of": f"2025-07-0{i + 1}",
+                "held_out": flag,
+                "n_assets": 10,
+                "base_rate": 0.2,
+                "harbinger": {"n": 2, "hits": 1},
+                "round_robin": {"n": 2, "hits": 0},
+            }
+            for i, flag in enumerate(flags)
+        ]
+        monkeypatch.setattr(
+            "harbinger.api.backtest.replay_site", lambda *a, **kw: {"weeks": weeks, "summary": {}}
+        )
+        store = SimpleNamespace(
+            X=pd.DataFrame({"t": [pd.Timestamp("2025-01-01")]}),
+            data_end=pd.Timestamp("2025-10-01"),
+            bundle={"entry": {"metrics": {"observation": {"boundary_version": 2, "max_observed_at": cutoff}}}},
+        )
+        result = replay(store, "S01", None, None)
+>       assert result["summary"]["weeks"] == sum(flags)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'weeks'
+
+tests/test_analysis_contract.py:67: KeyError
+=========================== short test summary info ============================
+FAILED tests/test_analysis_contract.py::test_random_comparator_uses_same_per_customer_budget
+FAILED tests/test_analysis_contract.py::test_replay_summary_excludes_nonheldout_weeks[None-flags0]
+FAILED tests/test_analysis_contract.py::test_replay_summary_excludes_nonheldout_weeks[2025-07-01-flags1]
+FAILED tests/test_analysis_contract.py::test_replay_summary_excludes_nonheldout_weeks[2025-07-01-flags2]

@@ -81,7 +81,7 @@ def build_report(store: Store, site_id: str, as_of) -> dict:
 def to_markdown(r: dict) -> str:
     s = r["site"]
     lines = [
-        f"# {s['name']} 실증 리포트",
+        f"# {s['name']} 합성 실험 리포트",
         "",
         f"기준 시점: {r['as_of']} · 설비 {s['n_assets']}개 · 점검자 {s['n_inspectors']}명 · 모델 {r['model']['version']}",
         "",

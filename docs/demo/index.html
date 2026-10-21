@@ -1,138 +1,23 @@
 <!doctype html>
 <html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>harbinger — 정적 데모</title>
-<link rel="icon" href="data:,">
-<link rel="stylesheet" href="style.css">
-</head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#123b38"><title>harbinger · 점검 기록 분석실</title><link rel="stylesheet" href="workbench.css"></head>
 <body>
-<div class="banner">모든 데이터는 <b>합성(SYNTHETIC)</b>입니다 — 실제 고객·설비·점검자 정보 없음. 메모가 체크리스트보다 먼저 움직인다는 핵심 가정을 <b>생성기에 직접 넣었기 때문에</b> 아래 결과는 성능 주장이 아니라 파이프라인과 설계의 시연입니다. <a href="https://github.com/sokldjs554/harbinger/blob/main/docs/synthetic-generator.md" target="_blank" rel="noopener">가정 전부 보기</a></div>
-<header class="top">
-  <h1>harbinger<small>사람이 쓴 점검 기록에서 고장의 전조를 읽고, 오늘 어디부터 볼지 알려 준다</small></h1>
-  <span class="spacer"></span>
-  <div class="ctrl" role="group" aria-label="보기 설정">
-    <label>사이트 <select id="site" aria-label="사이트"></select></label>
-    <span id="live-ctrl" class="ctrl" hidden>
-      <label>기준일 <input id="asof" type="date"></label>
-      <label>순찰 K <input id="k" type="number" min="1" max="50" value="10" style="width:64px"></label>
-      <button id="apply" type="button">적용</button>
-    </span>
-    <button id="theme" type="button" title="테마 전환" aria-label="테마 전환">테마</button>
-  </div>
-</header>
-<nav class="tabs" role="tablist" aria-label="화면">
-  <button role="tab" aria-selected="true" data-tab="today">오늘</button>
-  <button role="tab" aria-selected="false" data-tab="replay">과거 재현</button>
-  <button role="tab" aria-selected="false" data-tab="assets">설비</button>
-  <button role="tab" aria-selected="false" data-tab="memo">메모 읽기</button>
-  <button role="tab" aria-selected="false" data-tab="quality">점검 품질</button>
-  <button role="tab" aria-selected="false" data-tab="energy">에너지</button>
-  <button role="tab" aria-selected="false" data-tab="model">모델·가정</button>
-</nav>
-<main>
-  <section id="tab-today" class="tab">
-  <details id="guide" class="guide">
-    <summary>이 데모를 읽는 법</summary>
-    <div class="guide-body">
-      <button class="step" data-go="today" type="button"><b>① 오늘</b><span>점검 기록을 읽어 오늘 먼저 볼 설비를 고릅니다. 오른쪽은 점검자가 휴대폰으로 보는 화면입니다.</span></button>
-      <button class="step" data-go="replay" type="button"><b>② 과거 재현</b><span>그 주에 이 목록을 줬다면 이후 30일에 무슨 일이 났나 — 실증(PoC)이 보여 줘야 하는 것.</span></button>
-      <button class="step" data-go="assets" type="button"><b>③ 설비 → What-if</b><span>같은 체크리스트에서 메모만 바꾸면 위험도가 어떻게 달라지나를 직접 비교합니다.</span></button>
-      <button class="step" data-go="memo" type="button"><b>④ 메모 읽기</b><span>왜 메모인가 — 메모를 직접 써 보고, 데이터에서 그 신호가 실제로 있는지 봅니다(약한 결과 포함).</span></button>
-      <div class="caveat">숫자를 그대로 믿지 마세요. 어디까지가 데이터이고 어디부터가 가정인지는 <button class="chip" data-go="model" type="button">모델·가정</button> 탭에 적어 두었습니다.</div>
-    </div>
-  </details>
-
-    <div class="headline" id="today-head"></div>
-    <div class="kpis" id="today-kpis"></div>
-    <div class="today-grid">
-      <div class="card today-table"><h2>오늘 먼저 볼 설비</h2><div class="sub">기대손실(P30 × 중요도) 순으로 고르고, 법정점검 기한이 임박한 설비는 무조건 포함 · 표는 동선(지하 → 고층) 순</div><div id="today-table"></div></div>
-      <div>
-        <div class="phone" aria-label="현장 앱 미리보기">
-          <div class="status"><span id="ph-time">9:41</span><span>유비스형 현장 앱 · 미리보기</span></div>
-          <div class="appbar"><b id="ph-title">오늘 순찰</b><span id="ph-sub"></span><div class="prog"><i id="ph-prog"></i></div></div>
-          <div class="scroll" id="ph-list"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="tab-replay" class="tab" hidden>
-    <div class="headline"><h2>과거로 돌려 봤을 때, 맞았나</h2><p>매주 그 시점의 데이터만으로 상위 K 를 뽑고, 이후 30일의 실제 비계획 고장과 대조합니다. 모델이 학습·보정에 쓰지 않은 기간만 봅니다.</p></div>
-    <div class="ctrl" style="margin-bottom:12px"><div class="seg" role="group" aria-label="범위"><button id="scope-all" aria-pressed="true" type="button">전체 사이트</button><button id="scope-site" aria-pressed="false" type="button">이 사이트</button></div><span class="muted" id="replay-scope-note"></span></div>
-    <div class="kpis" id="replay-kpis"></div>
-    <div class="card"><h2>주별 적중률</h2><div class="sub">그 주 상위 K 중 이후 30일 안에 실제로 고장난 비율 · 점을 누르거나 아래 슬라이더로 주를 고릅니다</div><div id="replay-chart"></div><label class="muted" style="display:block;margin-top:6px">주 선택 <input id="replay-week" type="range" min="0" max="0" value="0" aria-label="주 선택"></label></div>
-    <div id="replay-detail" style="margin-top:16px"></div>
-    <div class="callout warn" id="replay-caveat"></div>
-  </section>
-
-  <section id="tab-assets" class="tab" hidden>
-    <div class="grid" style="grid-template-columns: minmax(300px, 5fr) minmax(320px, 7fr);">
-      <div>
-        <div class="card"><h2>설비 종류별 30일 고장확률</h2><div class="sub">평균 P30 · 괄호는 설비 수</div><div id="cat-bars"></div></div>
-        <div class="card"><h2>상위 위험 설비</h2><div class="sub">행을 누르면 근거와 What-if 를 봅니다</div><div id="asset-table"></div></div>
-      </div>
-      <div class="card" id="asset-detail"><h2>설비 상세</h2><div class="empty">왼쪽에서 설비를 선택하세요.</div></div>
-    </div>
-  </section>
-
-  <section id="tab-memo" class="tab" hidden>
-    <div class="headline"><h2>모델은 메모를 이렇게 읽습니다</h2><p>왼쪽에 점검 메모를 써 보세요. 학습에 쓴 것과 같은 규칙(증상군 · 약한/강한 강도어 · 형식적 메모)이 브라우저에서 그대로 돌아갑니다. 오른쪽은 그 신호가 데이터에 실제로 있는지의 기술통계입니다.</p></div>
-    <div class="grid" style="grid-template-columns: minmax(300px, 5fr) minmax(320px, 6fr);">
-      <div class="card">
-        <h2>메모 분석기</h2>
-        <div class="chips" id="memo-presets"></div>
-        <textarea id="memo-in" class="memo-in" rows="3" maxlength="500" aria-label="점검 메모" placeholder="예: 약간의 소음 감지, 미세 진동 감지"></textarea>
-        <div class="keyline"><span><mark class="m-symptom">증상어</mark></span><span><mark class="m-weak">약한 강도어</mark> 약간·미세·간헐…</span><span><mark class="m-strong">강한 강도어</mark> 심함·긴급·수리…</span></div>
-        <div class="memo-box" id="memo-out" aria-live="polite"></div>
-        <div class="chips" id="memo-groups"></div>
-        <div class="mini" id="memo-scores"></div>
-        <div class="callout" id="memo-reading"></div>
-      </div>
-      <div class="card">
-        <h2>이 신호가 데이터에 있나</h2>
-        <div class="sub" id="signals-sub"></div>
-        <h3>체크리스트 판정별 30일 내 고장률 — 메모에 약신호가 있을 때와 없을 때</h3>
-        <div id="sig-judge"></div>
-        <h3>"양호"로 판정된 점검만 — 직전 6회 중 ‘양호인데 메모에 약신호’ 횟수</h3>
-        <div id="sig-count"></div>
-        <h3>"양호" 판정의 믿을 만함 — 점검 품질별</h3>
-        <div id="sig-quality"></div>
-        <div class="callout warn" id="sig-caveat"></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="tab-quality" class="tab" hidden>
-    <div class="card"><h2>점검자별 기록 신뢰도</h2><div class="sub" id="quality-sub">최근 180일 · 형식적 메모·20초 미만 체류·7일 초과 지연으로 계산 · 낮은 순</div><div id="quality-table"></div><div class="callout" id="quality-note"></div></div>
-  </section>
-
-  <section id="tab-energy" class="tab" hidden>
-    <div class="card"><h2>전기 사용량 — 실측 vs 기대치</h2><div class="sub">기대치 = 기온·재실·요일·계절로 학습한 회귀 모델 · 최근 120일</div><div id="energy-line"></div></div>
-    <div class="card"><h2>잔차 7일 이동평균 z-score</h2><div class="sub">z &gt; 2.5 인 날을 이상일로 표시 (표식 + 상태색)</div><div id="energy-z"></div><div class="callout warn" id="energy-note"></div></div>
-  </section>
-
-  <section id="tab-model" class="tab" hidden>
-    <div class="grid wide">
-      <div class="card"><h2>모델 정보</h2><div id="model-info"></div></div>
-      <div class="card"><h2>예측과 실제 (테스트 기간)</h2><div class="sub">예측 확률 분위 구간별 실제 고장률 · 대각선이 완벽</div><div id="calib"></div></div>
-      <div class="card"><h2>절제 실험 (AUROC)</h2><div class="sub">피처 그룹을 더해 갈 때 — 오라클은 숨은 열화 상태를 아는 상한</div><div id="ablation"></div></div>
-      <div class="card"><h2>드리프트</h2><div class="sub">학습 참조 분포 대비 최근 60일 PSI</div><div id="drift"></div></div>
-    </div>
-    <div class="card" id="assumptions"></div>
-  </section>
-</main>
-<footer>
-  <a href="https://github.com/sokldjs554/harbinger" target="_blank" rel="noopener">GitHub</a>
-  <a href="https://github.com/sokldjs554/harbinger/blob/main/docs/company-research.md" target="_blank" rel="noopener">회사 조사 — 왜 이 주제인가</a>
-  <a href="https://github.com/sokldjs554/harbinger/blob/main/docs/synthetic-generator.md" target="_blank" rel="noopener">합성 데이터 생성 모델</a>
-  <a href="https://github.com/sokldjs554/harbinger/blob/main/docs/limitations.md" target="_blank" rel="noopener">한계</a>
-  <span id="version"></span>
-</footer>
-<script>window.HARBINGER_STATIC = true;</script>
-<script src="charts.js"></script>
-<script src="memo.js"></script>
-<script src="app.js"></script>
-</body>
-</html>
+<a class="skip" href="#main">분석으로 바로 가기</a>
+<header><a class="brand" href="./">h<span>arbinger</span><i>점검 기록 분석실</i></a><div><span id="mode" class="badge">연결 확인 중</span> <a href="advanced.html" class="advanced">고급 콘솔 ↗</a></div></header>
+<main id="main">
+<section class="intro"><div><p class="eyebrow">FACILITY INTELLIGENCE / PORTFOLIO LAB</p><h1>기록에서 읽고,<br>먼저 점검할 설비를 찾습니다.</h1><p class="lead">흩어진 점검 메모와 고장 이력을 함께 읽습니다.<br>예측의 근거부터 이후 결과까지, 같은 기준으로 확인하세요.</p></div><aside class="guide"><strong>처음이라면, 이 순서로</strong><ol><li><b>예제 불러오기</b>로 합성 점검 기록을 엽니다.</li><li>설비를 선택해 <b>원문과 판단 근거</b>를 읽습니다.</li><li><b>비교·검증</b>에서 규칙보다 도움이 되는지 확인합니다.</li></ol><small>모든 예제는 합성 데이터입니다. 실제 고객 실증 결과가 아닙니다.</small></aside></section>
+<section class="source card"><div><p class="eyebrow">01 / 데이터 준비</p><h2>예제로 시작하거나, 지원 CSV를 넣어보세요.</h2><p>업로드는 메모리에 30분간 보관하며 최대 5 MiB · 20,000행 · 설비 500개 · 고객사 10개입니다.</p></div><div class="source-actions"><button id="example" class="primary">예제 기록 불러오기 <span>↗</span></button><a id="sample" href="/v1/workbench/example.csv" download>예제 CSV 다운로드 ↓</a><button id="upload-toggle" class="secondary" aria-expanded="false" aria-controls="upload-panel">내 CSV 분석</button></div>
+<div id="upload-panel" hidden><form id="upload-form"><label>UTF-8 CSV 파일<input id="csv" type="file" accept=".csv,text/csv" required></label><label>고장 기록의 관측 종료일<input id="observation" type="date" required><small>이 날짜까지 모든 고장 기록이 포함되어 있어야 합니다.</small></label><button class="primary" type="submit">검사 후 불러오기</button></form><details><summary>지원 형식과 처리 방식 보기</summary><p>한 행은 inspection / breakdown / preventive / parts 중 한 기록입니다. 예제 CSV의 열 이름을 유지하세요. 설비·고객사·기록 ID, 설비 분류, 설치일, 중요도, 층, 구역, 기록 시각이 필수이며 점검 행에는 점검자·판정(0 양호/1 주의/2 불량)·체류 시간·예정일·방식·사진 수가 필요합니다. 메모는 빈 문자열을 허용합니다. 날짜는 YYYY-MM-DD 또는 시간대 없는 ISO 시각, 모든 기록은 동일한 현장 시간대, 최대 5년을 지원합니다. 중복·누락·알 수 없는 열과 형식은 자동 수정하지 않고 알려드립니다.</p><p>업로드에는 에너지 피처를 사용하지 않습니다. 합성 데이터로 학습한 모델의 탐색적 추론이며 실제 고객 성능의 증거가 아닙니다. 파일은 서버 로그나 디스크에 저장하지 않습니다.</p></details></div></section>
+<div id="status" class="status" role="status" aria-live="polite">예제를 불러오면 서버의 실제 모델 계산이 시작됩니다.</div><div id="error" class="error" role="alert" hidden></div>
+<section id="workspace" hidden>
+<div class="toolbar card"><div><p class="eyebrow">02 / 분석 기준</p><strong id="dataset"></strong></div><form id="analysis-form"><label>고객사<select id="site"><option value="">전체 고객사</option></select></label><label>예측 기준일<input id="date" type="date" required><select id="static-date" hidden aria-label="저장된 예측 기준일"></select></label><label>고객사별 점검 예산 K<input id="budget" type="number" min="1" max="50" value="10"></label><button class="primary" type="submit">분석 실행</button></form><button id="close" class="quiet">세션 닫기</button></div>
+<div class="provenance" id="provenance"></div>
+<div class="stats" id="stats"></div>
+<nav class="tabs" aria-label="분석 화면"><button data-tab="priority" class="active" aria-current="page">우선 점검</button><button data-tab="comparison">비교·검증</button><button data-tab="customers">고객사별 결과</button><button data-tab="downloads">보고서·다운로드</button></nav>
+<section id="priority" class="panel"><div class="section-head"><div><h2>위험이 높은 설비부터 살펴보세요.</h2><p>30일 고장 위험순 · 최대 50개 표시. 행을 누르면 점검 원문과 모델 근거를 확인합니다.</p></div><span class="badge">인과 효과·안전 판정 아님</span></div><div class="analysis-grid"><div class="card table-wrap"><table><caption class="sr-only">설비 위험 순위</caption><thead><tr><th>설비 / 고객사</th><th>30일 위험</th><th>최근 판정</th><th>이후 30일 결과</th></tr></thead><tbody id="assets"></tbody></table><p id="empty" hidden>이 기준일 이전에 점검 기록이 없습니다. 다른 기준일을 선택하세요.</p></div><aside class="card evidence" id="evidence"><p class="eyebrow">RECORD / EVIDENCE</p><h3>설비의 기록을 열어보세요.</h3><p>원문 메모와 고장 이력, 모델 기여도를 함께 확인할 수 있습니다.</p></aside></div></section>
+<section id="comparison" class="panel" hidden><div class="section-head"><div><h2>같은 설비, 같은 날짜, 같은 점검 예산.</h2><p>현재 모델·단순 로지스틱 모델·메모/이력 제거 모델·현장 규칙을 비교합니다.</p></div></div><div id="evaluation-note" class="notice"></div><div class="card table-wrap"><table><thead><tr><th>방법</th><th>Precision@K</th><th>Recall@K</th><th>AUROC</th><th>PR-AUC</th><th>Brier</th></tr></thead><tbody id="comparisons"></tbody></table></div><p class="footnote">Precision@K: 선택한 설비 중 이후 30일 고장 비율. Recall@K: 고장 설비 중 선택한 비율. AUROC/PR-AUC는 높을수록, Brier는 낮을수록 좋습니다. 단일 날짜 결과에는 신뢰구간을 붙이지 않습니다.</p><details class="card"><summary>전체 기간 실험과 차별점 검증</summary><div id="experiments">전체 평가 산출물을 불러오세요.</div></details></section>
+<section id="customers" class="panel" hidden><h2>고객사마다 관측 조건이 다릅니다.</h2><p>아래는 현재 기준일 결과입니다. 처음 보는 고객사(LOSO) 실험은 별도 표시합니다.</p><div id="customer-cards" class="customer-grid"></div><div class="notice" id="loso">LOSO 실험 정보 확인 중</div></section>
+<section id="downloads" class="panel" hidden><h2>결과와 한계를 함께 남깁니다.</h2><p>예측 기준일, 모델 관측 종료, 평가 보류 사유를 보고서에 포함합니다.</p><div class="download-grid"><button data-format="md" class="card"><b>분석 보고서</b><span>한국어 Markdown ↓</span></button><button data-format="csv" class="card"><b>설비별 분석 결과</b><span>CSV ↓</span></button><button data-format="json" class="card"><b>전체 계산 응답</b><span>JSON ↓</span></button></div><div class="notice">수치가 좋더라도 합성 데이터 조건의 결과입니다. 실제 적용 전 고객별 고장 정의, 기록 누락, 관측 기간, 업무 비용을 검증해야 합니다.</div></section>
+</section>
+<footer><b>harbinger</b><span>사람이 남긴 기록에서, 검증 가능한 판단으로.</span><a href="https://github.com/sokldjs554/harbinger">코드·재현 방법 ↗</a></footer>
+</main><script>window.HARBINGER_SAVED=true;</script><script src="workbench.js"></script></body></html>

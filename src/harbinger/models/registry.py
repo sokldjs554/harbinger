@@ -77,6 +77,9 @@ def load_bundle(model_dir: Path, version: str = "latest") -> dict:
     out = {"version": version, "entry": entry, "classifier": joblib.load(vdir / "classifier.joblib")}
     out["deep"] = load_deep(vdir) if (vdir / "hazardnet.pt").exists() else None
     out["energy"] = joblib.load(vdir / "energy.joblib") if (vdir / "energy.joblib").exists() else None
+    out["comparators"] = (
+        joblib.load(vdir / "comparators.joblib") if (vdir / "comparators.joblib").exists() else {}
+    )
     return out
 
 

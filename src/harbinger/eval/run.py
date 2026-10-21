@@ -15,12 +15,13 @@ from harbinger.config import DEFAULT_SEED
 from harbinger.eval.metrics import c_index_from_risk, censoring_km, classification_metrics, integrated_brier
 from harbinger.eval.patrol import breakdown_recall_at_top, simulate_patrol
 from harbinger.eval.signals import signal_tables
-from harbinger.features.build import FEATURE_GROUPS, build_features, load_tables
+from harbinger.features.build import FEATURE_GROUPS, load_tables
+from harbinger.features.cache import cached_features
 from harbinger.features.refresh import Refresher
 from harbinger.models.calibration import reliability_table
 from harbinger.models.classify import BASELINE_FEATURES, train_hgb, train_logistic
 from harbinger.models.coldstart import apply_offset, site_offset
-from harbinger.models.common import labeled, model_columns, split_by_time
+from harbinger.models.common import labeled, model_columns, observe_until, split_by_time
 from harbinger.models.deep import train_deep
 from harbinger.models.energy import energy_metrics, train_energy
 from harbinger.models.registry import save_bundle
@@ -39,12 +40,22 @@ ABLATIONS = {
     "full(+energy)": FEATURE_GROUPS,
     "full−text": ("st", "ck", "se", "q", "wo", "en"),
     "full−quality": ("st", "ck", "se", "tx", "wo", "en"),
+    "full−history": ("st", "ck", "se", "tx", "q", "en"),
 }
 SURV_TIMES = [30.0, 60.0, 90.0, 180.0, 360.0]
 
 
 def _dump(path: Path, obj) -> None:
-    path.write_text(json.dumps(obj, ensure_ascii=False, indent=2, default=float))
+    def finite(value):
+        if isinstance(value, dict):
+            return {k: finite(v) for k, v in value.items()}
+        if isinstance(value, (list, tuple)):
+            return [finite(v) for v in value]
+        if isinstance(value, (float, np.floating)) and not np.isfinite(value):
+            return None
+        return value
+
+    path.write_text(json.dumps(finite(obj), ensure_ascii=False, indent=2, default=float, allow_nan=False))
 
 
 def run(
@@ -58,17 +69,14 @@ def run(
     t_start = time.time()
     artifact_dir.mkdir(parents=True, exist_ok=True)
     tables = load_tables(data_dir)
-    fpath = data_dir / "features.parquet"
-    if fpath.exists():
-        X = pd.read_parquet(fpath)
-    else:
-        X = build_features(tables)
-        X.to_parquet(fpath, index=False)
-    months = max(1, int(round((X["t"].max() - X["t"].min()).days / 30.44)))
-    if months >= 30:
-        split = split_by_time(X, 24, 6)
-    else:  # 짧은 데이터(CI): 60/15/25 비율
-        split = split_by_time(X, max(3, int(months * 0.6)), max(1, int(months * 0.15)))
+    times = tables["inspections"]["performed_at"]
+    months = max(1, int(round((times.max() - times.min()).days / 30.44)))
+    train_months, val_months = (
+        (24, 6) if months >= 30 else (max(3, int(months * 0.6)), max(1, int(months * 0.15)))
+    )
+    cutoff = times.min().normalize() + pd.DateOffset(months=train_months)
+    X, provenance = cached_features(data_dir, cutoff)
+    split = split_by_time(X, train_months, val_months)
     trL, vaL, teL = labeled(split.train), labeled(split.val), labeled(split.test)
     full_cols = model_columns(X)
     print(
@@ -77,6 +85,13 @@ def run(
     _dump(artifact_dir / "signals.json", signal_tables(X))
     results: dict = {"split": split.describe(), "n_features": len(full_cols), "seed": seed, "quick": quick}
 
+    results["observation"] = {
+        **provenance,
+        "train_cutoff": split.train_end.isoformat(),
+        "calibration_cutoff": split.val_end.isoformat(),
+        "max_observed_at": split.val_end.isoformat(),
+        "boundary_inclusive": True,
+    }
     # ---------- 1. 메인 분류기 ----------
     t0 = time.time()
     hgb = train_hgb(trL, vaL, full_cols, seed=seed)
@@ -141,9 +156,11 @@ def run(
 
     # ---------- 3. 절제 ----------
     abl = {}
+    ablation_models = {}
     for name, groups in ABLATIONS.items():
         cols = model_columns(X, groups)
         b = train_hgb(trL, vaL, cols, seed=seed, name=name)
+        ablation_models[name] = b
         abl[name] = classification_metrics(teL["y30"], b.predict_proba(teL)) | {"n_features": len(cols)}
     results["ablation"] = abl
     _dump(artifact_dir / "ablation.json", abl)
@@ -264,7 +281,12 @@ def run(
     # ---------- 7. 순찰 시뮬레이션 ----------
     bd_test = tables["workorders"][(tables["workorders"]["type"] == "breakdown")]
     refresher = Refresher(tables)
-    score_fns = {"harbinger_hgb": hgb.predict_proba}
+    score_fns = {
+        "harbinger_hgb": hgb.predict_proba,
+        "logistic": lr.predict_proba,
+        "without_text": ablation_models["full−text"].predict_proba,
+        "without_history": ablation_models["full−history"].predict_proba,
+    }
     if deep_full is not None:
         score_fns["harbinger_deep"] = lambda df: deep_full.p_fail_within(df, 30)
     patrol = simulate_patrol(te_all, score_fns, bd_test, refresher, k=10, step_days=7, seed=seed)
@@ -314,8 +336,22 @@ def run(
         deep=deep_full,
         energy=eb,
         features=full_cols,
-        metrics={"headline": headline, "test_window": results["split"]["test"]},
+        metrics={
+            "headline": headline,
+            "test_window": results["split"]["test"],
+            "observation": results["observation"],
+        },
         data_meta=data_meta,
+    )
+    import joblib
+
+    joblib.dump(
+        {
+            "logistic": lr,
+            "without_text": ablation_models["full−text"],
+            "without_history": ablation_models["full−history"],
+        },
+        model_dir / version / "comparators.joblib",
     )
     results["bundle_version"] = version
     results["elapsed_seconds"] = round(time.time() - t_start, 1)
@@ -330,15 +366,29 @@ def loso(X: pd.DataFrame, split, full_cols: list[str], seed: int, quick: bool) -
     picks = []
     for _arch, g in sites.groupby("st_archetype"):
         picks += g["site_id"].sort_values().head(1 if quick else 2).tolist()
+    full_cols = [c for c in full_cols if not c.startswith("en_")]
     months_hist = [0, 3, 6, 12]
-    out = {"holdout_sites": picks, "months_of_own_data": months_hist, "per_site": {}, "kappa": 20.0}
+    out = {
+        "holdout_sites": picks,
+        "months_of_own_data": months_hist,
+        "per_site": {},
+        "skipped_sites": {},
+        "kappa": 20.0,
+        "preprocessing": "energy features excluded: no held-out-site energy fit",
+        "not_selected_sites": sorted(set(sites.site_id) - set(picks)),
+    }
     agg: dict[int, list] = {m: [] for m in months_hist}
     for s in picks:
         other_tr = labeled(split.train[split.train["site_id"] != s])
         other_va = labeled(split.val[split.val["site_id"] != s])
         hold_te = labeled(split.test[split.test["site_id"] == s])
         hold_hist = labeled(split.train[split.train["site_id"] == s]).sort_values("t")
-        if len(hold_te) < 50 or hold_te["y30"].sum() < 3:
+        if len(hold_te) < 50 or hold_te["y30"].sum() < 3 or hold_te["y30"].nunique() < 2:
+            out["skipped_sites"][s] = {
+                "reason": "insufficient mature labels or classes",
+                "n": len(hold_te),
+                "positives": int(hold_te.y30.sum()),
+            }
             continue
         b = train_hgb(other_tr, other_va, full_cols, seed=seed, name=f"loso-{s}")
         p_te = b.predict_proba(hold_te)
@@ -349,7 +399,8 @@ def loso(X: pd.DataFrame, split, full_cols: list[str], seed: int, quick: bool) -
                 delta = 0.0
                 n_hist = 0
             else:
-                h = hold_hist[hold_hist["t"] < t0 + pd.DateOffset(months=m)]
+                history_cutoff = min(t0 + pd.DateOffset(months=m), split.train_end)
+                h = labeled(observe_until(hold_hist, history_cutoff))
                 delta = site_offset(b.predict_proba(h), h["y30"].to_numpy()) if len(h) else 0.0
                 n_hist = int(len(h))
             met = classification_metrics(hold_te["y30"], apply_offset(p_te, delta)) | {
@@ -358,6 +409,18 @@ def loso(X: pd.DataFrame, split, full_cols: list[str], seed: int, quick: bool) -
             }
             per[str(m)] = met
             agg[m].append(met)
+        per["ablations"] = {}
+        for label, prefixes in {
+            "without_text": ("tx_",),
+            "without_quality": ("q_",),
+            "without_history": ("wo_",),
+        }.items():
+            groups = tuple(g for g in FEATURE_GROUPS if g != "en" and g + "_" not in prefixes)
+            cols = model_columns(X, groups)
+            ab = train_hgb(other_tr, other_va, cols, seed=seed, name=label)
+            per["ablations"][label] = classification_metrics(hold_te.y30, ab.predict_proba(hold_te))
+        per["mature_test_rows"] = len(hold_te)
+        per["immature_test_rows"] = int((~split.test.loc[split.test.site_id == s, "label_valid"]).sum())
         # 비교: 그 사이트를 포함해 학습한(warm) 모델
         warm = train_hgb(labeled(split.train), labeled(split.val), full_cols, seed=seed, name="warm")
         per["warm_in_sample_site"] = classification_metrics(hold_te["y30"], warm.predict_proba(hold_te))

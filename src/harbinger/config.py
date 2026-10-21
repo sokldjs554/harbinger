@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     model_dir: Path = Path("models")
     artifact_dir: Path = Path("artifacts")
     demo_bootstrap: bool = True
+    allow_shared_ingest: bool = False
     log_level: str = "INFO"
 
 

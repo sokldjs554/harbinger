@@ -1,0 +1,4 @@
+train event rows affected by right-edge fix: 0
+val event rows affected by right-edge fix: 0
+test event rows affected by right-edge fix: 0
+No target-bin assignments change in this full experiment; fitted model weights remain applicable.

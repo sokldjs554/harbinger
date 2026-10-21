@@ -1,0 +1,19 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.7.0
+rootdir: /workspace/harbinger
+configfile: pyproject.toml
+testpaths: tests
+plugins: cov-7.1.0, anyio-4.15.1
+collected 49 items
+
+tests/test_analysis_contract.py ....                                     [  8%]
+tests/test_features.py .....                                             [ 18%]
+tests/test_keras_parity.py s                                             [ 20%]
+tests/test_models.py ..........                                          [ 40%]
+tests/test_observation_boundary.py .......                               [ 55%]
+tests/test_prescribe.py ...                                              [ 61%]
+tests/test_refresh.py ...                                                [ 67%]
+tests/test_synth.py .....                                                [ 77%]
+tests/test_upload.py ...........                                         [100%]
+
+======================== 48 passed, 1 skipped in 29.71s ========================

@@ -145,7 +145,13 @@
     $("#scope-all").setAttribute("aria-pressed", String(all)); $("#scope-site").setAttribute("aria-pressed", String(!all));
     $("#scope-site").textContent = state.siteName ? `이 사이트 (${state.siteName})` : "이 사이트";
     const data = await api(P.replay(all ? "all" : state.site));
-    const weeks = data.weeks, sm = data.summary;
+    const weeks = data.weeks.filter(w => w.held_out), sm = data.summary;
+    if (!weeks.length) {
+      $("#replay-scope-note").textContent = "평가 보류: 모델 관측 종료 이후의 완전한 30일 정답이 없습니다.";
+      clear($("#replay-kpis")); clear($("#replay-chart")); clear($("#replay-detail"));
+      $("#replay-week").disabled = true; return;
+    }
+    $("#replay-week").disabled = false;
     $("#replay-scope-note").textContent = all ? `${data.n_sites ?? "전체"}개 사이트 합산 · 주마다 사이트별 상위 ${data.k}개` : `표본이 작아(${sm.harbinger_picks}건) 주마다 크게 흔들립니다 — 전체 사이트와 함께 읽으세요`;
     const kp = $("#replay-kpis"); clear(kp);
     kp.appendChild(C.tile(`harbinger 상위 ${data.k} 적중률`, fmtP(sm.harbinger_rate), `${sm.harbinger_hits} / ${sm.harbinger_picks}건 · ${sm.weeks}주`));

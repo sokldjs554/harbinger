@@ -21,6 +21,20 @@ def test_discrete_nll_matches_closed_form():
     assert abs(float(nll) - expected) < 1e-5
 
 
+def test_discrete_nll_event_at_right_edge_is_observed_in_that_bin():
+    hazards = torch.tensor([[0.2, 0.7]])
+    logits = torch.logit(hazards)
+    assert torch.allclose(
+        discrete_nll(logits, torch.tensor([30.0]), torch.tensor([1])), -torch.log(hazards[0, 0])
+    )
+    assert torch.allclose(
+        discrete_nll(logits, torch.tensor([60.0]), torch.tensor([1])), -torch.log(torch.tensor(0.8 * 0.7))
+    )
+    assert torch.allclose(
+        discrete_nll(logits, torch.tensor([60.0]), torch.tensor([0])), -torch.log(torch.tensor(0.8 * 0.3))
+    )
+
+
 def test_schedule_monotone_and_legal_cap():
     assert interval_from_p30(0.01) > interval_from_p30(0.10) > interval_from_p30(0.30)
     surv_low = np.cumprod([0.99] * SURVIVAL_BINS)
