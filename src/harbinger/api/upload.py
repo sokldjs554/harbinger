@@ -203,7 +203,7 @@ def parse_csv(content: bytes, observation_end: str):
     }
 
 
-def export_example(tables, site_id: str) -> bytes:
+def export_example(tables, site_id: str, observation_end: pd.Timestamp) -> bytes:
     assets = tables["assets"].query("site_id == @site_id")
     metadata = assets[["asset_id", "site_id", "category", "installed", "criticality", "floor", "zone"]].merge(
         tables["sites"][["site_id", "archetype"]], on="site_id"
@@ -229,6 +229,7 @@ def export_example(tables, site_id: str) -> bytes:
         .copy()
     )
     events = pd.concat([ins, wo], ignore_index=True)
+    events = events.loc[pd.to_datetime(events["occurred_at"]) <= observation_end].copy()
     events = events.drop(columns=[c for c in metadata if c != "asset_id" and c in events]).merge(
         metadata, on="asset_id"
     )

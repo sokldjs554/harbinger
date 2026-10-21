@@ -102,6 +102,22 @@ def main():
             assert not page.locator("#error").is_visible(), page.locator("#error").inner_text()
         page.set_viewport_size({"width": 390, "height": 844})
         page.click('[data-tab="priority"]')
+        first_asset = page.locator("[data-asset]").first
+        asset_id = first_asset.get_attribute("data-asset")
+        first_asset.click()
+        page.wait_for_function("!document.getElementById('status').classList.contains('busy')")
+        assert page.locator("#record-back").is_visible(), "Mobile record needs a return to the list"
+        assert page.locator("#evidence").get_attribute("aria-modal") == "true"
+        assert page.locator("#evidence").bounding_box()["y"] == 0
+        page.screenshot(path=str(out / "mobile-record.png"))
+        page.click("#record-back")
+        assert first_asset.is_visible()
+        assert page.evaluate("document.activeElement.dataset.asset") == asset_id
+        first_asset.click()
+        page.wait_for_function("!document.getElementById('status').classList.contains('busy')")
+        page.keyboard.press("Escape")
+        assert not page.locator("#record-back").is_visible()
+        assert page.evaluate("document.activeElement.dataset.asset") == asset_id
         page.screenshot(path=str(out / "mobile.png"), full_page=True)
         assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth"), (
             "Mobile horizontal overflow"
@@ -125,6 +141,7 @@ def main():
                         "pending outcomes",
                         "downloads",
                         "mobile",
+                        "mobile record and return focus",
                         "session close",
                     ]
                     + ([] if args.static else ["empty", "invalid CSV", "valid CSV"]),

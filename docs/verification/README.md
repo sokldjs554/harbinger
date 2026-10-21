@@ -2,6 +2,17 @@
 
 전체 합성 모델 버전은 **v20261021-103259**, 비교 기준 원본 커밋은 **fd346c75ddae39fa6383096d7dd6adabccfdb044**다. 초기 main은 변경하지 않고 `codex/dwi-evaluation-web`에서 작업했다. 최초 미커밋 변경과 AGENTS.md는 없었고 원본은 별도 worktree에도 보존했다.
 
+## 점검대장 UI 개편
+
+기존 카드 중심 화면을 왼쪽 기능 목록·중앙 설비 대장·오른쪽 개별 기록으로 교체했다. 모바일에서는 선택한 설비의 기록을 별도 화면으로 열며, 돌아가기/Esc로 닫고 선택한 설비에 초점을 복원한다. 실제 모델 및 평가 수치는 그대로이고 전체 합성 모델 버전도 `v20261021-103259`다.
+
+- 전체 테스트 **70 passed, 1 skipped**, 41.98초: [로그](ledger-tests.txt). 선택적 TensorFlow 패리티만 제외했다.
+- 실제 전체 모델 API 및 저장 데모 양쪽에서 예제·원문·탭·고객사·평가 보류·다운로드·모바일 상세/복귀를 확인했다. 실제 API에서는 정상/오류 CSV와 빈 결과도 확인했다. [API 체크](ledger-live/checks.json), [저장 데모 체크](ledger-static/checks.json). JavaScript 오류 0개.
+- 1440×1080 데스크톱과 390×844 모바일 Chromium에서 직접 조작했다. [대장 화면](ledger-static/priority.png), [첫 화면](ledger-static/landing.png), [모바일 대장](ledger-static/mobile.png), [모바일 개별 기록](ledger-static/mobile-record.png), [업로드 오류](ledger-live/upload-error.png).
+- 새 UI로 실제 조작 영상 **80.00초**를 다시 녹화했다. [영상](../demo/walkthrough.mp4), [녹화 정보](ledger-recording.json).
+- 전체 예제 CSV 재업로드 중 기존 다운로드에 관측 종료 이후 점검 2건이 포함되는 결함을 발견했다. [수정 전 회귀 실패](ledger-export-before.txt)를 확인한 뒤 API와 정적 CSV 생성 모두 선언된 관측 종료까지만 내보내도록 수정했다. 수정된 전체 예제 7,352행의 검증과 실제 웹 업로드가 통과했다. 모델 학습·평가 계산을 변경한 수정은 아니다.
+- 코드·데모·예제 CSV의 릴리스 해시와 README 수치 검사도 통과했다. 아래의 이전 검증 기록과 화면은 당시 버전의 이력으로 보존한다.
+
 ## 직접 확인한 실행
 
 - 원본 전체 실험: [로그](full-before.txt), bundle v20261021-102542, 1,097.5초.

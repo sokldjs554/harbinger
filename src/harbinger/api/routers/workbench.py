@@ -113,7 +113,7 @@ def example_csv(site: str = "S01", store: Store = Depends(get_store)):
     if site not in set(store.tables["sites"].site_id):
         raise HTTPException(404, "알 수 없는 고객사입니다.")
     return Response(
-        export_example(store.tables, site),
+        export_example(store.tables, site, store.data_end - pd.Timedelta(seconds=1)),
         media_type="text/csv; charset=utf-8",
         headers={"Content-Disposition": 'attachment; filename="harbinger-example.csv"'},
     )

@@ -27,7 +27,7 @@ def main():
         page.goto(a.url)
         page.wait_for_function("!document.getElementById('mode').textContent.includes('확인 중')")
         page.evaluate(
-            """() => { const el=document.createElement('div'); el.id='walkthrough-caption'; el.style.cssText='position:fixed;bottom:16px;left:5%;right:5%;padding:16px 24px;background:#173c39;color:white;border-radius:12px;font:600 20px system-ui;z-index:999;box-shadow:0 2px 12px #0003'; document.body.appendChild(el); }"""
+            """() => { const el=document.createElement('div'); el.id='walkthrough-caption'; el.style.cssText='position:fixed;bottom:16px;left:224px;right:34px;padding:16px 24px;background:#252522;color:white;border-left:4px solid #c34c24;font:500 18px system-ui;z-index:999'; document.body.appendChild(el); }"""
         )
 
         def cue(text, until):

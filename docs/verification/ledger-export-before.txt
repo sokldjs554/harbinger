@@ -1,0 +1,127 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__________ test_example_download_excludes_records_beyond_declared_end __________
+
+client = <starlette.testclient.TestClient object at 0x7f48c6b6f680>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f48c630c800>
+
+    def test_example_download_excludes_records_beyond_declared_end(client, monkeypatch):
+        import pandas as pd
+    
+        from harbinger.api.upload import parse_csv
+    
+        info = client.get("/v1/workbench/info").json()
+        store = client.app.state.store
+        inspections = store.tables["inspections"]
+        late = inspections.query("site_id == 'S01'").iloc[[0]].copy()
+        late["inspection_id"] = "outside-observation"
+        late["performed_at"] = pd.Timestamp(info["observation_end"]) + pd.Timedelta(days=1)
+        monkeypatch.setitem(store.tables, "inspections", pd.concat([inspections, late], ignore_index=True))
+        response = client.get("/v1/workbench/example.csv")
+        assert response.status_code == 200
+>       tables, _ = parse_csv(response.content, info["latest_as_of_date"])
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_workbench.py:79: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+content = b'\xef\xbb\xbfrecord_id,record_type,site_id,asset_id,category,archetype,installed,criticality,floor,zone,occurred_at,i...x81 \xec\x9e\x91\xeb\x8f\x99 \xed\x99\x95\xec\x9d\xb8,89.0,2024-01-01 09:00:00,beacon,0.0,,0,,,,,,,,0,,,,,,0,0,,,0,,\n'
+observation_end = '2024-10-31'
+
+    def parse_csv(content: bytes, observation_end: str):
+        if len(content) > MAX_BYTES:
+            raise UploadError("파일 크기 초과: UTF-8 CSV 최대 5 MiB입니다.")
+        end = timestamp(observation_end, end_of_day=True)
+        try:
+            text = content.decode("utf-8-sig")
+        except UnicodeDecodeError as exc:
+            raise UploadError("UTF-8 CSV만 지원합니다. 엑셀에서 CSV UTF-8로 저장하세요.") from exc
+        try:
+            reader = csv.reader(io.StringIO(text), strict=True)
+            header = next(reader)
+            if len(header) != len(set(header)):
+                raise UploadError("중복 열 이름이 있습니다.")
+            missing = set(BASE + INS) - set(header)
+            if missing:
+                raise UploadError("필수 열 누락: " + ", ".join(sorted(missing)))
+            extra = set(header) - set(BASE + INS + CHECKS)
+            if extra:
+                raise UploadError("지원하지 않는 열: " + ", ".join(sorted(extra)))
+            rows = []
+            for rownum, row in enumerate(reader, 2):
+                if len(row) != len(header):
+                    raise UploadError(f"{rownum}행: 열 개수가 헤더와 다릅니다.")
+                if any(len(v) > 2000 for v in row):
+                    raise UploadError(f"{rownum}행: 셀은 최대 2,000자입니다.")
+                rows.append(row)
+                if len(rows) > MAX_ROWS:
+                    raise UploadError("행 수 초과: 최대 20,000행입니다.")
+        except (csv.Error, StopIteration) as exc:
+            raise UploadError("빈 파일이거나 올바르지 않은 CSV입니다.") from exc
+        if not rows:
+            raise UploadError("분석할 기록이 없습니다. 헤더 아래 데이터 행을 넣으세요.")
+        df = pd.DataFrame(rows, columns=header)
+        for col in BASE:
+            if df[col].str.strip().eq("").any():
+                raise UploadError(
+                    f"{col}: 필수 값 누락. CSV 행 {(df.index[df[col].str.strip().eq('')] + 2).tolist()[:5]}"
+                )
+        for col in ["record_id", "site_id", "asset_id"]:
+            if not df[col].str.fullmatch(r"[A-Za-z0-9_.-]{1,80}").all():
+                raise UploadError(f"{col}: 영문/숫자/밑줄/점/하이픈 1~80자만 지원합니다.")
+        if df.record_id.duplicated().any():
+            raise UploadError("record_id 중복: 고유한 기록 ID를 사용하세요.")
+        if df.duplicated(["asset_id", "record_type", "occurred_at"]).any():
+            raise UploadError("동일 설비·기록 종류·시각 중복입니다. 원본 기록을 확인하세요.")
+        if df.asset_id.nunique() > MAX_ASSETS or df.site_id.nunique() > MAX_SITES:
+            raise UploadError("처리 한도 초과: 설비 500개, 고객사 10개 이하만 지원합니다.")
+        for col, allowed in [
+            ("category", {c.value for c in AssetCategory}),
+            ("archetype", {c.value for c in SiteArchetype}),
+            ("record_type", {"inspection", "breakdown", "preventive", "parts"}),
+        ]:
+            bad = set(df[col]) - allowed
+            if bad:
+                raise UploadError(f"{col}: 지원하지 않는 값 {sorted(bad)[:5]}")
+        ins_mask = df.record_type.eq("inspection")
+        if not ins_mask.any():
+            raise UploadError("점검(inspection) 기록이 없어 우선순위를 계산할 수 없습니다.")
+        for col in ["occurred_at", "installed"]:
+            df[col] = df[col].map(timestamp)
+        df.loc[ins_mask, "scheduled_at"] = df.loc[ins_mask, "scheduled_at"].map(timestamp)
+        if (df.occurred_at > end).any():
+>           raise UploadError("관측 종료 이후 기록이 있습니다. 종료일 또는 기록 날짜를 확인하세요.")
+E           harbinger.api.upload.UploadError: 관측 종료 이후 기록이 있습니다. 종료일 또는 기록 날짜를 확인하세요.
+
+src/harbinger/api/upload.py:114: UploadError
+---------------------------- Captured stdout setup -----------------------------
+[features] rows=7013 features=102 pos_rate(valid)=0.0654 in 1.1s
+[eval] split={'train': {'rows': 4208, 'mature_labels': 3510, 'immature_labels': 698, 'from': '2024-01-01', 'to': '2024-07-01'}, 'val': {'rows': 708, 'to': '2024-08-01', 'mature_labels': 20, 'immature_labels': 688}, 'test': {'rows': 2097, 'to': '2024-10-31'}} features=116 labeled train/val/test=3510/20/1414
+[eval] HGB full: {'n': 1414, 'pos_rate': 0.09405940594059406, 'auroc': 0.6460237244164275, 'pr_auc': 0.14778656437634152, 'brier': 0.09623639560654175, 'ece': 0.09566248024707605, 'pr_auc_lift': 1.5712045265274204, 'c_index': 0.6311815329605805, 'calibration_method': 'Platt 스케일링', 'calibration_val_logloss_raw': 0.6685828425242324, 'calibration_val_brier_raw': 0.20881963022855748, 'calibration_val_logloss_platt': 0.5993283591198705, 'calibration_val_brier_platt': 0.20083838461143433, 'calibration_val_logloss_isotonic': 1.0377381923910558, 'calibration_val_brier_isotonic': 0.17068529363926033}
+[eval] baselines: {'logistic_full': 0.573, 'age_only': 0.525, 'last_inspection': 0.618, 'oracle_latent_state': 0.81, 'constant_prior': 0.5}
+[eval] ablation: {'checklist_only': 0.591, '+text': 0.643, '+text+quality': 0.637, '+text+quality+history': 0.664, 'full(+energy)': 0.646, 'full−text': 0.649, 'full−quality': 0.641, 'full−history': 0.635}
+[eval] survival cox: c=0.716 ibs=0.0921 p30_auroc=0.740
+[eval] survival aft: c=0.711 ibs=0.0874 p30_auroc=0.736
+[deep:text] epoch 1 train=1.3673 val=0.1080
+[deep:text] epoch 6 train=0.5708 val=0.1060
+[deep:text] epoch 8 train=0.5651 val=0.1073
+[eval] deep text+site: p30_auroc=0.699 c=0.682 ibs=0.0792
+[eval] energy: {'mae': 692.0486276262701, 'mape': 0.04189773732672829, 'r2': 0.9910151723354313, 'rows': 368} oracle={'summer_corr_resid_vs_cooling_degradation': 0.4137477174394356, 'auroc_z_vs_high_degradation': 0.6884037154074499, 'anomaly_day_rate': 0.3559322033898305, 'rows': 236}
+[eval] patrol@10: {'age': 0.11, 'harbinger_deep': 0.25, 'harbinger_hgb': 0.16, 'last_inspection': 0.175, 'logistic': 0.125, 'random': 0.105, 'recent_repair': 0.025, 'round_robin': 0.05, 'without_history': 0.14, 'without_text': 0.16} recall@20%={'top_frac': 0.2, 'breakdowns_evaluated': 80, 'recall': 0.3375}
+[eval] top features: [('tx_weak_score_ewm', 0.43), ('wo_days_since_pm', 0.378), ('q_evidence_sum6', 0.177), ('tx_n_groups_ewm', 0.148), ('q_dwell_rel', 0.146), ('st_age_years', 0.14), ('st_floor', 0.117), ('ck_days_since_caution', 0.113)]
+[eval] saved bundle v20261021-133258; total 18.4s
+---------------------------- Captured stderr setup -----------------------------
+Fontconfig error: No writable cache directories
+{"ts": "2026-10-21T13:32:58", "level": "INFO", "logger": "harbinger.store", "msg": "store loaded: assets=444 features_rows=7013 bundle=v20261021-133258 in 0.1s"}
+------------------------------ Captured log setup ------------------------------
+WARNING  matplotlib:__init__.py:573 mkdir -p failed for path /home/agent/.config/matplotlib: [Errno 30] Read-only file system: '/home/agent/.config/matplotlib'
+WARNING  matplotlib:__init__.py:596 Matplotlib created a temporary cache directory at /tmp/matplotlib-yrw2bh0l because there was an issue with the default path (/home/agent/.config/matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+----------------------------- Captured stderr call -----------------------------
+{"ts": "2026-10-21T13:32:58", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: GET http://testserver/v1/workbench/info \"HTTP/1.1 200 OK\""}
+{"ts": "2026-10-21T13:32:59", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: GET http://testserver/v1/workbench/example.csv \"HTTP/1.1 200 OK\""}
+------------------------------ Captured log call -------------------------------
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/v1/workbench/info "HTTP/1.1 200 OK"
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/v1/workbench/example.csv "HTTP/1.1 200 OK"
+=========================== short test summary info ============================
+FAILED tests/test_workbench.py::test_example_download_excludes_records_beyond_declared_end
+1 failed in 23.43s

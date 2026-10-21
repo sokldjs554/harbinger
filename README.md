@@ -6,7 +6,7 @@
 
 ## 직접 사용하기
 
-1. **예제 기록 불러오기** → 고객사와 과거 기준일을 선택합니다.
+1. **예제 대장 열기** → 고객사와 과거 기준일을 선택합니다.
 2. 설비 이름을 눌러 **점검 원문·고장 이력·모델 기여도**를 확인합니다.
 3. **비교·검증**에서 동일한 날짜·설비·점검 예산으로 규칙, 로지스틱, 현재 모델, 메모/이력 제거 모델을 비교합니다.
 4. 관측이 부족한 날짜는 **평가 보류**로 표시합니다. 고객사별 결과와 별도 LOSO 실험을 구분합니다.
@@ -14,9 +14,11 @@
 
 [공개 데모 주소](https://sokldjs554.github.io/harbinger/)는 **저장된 합성 모델 응답을 재생하는 정적 사이트**입니다. 이 브랜치의 새 배포 확인 여부는 [검증 기록](docs/verification/README.md)에 명시합니다. 공개 페이지는 CSV를 서버에 보내거나 임의 날짜의 모델을 계산하지 않습니다. **실제 업로드·추론은 아래 로컬 서버에서 동작합니다.**
 
-[80초 사용 영상](docs/demo/walkthrough.mp4) · [모바일 검증 화면](docs/verification/browser-static/mobile.png)
+새 화면은 왼쪽 기능 목록, 중앙 설비 대장, 오른쪽 개별 기록으로 구성합니다. 모바일에서는 설비 기록을 열고 돌아가기 또는 Esc로 대장에 복귀합니다.
 
-![전체 합성 모델의 저장 응답과 원문 근거](docs/verification/browser-static/priority.png)
+[80초 사용 영상](docs/demo/walkthrough.mp4) · [모바일 검증 화면](docs/verification/ledger-static/mobile.png)
+
+![전체 합성 모델의 저장 응답과 원문 근거](docs/verification/ledger-static/priority.png)
 
 ## 실행
 

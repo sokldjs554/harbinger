@@ -80,7 +80,9 @@ def main():
     (args.out / "workbench-data.json").write_text(
         json.dumps(out, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
     )
-    (args.out / "example.csv").write_bytes(export_example(store.tables, sites[0]["site_id"]))
+    (args.out / "example.csv").write_bytes(
+        export_example(store.tables, sites[0]["site_id"], store.data_end - pd.Timedelta(seconds=1))
+    )
     (args.out / ".nojekyll").touch()
     (args.out / "README.md").write_text(
         "# 저장된 합성 예제\n\n이 폴더는 build_workbench_demo.py로 생성합니다. 업로드와 임의 날짜 계산은 FastAPI 서버에서만 지원합니다.\n\n모델: "

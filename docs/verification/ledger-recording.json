@@ -1,0 +1,8 @@
+{
+  "url": "http://127.0.0.1:8020/",
+  "mode": "저장된 합성 예제",
+  "duration_target_seconds": 80,
+  "elapsed_seconds": 80.00344830500035,
+  "raw_video": "/workspace/harbinger-runs/ledger-video/page@a1da82e3d4b0793798710b3d141e0c15.webm",
+  "duration_seconds": 80.0
+}
