@@ -1,0 +1,5 @@
+Source commit: 637de9ab16b35ab071b7aeaa3bcd0496324b901c
+Run: https://github.com/sokldjs554/harbinger/actions/runs/39599050299
+Deploy and public asset checks: success.
+2026-10-21T12:25:40.8152373Z Reported success!
+2026-10-21T12:25:41.3605534Z Public demo verified: https://sokldjs554.github.io/harbinger/; model=v20261021-103259; 5 matching assets; MP4 available

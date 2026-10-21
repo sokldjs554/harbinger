@@ -24,12 +24,12 @@
 - 이 API 화면의 모델은 CI에서 새로 학습한 **축소 합성 모델**이다. README 성능과 정적 제출 화면의 전체 모델 `v20261021-103259`와 혼동하지 않는다. `browser/`에는 이전 부분 실행 화면을 보존하며 최종 검증 근거는 `browser-live/`다.
 - 정적 데모는 [최종 verify 작업](https://github.com/sokldjs554/harbinger/actions/runs/39597159691/job/119212205715)에서도 통과했다. 예제·원문·탭·고객사·평가 보류·다운로드·모바일·세션 닫기 및 실제 조작 영상 79.88초를 확인했다. 저장소 [영상](../demo/walkthrough.mp4)과 [화면](browser-static/checks.json)은 동일 전체 모델의 직전 성공 실행(39596071478, 영상 79.84초)에서 가져왔다. 최종 실행에서는 초기 로딩 중 클릭 방지도 확인했다.
 
-## 배포 및 컨테이너 상태
+## 공개 배포와 컨테이너 실행
 
 로컬 환경은 소켓 생성/연결, Chromium IPC 및 Docker 소켓 접근을 `Operation not permitted`로 차단했다. 권한 확장 요청도 완료되지 않아 GitHub Actions에서 실제 API·브라우저 및 컨테이너를 검증한다. 이는 자동 승인 심사에서 거절됐다는 응답과는 다르다.
 
 - **Docker 이미지 빌드와 실행 통과.** [image 작업](https://github.com/sokldjs554/harbinger/actions/runs/39597165426/job/119213518062)에서 컨테이너가 합성 모델을 새로 학습(평가 72.8초)하고 서버를 시작했다. `/health`, `/v1/workbench/info` HTTP 200 및 실행 UID 10001을 확인했다. [출력 발췌](docker-runtime.txt). 컨테이너 예제 버전은 `v20261021-121613`으로 전체 실험 번들과 다르다.
-- 공개 배포는 GitHub의 `github-pages` 환경 보호 규칙이 작업 브랜치를 허용하지 않아 거부됐다. 검증 작업과 배포 작업을 분리했고 보호 규칙은 변경하지 않았다. 새 화면 공개에는 [PR #1](https://github.com/sokldjs554/harbinger/pull/1)의 main 병합 및 이후 배포 확인이 필요하다. 현재 공개 주소가 새 버전이라는 주장은 하지 않는다.
+- **공개 배포 완료.** 사용자 승인 후 [PR #1](https://github.com/sokldjs554/harbinger/pull/1)을 main에 병합했다. 기존 `github-pages` 보호 규칙은 변경하지 않았다. [main 배포 실행](https://github.com/sokldjs554/harbinger/actions/runs/39599050299)에서 정적 브라우저 검증·영상 녹화·배포·공개 파일 대조가 통과했다. [공개 데모](https://sokldjs554.github.io/harbinger/)의 HTML·JS·CSS·모델 응답 JSON·예제 CSV 5개를 저장소 파일과 SHA-256으로 비교했고 모델 `v20261021-103259` 및 MP4 제공을 확인했다. [확인 로그](public-deploy.txt). 공개 서버는 저장 응답 재생이며 실제 업로드·새 계산은 FastAPI/Docker에서 실행한다.
 
 ## CI에서 발견한 추가 결함
 
