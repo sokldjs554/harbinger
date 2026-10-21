@@ -1,8 +1,13 @@
 name: pages
 on:
   push:
-    branches: [main, codex/dwi-evaluation-web]
-    paths: ["docs/demo/**", ".github/workflows/pages.yml"]
+    branches: [main]
+    paths:
+      - "docs/demo/**"
+      - ".github/workflows/pages.yml"
+      - "scripts/check_browser.py"
+      - "scripts/record_workbench.py"
+      - "scripts/check_public_demo.py"
   workflow_dispatch:
 permissions:
   contents: read
