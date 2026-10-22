@@ -172,9 +172,26 @@
       if (id === "sort" && !$(id).value) $(id).value = "risk";
     }
     $("as-of").value = p.get("date") || session.default_as_of;
+    syncFilterDisclosure();
+  }
+  function syncFilterDisclosure() {
+    const open = params().get("filter_panel") === "open";
+    $("filter-toggle").setAttribute("aria-expanded", String(open));
+    $("filter-toggle-state").textContent = open ? "접기" : "펼치기";
+    $("list-filter-fields").classList.toggle("is-open", open);
+  }
+  function renderFilterSummary() {
+    if (!data) return;
+    const labels = ["customer", "category", "sort"].map(
+      (id) => $(id).selectedOptions[0].textContent,
+    );
+    const appliedDate = date(data.as_of);
+    $("filter-summary").textContent =
+      `적용: ${labels.join(" · ")} · ${appliedDate} 기준${$("as-of").value !== appliedDate ? " · 기준일 변경 미적용" : ""}`;
   }
   function renderList() {
     if (!data) return;
+    renderFilterSummary();
     const f = filters(),
       q = f.q.toLocaleLowerCase();
     rows = data.assets.filter(
@@ -467,7 +484,7 @@
           .map((c) => {
             const source = sourceFor(c),
               value = c.contribution ?? c.shap;
-            return `<div class="reason-row"><strong>${esc(c.label || c.feature)}</strong><span class="direction ${value > 0 ? "up" : ""}">${value > 0 ? "높이는 쪽" : value < 0 ? "낮추는 쪽" : "영향 없음"}</span><span class="origin">${esc(source.text)}</span>${source.type === "context" ? '<span class="no-link">등록 정보</span>' : `<button class="text-button" type="button" data-source="${source.type}">기록 보기 ↓</button>`}</div>`;
+            return `<div class="reason-row"><strong>${esc(c.label || c.feature)}</strong><span class="direction ${value > 0 ? "up" : ""}">${value > 0 ? "위험 추정을 높인 항목" : value < 0 ? "위험 추정을 낮춘 항목" : "영향 없음"}</span><span class="origin">${esc(source.text)}</span>${source.type === "context" ? '<span class="no-link">등록 정보</span>' : `<button class="text-button" type="button" data-source="${source.type}">기록 보기 ↓</button>`}</div>`;
           })
           .join("")
       : `<p class="source-note">${saved ? "이 설비의 상세 근거는 저장된 데모에 포함되지 않았습니다. 최근 원문만 표시합니다." : "이 설비의 모델 기여도를 계산할 수 없습니다. 원문 기록을 확인해 주세요."}</p>`;
@@ -533,6 +550,15 @@
       return;
     event.preventDefault();
     openAsset(link.dataset.asset);
+  });
+  $("filter-toggle").onclick = () => {
+    changeUrl({
+      filter_panel: params().get("filter_panel") === "open" ? null : "open",
+    });
+    syncFilterDisclosure();
+  };
+  $("filters").addEventListener("change", (event) => {
+    if (event.target.id === "as-of") renderFilterSummary();
   });
   $("search").addEventListener("input", filterChanged);
   for (const id of ["customer", "category", "sort"])

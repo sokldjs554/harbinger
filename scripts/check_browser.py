@@ -9,6 +9,8 @@ from urllib.parse import urlsplit
 
 from playwright.sync_api import expect, sync_playwright
 
+from check_mobile_filters import check_mobile_filters
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -71,7 +73,7 @@ def main():
         shot("detail", True)
         page.click("#back-list")
         expect(page.locator("#list-screen")).to_be_visible()
-        assert page.evaluate("document.activeElement.dataset.asset") == first_id
+        expect(page.locator(f'[data-asset="{first_id}"]')).to_be_focused()
         nav("validation")
         expect(page.locator("#comparison-rows tr").first).to_be_visible(timeout=120000)
         applied_date = page.locator("#report-date").input_value()
@@ -180,6 +182,7 @@ def main():
             expect(page.locator("[data-asset]").first).to_be_visible(timeout=120000)
         nav("list")
         page.set_viewport_size({"width": 390, "height": 844})
+        check_mobile_filters(page, args.static, args.out)
         shot("mobile-list")
         page.locator("[data-asset]").first.click()
         expect(page.locator("#record-memo")).to_be_visible(timeout=120000)
@@ -210,6 +213,8 @@ def main():
             "three downloads",
             "CSV sample",
             "mobile all views",
+            "mobile filter disclosure, applied summary, pending date and history/scroll restoration",
+            "readable direction labels and exact live/saved mode at 320/390/650px",
             "session close",
         ]
         if not args.static:
