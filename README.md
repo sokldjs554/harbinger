@@ -75,46 +75,19 @@
 
 ## 실행
 
-Python 3.12 / Linux CPU를 기준으로 의존성을 고정했습니다. 최초 설치에는 패키지 다운로드가 필요합니다. 데이터·모델은 Git에 포함하지 않고 재현 명령으로 생성합니다.
+화면만 확인하려면 설치 없이 [공개 데모](https://sokldjs554.github.io/harbinger/)를 열면 됩니다. **CSV 업로드와 새 계산**을 사용하려면 아래처럼 로컬 서버를 실행합니다.
+
+준비: Git 설치, Docker 실행
 
 ```bash
 git clone https://github.com/sokldjs554/harbinger.git
 cd harbinger
-python3.12 -m venv .venv
-source .venv/bin/activate
-pip install --index-url https://download.pytorch.org/whl/cpu 'torch==2.14.1+cpu'
-pip install -c constraints.txt -e '.[dev]'
-export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
-harbinger bootstrap --data data --models models --artifacts artifacts
-harbinger serve --port 8000
-```
-
-`http://localhost:8000/console/`을 열면 됩니다. OpenAPI는 `/docs`, 상태는 `/health`입니다. 기본 bootstrap은 축소 합성 데이터를 학습하므로 이 문서의 전체 실험과 수치·버전이 다릅니다. 새 환경에서 첫 부트스트랩은 수 분 이상 걸릴 수 있습니다.
-
-문서와 같은 25개 사이트·36개월·시드 20260101의 전체 실험:
-
-```bash
-export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
-harbinger synth --out data --seed 20260101 --scale 1 --months 36
-harbinger features --data data
-harbinger eval --data data --models models --artifacts artifacts --seed 20260101
-python scripts/make_replay_summary.py
-python scripts/fill_numbers.py
-python scripts/build_workbench_demo.py
-```
-
-수정 후 전체 평가는 이 환경에서 약 26분 걸렸습니다. CPU·패키지·스레드 설정에 따라 달라집니다. 새 실행은 새 모델 버전을 생성합니다. 논문 수준의 다중 시드 강건성 실험은 수행하지 않았습니다.
-
-저장소 루트에서 Docker로 실행할 수도 있습니다.
-
-```bash
-# Docker: 최초 시작에서 축소 예제 학습 후 서버 시작
-# 현재 컨테이너 실행 검증 상태는 docs/verification/README.md 참고
 docker compose up --build api
 ```
 
-컨테이너는 비루트 UID 10001로 실행하도록 구성했습니다. 외부 공개 운영에 필요한 인증·테넌트 권한·요청 속도 제한은 별도 구현이 필요합니다. 기본 공유 예제 변경 API는 비활성화하며 업로드는 독립 세션을 사용합니다.
+브라우저에서 **http://localhost:8000/console/**을 엽니다. 첫 실행에는 이미지 빌드와 축소 합성 모델 학습이 포함되어 수 분 이상 걸릴 수 있습니다. 종료는 실행한 터미널에서 `Ctrl+C`를 누르면 됩니다.
 
+이 명령만으로 로컬 서비스를 사용할 수 있습니다. README의 전체 실험 수치는 별도 학습 결과이므로 기본 실행 결과와 다릅니다. [Python 직접 실행·전체 실험 재현·개발자 검사](docs/running.md)
 ## 입력 형식과 처리 기준
 
 UTF-8/BOM CSV, 최대 **5 MiB / 20,000행 / 설비 500개 / 고객사 10개 / 관측 5년**. 한 행은 점검 또는 고장·예방정비·부품 교체 기록입니다. 필수 열, 열거값, 날짜, 중복 ID, 설비 정보 불일치, 미지원 열을 검사하고 이유와 행 번호를 반환합니다. 자동으로 결측 정답을 음성으로 채우지 않습니다.
@@ -137,15 +110,7 @@ UTF-8/BOM CSV, 최대 **5 MiB / 20,000행 / 설비 500개 / 고객사 10개 / �
 | API·웹·설명·다운로드 | `src/harbinger/api/routers/workbench.py`, `src/harbinger/api/analysis.py`, `src/harbinger/console/workbench.js` |
 | 재현·실행 검증 | [검증 기록 및 미완료 항목](docs/verification/README.md), `Dockerfile`, `.github/workflows/ci.yml` |
 
-```bash
-ruff check src tests scripts
-ruff format --check src tests scripts
-pytest -q
-python scripts/fill_numbers.py --check
-# 별도 설치: pip install playwright && playwright install chromium
-python scripts/check_browser.py --url http://localhost:8000/console/
-python scripts/record_workbench.py --url http://localhost:8000/console/
-```
+검증 명령과 브라우저 검사 방법은 [개발자 검사 안내](docs/running.md#개발자-검사)를 참고하세요.
 
 모델 버전 **v20261021-103259**, 원자료 해시와 평가 파일 버전은 `artifacts/release.json`에 기록합니다. 모델·원자료 바이너리는 로컬 생성물이며 공개 정적 데모에는 합성 계산 응답만 넣습니다. 선택적 TensorFlow 패리티는 이번 버전에서 재실행하지 않았습니다. 기존 산출물은 `artifacts/archive/fd346c7/`와 Git 이력에 보존합니다.
 
