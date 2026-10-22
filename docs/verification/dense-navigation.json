@@ -1,0 +1,18 @@
+{
+  "asset": "A-S15-0062",
+  "page_errors": [],
+  "checks": [
+    "real API analysis and explanation",
+    "dense full width list",
+    "separate detail route",
+    "filter and sort restore",
+    "scroll and focus restore",
+    "browser back and forward",
+    "inspection selection",
+    "evidence source links",
+    "deep link reload",
+    "empty result",
+    "desktop and mobile",
+    "detail error and retry"
+  ]
+}

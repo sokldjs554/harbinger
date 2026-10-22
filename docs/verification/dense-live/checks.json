@@ -1,0 +1,22 @@
+{
+  "url": "http://127.0.0.1:8765/console/",
+  "static": false,
+  "page_errors": [],
+  "checks": [
+    "list/detail and record dates",
+    "back/focus",
+    "same selected identities as backend metrics",
+    "pending condition export isolation",
+    "withheld outcomes",
+    "customer scope",
+    "three downloads",
+    "CSV sample",
+    "mobile all views",
+    "session close",
+    "invalid CSV preserves active records",
+    "valid CSV actual model",
+    "scoring failure preserves previous records",
+    "formula-safe CSV",
+    "upload reload never switches silently to example"
+  ]
+}

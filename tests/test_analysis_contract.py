@@ -38,6 +38,10 @@ def test_random_comparator_uses_same_per_customer_budget():
     result = analyze(store, pd.Timestamp("2025-09-01"), k=1)
     row = next(r for r in result["comparisons"] if r["method"] == "random_expectation")
     assert row["precision_at_k"] == 0.5  # 1 random pick from each site, not from pooled assets
+    current = next(r for r in result["comparisons"] if r["method"] == "current_model")
+    # Equal scores still need exact selected identities so the UI can show the
+    # same outcomes as the metric, rather than independently breaking ties.
+    assert sorted(current["selected_asset_ids"]) == ["a0", "a3"]
 
 
 @pytest.mark.parametrize(

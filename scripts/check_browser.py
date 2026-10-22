@@ -1,11 +1,13 @@
-"""Real Chromium clicks, uploads, downloads, and mobile layout checks."""
+"""Browser regression checks for the full live and saved equipment workflow."""
 
 import argparse
+import csv
+import io
 import json
 from pathlib import Path
-from urllib.parse import urljoin
+from urllib.parse import urlsplit
 
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 
 
 def main():
@@ -15,141 +17,217 @@ def main():
     ap.add_argument("--record", action="store_true")
     ap.add_argument("--out", type=Path, default=Path("docs/verification/browser"))
     args = ap.parse_args()
-    out = args.out
-    out.mkdir(parents=True, exist_ok=True)
+    args.out.mkdir(parents=True, exist_ok=True)
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True, args=["--no-sandbox"])
         context = browser.new_context(
-            viewport={"width": 1440, "height": 1080},
-            record_video_dir=str(out / "video") if args.record else None,
-            record_video_size={"width": 1440, "height": 1080} if args.record else None,
+            viewport={"width": 1440, "height": 1000},
+            record_video_dir=str(args.out / "video") if args.record else None,
         )
         page = context.new_page()
-        errors = []
+        errors, sessions = [], []
         page.on("pageerror", lambda e: errors.append(str(e)))
-        page.goto(args.url)
-        page.wait_for_function("!document.getElementById('mode').textContent.includes('확인 중')")
-        assert "오류" not in page.locator("#mode").inner_text()
-        page.screenshot(path=str(out / "landing.png"), full_page=True)
-        page.click("#example")
-        page.wait_for_function("document.querySelectorAll('#assets tr').length > 0", timeout=120000)
-        page.locator("[data-asset]").first.click()
-        page.wait_for_function(
-            "document.getElementById('evidence').innerText.includes('점검 원문')", timeout=120000
-        )
-        page.screenshot(path=str(out / "priority.png"), full_page=True)
-        # Editing controls without submitting must not change evidence/export conditions.
-        shown_date = page.locator("#static-date" if args.static else "#date").input_value()
-        if args.static:
-            page.select_option("#static-date", index=1)
-        else:
-            page.fill("#date", page.locator("#date").get_attribute("max"))
-        page.locator("[data-asset]").first.click()
-        page.wait_for_function("!document.getElementById('status').classList.contains('busy')")
-        page.click('[data-tab="downloads"]')
-        with page.expect_download() as unchanged:
-            page.click('[data-format="json"]')
-        unchanged.value.save_as(str(out / "unchanged-query.json"))
-        assert json.loads((out / "unchanged-query.json").read_text())["as_of"].startswith(shown_date)
-        if args.static:
-            page.select_option("#static-date", shown_date)
-        else:
-            page.fill("#date", shown_date)
-        for name in ["comparison", "customers", "downloads", "priority"]:
-            page.click(f'[data-tab="{name}"]')
-            assert page.locator("#" + name).is_visible()
-        page.click('[data-tab="downloads"]')
-        for fmt in ["json", "csv", "md"]:
+
+        def capture(response):
+            if response.ok and (
+                response.url.endswith("/workbench/example") or "/workbench/upload?" in response.url
+            ):
+                sessions.append(response.json()["session_id"])
+
+        page.on("response", capture)
+
+        def nav(view):
+            page.locator(f'.app-bar [data-view="{view}"]').click()
+
+        def shot(name, full=False):
+            page.screenshot(path=str(args.out / (name + ".png")), full_page=full)
+
+        def download(fmt, filename=None):
             with page.expect_download() as d:
                 page.click(f'[data-format="{fmt}"]')
-            d.value.save_as(str(out / f"result.{fmt}"))
-        page.click('[data-tab="priority"]')
-        page.select_option("#site", index=1)
-        page.locator("#analysis-form button").click()
-        page.wait_for_function("!document.getElementById('status').classList.contains('busy')")
+            path = args.out / (filename or "result." + fmt)
+            d.value.save_as(str(path))
+            return path
+
+        page.goto(args.url)
+        expect(page.locator("[data-asset]").first).to_be_visible(timeout=120000)
+        shot("list")
+        assert not page.locator(".rail,.stats,.analysis-grid").count()
+        page.fill("#search", "no-such-equipment-zzzz")
+        expect(page.locator("#empty")).to_be_visible()
+        page.click("#reset-filters")
+        first_id = page.locator("[data-asset]").first.get_attribute("data-asset")
+        page.select_option("#sort", "inspection")
+        dates = page.locator(".date-cell").all_text_contents()
+        assert dates == sorted(dates)
+        page.click("#reset-filters")
+        page.locator("[data-asset]").first.click()
+        expect(page.locator("#record-memo")).to_be_visible(timeout=120000)
+        expect(page.locator("#list-screen")).to_be_hidden()
+        if page.locator("[data-inspection]").count() > 1:
+            page.locator("[data-inspection]").nth(1).click()
+            expect(page.locator("[data-inspection]").nth(1)).to_have_attribute("aria-pressed", "true")
+            page.locator("[data-inspection]").first.click()
+        shot("detail", True)
+        page.click("#back-list")
+        expect(page.locator("#list-screen")).to_be_visible()
+        assert page.evaluate("document.activeElement.dataset.asset") == first_id
+        nav("validation")
+        expect(page.locator("#comparison-rows tr").first).to_be_visible(timeout=120000)
+        applied_date = page.locator("#report-date").input_value()
+        shot("validation")
         if args.static:
-            page.select_option("#static-date", index=1)
+            page.select_option("#report-date", index=1)
         else:
-            end = page.locator("#date").get_attribute("max")
-            page.fill("#date", end)
-        page.locator("#analysis-form button").click()
-        page.wait_for_function("!document.getElementById('status').classList.contains('busy')")
-        assert "평가 보류" in page.locator("#stats").inner_text()
-        page.click('[data-tab="comparison"]')
-        assert "평가 보류" in page.locator("#evaluation-note").inner_text()
-        page.screenshot(path=str(out / "withheld.png"), full_page=True)
-        if not args.static:
-            page.click('[data-tab="priority"]')
-            page.fill("#date", "2000-01-01")
-            page.locator("#analysis-form button").click()
-            page.wait_for_selector("#empty:visible")
-            page.click("#upload-toggle")
-            page.set_input_files("#csv", {"name": "bad.csv", "mimeType": "text/csv", "buffer": b"wrong\n1"})
-            page.locator("#upload-form button").click()
-            page.wait_for_selector("#error:visible")
-            assert "필수 열" in page.locator("#error").inner_text()
-            page.screenshot(path=str(out / "upload-error.png"), full_page=True)
-            response = page.request.get(urljoin(args.url, "/v1/workbench/example.csv"))
-            assert response.ok
-            page.set_input_files(
-                "#csv", {"name": "example.csv", "mimeType": "text/csv", "buffer": response.body()}
-            )
-            page.locator("#upload-form button").click()
-            page.wait_for_function(
-                "document.getElementById('dataset').textContent.includes('업로드 기록')", timeout=120000
-            )
-            page.wait_for_function("!document.getElementById('status').classList.contains('busy')")
-            assert not page.locator("#error").is_visible(), page.locator("#error").inner_text()
-        page.set_viewport_size({"width": 390, "height": 844})
-        page.click('[data-tab="priority"]')
-        first_asset = page.locator("[data-asset]").first
-        asset_id = first_asset.get_attribute("data-asset")
-        first_asset.click()
-        page.wait_for_function("!document.getElementById('status').classList.contains('busy')")
-        assert page.locator("#record-back").is_visible(), "Mobile record needs a return to the list"
-        assert page.locator("#evidence").get_attribute("aria-modal") == "true"
-        assert page.locator("#evidence").bounding_box()["y"] == 0
-        page.screenshot(path=str(out / "mobile-record.png"))
-        page.click("#record-back")
-        assert first_asset.is_visible()
-        assert page.evaluate("document.activeElement.dataset.asset") == asset_id
-        first_asset.click()
-        page.wait_for_function("!document.getElementById('status').classList.contains('busy')")
-        page.keyboard.press("Escape")
-        assert not page.locator("#record-back").is_visible()
-        assert page.evaluate("document.activeElement.dataset.asset") == asset_id
-        page.screenshot(path=str(out / "mobile.png"), full_page=True)
-        assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth"), (
-            "Mobile horizontal overflow"
+            page.fill("#report-date", page.locator("#report-date").get_attribute("max"))
+        expect(page.locator("#report-pending")).to_contain_text("적용 전")
+        nav("downloads")
+        original = json.loads(download("json", "unchanged-query.json").read_text())
+        assert original["as_of"].startswith(applied_date)
+        chosen = next(m for m in original["comparisons"] if m["method"] == "current_model")
+        nav("validation")
+        displayed = page.locator("[data-outcome-asset]").evaluate_all(
+            "els=>els.map(e=>e.dataset.outcomeAsset)"
         )
+        assert set(displayed) == set(chosen["selected_asset_ids"])
+        page.click("#report-apply")
+        expect(page.locator("#evaluation-note")).to_contain_text("평가 보류", timeout=120000)
+        assert all("평가 보류" in r for r in page.locator("#comparison-rows tr").all_text_contents())
+        assert "미확정" in page.locator("#outcome-rows").inner_text()
+        shot("withheld")
+        nav("customers")
+        expect(page.locator("#customer-rows tr").first).to_be_visible()
+        expect(page.locator("#loso-content")).not_to_be_empty(timeout=30000)
+        shot("customers")
+        nav("downloads")
+        for fmt in ["md", "csv", "json"]:
+            download(fmt)
+        assert "평가 보류" in (args.out / "result.md").read_text()
+        withheld = json.loads((args.out / "result.json").read_text())
+        assert withheld["evaluation_status"] == "withheld"
+        assert all(a["failed_within_30d"] is None for a in withheld["assets"])
+        shot("downloads")
+        page.select_option("#report-site", index=1)
+        page.click("#report-apply")
+        expect(page.locator("#report-pending")).to_have_text("", timeout=120000)
+        selected_site = page.locator("#report-site").input_value()
+        scoped = json.loads(download("json", "site.json").read_text())
+        assert {a["site_id"] for a in scoped["assets"]} == {selected_site}
+        nav("data")
+        shot("data")
+        with page.expect_download() as d:
+            page.click("#sample-csv")
+        d.value.save_as(str(args.out / "example.csv"))
+        if args.static:
+            expect(page.locator("#upload-submit")).to_be_disabled()
+            assert "저장된 합성" in page.locator("#data-mode-note").inner_text()
+        else:
+            page.set_input_files(
+                "#csv-file", {"name": "bad.csv", "mimeType": "text/csv", "buffer": b"wrong\n1"}
+            )
+            page.check("#observation-confirm")
+            page.click("#upload-submit")
+            expect(page.locator("#data-error")).to_contain_text("필수 열", timeout=120000)
+            shot("upload-error")
+            nav("list")
+            expect(page.locator("[data-asset]").first).to_be_visible()
+            assert page.locator("[data-asset]").first.get_attribute("data-asset") == first_id
+            nav("data")
+            records = list(
+                csv.DictReader(io.StringIO((args.out / "example.csv").read_text(encoding="utf-8-sig")))
+            )
+            for r in records:
+                if r["record_type"] == "inspection":
+                    r["memo"] = "=1+1"
+            output = io.StringIO()
+            writer = csv.DictWriter(output, fieldnames=list(records[0]))
+            writer.writeheader()
+            writer.writerows(records)
+            page.set_input_files(
+                "#csv-file",
+                {"name": "example.csv", "mimeType": "text/csv", "buffer": output.getvalue().encode()},
+            )
+            # A valid upload must not replace the active records until scoring succeeds.
+            failed_analysis = "**/workbench/sessions/*/analysis?*"
+            page.route(
+                failed_analysis,
+                lambda route: route.fulfill(
+                    status=503,
+                    content_type="application/json",
+                    body='{"detail":"검증용 분석 실패"}',
+                ),
+            )
+            page.click("#upload-submit")
+            expect(page.locator("#data-error")).to_contain_text("검증용 분석 실패", timeout=120000)
+            nav("list")
+            expect(page.locator("[data-asset]").first).to_be_visible()
+            assert page.locator("[data-asset]").first.get_attribute("data-asset") == first_id
+            page.unroute(failed_analysis)
+            nav("data")
+            page.click("#upload-submit")
+            expect(page.locator("#mode")).to_contain_text("업로드 기록", timeout=120000)
+            expect(page.locator("#list-screen")).to_be_visible()
+            nav("downloads")
+            expect(page.locator("#applied-conditions")).to_contain_text("적용된 조건", timeout=120000)
+            exported = list(
+                csv.DictReader(io.StringIO(download("csv", "uploaded.csv").read_text(encoding="utf-8-sig")))
+            )
+            assert all(r["memo"] == "'=1+1" for r in exported)
+            page.reload()
+            expect(page.locator("#data-screen")).to_be_visible()
+            assert "다시 불러와" in page.locator("#data-status").inner_text()
+            page.click("#load-example")
+            expect(page.locator("[data-asset]").first).to_be_visible(timeout=120000)
+        nav("list")
+        page.set_viewport_size({"width": 390, "height": 844})
+        shot("mobile-list")
+        page.locator("[data-asset]").first.click()
+        expect(page.locator("#record-memo")).to_be_visible(timeout=120000)
+        shot("mobile-detail", True)
+        page.click("#back-list")
+        expect(page.locator("#list-screen")).to_be_visible()
+        for view in ["validation", "customers", "downloads", "data"]:
+            nav(view)
+            page.wait_for_timeout(150)
+            assert page.evaluate("document.documentElement.scrollWidth<=innerWidth"), view
+            shot("mobile-" + view)
+        page.click("#close-session")
+        expect(page.locator("#dataset-source")).to_have_text("열린 기록 없음", timeout=30000)
         assert not errors, errors
-        page.click("#close")
-        page.wait_for_selector("#workspace", state="hidden")
+        if not args.static:
+            base = urlsplit(args.url)
+            for token in sessions:
+                page.request.delete(f"{base.scheme}://{base.netloc}/v1/workbench/sessions/{token}")
         context.close()
         browser.close()
-        (out / "checks.json").write_text(
+        checks = [
+            "list/detail and record dates",
+            "back/focus",
+            "same selected identities as backend metrics",
+            "pending condition export isolation",
+            "withheld outcomes",
+            "customer scope",
+            "three downloads",
+            "CSV sample",
+            "mobile all views",
+            "session close",
+        ]
+        if not args.static:
+            checks += [
+                "invalid CSV preserves active records",
+                "valid CSV actual model",
+                "scoring failure preserves previous records",
+                "formula-safe CSV",
+                "upload reload never switches silently to example",
+            ]
+        (args.out / "checks.json").write_text(
             json.dumps(
-                {
-                    "url": args.url,
-                    "static": args.static,
-                    "page_errors": errors,
-                    "checks": [
-                        "load",
-                        "evidence",
-                        "all tabs",
-                        "site selection",
-                        "pending outcomes",
-                        "downloads",
-                        "mobile",
-                        "mobile record and return focus",
-                        "session close",
-                    ]
-                    + ([] if args.static else ["empty", "invalid CSV", "valid CSV"]),
-                },
+                {"url": args.url, "static": args.static, "page_errors": errors, "checks": checks},
+                ensure_ascii=False,
                 indent=2,
             )
         )
-        print("browser checks passed")
+        print("full workflow browser checks passed")
 
 
 if __name__ == "__main__":

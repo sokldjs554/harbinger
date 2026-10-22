@@ -30,16 +30,27 @@ def main():
     m = json.loads(Path("artifacts/metrics.json").read_text())
     files = list(Path("artifacts").glob("*.json")) + list(Path("src/harbinger").rglob("*.py"))
     files += list(Path("src/harbinger/console").glob("workbench.*"))
-    files += [Path("src/harbinger/console/index.html"), Path("constraints.txt")]
+    files += [
+        Path("src/harbinger/console/index.html"),
+        Path("src/harbinger/console/reports.js"),
+        Path("constraints.txt"),
+    ]
     files += [
         Path("docs/demo") / n
-        for n in ["index.html", "workbench.js", "workbench.css", "workbench-data.json", "example.csv"]
+        for n in [
+            "index.html",
+            "workbench.js",
+            "workbench.css",
+            "reports.js",
+            "workbench-data.json",
+            "example.csv",
+        ]
     ]
     r = {
         "model_version": m["bundle_version"],
         "synthetic": True,
         "base_commit": "fd346c75ddae39fa6383096d7dd6adabccfdb044",
-        "code_state": "implemented on codex/dwi-evaluation-web; source hashes below, not the base commit alone",
+        "code_state": "approved dense equipment workflow on codex/dwi-dense-list-review; exact source hashes below",
         "observation": m["observation"],
         "sha256": {str(p): digest(p) for p in sorted(files) if p != target},
         "source_note": "survival bin-edge correction applied after fitting; zero affected full train/val/test event rows (verification/survival-edge-impact.txt)",
