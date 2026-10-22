@@ -40,30 +40,42 @@
               placeholder="설비명, 식별번호, 점검 메모"
               autocomplete="off"
           /></label>
-          <label
-            ><span>고객사</span
-            ><select id="customer">
-              <option value="">전체 고객사</option>
-            </select></label
+          <button
+            id="filter-toggle"
+            class="text-button"
+            type="button"
+            aria-expanded="false"
+            aria-controls="list-filter-fields"
           >
-          <label
-            ><span>설비 종류</span
-            ><select id="category">
-              <option value="">전체 종류</option>
-            </select></label
-          >
-          <label
-            ><span>정렬</span
-            ><select id="sort">
-              <option value="risk">고장 가능성 높은 순</option>
-              <option value="inspection">점검 오래된 순</option>
-              <option value="name">설비 이름순</option>
-            </select></label
-          >
-          <label class="date-field"
-            ><span>예측 기준일</span><input id="as-of" type="date" required
-          /></label>
-          <button class="primary" id="calculate" type="submit">조회</button>
+            상세 필터 <span id="filter-toggle-state">펼치기</span>
+          </button>
+          <p id="filter-summary" aria-live="polite"></p>
+          <div id="list-filter-fields">
+            <label
+              ><span>고객사</span
+              ><select id="customer">
+                <option value="">전체 고객사</option>
+              </select></label
+            >
+            <label
+              ><span>설비 종류</span
+              ><select id="category">
+                <option value="">전체 종류</option>
+              </select></label
+            >
+            <label
+              ><span>정렬</span
+              ><select id="sort">
+                <option value="risk">고장 가능성 높은 순</option>
+                <option value="inspection">점검 오래된 순</option>
+                <option value="name">설비 이름순</option>
+              </select></label
+            >
+            <label class="date-field"
+              ><span>예측 기준일</span><input id="as-of" type="date" required
+            /></label>
+            <button class="primary" id="calculate" type="submit">조회</button>
+          </div>
         </form>
         <div class="list-context">
           <span id="list-context">합성 예제를 불러오고 있습니다.</span
@@ -171,8 +183,9 @@
             </div>
             <div id="reasons" class="reasons"></div>
             <p class="source-note">
-              높이는 쪽·낮추는 쪽은 모델 점수에 대한 기여 방향입니다. 개별
-              문장이 고장의 원인이라는 뜻이나 수리 효과의 증거가 아닙니다.
+              ‘위험 추정을 높인 항목·위험 추정을 낮춘 항목’은 모델 점수에 대한
+              기여 방향입니다. 개별 문장이 고장의 원인이라는 뜻이나 수리 효과의
+              증거가 아닙니다.
             </p>
             <details id="model-details">
               <summary>계산값과 모델 정보</summary>

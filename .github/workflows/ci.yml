@@ -39,11 +39,17 @@ jobs:
           HARBINGER_DATA_DIR=/tmp/hb/data HARBINGER_MODEL_DIR=/tmp/hb/models HARBINGER_ARTIFACT_DIR=/tmp/hb/artifacts HARBINGER_DEMO_BOOTSTRAP=0 uvicorn harbinger.api.main:app --port 8000 > /tmp/browser-server.txt 2>&1 &
           for i in $(seq 1 60); do curl -fsS http://127.0.0.1:8000/health && break || sleep 2; done
           python scripts/check_browser.py --out /tmp/browser-checks
+      - name: Browser interactions (saved demo and mobile filters)
+        run: |
+          python -m http.server 8020 --directory docs/demo > /tmp/static-server.txt 2>&1 &
+          python scripts/check_browser.py --static --url http://127.0.0.1:8020/ --out /tmp/static-mobile
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: browser-verification
-          path: /tmp/browser-checks
+          path: |
+            /tmp/browser-checks
+            /tmp/static-mobile
       - name: Docs numbers match artifacts
         run: |
           python scripts/fill_numbers.py --check
