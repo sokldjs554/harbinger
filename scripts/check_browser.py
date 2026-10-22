@@ -73,7 +73,7 @@ def main():
         shot("detail", True)
         page.click("#back-list")
         expect(page.locator("#list-screen")).to_be_visible()
-        assert page.evaluate("document.activeElement.dataset.asset") == first_id
+        expect(page.locator(f'[data-asset="{first_id}"]')).to_be_focused()
         nav("validation")
         expect(page.locator("#comparison-rows tr").first).to_be_visible(timeout=120000)
         applied_date = page.locator("#report-date").input_value()

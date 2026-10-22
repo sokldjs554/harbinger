@@ -64,7 +64,7 @@ def check_mobile_filters(page, saved, out):
     page.click("#back-list")
     expect(page.locator("#list-screen")).to_be_visible()
     page.wait_for_function("y=>Math.abs(scrollY-y)<3", arg=y)
-    assert page.evaluate("document.activeElement.dataset.asset") == selected
+    expect(page.locator(f'[data-asset="{selected}"]')).to_be_focused()
     for k, v in values.items():
         assert page.locator("#" + k).input_value() == v
     expect(page.locator("#filter-toggle")).to_have_attribute("aria-expanded", "false")
