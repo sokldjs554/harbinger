@@ -66,7 +66,7 @@ def main():
             out["artifacts"][name] = safe_json(json.loads(path.read_text()))
     # docs/demo is generated output tracked in Git; refuse arbitrary destination deletion.
     args.out.mkdir(parents=True, exist_ok=True)
-    for name in ["index.html", "workbench.js", "workbench.css"]:
+    for name in ["index.html", "workbench.js", "workbench.css", "reports.js"]:
         shutil.copy2(console_dir() / name, args.out / name)
     html = (
         (args.out / "index.html")

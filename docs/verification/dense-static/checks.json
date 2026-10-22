@@ -1,0 +1,17 @@
+{
+  "url": "http://127.0.0.1:8766/",
+  "static": true,
+  "page_errors": [],
+  "checks": [
+    "list/detail and record dates",
+    "back/focus",
+    "same selected identities as backend metrics",
+    "pending condition export isolation",
+    "withheld outcomes",
+    "customer scope",
+    "three downloads",
+    "CSV sample",
+    "mobile all views",
+    "session close"
+  ]
+}

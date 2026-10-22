@@ -1,497 +1,824 @@
+/* Equipment workflow: real API computation or explicitly saved synthetic responses. */
 "use strict";
-const $ = (id) => document.getElementById(id);
-const esc = (x) =>
-  String(x ?? "").replace(
-    /[&<>"']/g,
-    (c) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
-        c
-      ],
-  );
-const pct = (v) => (v == null ? "평가 보류" : (v * 100).toFixed(1) + "%");
-const num = (v) => (v == null ? "—" : Number(v).toFixed(3));
-const names = {
-  current_model: "현재 HGB 모델",
-  logistic: "단순 로지스틱 모델",
-  without_text: "메모 제거 모델",
-  without_history: "고장 이력 제거 모델",
-  last_inspection_rule: "최근 점검 판정 규칙",
-  age_rule: "연식 규칙",
-  recent_repair_rule: "최근 고장 규칙",
-  oldest_inspection_rule: "오래 미점검 규칙",
-  random_expectation: "무작위 기대치",
-};
-let session = null,
-  data = null,
-  displayedQuery = null,
-  saved = null,
-  busy = false,
-  artifacts = {};
-let selectedAssetId = null,
-  listScrollY = 0;
-const emptyEvidence = $("evidence").innerHTML;
-const recordBackground =
-  ".rail,.topbar,.page-heading,.source,#status,.toolbar,#stats,.section-head,#ledger-list,.provenance-details,footer";
-const categories = {
-  chiller: "냉동기",
-  ahu: "공조기",
-  pump: "펌프",
-  boiler: "보일러",
-  elevator: "승강기",
-  generator: "발전기",
-  switchgear: "배전반",
-  fire_pump: "소방 펌프",
-  cooling_tower: "냉각탑",
-  exhaust_fan: "환풍기",
-  auto_door: "자동문",
-  water_tank: "저수조",
-};
-function returnToList(restoreFocus = true) {
-  const wasOpen = document.body.classList.contains("record-open");
-  document.body.classList.remove("record-open");
-  $("evidence").removeAttribute("role");
-  $("evidence").removeAttribute("aria-modal");
-  document
-    .querySelectorAll(recordBackground)
-    .forEach((el) => (el.inert = false));
-  if (wasOpen && restoreFocus) {
-    window.scrollTo(0, listScrollY);
-    [...document.querySelectorAll("[data-asset]")]
-      .find((el) => el.dataset.asset === selectedAssetId)
-      ?.focus({ preventScroll: true });
-  }
-}
-function selectTab(name) {
-  returnToList(false);
-  document
-    .querySelectorAll(".panel")
-    .forEach((p) => (p.hidden = p.id !== name));
-  document.querySelectorAll("[data-tab]").forEach((t) => {
-    const active = t.dataset.tab === name;
-    t.classList.toggle("active", active);
-    if (active) t.setAttribute("aria-current", "page");
-    else t.removeAttribute("aria-current");
-  });
-}
-async function api(path, options = {}) {
-  const r = await fetch(path, options);
-  if (!r.ok) {
-    let m;
-    try {
-      m = (await r.json()).detail;
-    } catch {
-      m = `요청 실패 (${r.status})`;
-    }
-    throw Error(typeof m === "string" ? m : JSON.stringify(m));
-  }
-  return r.json();
-}
-function status(text, loading = false) {
-  $("status").textContent = text;
-  $("status").classList.toggle("busy", loading);
-}
-async function task(fn) {
-  if (busy) return;
-  busy = true;
-  $("error").hidden = true;
-  document.querySelectorAll("button").forEach((b) => (b.disabled = true));
-  status("기록을 검사하고 모델을 계산하고 있습니다…", true);
-  try {
-    await fn();
-  } catch (e) {
-    $("error").textContent = e.message;
-    $("error").hidden = false;
-    status("처리하지 못했습니다. 아래 이유를 확인하고 다시 시도하세요.");
-  } finally {
-    busy = false;
-    document.querySelectorAll("button").forEach((b) => (b.disabled = false));
-    $("status").classList.remove("busy");
-  }
-}
-function controls() {
-  return {
-    as_of: saved ? $("static-date").value : $("date").value,
-    site: $("site").value,
-    k: saved ? "10" : $("budget").value,
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const esc = (value) =>
+    String(value ?? "").replace(
+      /[&<>"']/g,
+      (c) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[c],
+    );
+  const date = (value) => String(value || "").slice(0, 10);
+  const percent = (value) =>
+    Number.isFinite(value) ? `${(value * 100).toFixed(1)}%` : "계산 불가";
+  const overall = (value) => ["양호", "주의", "불량"][value] ?? "기록 없음";
+  const categories = {
+    chiller: "냉동기",
+    ahu: "공조기",
+    pump: "펌프",
+    boiler: "보일러",
+    elevator: "승강기",
+    generator: "발전기",
+    switchgear: "배전반",
+    fire_pump: "소방 펌프",
+    cooling_tower: "냉각탑",
+    exhaust_fan: "환풍기",
+    auto_door: "자동문",
+    water_tank: "저수조",
   };
-}
-function query(criteria = controls()) {
-  const p = new URLSearchParams(criteria);
-  if (!p.get("site")) p.delete("site");
-  return p.toString();
-}
-async function release() {
-  if (session && !saved)
-    await fetch(`/v1/workbench/sessions/${session.session_id}`, {
-      method: "DELETE",
-    });
-  returnToList(false);
-  session = null;
-  data = null;
-  displayedQuery = null;
-  selectedAssetId = null;
-  $("workspace").hidden = true;
-  $("welcome").hidden = false;
-  document.body.classList.remove("session-active");
-}
-async function activate(s) {
-  session = s;
-  $("welcome").hidden = true;
-  document.body.classList.add("session-active");
-  $("workspace").hidden = false;
-  selectTab("priority");
-  $("site").innerHTML =
-    '<option value="">전체 고객사</option>' +
-    s.sites
-      .map(
-        (x) =>
-          `<option value="${esc(x.site_id)}">${esc(x.name)} · ${esc(x.site_id)}</option>`,
-      )
-      .join("");
-  $("date").value = s.default_as_of;
-  $("date").max = s.latest_as_of_date || s.observation_end.slice(0, 10);
-  $("observation").value =
-    s.latest_as_of_date || s.observation_end.slice(0, 10);
-  $("dataset").textContent =
-    `${s.source.startsWith("synthetic") ? "합성 예제" : "업로드 기록"} · ${s.summary.assets.toLocaleString()}개 설비 · ${s.summary.sites}개 고객사`;
-  if (saved) {
-    $("static-date").innerHTML = saved.dates
-      .map((d) => `<option>${d}</option>`)
-      .join("");
-    $("date").hidden = true;
-    $("static-date").hidden = false;
-    $("budget").disabled = true;
-  }
-  await calculate();
-}
-async function calculate() {
-  if (!session) throw Error("먼저 예제 또는 CSV를 불러오세요.");
-  const c = controls();
-  data = saved
-    ? saved.snapshots[`${c.as_of}|${c.site}`]
-    : await api(
-        `/v1/workbench/sessions/${session.session_id}/analysis?${query(c)}`,
-      );
-  if (!data)
-    throw Error(
-      "이 조건의 저장된 결과가 없습니다. 제공된 날짜와 고객사를 선택하세요.",
-    );
-  displayedQuery = { ...c };
-  render();
-  status(
-    saved
-      ? "저장된 합성 계산 결과를 열었습니다. 이 화면에서는 모델을 재계산하지 않습니다."
-      : "실제 Python 모델 계산을 마쳤습니다. 결과와 평가 조건을 확인하세요.",
-  );
-}
-function render() {
-  returnToList(false);
-  selectedAssetId = null;
-  const r = data;
-  $("provenance").textContent =
-    `${saved ? "저장 응답 재생" : "서버 모델 계산"} · 모델 ${r.model_version} · 모델 관측 종료 ${r.model_observed_until || "알 수 없음"} · 정답 관측 종료 ${r.observation_end} · 예측 ${r.as_of}`;
-  $("stats").innerHTML = [
-    ["분석한 설비", r.assets.length.toLocaleString(), "기준일 이전 점검 기록"],
-    [
-      "고장 결과 관측",
-      r.outcomes_observed ? "30일 완료" : "평가 보류",
-      r.outcomes_observed
-        ? "기록된 고장과 비교 가능"
-        : "30일 정답이 아직 확정되지 않음",
-    ],
-    [
-      "시간 보류",
-      r.time_held_out ? "조건 충족" : "평가 보류",
-      "모델 학습·보정 종료와 대조",
-    ],
-    [
-      "데이터 출처",
-      r.source.startsWith("synthetic") ? "합성 예제" : "업로드",
-      "합성 학습 모델 · 실증 아님",
-    ],
-  ]
-    .map(
-      ([a, b, c]) =>
-        `<div class="stat"><small>${esc(a)}</small><strong>${esc(b)}</strong><em>${esc(c)}</em></div>`,
-    )
-    .join("");
-  $("assets").innerHTML = r.assets
-    .slice(0, 50)
-    .map(
-      (a, i) =>
-        `<tr><td class="row-number">${String(i + 1).padStart(2, "0")}</td><td><button data-asset="${esc(a.asset_id)}" aria-pressed="false">${esc(a.name)}</button><small>${esc(a.site_id)} · ${esc(categories[a.category] || a.category)}</small></td><td class="risk-cell"><b>${pct(a.p30)}</b><div class="risk-bar"><i style="width:${Math.min(100, a.p30 * 100)}%"></i></div></td><td>${["양호", "주의", "불량"][a.overall] ?? "기록 없음"}</td><td class="outcome-cell ${a.failed_within_30d === null ? "tag-pending" : a.failed_within_30d ? "tag-failure" : ""}">${a.failed_within_30d === null ? "관측 부족" : a.failed_within_30d ? "고장 기록 있음" : "고장 기록 없음"}</td></tr>`,
-    )
-    .join("");
-  $("empty").hidden = !!r.assets.length;
-  $("comparisons").innerHTML = r.comparisons
-    .map(
-      (m) =>
-        `<tr><td>${esc(names[m.method] || m.method)}</td><td>${pct(m.precision_at_k)}</td><td>${pct(m.recall_at_k)}</td><td>${num(m.metrics?.auroc)}</td><td>${num(m.metrics?.pr_auc)}</td><td>${num(m.metrics?.brier)}</td></tr>`,
-    )
-    .join("");
-  $("evaluation-note").textContent =
-    r.evaluation_status === "available"
-      ? "이 기준일의 비교 조건을 충족했습니다. 이는 합성 학습 모델의 탐색적 평가이며, 고객사 보류 실험과 구별됩니다."
-      : "평가 보류\n" + r.evaluation_reasons.join("\n");
-  $("evaluation-note").classList.toggle(
-    "warn",
-    r.evaluation_status !== "available",
-  );
-  $("customer-cards").innerHTML = r.per_site
-    .map(
-      (s) =>
-        `<article class="card"><h3>${esc(s.site_id)}</h3><span class="badge">${s.status === "available" ? "평가 가능" : "평가 보류"}</span><p>설비 ${s.assets}개 · 이후 고장 ${s.positives ?? "미확정"}개</p><p>${s.status === "available" ? `AUROC ${num(s.metrics.auroc)} · Brier ${num(s.metrics.brier)}` : esc(s.reason)}</p></article>`,
-    )
-    .join("");
-  $("evidence").innerHTML = emptyEvidence;
-}
-async function showEvidence(id) {
-  const a = data.assets.find((v) => v.asset_id === id);
-  status("원문 기록과 모델 기여도를 확인하고 있습니다…", true);
-  const r = saved
-    ? saved.evidence[`${displayedQuery.as_of}|${id}`]
-    : await api(
-        `/v1/workbench/sessions/${session.session_id}/assets/${encodeURIComponent(id)}?as_of=${encodeURIComponent(displayedQuery.as_of)}`,
-      );
-  const e = r?.explanation,
-    memos = e?.evidence?.recent_inspections || [],
-    contrib = e?.contributions || [];
-  selectedAssetId = id;
-  document.querySelectorAll("[data-asset]").forEach((b) => {
-    const selected = b.dataset.asset === id;
-    b.setAttribute("aria-pressed", String(selected));
-    b.closest("tr").classList.toggle("selected-row", selected);
-  });
-  const index = String(
-    data.assets.findIndex((v) => v.asset_id === id) + 1,
-  ).padStart(2, "0");
-  $("evidence").innerHTML =
-    `<button id="record-back" class="record-back">← 점검대장으로 돌아가기</button><div class="record-top"><p class="overline">개별 기록 / RECORD</p><span class="record-index">No. ${index}</span></div><h3 class="record-name">${esc(a.name)}</h3><p class="record-id">${esc(a.site_id)} / ${esc(a.asset_id)}</p><div class="fact"><span>30일 고장 위험</span><b>${pct(a.p30)}</b></div><div class="fact"><span>최근 90일 고장 이력</span><b>${a.breakdowns_90d}건</b></div><div class="fact"><span>최근 점검</span><span>${esc(a.inspection_at.slice(0, 10))}</span></div><h4>점검 원문</h4>${memos.length ? memos.map((m) => `<small class="memo-date">${esc((m.performed_at || m.at || "").slice(0, 10))}</small><blockquote>${esc(m.memo || "(메모 없음)")}</blockquote>`).join("") : `<blockquote>${esc(a.memo || "(메모 없음)")}</blockquote>`}<h4>판단에 영향을 준 항목</h4>${contrib.length ? "<ul>" + contrib.map((c) => `<li><span>${esc(c.label || c.feature)}<br>${esc(c.direction || "")}</span><b>${num(c.contribution ?? c.shap)}</b></li>`).join("") + "</ul>" : '<p class="footnote">이 설비의 저장된 SHAP 근거가 없거나 설명 계산을 사용할 수 없습니다.</p>'}<p class="footnote">모델 기여도는 예측을 설명하며 고장의 원인이나 수리 효과를 입증하지 않습니다.</p>`;
-  $("evidence").scrollTop = 0;
-  if (window.matchMedia("(max-width:650px)").matches) {
-    listScrollY = window.scrollY;
-    document.body.classList.add("record-open");
-    $("evidence").setAttribute("role", "dialog");
-    $("evidence").setAttribute("aria-modal", "true");
-    document
-      .querySelectorAll(recordBackground)
-      .forEach((el) => (el.inert = true));
-    requestAnimationFrame(() => $("record-back").focus());
-  }
-  status(
-    saved
-      ? "저장된 점검 기록과 모델 근거입니다."
-      : "원문과 모델 근거 계산을 마쳤습니다.",
-  );
-}
-$("evidence").addEventListener("click", (e) => {
-  if (e.target.closest("#record-back")) returnToList();
-});
-document.addEventListener("keydown", (e) => {
-  if (!document.body.classList.contains("record-open")) return;
-  if (e.key === "Escape") {
-    e.preventDefault();
-    returnToList();
-  }
-  if (e.key === "Tab") {
-    e.preventDefault();
-    $("record-back")?.focus();
-  }
-});
-window.matchMedia("(max-width:650px)").addEventListener("change", (e) => {
-  if (!e.matches) returnToList(false);
-});
-async function experiments() {
-  try {
-    if (saved) artifacts = saved.artifacts;
-    else {
-      const pairs = await Promise.all(
-        ["metrics", "ablation", "loso", "patrol"].map(async (n) => [
-          n,
-          await api("/v1/artifacts/" + n).catch(() => null),
-        ]),
-      );
-      artifacts = Object.fromEntries(pairs);
-    }
-    const a = artifacts.ablation || {};
-    $("experiments").innerHTML =
-      "<p>동일 시간 경계로 학습한 제거 실험입니다. 메모 제거에는 메모에서 파생된 품질 가중치도 제외합니다. 수치의 변화는 합성 생성 가정에 의존합니다.</p><table><thead><tr><th>입력 조건</th><th>AUROC</th><th>PR-AUC</th><th>Brier</th></tr></thead><tbody>" +
-      Object.entries(a)
-        .map(
-          ([k, v]) =>
-            `<tr><td>${esc(k)}</td><td>${num(v.auroc)}</td><td>${num(v.pr_auc)}</td><td>${num(v.brier)}</td></tr>`,
-        )
-        .join("") +
-      "</tbody></table><p>메모·이력의 기여는 전체 모델과 제거 모델을 함께 비교해 판단하세요. 성능이 낮아지지 않으면 해당 실험에서 추가 이득을 확인하지 못한 것입니다. 메모가 항상 도움이 된다고 해석하지 않습니다.</p><p>반복 주간 평가는 고객사 전체 시계열을 묶는 bootstrap을 사용합니다. 전체 결과는 다운로드 가능한 저장소 artifacts에 기록합니다.</p>";
-    const l = artifacts.loso || {};
-    const completed = Object.keys(l.per_site || {});
-    $("loso").textContent =
-      `고객사 보류(LOSO): ${completed.length}개 평가 완료 / ${(l.holdout_sites || []).length}개 선정. 전체 고객사 모두를 검증했다는 뜻이 아닙니다.\n평가 고객사: ${completed.join(", ") || "산출물 없음"}\n미선정: ${(l.not_selected_sites || []).join(", ") || "없음"}\n평가 제외: ${Object.keys(l.skipped_sites || {}).join(", ") || "없음"}\n처음 보는 고객사의 정답은 학습·보정에서 제외하고, 에너지 피처도 제외했습니다. 자체 정답 0개월 AUROC ${num(l.mean_by_months?.["0"]?.auroc)}. 실제 고객 일반화의 증거가 아닙니다.`;
-  } catch (e) {
-    $("experiments").textContent =
-      "전체 평가 산출물을 불러오지 못했습니다: " + e.message;
-    $("loso").textContent =
-      "고객사 보류 실험 산출물이 없습니다. 평가 완료로 표시하지 않습니다.";
-  }
-}
-function downloadSaved(format) {
-  const r = data;
-  let body, mime;
-  if (format === "json") {
-    body = JSON.stringify(r, null, 2);
-    mime = "application/json";
-  } else if (format === "csv") {
-    const keys = [
-      "asset_id",
-      "site_id",
-      "p30",
-      "inspection_at",
-      "memo",
-      "failed_within_30d",
-    ];
-    const cell = (x) => '"' + String(x ?? "").replace(/"/g, '""') + '"';
-    body =
-      "\ufeff" +
-      [keys, ...r.assets.map((a) => keys.map((k) => a[k]))]
-        .map((row) => row.map(cell).join(","))
-        .join("\n");
-    mime = "text/csv";
-  } else {
-    body =
-      `# harbinger 저장 예제 분석\n\n합성 데이터의 저장 응답 재생. 실시간 계산·고객 실증 아님.\n\n모델: ${r.model_version}\n\n기준: ${r.as_of}\n\n모델 관측 종료: ${r.model_observed_until}\n\n정답 관측 종료: ${r.observation_end}\n\n평가: ${r.evaluation_status}\n\n${r.evaluation_reasons.join("\n")}\n\n| 방법 | Precision@K | AUROC |\n|---|---:|---:|\n` +
-      r.comparisons
-        .map(
-          (m) =>
-            `| ${names[m.method]} | ${pct(m.precision_at_k)} | ${num(m.metrics?.auroc)} |`,
-        )
-        .join("\n");
-    mime = "text/markdown";
-  }
-  const url = URL.createObjectURL(new Blob([body], { type: mime }));
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `harbinger-saved.${format}`;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-$("example").onclick = () =>
-  task(async () => {
-    await release();
-    await activate(
+  const pageSize = 50;
+  let session,
+    data,
+    saved,
+    detail,
+    selectedRecord = 0,
+    generation = 0,
+    loading = false;
+  let listPosition = 0,
+    lastAsset = null,
+    rows = [],
+    requestController;
+  const evidenceCache = new Map();
+  const reports = window.HarbingerReports({
+    esc,
+    session: () => session,
+    saved: () => saved,
+    date: () => date(data?.as_of) || session.default_as_of,
+    customer: () => $("customer").value,
+    siteName,
+    analyze: async (c) => {
+      const r = saved
+        ? saved.snapshots[`${c.as_of}|${c.site}`]
+        : await liveAnalysis(c.as_of, c.site, c.k);
+      if (!r)
+        throw Error(
+          "이 날짜와 고객사의 저장 결과가 없습니다. 제공된 조건을 선택해 주세요.",
+        );
+      return r;
+    },
+    artifacts: async () =>
       saved
-        ? saved.session
-        : await api("/v1/workbench/example", { method: "POST" }),
-    );
-    await experiments();
+        ? saved.artifacts
+        : Object.fromEntries(
+            await Promise.all(
+              ["ablation", "loso"].map(async (name) => [
+                name,
+                await api("/v1/artifacts/" + name).catch(() => null),
+              ]),
+            ),
+          ),
   });
-$("upload-toggle").onclick = () => {
-  if (saved) {
-    $("error").textContent =
-      "공개 정적 데모는 저장된 예제만 재생합니다. CSV 업로드와 임의 날짜 계산은 README의 Docker 실행 후 로컬 웹에서 사용할 수 있습니다.";
-    $("error").hidden = false;
-    return;
+  const synthetic = () => !session || session.source.startsWith("synthetic");
+  history.scrollRestoration = "manual";
+
+  function params() {
+    return new URLSearchParams(location.search);
   }
-  $("upload-panel").hidden = !$("upload-panel").hidden;
-  $("upload-toggle").setAttribute(
-    "aria-expanded",
-    String(!$("upload-panel").hidden),
-  );
-};
-$("upload-form").onsubmit = (e) => {
-  e.preventDefault();
-  task(async () => {
-    const file = $("csv").files[0];
-    if (!file) throw Error("CSV 파일을 선택하세요.");
-    if (!file.name.toLowerCase().endsWith(".csv"))
-      throw Error("CSV 파일만 지원합니다.");
-    if (file.size > 5 * 1024 * 1024)
-      throw Error("파일 크기 초과: 최대 5 MiB입니다.");
-    await release();
-    const s = await api(
-      "/v1/workbench/upload?observation_end=" +
-        encodeURIComponent($("observation").value),
-      { method: "POST", headers: { "Content-Type": "text/csv" }, body: file },
-    );
-    await activate(s);
-    status(
-      "CSV 검증과 모델 계산을 마쳤습니다. " + s.summary.warnings.join(" "),
-    );
-    await experiments();
-  });
-};
-$("analysis-form").onsubmit = (e) => {
-  e.preventDefault();
-  task(calculate);
-};
-$("assets").onclick = (e) => {
-  const b = e.target.closest("[data-asset]");
-  if (b) task(() => showEvidence(b.dataset.asset));
-};
-$("close").onclick = () =>
-  task(async () => {
-    await release();
-    $("workspace").hidden = true;
-    status("세션을 닫았습니다. 업로드된 기록은 메모리에서 제거됩니다.");
-  });
-document.querySelectorAll("[data-tab]").forEach(
-  (b) =>
-    (b.onclick = () => {
-      if (!session) {
-        status("먼저 예제 대장을 열거나 CSV를 불러오세요.");
-        $("example").focus();
-        return;
+  function filters() {
+    return {
+      q: $("search").value.trim(),
+      customer: $("customer").value,
+      category: $("category").value,
+      sort: $("sort").value,
+      page: params().get("page") || "1",
+    };
+  }
+  function changeUrl(values, push = false, state = history.state) {
+    const url = new URL(location.href);
+    Object.entries(values).forEach(([key, value]) => {
+      if (value == null || value === "") url.searchParams.delete(key);
+      else url.searchParams.set(key, value);
+    });
+    history[push ? "pushState" : "replaceState"](state, "", url);
+  }
+  function siteName(id) {
+    return session?.sites.find((s) => s.site_id === id)?.name || id;
+  }
+  async function api(path, options) {
+    const r = await fetch(path, options);
+    if (!r.ok) {
+      let message = `요청 실패 (${r.status})`;
+      try {
+        const body = await r.json();
+        message = typeof body.detail === "string" ? body.detail : message;
+      } catch {}
+      const error = Error(message);
+      error.status = r.status;
+      throw error;
+    }
+    return r.json();
+  }
+  async function exampleSession(renew = false) {
+    // Only this review's synthetic example metadata, scoped to the browser tab.
+    // Never persist uploaded records or put session tokens in the address bar.
+    const key = "harbinger:review:synthetic-example";
+    if (!renew) {
+      try {
+        const cached = JSON.parse(sessionStorage.getItem(key));
+        if (
+          cached?.expires > Date.now() &&
+          cached.session?.source === "synthetic-example"
+        )
+          return cached.session;
+      } catch {
+        /* Storage can be disabled; the API remains usable. */
       }
-      selectTab(b.dataset.tab);
-    }),
-);
-document.querySelectorAll("[data-format]").forEach(
-  (b) =>
-    (b.onclick = () => {
-      if (!data) return;
-      if (saved) downloadSaved(b.dataset.format);
-      else {
-        const a = document.createElement("a");
-        a.href = `/v1/workbench/sessions/${session.session_id}/download?${query(displayedQuery)}&format=${b.dataset.format}`;
-        a.download = "";
-        a.click();
-      }
-    }),
-);
-(async () => {
-  try {
-    const marker = window.HARBINGER_SAVED
-      ? await fetch("./workbench-data.json")
-      : null;
-    if (marker?.ok) {
-      saved = await marker.json();
-      $("source-title").textContent = "저장된 예제 기록";
-      $("source-description").textContent =
-        "합성 점검 기록 · Python 모델로 계산한 결과";
-      $("upload-toggle").textContent = "CSV 이용 안내";
-      $("mode").textContent = "저장된 합성 예제";
-      $("sample").href = "./example.csv";
-      $("observation").value = saved.session.observation_end.slice(0, 10);
-      document.querySelector(".advanced").hidden = true;
-      status(
-        "공개 정적 데모 · 저장된 모델 응답을 재생합니다. 업로드·임의 날짜 계산은 로컬 서버에서 가능합니다.",
+    }
+    const next = await api("/v1/workbench/example", { method: "POST" });
+    evidenceCache.clear();
+    try {
+      sessionStorage.setItem(
+        key,
+        JSON.stringify({
+          session: next,
+          expires: Date.now() + next.ttl_seconds * 1000,
+        }),
       );
+    } catch {
+      /* No persistent browser storage is required. */
+    }
+    return next;
+  }
+  async function liveAnalysis(asof, site = "", k = "10") {
+    const path = () =>
+      `/v1/workbench/sessions/${session.session_id}/analysis?${new URLSearchParams({ as_of: asof, k, ...(site ? { site } : {}) })}`;
+    try {
+      return await api(path());
+    } catch (error) {
+      if (error.status !== 404 || !synthetic()) throw error;
+      session = await exampleSession(true);
+      return api(path());
+    }
+  }
+  function errorAt(id, error) {
+    $(id).querySelector("span").textContent = error.message;
+    $(id).hidden = false;
+  }
+  function readFilters() {
+    const p = params();
+    for (const [id, key] of [
+      ["search", "q"],
+      ["customer", "customer"],
+      ["category", "category"],
+      ["sort", "sort"],
+    ]) {
+      $(id).value = p.get(key) || (id === "sort" ? "risk" : "");
+      if (id === "sort" && !$(id).value) $(id).value = "risk";
+    }
+    $("as-of").value = p.get("date") || session.default_as_of;
+  }
+  function renderList() {
+    if (!data) return;
+    const f = filters(),
+      q = f.q.toLocaleLowerCase();
+    rows = data.assets.filter(
+      (a) =>
+        (!f.customer || a.site_id === f.customer) &&
+        (!f.category || a.category === f.category) &&
+        (!q ||
+          `${a.name} ${a.asset_id} ${a.memo || ""}`
+            .toLocaleLowerCase()
+            .includes(q)),
+    );
+    rows.sort((a, b) =>
+      f.sort === "inspection"
+        ? a.inspection_at.localeCompare(b.inspection_at) ||
+          a.asset_id.localeCompare(b.asset_id)
+        : f.sort === "name"
+          ? a.name.localeCompare(b.name, "ko") ||
+            a.asset_id.localeCompare(b.asset_id)
+          : b.p30 - a.p30 || a.asset_id.localeCompare(b.asset_id),
+    );
+    const pages = Math.max(1, Math.ceil(rows.length / pageSize));
+    const current = Math.min(pages, Math.max(1, parseInt(f.page, 10) || 1));
+    if (String(current) !== f.page) changeUrl({ page: String(current) });
+    const start = (current - 1) * pageSize;
+    $("result-count").textContent = `${rows.length.toLocaleString()}개 설비`;
+    $("list-context").textContent =
+      `${date(data.as_of)} 기준 · ${$("sort").selectedOptions[0].textContent} · 설비 이름을 눌러 원문 확인`;
+    $("assets").innerHTML = rows
+      .slice(start, start + pageSize)
+      .map((a, index) => {
+        const url = new URL(location.href);
+        url.searchParams.set("asset", a.asset_id);
+        return `<tr><td class="rank">${start + index + 1}</td><td class="asset-cell"><a href="${esc(url.pathname + url.search)}" data-asset="${esc(a.asset_id)}">${esc(a.name)}</a><span class="asset-id">${esc(a.asset_id)}</span></td><td class="site-cell" title="${esc(siteName(a.site_id))}">${esc(siteName(a.site_id))}</td><td class="date-cell">${esc(date(a.inspection_at))}</td><td class="memo-cell" title="${esc(a.memo || "메모 없음")}">${esc(a.memo || "메모 없음")}</td><td class="overall-cell">${overall(a.overall)}</td><td class="risk-cell">${percent(a.p30)}</td></tr>`;
+      })
+      .join("");
+    $("asset-table").hidden = !rows.length;
+    $("empty").hidden = !!rows.length;
+    $("pagination").hidden = !rows.length;
+    $("page-range").textContent =
+      `${rows.length ? start + 1 : 0}–${Math.min(start + pageSize, rows.length)} / ${rows.length.toLocaleString()}개`;
+    $("page-number").textContent = `${current} / ${pages}`;
+    $("previous-page").disabled = current <= 1;
+    $("next-page").disabled = current >= pages;
+    $("list-note").textContent =
+      `${synthetic() ? "합성 예제 · 실제 고객 실증이 아닙니다." : "사용자 업로드 · 합성 학습 모델의 탐색적 분석입니다."} ${saved ? "저장된 Python 모델 계산 결과를 재생합니다." : "실제 Python 모델로 계산한 결과입니다."} 모델 ${data.model_version}. 고장 가능성은 안전 판정이 아닙니다.`;
+  }
+  function filterChanged() {
+    changeUrl({ ...filters(), page: "1" }, false, { view: "list", y: 0 });
+    renderList();
+  }
+  function resetFilters() {
+    $("search").value = "";
+    $("customer").value = "";
+    $("category").value = "";
+    $("sort").value = "risk";
+    filterChanged();
+  }
+  async function loadAnalysis(prefetched = null) {
+    loading = true;
+    $("calculate").disabled = true;
+    $("list-error").hidden = true;
+    $("list-loading").hidden = false;
+    $("asset-table").hidden = true;
+    $("pagination").hidden = true;
+    $("empty").hidden = true;
+    try {
+      const asof = params().get("date") || session.default_as_of;
+      const result =
+        prefetched ||
+        (saved ? saved.snapshots[`${asof}|`] : await liveAnalysis(asof));
+      if (!result)
+        throw Error(
+          "이 날짜의 저장된 계산 결과가 없습니다. 제공된 예측 기준일을 선택해 주세요.",
+        );
+      if (data?.as_of !== result.as_of) reports.reset();
+      data = result;
+      changeUrl({ date: date(data.as_of) });
+      readFilters();
+      renderList();
+      $("mode").textContent = saved
+        ? "합성 예제 · 저장 결과 재생"
+        : `${synthetic() ? "합성 예제" : "업로드 기록"} · Python 계산 완료`;
+      return true;
+    } catch (error) {
+      data = null;
+      $("result-count").textContent = "";
+      $("list-context").textContent = "분석 결과를 불러오지 못했습니다.";
+      errorAt("list-error", error);
+      return false;
+    } finally {
+      loading = false;
+      $("calculate").disabled = false;
+      $("list-loading").hidden = true;
+    }
+  }
+  function saveListPosition() {
+    listPosition = window.scrollY;
+    history.replaceState(
+      { view: "list", y: listPosition, focus: lastAsset },
+      "",
+    );
+  }
+  async function openAsset(id) {
+    if (loading) return;
+    lastAsset = id;
+    saveListPosition();
+    changeUrl({ asset: id, inspection: null }, true, {
+      view: "detail",
+      fromList: true,
+    });
+    await route();
+  }
+  function backToList() {
+    if (history.state?.fromList) history.back();
+    else {
+      changeUrl({ asset: null, inspection: null, view: "list" }, false, {
+        view: "list",
+        y: 0,
+      });
+      route();
+    }
+  }
+  async function route() {
+    const routeId = ++generation;
+    requestController?.abort();
+    const id = params().get("asset");
+    const isDetail = !!id;
+    const view = isDetail ? "detail" : params().get("view") || "list";
+    const isReport = ["validation", "customers", "downloads"].includes(view);
+    $("list-screen").hidden = view !== "list";
+    $("detail-screen").hidden = view !== "detail";
+    $("reports-screen").hidden = !isReport;
+    $("data-screen").hidden = view !== "data";
+    document
+      .querySelectorAll(".app-nav [data-view],.app-actions [data-view]")
+      .forEach((button) => {
+        if (button.dataset.view === (isDetail ? "list" : view))
+          button.setAttribute("aria-current", "page");
+        else button.removeAttribute("aria-current");
+      });
+    if (view === "data") {
+      renderData();
+      window.scrollTo(0, 0);
+      document.title = "데이터 불러오기 · harbinger";
       return;
     }
-  } catch {}
-  try {
-    const info = await api("/v1/workbench/info");
-    $("mode").textContent = "실시간 Python 모델";
-    $("observation").value =
-      info.latest_as_of_date || info.observation_end.slice(0, 10);
-    status("모델 연결 완료. 예제를 불러오거나 CSV를 업로드하세요.");
-  } catch (e) {
-    $("mode").textContent = "서버 연결 오류";
-    $("error").textContent =
-      "분석 서버에 연결하지 못했습니다. README의 실행 방법으로 서버를 시작한 뒤 새로고침하세요. " +
-      e.message;
-    $("error").hidden = false;
+    if (!session || !data) {
+      changeUrl({ view: "data", asset: null, inspection: null });
+      return route();
+    }
+    if (isReport) {
+      window.scrollTo(0, 0);
+      await reports.open(view);
+      document.title = $("report-title").textContent + " · harbinger";
+      return;
+    }
+    if (!isDetail) {
+      readFilters();
+      if (data && date(data.as_of) !== $("as-of").value) await loadAnalysis();
+      else renderList();
+      document.title = "설비 목록 · harbinger";
+      requestAnimationFrame(() => {
+        if (generation !== routeId) return;
+        window.scrollTo(0, history.state?.y ?? listPosition);
+        const focusId = history.state?.focus || lastAsset;
+        [...document.querySelectorAll("[data-asset]")]
+          .find((a) => a.dataset.asset === focusId)
+          ?.focus({ preventScroll: true });
+      });
+      return;
+    }
+    window.scrollTo(0, 0);
+    $("detail-content").hidden = true;
+    $("detail-error").hidden = true;
+    $("detail-loading").hidden = false;
+    $("detail-asof").textContent = `${date(data?.as_of)} 기준 예측`;
+    try {
+      const a = data?.assets.find((item) => item.asset_id === id);
+      if (!a)
+        throw Error(
+          "이 분석 결과에 해당 설비가 없습니다. 목록으로 돌아가 설비를 선택해 주세요.",
+        );
+      const key = `${date(data.as_of)}|${id}`;
+      requestController = new AbortController();
+      let result = evidenceCache.get(key);
+      if (!result) {
+        result = saved
+          ? saved.evidence[key]
+          : await api(
+              `/v1/workbench/sessions/${session.session_id}/assets/${encodeURIComponent(id)}?as_of=${encodeURIComponent(date(data.as_of))}`,
+              { signal: requestController.signal },
+            );
+        if (result) evidenceCache.set(key, result);
+      }
+      if (generation !== routeId) return;
+      detail = { asset: a, response: result || null };
+      renderDetail();
+      $("detail-content").hidden = false;
+      document.title = `${a.name} · 점검 기록 · harbinger`;
+      $("asset-title").focus({ preventScroll: true });
+    } catch (error) {
+      if (generation === routeId && error.name !== "AbortError")
+        errorAt("detail-error", error);
+    } finally {
+      if (generation === routeId) $("detail-loading").hidden = true;
+    }
   }
-})().finally(() => {
-  $("example").disabled = false;
-  $("upload-toggle").disabled = false;
-});
+  function inspections() {
+    const records = detail.response?.explanation?.evidence?.recent_inspections;
+    return records?.length
+      ? [...records].sort((a, b) =>
+          String(b.performed_at || b.at).localeCompare(
+            String(a.performed_at || a.at),
+          ),
+        )
+      : [
+          {
+            performed_at: detail.asset.inspection_at,
+            memo: detail.asset.memo,
+            overall: detail.asset.overall,
+          },
+        ];
+  }
+  function sourceFor(c) {
+    const f = c.feature;
+    // Only these fields describe one latest inspection. All other derived fields
+    // remain labelled as aggregates/context; never attribute their SHAP to a sentence.
+    const latest = [
+      "ck_overall",
+      "ck_n_caution",
+      "ck_n_bad",
+      "ck_n_items",
+      "ck_frac_flagged",
+      "tx_len",
+      "tx_lazy",
+      "tx_weak_hits",
+      "tx_strong_hits",
+      "tx_n_groups",
+      "tx_weak_score",
+      "tx_strong_score",
+    ];
+    if (
+      latest.includes(f) ||
+      f.startsWith("tx_g_") ||
+      /^ck_(noise|vibration|oil_leak|water_leak|temperature|pressure|current|belt|filter|combustion|door|leveling|operation|battery|fuel|insulation|odor|appearance|fill|fan|sensor|level)$/.test(
+        f,
+      )
+    )
+      return {
+        type: "latest",
+        text: `최근 점검 · ${date(detail.asset.inspection_at)}`,
+      };
+    if (f.startsWith("wo_"))
+      return { type: "workorders", text: "기준일 이전 고장·정비 이력 집계" };
+    if (f.startsWith("tx_") || f.startsWith("ck_") || f.startsWith("q_"))
+      return { type: "history", text: "여러 점검의 이력·변화 집계" };
+    return {
+      type: "context",
+      text: f.startsWith("st_") ? "설비·건물 등록 정보" : "기준일의 분석 조건",
+    };
+  }
+  function renderDetail() {
+    const a = detail.asset,
+      r = detail.response;
+    const records = inspections();
+    $("asset-title").textContent = a.name;
+    $("asset-location").textContent =
+      `${siteName(a.site_id)} · ${categories[a.category] || a.category} · ${a.asset_id}${r?.zone ? ` · ${r.zone}` : ""}`;
+    $("asset-risk").textContent = percent(a.p30);
+    $("detail-summary").innerHTML =
+      `<span>최근 점검 <b>${esc(date(a.inspection_at))}</b> · ${Math.floor(a.days_since_inspection)}일 경과</span><span>현장 종합 판정 <b>${overall(a.overall)}</b></span><span>최근 90일 고장 기록 <b>${a.breakdowns_90d}건</b></span>`;
+    $("record-count").textContent = r
+      ? `최근 ${records.length}회 · 날짜를 선택하세요`
+      : "목록에 포함된 최근 원문 1회";
+    $("inspection-dates").innerHTML = records
+      .map(
+        (m, i) =>
+          `<button type="button" data-inspection="${i}" aria-pressed="false">${esc(date(m.performed_at || m.at))}${i === 0 ? "<small>최근 점검</small>" : ""}</button>`,
+      )
+      .join("");
+    const chosen = params().get("inspection");
+    selectedRecord = Math.max(
+      0,
+      records.findIndex((m) => (m.performed_at || m.at) === chosen),
+    );
+    renderRecord();
+    const contributions = r?.explanation?.contributions || [];
+    $("reasons").innerHTML = contributions.length
+      ? contributions
+          .map((c) => {
+            const source = sourceFor(c),
+              value = c.contribution ?? c.shap;
+            return `<div class="reason-row"><strong>${esc(c.label || c.feature)}</strong><span class="direction ${value > 0 ? "up" : ""}">${value > 0 ? "높이는 쪽" : value < 0 ? "낮추는 쪽" : "영향 없음"}</span><span class="origin">${esc(source.text)}</span>${source.type === "context" ? '<span class="no-link">등록 정보</span>' : `<button class="text-button" type="button" data-source="${source.type}">기록 보기 ↓</button>`}</div>`;
+          })
+          .join("")
+      : `<p class="source-note">${saved ? "이 설비의 상세 근거는 저장된 데모에 포함되지 않았습니다. 최근 원문만 표시합니다." : "이 설비의 모델 기여도를 계산할 수 없습니다. 원문 기록을 확인해 주세요."}</p>`;
+    $("model-values").innerHTML =
+      `<p>모델 ${esc(data.model_version)} · 예측 기준 ${esc(data.as_of)}. SHAP 기여도는 모델 점수 단위이며 확률의 변화량(%p)이 아닙니다.</p><table><thead><tr><th>항목</th><th>입력값</th><th>기여도</th></tr></thead><tbody>${contributions.map((c) => `<tr><td>${esc(c.label || c.feature)}</td><td>${Number.isFinite(c.value) ? Number(c.value.toFixed(3)) : "—"}</td><td>${Number.isFinite(c.contribution ?? c.shap) ? (c.contribution ?? c.shap).toFixed(3) : "—"}</td></tr>`).join("")}</tbody></table>`;
+    $("model-details").open = false;
+    const orders = r?.explanation?.evidence?.recent_workorders || [];
+    $("workorder-list").innerHTML = orders.length
+      ? [...orders]
+          .reverse()
+          .map(
+            (w) =>
+              `<div class="workorder"><time>${esc(date(w.opened_at))}</time><span>${esc({ breakdown: "고장 수리", preventive: "예방 정비", parts: "부품 교체" }[w.type] || w.type)}</span><p>${esc(w.description || "설명 없음")}</p></div>`,
+          )
+          .join("")
+      : '<p class="source-note">제공된 상세 응답에 정비 원문이 없습니다. 전체 이력이 없다는 뜻은 아닙니다.</p>';
+    $("detail-provenance").textContent =
+      `${synthetic() ? "합성 예제" : "사용자 업로드"} · ${saved ? "저장된 계산 결과" : "Python 모델 계산"} · 모델 ${data.model_version} · 예측 기준 ${data.as_of}. 이후 고장 결과는 검증에만 사용합니다.`;
+    $("asset-outcome-text").textContent =
+      a.failed_within_30d == null
+        ? `평가 보류 · 기준일 이후 30일 관측이 부족합니다. 정답 관측 종료 ${data.observation_end}.`
+        : `${date(data.as_of)} 당시 추정 ${percent(a.p30)} → ${a.failed_within_30d ? `이후 ${a.days_to_failure?.toFixed(1) ?? "—"}일에 고장 기록 있음` : "이후 30일 관측 기간 내 고장 기록 없음"}.${data.time_held_out ? "" : " 모델 학습·보정 기간과 겹쳐 성능 평가는 보류합니다."}`;
+  }
+  function renderRecord(message = "") {
+    const records = inspections(),
+      m = records[selectedRecord];
+    document
+      .querySelectorAll("[data-inspection]")
+      .forEach((button) =>
+        button.setAttribute(
+          "aria-pressed",
+          String(Number(button.dataset.inspection) === selectedRecord),
+        ),
+      );
+    $("record-date").textContent = String(m.performed_at || m.at)
+      .replace("T", " ")
+      .slice(0, 16);
+    $("record-inspector").textContent = m.inspector_id
+      ? `점검자 ${m.inspector_id}`
+      : "점검자 정보 미제공";
+    $("record-overall").textContent = `현장 종합 판정 · ${overall(m.overall)}`;
+    $("record-memo").textContent = m.memo || "작성된 메모가 없습니다.";
+    $("record-flags").innerHTML =
+      `<span>지적 항목: ${m.flagged_items ? esc(m.flagged_items.join(" · ") || "없음") : "상세 항목 미제공"}</span>${m.dwell_seconds != null ? `<span>점검 체류 ${m.dwell_seconds}초</span>` : ""}`;
+    const related = (detail.response?.explanation?.contributions || []).filter(
+      (c) => sourceFor(c).type === "latest",
+    );
+    $("record-connection").textContent =
+      message ||
+      (selectedRecord === 0 && related.length
+        ? `이 점검에서 계산한 입력: ${related.map((c) => c.label || c.feature).join(" · ")}. 아래에서 각 항목의 기여 방향을 확인하세요.`
+        : "이 날짜의 원문입니다. 아래 기여도는 선택한 기록 한 건의 점수가 아니라 예측 기준일의 모델 판단입니다.");
+  }
+  $("assets").addEventListener("click", (event) => {
+    const link = event.target.closest("[data-asset]");
+    if (
+      !link ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.shiftKey ||
+      event.altKey
+    )
+      return;
+    event.preventDefault();
+    openAsset(link.dataset.asset);
+  });
+  $("search").addEventListener("input", filterChanged);
+  for (const id of ["customer", "category", "sort"])
+    $(id).addEventListener("change", filterChanged);
+  $("reset-filters").onclick = $("empty-reset").onclick = resetFilters;
+  $("filters").onsubmit = async (event) => {
+    event.preventDefault();
+    if (loading || !session) return;
+    changeUrl({ ...filters(), date: $("as-of").value, page: "1" }, false, {
+      view: "list",
+      y: 0,
+    });
+    await loadAnalysis();
+  };
+  for (const [id, delta] of [
+    ["previous-page", -1],
+    ["next-page", 1],
+  ])
+    $(id).onclick = () => {
+      changeUrl(
+        { page: String((Number(params().get("page")) || 1) + delta) },
+        false,
+        { view: "list", y: 0 },
+      );
+      renderList();
+      window.scrollTo(0, 0);
+      $("list-title").scrollIntoView();
+    };
+  $("back-list").onclick = backToList;
+  $("retry-detail").onclick = async () => {
+    evidenceCache.delete(`${date(data?.as_of)}|${params().get("asset")}`);
+    if (await loadAnalysis()) route();
+    else
+      errorAt(
+        "detail-error",
+        Error($("list-error").querySelector("span").textContent),
+      );
+  };
+  $("retry-list").onclick = async () => {
+    if (session) await loadAnalysis();
+    else await init();
+  };
+  $("inspection-dates").onclick = (event) => {
+    const b = event.target.closest("[data-inspection]");
+    if (!b) return;
+    selectedRecord = Number(b.dataset.inspection);
+    const m = inspections()[selectedRecord];
+    changeUrl({ inspection: m.performed_at || m.at });
+    renderRecord();
+  };
+  $("reasons").onclick = (event) => {
+    const b = event.target.closest("[data-source]");
+    if (!b) return;
+    if (b.dataset.source === "workorders") {
+      $("workorders").focus();
+      return;
+    }
+    if (b.dataset.source === "latest") {
+      selectedRecord = 0;
+      changeUrl({ inspection: null });
+      renderRecord();
+    } else
+      renderRecord(
+        `여러 점검을 집계한 항목입니다. 여기에는 최근 ${inspections().length}회 원문만 표시되며 집계 기간의 전체 기록을 뜻하지 않습니다.`,
+      );
+    $("inspection-record").focus();
+  };
+  window.addEventListener("popstate", () => {
+    route();
+  });
+  let scrollFrame;
+  window.addEventListener(
+    "scroll",
+    () => {
+      if ($("list-screen").hidden || scrollFrame) return;
+      scrollFrame = requestAnimationFrame(() => {
+        scrollFrame = null;
+        if (!$("list-screen").hidden) saveListPosition();
+      });
+    },
+    { passive: true },
+  );
+  function populateControls() {
+    $("customer").innerHTML =
+      '<option value="">전체 고객사</option>' +
+      session.sites
+        .map((s) => `<option value="${esc(s.site_id)}">${esc(s.name)}</option>`)
+        .join("");
+    $("category").innerHTML =
+      '<option value="">전체 종류</option>' +
+      Object.entries(categories)
+        .map(([id, name]) => `<option value="${id}">${name}</option>`)
+        .join("");
+    $("as-of").max = session.latest_as_of_date || date(session.observation_end);
+    $("observation-end").value =
+      session.latest_as_of_date || date(session.observation_end);
+    $("footer-source").textContent =
+      `${synthetic() ? "합성 예제" : "사용자 업로드 · 합성 학습 모델"} · 설비의 안전 여부를 확정하지 않습니다.`;
+    readFilters();
+  }
+  function navigate(view) {
+    if (!$("list-screen").hidden) saveListPosition();
+    changeUrl({ view, asset: null, inspection: null }, true, {
+      view,
+      y: view === "list" ? listPosition : 0,
+      focus: lastAsset,
+    });
+    route();
+  }
+  document
+    .querySelectorAll("[data-view]")
+    .forEach(
+      (button) => (button.onclick = () => navigate(button.dataset.view)),
+    );
+  document.querySelector(".brand").onclick = (event) => {
+    event.preventDefault();
+    navigate("list");
+  };
+  function renderData() {
+    $("dataset-source").textContent = session
+      ? `${synthetic() ? "합성 예제" : "업로드 기록"} · ${session.summary.assets}개 설비`
+      : "열린 기록 없음";
+    $("data-mode-note").textContent = saved
+      ? "공개 정적 데모는 저장된 합성 계산 결과를 재생합니다. CSV 업로드·임의 날짜 계산은 README의 Docker 또는 Python 로컬 실행에서 사용할 수 있습니다."
+      : "지원 CSV를 검사하고 실제 Python 모델로 계산합니다. 먼저 합성 예제를 사용하거나 아래 양식으로 점검 기록을 불러오세요.";
+    $("sample-csv").href = saved
+      ? "./example.csv"
+      : "/v1/workbench/example.csv";
+    for (const id of [
+      "csv-file",
+      "observation-end",
+      "observation-confirm",
+      "upload-submit",
+    ])
+      $(id).disabled = !!saved;
+    $("close-session").disabled = !session;
+  }
+  async function releaseSession(old) {
+    if (!old || saved) return;
+    await fetch(`/v1/workbench/sessions/${old.session_id}`, {
+      method: "DELETE",
+    });
+    if (old.source.startsWith("synthetic")) {
+      try {
+        sessionStorage.removeItem("harbinger:review:synthetic-example");
+      } catch {}
+    }
+  }
+  async function activate(next) {
+    // Score the candidate before replacing the active session or its URL state.
+    let result;
+    try {
+      result = saved
+        ? saved.snapshots[`${next.default_as_of}|`]
+        : await api(
+            `/v1/workbench/sessions/${next.session_id}/analysis?${new URLSearchParams({ as_of: next.default_as_of, k: "10" })}`,
+          );
+      if (!result) throw Error("예제의 저장된 계산 결과가 없습니다.");
+    } catch (error) {
+      if (next.session_id !== session?.session_id) await releaseSession(next);
+      throw error;
+    }
+    session = next;
+    data = null;
+    listPosition = 0;
+    lastAsset = null;
+    evidenceCache.clear();
+    reports.reset();
+    changeUrl(
+      {
+        view: "list",
+        source: synthetic() ? null : "upload",
+        date: next.default_as_of,
+        asset: null,
+        inspection: null,
+        q: null,
+        customer: null,
+        category: null,
+        sort: "risk",
+        page: "1",
+      },
+      false,
+      { view: "list", y: 0 },
+    );
+    populateControls();
+    await loadAnalysis(result);
+    await route();
+  }
+  async function dataTask(fn) {
+    if (loading) return;
+    loading = true;
+    $("data-error").hidden = true;
+    $("data-status").textContent = "기록을 검사하고 계산하고 있습니다…";
+    for (const id of ["load-example", "upload-submit", "close-session"])
+      $(id).disabled = true;
+    try {
+      await fn();
+    } catch (error) {
+      errorAt("data-error", error);
+      $("data-status").textContent =
+        "불러오지 못했습니다. 현재 열려 있는 기록은 유지됩니다.";
+    } finally {
+      loading = false;
+      $("load-example").disabled = false;
+      $("upload-submit").disabled = !!saved;
+      $("close-session").disabled = !session;
+    }
+  }
+  $("load-example").onclick = () =>
+    dataTask(async () => {
+      const next = saved
+        ? saved.session
+        : synthetic() && session
+          ? session
+          : await exampleSession();
+      const previous = session;
+      await activate(next);
+      if (previous && previous.session_id !== next.session_id)
+        await releaseSession(previous);
+      $("data-status").textContent = "합성 예제를 불러왔습니다.";
+    });
+  $("close-session").onclick = () =>
+    dataTask(async () => {
+      await releaseSession(session);
+      session = null;
+      data = null;
+      evidenceCache.clear();
+      reports.reset();
+      changeUrl({
+        source: "closed",
+        view: "data",
+        asset: null,
+        inspection: null,
+      });
+      await route();
+      $("data-status").textContent = saved
+        ? "저장 예제 화면을 닫았습니다."
+        : "기록을 닫고 해당 서버 세션을 제거했습니다.";
+    });
+  $("upload-form").onsubmit = (event) => {
+    event.preventDefault();
+    if (saved) return;
+    dataTask(async () => {
+      const file = $("csv-file").files[0];
+      if (!file || !file.name.toLowerCase().endsWith(".csv"))
+        throw Error("CSV 파일만 지원합니다.");
+      if (file.size > 5 * 1024 * 1024)
+        throw Error("파일 크기 초과: 최대 5 MiB입니다.");
+      const next = await api(
+        "/v1/workbench/upload?observation_end=" +
+          encodeURIComponent($("observation-end").value),
+        { method: "POST", headers: { "Content-Type": "text/csv" }, body: file },
+      );
+      const previous = session;
+      await activate(next);
+      await releaseSession(previous);
+      $("data-status").textContent =
+        "CSV 검사와 분석 완료. " + (next.summary.warnings || []).join(" ");
+    });
+  };
+  async function init() {
+    $("list-error").hidden = true;
+    $("list-loading").hidden = false;
+    try {
+      if (window.HARBINGER_SAVED) {
+        saved = await api("./workbench-data.json");
+        session = saved.session;
+        $("as-of").outerHTML =
+          `<select id="as-of" aria-label="예측 기준일">${saved.dates.map((d) => `<option>${esc(d)}</option>`).join("")}</select>`;
+      } else if (["upload", "closed"].includes(params().get("source"))) {
+        changeUrl({ view: "data", asset: null, inspection: null });
+        await route();
+        $("data-status").textContent =
+          params().get("source") === "upload"
+            ? "업로드 자료는 새로고침 후 다시 불러와 주세요. 합성 예제로 자동 전환하지 않았습니다."
+            : "예제 또는 CSV를 불러와 시작하세요.";
+        return;
+      } else session = await exampleSession();
+      populateControls();
+      if (!params().get("date")) changeUrl({ date: session.default_as_of });
+      if (await loadAnalysis()) await route();
+    } catch (error) {
+      errorAt("list-error", error);
+      $("list-loading").hidden = true;
+      $("mode").textContent = "연결 오류";
+    }
+  }
+  init();
+})();

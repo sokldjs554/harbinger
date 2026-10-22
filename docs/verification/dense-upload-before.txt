@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "/workspace/harbinger/scripts/check_browser.py", line 234, in <module>
+    main()
+  File "/workspace/harbinger/scripts/check_browser.py", line 161, in main
+    expect(page.locator("#data-error")).to_contain_text("검증용 분석 실패", timeout=120000)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 14961, in to_contain_text
+    self._sync(
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 111, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 303, in to_contain_text
+    await self._expect_impl(
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to contain text '검증용 분석 실패'
+Actual value: 
+          필수 열 누락: archetype, asset_id, category, criticality, dwell_seconds, floor, inspector_id, installed, memo, method, occurred_at, overall, photo_count, record_id, record_type, scheduled_at, site_id, zone
+         

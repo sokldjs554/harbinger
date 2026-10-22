@@ -69,6 +69,7 @@ def analyze(store, as_of, site=None, k=10, source="synthetic-example"):
                     "precision_at_k": float(selected.outcome.mean()) if eligible else None,
                     "recall_at_k": float(selected.outcome.sum() / positives) if eligible else None,
                     "selected": len(selected),
+                    "selected_asset_ids": selected.asset_id.tolist(),
                     "k_per_site": k,
                 }
             )

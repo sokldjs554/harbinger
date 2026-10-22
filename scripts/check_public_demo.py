@@ -14,7 +14,14 @@ def main():
     args = parser.parse_args()
     base = args.url.rstrip("/") + "/"
     version = json.loads(Path("artifacts/metrics.json").read_text())["bundle_version"]
-    files = ["index.html", "workbench.js", "workbench.css", "workbench-data.json", "example.csv"]
+    files = [
+        "index.html",
+        "workbench.js",
+        "workbench.css",
+        "reports.js",
+        "workbench-data.json",
+        "example.csv",
+    ]
     for attempt in range(6):
         try:
             for name in files:
