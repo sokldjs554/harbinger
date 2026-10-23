@@ -75,6 +75,9 @@ jobs:
                   return
               raise SystemExit(result.stderr or "Expected DryRunOperation; no instance was launched.")
 
+          info = aws("ec2", "describe-instance-types", "--instance-types", "c7i-flex.large")["InstanceTypes"][0]
+          if info.get("FreeTierEligible") is not True:
+              raise SystemExit("The selected type is not Free Tier eligible; no resources created.")
           vpcs = aws("ec2", "describe-vpcs")["Vpcs"]
           defaults = [v for v in vpcs if v.get("IsDefault")]
           if len(defaults) != 1:
@@ -86,7 +89,8 @@ jobs:
               raise SystemExit("No available default subnet; no resources created.")
           images = aws("ec2", "describe-images", "--owners", "099720109477", "--filters",
                        "Name=name,Values=ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*",
-                       "Name=state,Values=available", "Name=architecture,Values=x86_64")["Images"]
+                       "Name=state,Values=available", "Name=architecture,Values=x86_64",
+                       "Name=free-tier-eligible,Values=true")["Images"]
           if not images:
               raise SystemExit("Canonical Ubuntu 24.04 x86_64 image not found; no resources created.")
           image = max(images, key=lambda i: i["CreationDate"])
@@ -107,9 +111,8 @@ jobs:
               print("Created tagged security group without inbound rules:", group_id)
           tags = [{"Key": "Project", "Value": "harbinger"}, {"Key": "Name", "Value": "harbinger-demo"}]
           request = {
-              "ImageId": image["ImageId"], "InstanceType": "t3.medium", "MinCount": 1, "MaxCount": 1,
+              "ImageId": image["ImageId"], "InstanceType": "c7i-flex.large", "MinCount": 1, "MaxCount": 1,
               "MetadataOptions": {"HttpTokens": "required", "HttpEndpoint": "enabled"},
-              "CreditSpecification": {"CpuCredits": "standard"},
               "NetworkInterfaces": [{"DeviceIndex": 0, "SubnetId": subnets[0]["SubnetId"],
                                      "AssociatePublicIpAddress": True, "Groups": [group_id]}],
               "BlockDeviceMappings": [{"DeviceName": image["RootDeviceName"], "Ebs": {
@@ -121,8 +124,8 @@ jobs:
           dry_run("ec2", "run-instances", "--cli-input-json", json.dumps(request))
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
               summary.write("### EC2 launch readiness\n")
-              summary.write("- Sydney; Canonical Ubuntu 24.04; t3.medium; 30 GiB encrypted gp3.\n")
+              summary.write("- Sydney; Canonical Ubuntu 24.04; c7i-flex.large; 30 GiB encrypted gp3.\n")
               summary.write("- Tagged security group created or reused; no inbound rules were added.\n")
-              summary.write("- RunInstances returned DryRunOperation: launch authorization verified.\n")
+              summary.write("- RunInstances returned DryRunOperation: IAM authorization verified; actual capacity and account-plan checks still occur at launch.\n")
               summary.write("- No EC2 instance or EBS volume was created. SSH and runtime still require deployment checks.\n")
           PY

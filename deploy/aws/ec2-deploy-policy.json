@@ -30,7 +30,7 @@
       "Condition": {
         "StringEquals": {
           "aws:RequestTag/Project": "harbinger",
-          "ec2:InstanceType": "t3.medium",
+          "ec2:InstanceType": "c7i-flex.large",
           "ec2:MetadataHttpTokens": "required"
         }
       }

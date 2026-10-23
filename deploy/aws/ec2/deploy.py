@@ -18,6 +18,7 @@ from pathlib import Path
 
 REGION = "ap-southeast-2"
 ACCOUNT = "577331852023"
+INSTANCE_TYPE = "c7i-flex.large"
 
 
 def aws(*args):
@@ -46,16 +47,22 @@ def select_instance(instances):
     return active[0] if active else None
 
 
+def validate_instance_type(info):
+    if info.get("InstanceType") != INSTANCE_TYPE or info.get("FreeTierEligible") is not True:
+        raise ValueError("Expected the reviewed Free Tier eligible instance type")
+
+
 def launch_request(image, subnet_id, group_id, token):
+    if image.get("FreeTierEligible") is not True:
+        raise ValueError("The Ubuntu image must be verified Free Tier eligible")
     tags = [{"Key": "Project", "Value": "harbinger"}, {"Key": "Name", "Value": "harbinger-demo"}]
     return {
         "ImageId": image["ImageId"],
-        "InstanceType": "t3.medium",
+        "InstanceType": INSTANCE_TYPE,
         "MinCount": 1,
         "MaxCount": 1,
         "ClientToken": token,
         "MetadataOptions": {"HttpTokens": "required", "HttpEndpoint": "enabled"},
-        "CreditSpecification": {"CpuCredits": "standard"},
         "NetworkInterfaces": [
             {"DeviceIndex": 0, "SubnetId": subnet_id, "AssociatePublicIpAddress": True, "Groups": [group_id]}
         ],
@@ -250,6 +257,8 @@ def main():
     identity = aws("sts", "get-caller-identity")
     if identity["Account"] != ACCOUNT or os.environ.get("AWS_REGION") != REGION:
         raise ValueError("AWS account or project region does not match reviewed policy")
+    type_info = aws("ec2", "describe-instance-types", "--instance-types", INSTANCE_TYPE)["InstanceTypes"][0]
+    validate_instance_type(type_info)
     package = Path(".aws-package")
     required = [
         package / name
@@ -305,6 +314,7 @@ def main():
                 "Name=name,Values=ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*",
                 "Name=state,Values=available",
                 "Name=architecture,Values=x86_64",
+                "Name=free-tier-eligible,Values=true",
             )["Images"]
             image = max(images, key=lambda i: i["CreationDate"])
             token = f"hb-{sha[:20]}-{os.environ['GITHUB_RUN_ID']}-{os.environ.get('GITHUB_RUN_ATTEMPT', '1')}"
