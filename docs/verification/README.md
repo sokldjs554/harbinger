@@ -1,4 +1,12 @@
-# 검증 기록 — 2026-10-21
+# 검증 기록
+
+## AWS 실제 계산 데모 — 2026-10-24
+
+[AWS 데모](https://sokldjs554.github.io/harbinger/live.html)에서 CSV 업로드와 새 모델 계산을 제공합니다. [배포 실행](https://github.com/sokldjs554/harbinger/actions/runs/39983662792)에서 신뢰 가능한 HTTPS·실제 CSV/모바일 조작·재부팅 복구·인증서 갱신 시험·임시 SSH 규칙 제거가 통과했습니다. [전체 CI](https://github.com/sokldjs554/harbinger/actions/runs/39983663133)는 83개 통과·선택적 TensorFlow 1개 제외이며 실제 API·브라우저·Docker 실행도 성공했습니다.
+
+배포 모델은 `v20261023-161741`, 소스는 `5e54df21b6b7c31473689526c20b0e7881e75dee`입니다. 합성 학습 모델이며 실제 고객 성능이나 장기간 고객 운영을 검증한 결과는 아닙니다. [상세 기록·캡처·33초 조작 영상](aws/README.md) · [운영·비용·중지 안내](../../deploy/aws/README.md)
+
+## 2026-10-21 평가와 UI 검증 이력
 
 전체 합성 모델 버전은 **v20261021-103259**, 비교 기준 원본 커밋은 **fd346c75ddae39fa6383096d7dd6adabccfdb044**다. 초기 main은 변경하지 않고 `codex/dwi-evaluation-web`에서 작업했다. 최초 미커밋 변경과 AGENTS.md는 없었고 원본은 별도 worktree에도 보존했다.
 

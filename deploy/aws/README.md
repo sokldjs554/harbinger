@@ -1,5 +1,7 @@
 # AWS 데모 운영
 
+[현재 실제 계산 데모](https://sokldjs554.github.io/harbinger/live.html) · [배포 검증과 캡처](../../docs/verification/aws/README.md)
+
 이 구성은 Sydney(`ap-southeast-2`)의 단일 EC2에서 합성 데이터로 학습한 모델과 FastAPI를 실행합니다. GitHub Pages의 저장 결과 재생과 달리 업로드 CSV를 검사하고 새 결과를 계산합니다. 실제 고객 성능을 검증한 서비스는 아닙니다.
 
 ## 배포 흐름
@@ -24,6 +26,6 @@ Let's Encrypt IP 인증서는 유효기간이 짧아 6시간마다 systemd timer
 
 EC2 실행 시간, EBS 디스크, 공인 IPv4와 전송량은 계정의 과금·크레딧 정책에 따릅니다. 무료 제공을 보장하는 구성이 아닙니다. AWS Billing에서 잔여 크레딧과 실제 사용액을 확인하세요.
 
-사용하지 않을 때는 Sydney EC2 목록에서 `Project=harbinger`, `Name=harbinger-demo`인 서버를 **중지**합니다. 중지해도 EBS 디스크 요금은 남을 수 있습니다. 재시작하면 공인 IP가 바뀔 수 있으므로 GitHub Actions에서 배포를 다시 실행해 새 IP에 맞는 인증서·URL을 확인합니다. 서버 **종료**는 디스크와 모델을 삭제하므로 재사용이 필요 없다면 선택합니다.
+사용하지 않을 때는 Sydney EC2 목록에서 `Project=harbinger`, `Name=harbinger-demo`인 서버를 **중지**합니다. 중지해도 EBS 디스크 요금은 남을 수 있습니다. 재시작하면 공인 IP가 바뀔 수 있으므로 GitHub Actions에서 배포를 다시 실행해 새 IP에 맞는 인증서·URL을 확인합니다. `docs/demo/live.html`의 목적지도 새 주소로 갱신해 GitHub Pages에 반영해야 고정 진입 링크가 새 서버로 연결됩니다. 서버 **종료**는 디스크와 모델을 삭제하므로 재사용이 필요 없다면 선택합니다.
 
 검증 파일과 캡처는 각 Actions 실행의 `aws-deployment-verification` artifact에서 14일간 받을 수 있습니다. 실패 시 먼저 해당 실행 로그를 확인하고, 비용 발생을 막아야 한다면 EC2의 실제 상태가 중지인지 직접 확인하세요.
