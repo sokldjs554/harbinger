@@ -1,0 +1,41 @@
+name: Recover stalled AWS deployment checks
+on:
+  push:
+    branches: [deploy/aws-retry-control]
+    paths: [.github/workflows/aws-retry-control.yml]
+permissions:
+  contents: read
+  actions: write
+jobs:
+  retry:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Stop stalled checks, then retry their exact immutable commits
+        env:
+          CONTROL_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, os, time, urllib.request, urllib.error
+          root = 'https://api.github.com/repos/sokldjs554/harbinger/actions/runs/'
+          def request(run, method='GET', suffix=''):
+              req = urllib.request.Request(root + str(run) + suffix, method=method, headers={'Authorization': 'Bearer ' + os.environ['CONTROL_TOKEN'], 'Accept': 'application/vnd.github+json'})
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  raw = response.read()
+                  return json.loads(raw) if raw else {}
+          runs = [39934053972, 39934054069]
+          for run in runs:
+              status = request(run)
+              assert status['head_sha'] == '6b5b49fbbcf8b5bbd93ad1c8d121b73cc44a2899'
+              if status['status'] != 'completed':
+                  request(run, 'POST', '/cancel')
+          for attempt in range(48):
+              if all(request(run)['status'] == 'completed' for run in runs):
+                  break
+              time.sleep(5)
+          else:
+              raise SystemExit('Cancellation not confirmed; no retry was requested')
+          for run in runs:
+              request(run, 'POST', '/rerun')
+              print('Retry requested: ' + root + str(run))
+          PY
