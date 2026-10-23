@@ -1,0 +1,26 @@
+name: Read free-plan EC2 eligibility
+on:
+  push:
+    branches: [deploy/aws-retry-control]
+    paths: [.github/workflows/aws-eligibility.yml]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      AWS_DEFAULT_REGION: ap-southeast-2
+      AWS_EC2_METADATA_DISABLED: 'true'
+      AWS_PAGER: ''
+    steps:
+      - name: Read eligible types, regional offerings and Ubuntu images without creating resources
+        run: |
+          aws sts get-caller-identity
+          aws ec2 describe-instance-types --filters Name=free-tier-eligible,Values=true --query 'InstanceTypes[].{Type:InstanceType,CPU:VCpuInfo.DefaultVCpus,RAM:MemoryInfo.SizeInMiB,Arch:ProcessorInfo.SupportedArchitectures,Eligible:FreeTierEligible}' --output json
+          aws ec2 describe-instance-type-offerings --location-type availability-zone --filters Name=instance-type,Values=c7i-flex.large,m7i-flex.large,t3.small --query 'InstanceTypeOfferings[].{Type:InstanceType,AZ:Location}' --output json
+          aws ec2 describe-images --owners 099720109477 --filters 'Name=name,Values=ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*' Name=state,Values=available Name=free-tier-eligible,Values=true --query 'reverse(sort_by(Images,&CreationDate))[:2].{Id:ImageId,Name:Name,Eligible:FreeTierEligible}' --output json
+          aws ec2 describe-instances --filters Name=tag:Project,Values=harbinger --query 'Reservations[].Instances[].{Id:InstanceId,State:State.Name,Type:InstanceType}' --output json
