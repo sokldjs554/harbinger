@@ -23,10 +23,10 @@ jobs:
               with urllib.request.urlopen(req, timeout=30) as response:
                   raw = response.read()
                   return json.loads(raw) if raw else {}
-          runs = [39934053972, 39934054069]
+          runs = [39981677223, 39981677113]
           for run in runs:
               status = request(run)
-              assert status['head_sha'] == '6b5b49fbbcf8b5bbd93ad1c8d121b73cc44a2899'
+              assert status['head_sha'] == 'ec45dbc95a9553306137e41b0d664188c49d83e4'
               if status['status'] != 'completed':
                   request(run, 'POST', '/cancel')
           for attempt in range(48):
