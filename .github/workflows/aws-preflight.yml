@@ -54,13 +54,75 @@ jobs:
           aws ec2 describe-subnets --query 'length(Subnets)' --output text
           aws ec2 describe-security-groups --query 'length(SecurityGroups)' --output text
           aws ec2 describe-instances --filters 'Name=tag:Name,Values=harbinger-demo' --query 'Reservations[].Instances[].{Id:InstanceId,State:State.Name,Type:InstanceType}' --output json
-      - name: Record scope
+      - name: Check tagged EC2 launch permissions without launching a server
         shell: bash
         run: |
-          {
-            echo '### AWS connection check'
-            echo '- Region: ap-southeast-2 (Sydney)'
-            echo '- Identity and EC2 read access verified.'
-            echo '- No AWS resources were created, changed, or deleted.'
-            echo '- Instance creation and deployment permissions are not verified by this check.'
-          } >> "$GITHUB_STEP_SUMMARY"
+          python3 - <<'PY'
+          import json
+          import os
+          import subprocess
+
+          def aws(*args):
+              result = subprocess.run(["aws", *args, "--output", "json"], text=True, capture_output=True)
+              if result.returncode:
+                  raise SystemExit(result.stderr)
+              return json.loads(result.stdout)
+
+          def dry_run(*args):
+              result = subprocess.run(["aws", *args, "--dry-run", "--output", "json"], text=True, capture_output=True)
+              if result.returncode and "(DryRunOperation)" in result.stderr:
+                  print("DryRunOperation: permission check passed")
+                  return
+              raise SystemExit(result.stderr or "Expected DryRunOperation; no instance was launched.")
+
+          vpcs = aws("ec2", "describe-vpcs")["Vpcs"]
+          defaults = [v for v in vpcs if v.get("IsDefault")]
+          if len(defaults) != 1:
+              raise SystemExit("Expected one default VPC; no resources created.")
+          vpc_id = defaults[0]["VpcId"]
+          subnets = aws("ec2", "describe-subnets", "--filters", f"Name=vpc-id,Values={vpc_id}")["Subnets"]
+          subnets = sorted([s for s in subnets if s.get("DefaultForAz") and s["State"] == "available"], key=lambda s: s["SubnetId"])
+          if not subnets:
+              raise SystemExit("No available default subnet; no resources created.")
+          images = aws("ec2", "describe-images", "--owners", "099720109477", "--filters",
+                       "Name=name,Values=ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*",
+                       "Name=state,Values=available", "Name=architecture,Values=x86_64")["Images"]
+          if not images:
+              raise SystemExit("Canonical Ubuntu 24.04 x86_64 image not found; no resources created.")
+          image = max(images, key=lambda i: i["CreationDate"])
+          groups = aws("ec2", "describe-security-groups", "--filters",
+                       f"Name=vpc-id,Values={vpc_id}", "Name=group-name,Values=harbinger-web")["SecurityGroups"]
+          if groups:
+              if len(groups) != 1 or {t["Key"]: t["Value"] for t in groups[0].get("Tags", [])}.get("Project") != "harbinger":
+                  raise SystemExit("Existing security group does not belong to harbinger; left unchanged.")
+              group_id = groups[0]["GroupId"]
+          else:
+              tags = json.dumps([{"ResourceType": "security-group", "Tags": [
+                  {"Key": "Project", "Value": "harbinger"}, {"Key": "Name", "Value": "harbinger-web"}]}])
+              group_args = ("ec2", "create-security-group", "--group-name", "harbinger-web",
+                            "--description", "Harbinger demo deployment", "--vpc-id", vpc_id,
+                            "--tag-specifications", tags)
+              dry_run(*group_args)
+              group_id = aws(*group_args)["GroupId"]
+              print("Created tagged security group without inbound rules:", group_id)
+          tags = [{"Key": "Project", "Value": "harbinger"}, {"Key": "Name", "Value": "harbinger-demo"}]
+          request = {
+              "ImageId": image["ImageId"], "InstanceType": "t3.medium", "MinCount": 1, "MaxCount": 1,
+              "MetadataOptions": {"HttpTokens": "required", "HttpEndpoint": "enabled"},
+              "CreditSpecification": {"CpuCredits": "standard"},
+              "NetworkInterfaces": [{"DeviceIndex": 0, "SubnetId": subnets[0]["SubnetId"],
+                                     "AssociatePublicIpAddress": True, "Groups": [group_id]}],
+              "BlockDeviceMappings": [{"DeviceName": image["RootDeviceName"], "Ebs": {
+                  "VolumeSize": 30, "VolumeType": "gp3", "Encrypted": True, "DeleteOnTermination": True}}],
+              "TagSpecifications": [{"ResourceType": resource, "Tags": tags} for resource in ("instance", "volume")],
+          }
+          print(json.dumps({"region": os.environ["AWS_REGION"], "image": image["ImageId"],
+                            "subnet": subnets[0]["SubnetId"], "security_group": group_id}))
+          dry_run("ec2", "run-instances", "--cli-input-json", json.dumps(request))
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
+              summary.write("### EC2 launch readiness\n")
+              summary.write("- Sydney; Canonical Ubuntu 24.04; t3.medium; 30 GiB encrypted gp3.\n")
+              summary.write("- Tagged security group created or reused; no inbound rules were added.\n")
+              summary.write("- RunInstances returned DryRunOperation: launch authorization verified.\n")
+              summary.write("- No EC2 instance or EBS volume was created. SSH and runtime still require deployment checks.\n")
+          PY
