@@ -1,0 +1,111 @@
+name: AWS EC2 live demo
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/aws-ec2.yml
+      - deploy/aws/ec2/**
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: aws-ec2-harbinger
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.repository == 'sokldjs554/harbinger' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      OMP_NUM_THREADS: "2"
+      OPENBLAS_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af6834
+        with:
+          persist-credentials: false
+      - name: Test deployment safety contracts
+        run: |
+          pip install pytest
+          pytest --noconftest tests/test_aws_deploy.py -q
+          bash -n deploy/aws/ec2/install.sh
+      - name: Require successful full CI for this exact main commit
+        env:
+          CI_READ_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PYTHON'
+          import json, os, time, urllib.request
+          url = f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/actions/runs?head_sha={os.environ['GITHUB_SHA']}&per_page=100"
+          request = urllib.request.Request(url, headers={"Authorization": "Bearer " + os.environ['CI_READ_TOKEN'], "Accept": "application/vnd.github+json"})
+          for attempt in range(180):
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  runs = json.load(response)['workflow_runs']
+              matches = [r for r in runs if r['path'] == '.github/workflows/ci.yml' and r['event'] == 'push' and r['head_branch'] == 'main' and r['head_sha'] == os.environ['GITHUB_SHA']]
+              run = max(matches, key=lambda r: r['id']) if matches else None
+              if run and run['status'] == 'completed':
+                  if run['conclusion'] != 'success':
+                      raise SystemExit('Full CI did not pass; no AWS instance will be provisioned: ' + run['html_url'])
+                  print('Full CI passed: ' + run['html_url'])
+                  break
+              if attempt % 6 == 0:
+                  print('Waiting for full CI before any billable AWS resource is created.', flush=True)
+              time.sleep(10)
+          else:
+              raise SystemExit('Timed out waiting for full CI; no provisioning attempted')
+          PYTHON
+      - name: Build CPU image before provisioning
+        run: |
+          mkdir -p .aws-package/runtime
+          docker build -t "harbinger:$GITHUB_SHA" .
+      - name: Install browser verifier before provisioning
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
+      - name: Train full synthetic runtime bundle before provisioning
+        run: |
+          docker run --rm --user "$(id -u):$(id -g)" -v "$PWD/.aws-package/runtime:/runtime" "harbinger:$GITHUB_SHA" harbinger synth --out /runtime/data --scale 1 --months 36 --seed 20260101
+          docker run --rm --user "$(id -u):$(id -g)" -v "$PWD/.aws-package/runtime:/runtime" "harbinger:$GITHUB_SHA" harbinger features --data /runtime/data
+          docker run --rm --user "$(id -u):$(id -g)" -v "$PWD/.aws-package/runtime:/runtime" "harbinger:$GITHUB_SHA" harbinger eval --data /runtime/data --models /runtime/models --artifacts /runtime/artifacts --seed 20260101 --skip-loso
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          metrics = json.loads(Path('.aws-package/runtime/artifacts/metrics.json').read_text())
+          provenance = {
+              'commit': os.environ['GITHUB_SHA'], 'region': 'ap-southeast-2',
+              'synthetic': True, 'scale': 1, 'months': 36, 'seed': 20260101,
+              'model_version': metrics['bundle_version'],
+              'note': 'Freshly trained synthetic bundle; historical README numbers remain their recorded experiment.'
+          }
+          Path('.aws-package/deployment.json').write_text(json.dumps(provenance, indent=2))
+          PY
+      - name: Package deployment
+        run: |
+          docker save "harbinger:$GITHUB_SHA" | gzip -1 > .aws-package/image.tar.gz
+          tar -czf .aws-package/runtime.tar.gz -C .aws-package/runtime .
+          cp deploy/aws/ec2/install.sh deploy/aws/ec2/compose.yml .aws-package/
+      - name: Provision and verify HTTPS, renewal and reboot
+        id: deploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          AWS_REGION: ap-southeast-2
+          AWS_DEFAULT_REGION: ap-southeast-2
+          AWS_EC2_METADATA_DISABLED: "true"
+          AWS_PAGER: ""
+          AWS_MAX_ATTEMPTS: "3"
+        run: python3 deploy/aws/ec2/deploy.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aws-deployment-verification
+          retention-days: 14
+          path: |
+            .aws-package/deployment.json
+            .aws-package/deployment-result.json
+            .aws-package/runtime/artifacts/*.json
+            .aws-package/browser
