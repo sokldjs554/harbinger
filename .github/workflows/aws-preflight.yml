@@ -22,8 +22,8 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-      AWS_REGION: ap-northeast-2
-      AWS_DEFAULT_REGION: ap-northeast-2
+      AWS_REGION: ap-southeast-2
+      AWS_DEFAULT_REGION: ap-southeast-2
       AWS_EC2_METADATA_DISABLED: "true"
       AWS_PAGER: ""
       AWS_MAX_ATTEMPTS: "2"
@@ -46,7 +46,7 @@ jobs:
         run: |
           set -euo pipefail
           aws sts get-caller-identity --query '{Account:Account,Arn:Arn}' --output json
-      - name: Check EC2 read access in Seoul
+      - name: Check EC2 read access in Sydney
         shell: bash
         run: |
           set -euo pipefail
@@ -59,7 +59,7 @@ jobs:
         run: |
           {
             echo '### AWS connection check'
-            echo '- Region: ap-northeast-2 (Seoul)'
+            echo '- Region: ap-southeast-2 (Sydney)'
             echo '- Identity and EC2 read access verified.'
             echo '- No AWS resources were created, changed, or deleted.'
             echo '- Instance creation and deployment permissions are not verified by this check.'
