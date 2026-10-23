@@ -1,0 +1,62 @@
+name: AWS connection check
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: aws-connection-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    if: github.repository == 'sokldjs554/harbinger' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      AWS_REGION: ap-northeast-2
+      AWS_DEFAULT_REGION: ap-northeast-2
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_PAGER: ""
+      AWS_MAX_ATTEMPTS: "2"
+    steps:
+      - name: Check credential presence
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "$AWS_ACCESS_KEY_ID" || -z "$AWS_SECRET_ACCESS_KEY" ]]; then
+            echo "::error::Add AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY as repository Actions secrets."
+            exit 1
+          fi
+          if [[ "$AWS_ACCESS_KEY_ID" == ASIA* && -z "$AWS_SESSION_TOKEN" ]]; then
+            echo "::error::Temporary AWS credentials also require AWS_SESSION_TOKEN."
+            exit 1
+          fi
+          command -v aws >/dev/null
+      - name: Check AWS identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          aws sts get-caller-identity --query '{Account:Account,Arn:Arn}' --output json
+      - name: Check EC2 read access in Seoul
+        shell: bash
+        run: |
+          set -euo pipefail
+          aws ec2 describe-vpcs --query 'length(Vpcs)' --output text
+          aws ec2 describe-subnets --query 'length(Subnets)' --output text
+          aws ec2 describe-security-groups --query 'length(SecurityGroups)' --output text
+          aws ec2 describe-instances --filters 'Name=tag:Name,Values=harbinger-demo' --query 'Reservations[].Instances[].{Id:InstanceId,State:State.Name,Type:InstanceType}' --output json
+      - name: Record scope
+        shell: bash
+        run: |
+          {
+            echo '### AWS connection check'
+            echo '- Region: ap-northeast-2 (Seoul)'
+            echo '- Identity and EC2 read access verified.'
+            echo '- No AWS resources were created, changed, or deleted.'
+            echo '- Instance creation and deployment permissions are not verified by this check.'
+          } >> "$GITHUB_STEP_SUMMARY"
