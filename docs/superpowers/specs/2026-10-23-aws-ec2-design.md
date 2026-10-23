@@ -4,7 +4,7 @@
 사용자는 harbinger를 AWS에 배포하고 작업을 위임했으며, 배포용 IAM 키와 정책을 직접 등록했다. 기존 EC2·Docker 방식과 실제 CSV 계산·HTTPS·재시작 검증을 구현한다. 프로젝트 지정 리전은 ap-southeast-2, 계정은 577331852023이다.
 
 ## 구성
-- EC2 t3.medium 한 대, 암호화 gp3 30GiB, IMDSv2 필수, CPU 크레딧 Standard.
+- EC2 c7i-flex.large 한 대, 암호화 gp3 30GiB, IMDSv2 필수.
 - GitHub Actions에서 이미지와 전체 합성 데이터의 모델을 준비하고 EC2에 전송한다. AWS 키는 EC2에 저장하지 않는다.
 - EC2 Instance Connect 임시 키와 실행자 IP /32 규칙을 사용한다. 서버 공개키는 AWS 콘솔 출력에서 확인하며, 작업 종료 시 SSH 규칙을 제거한다.
 - FastAPI는 Docker로 localhost:8000에만 연결한다. Nginx가 HTTPS 및 요청·연결·본문 크기 제한을 담당한다.

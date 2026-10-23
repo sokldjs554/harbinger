@@ -40,12 +40,15 @@ def test_refuses_duplicate_or_foreign_servers():
 def test_launch_contract_bounds_billable_resources():
     deploy = module()
     request = deploy.launch_request(
-        {"ImageId": "ami-123", "RootDeviceName": "/dev/sda1"}, "subnet-123", "sg-123", "test"
+        {"ImageId": "ami-123", "RootDeviceName": "/dev/sda1", "FreeTierEligible": True},
+        "subnet-123",
+        "sg-123",
+        "test",
     )
     assert request["MinCount"] == request["MaxCount"] == 1
-    assert request["InstanceType"] == "t3.medium"
+    assert request["InstanceType"] == "c7i-flex.large"
     assert request["MetadataOptions"]["HttpTokens"] == "required"
-    assert request["CreditSpecification"]["CpuCredits"] == "standard"
+    assert "CreditSpecification" not in request  # Flex types do not accept T-family CPU-credit settings.
     assert request["BlockDeviceMappings"][0]["Ebs"] == {
         "VolumeSize": 30,
         "VolumeType": "gp3",
@@ -135,3 +138,18 @@ def test_release_remains_rollbackable_until_browser_check_finishes():
     with deploy.release_transaction(remote):
         remote.commands.append("browser passed")
     assert remote.commands == ["browser passed", "sudo rm -rf /opt/harbinger/pending-deployment"]
+
+
+@pytest.mark.parametrize("eligible", [False, None])
+def test_unverified_free_plan_image_cannot_be_launched(eligible):
+    deploy = module()
+    image = {"ImageId": "ami-123", "RootDeviceName": "/dev/sda1", "FreeTierEligible": eligible}
+    with pytest.raises(ValueError, match="Free Tier"):
+        deploy.launch_request(image, "subnet-123", "sg-123", "test")
+
+
+def test_noneligible_instance_type_is_rejected_before_provisioning():
+    deploy = module()
+    with pytest.raises(ValueError, match="Free Tier"):
+        deploy.validate_instance_type({"InstanceType": "c7i-flex.large", "FreeTierEligible": False})
+    deploy.validate_instance_type({"InstanceType": "c7i-flex.large", "FreeTierEligible": True})
