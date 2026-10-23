@@ -24,3 +24,28 @@ jobs:
           aws ec2 describe-instance-type-offerings --location-type availability-zone --filters Name=instance-type,Values=c7i-flex.large,m7i-flex.large,t3.small --query 'InstanceTypeOfferings[].{Type:InstanceType,AZ:Location}' --output json
           aws ec2 describe-images --owners 099720109477 --filters 'Name=name,Values=ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*' Name=state,Values=available Name=free-tier-eligible,Values=true --query 'reverse(sort_by(Images,&CreationDate))[:2].{Id:ImageId,Name:Name,Eligible:FreeTierEligible}' --output json
           aws ec2 describe-instances --filters Name=tag:Project,Values=harbinger --query 'Reservations[].Instances[].{Id:InstanceId,State:State.Name,Type:InstanceType}' --output json
+
+      - name: Dry-run eligible instance authorization without launching
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          def aws(*args):
+              return json.loads(subprocess.check_output(['aws', *args, '--output', 'json'], text=True))
+          group = aws('ec2', 'describe-security-groups', '--filters', 'Name=group-name,Values=harbinger-web', 'Name=tag:Project,Values=harbinger')['SecurityGroups'][0]
+          subnet = aws('ec2', 'describe-subnets', '--filters', 'Name=vpc-id,Values=' + group['VpcId'])['Subnets'][0]
+          images = aws('ec2', 'describe-images', '--owners', '099720109477', '--filters', 'Name=name,Values=ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*', 'Name=state,Values=available', 'Name=free-tier-eligible,Values=true')['Images']
+          image = max(images, key=lambda i:i['CreationDate'])
+          tags = [{'Key':'Project', 'Value':'harbinger'}, {'Key':'Name','Value':'harbinger-demo'}]
+          request = {'DryRun':True, 'ImageId':image['ImageId'], 'InstanceType':'c7i-flex.large', 'MinCount':1, 'MaxCount':1,
+                     'MetadataOptions':{'HttpTokens':'required','HttpEndpoint':'enabled'},
+                     'NetworkInterfaces':[{'DeviceIndex':0,'SubnetId':subnet['SubnetId'],'AssociatePublicIpAddress':True,'Groups':[group['GroupId']]}],
+                     'BlockDeviceMappings':[{'DeviceName':image['RootDeviceName'],'Ebs':{'VolumeSize':30,'VolumeType':'gp3','Encrypted':True,'DeleteOnTermination':True}}],
+                     'TagSpecifications':[{'ResourceType':kind,'Tags':tags} for kind in ['instance','volume']]}
+          result = subprocess.run(['aws','ec2','run-instances','--cli-input-json',json.dumps(request)], capture_output=True, text=True)
+          if '(DryRunOperation)' in result.stderr:
+              print('IAM_LAUNCH_AUTHORIZED=true; no instance or volume created.')
+          elif 'UnauthorizedOperation' in result.stderr:
+              print('IAM_LAUNCH_AUTHORIZED=false; update the managed policy instance-type condition. No instance or volume created.')
+          else:
+              raise SystemExit(result.stderr or 'Unexpected dry-run response')
+          PY
