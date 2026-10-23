@@ -1,0 +1,20 @@
+{
+  "docs/demo/aws-checks.mp4": "4a65861873691a086c764d491be6b95616296c485a6d8eae00a406010ec91e2e",
+  "docs/verification/aws/browser-checks.json": "b6708a29508438cd4b1c99e07a15613a6aac6b752f889d76526794e178ef94a0",
+  "docs/verification/aws/deployment-result.json": "a26c33de76569fe23bfa4b812ff61a7284f2ca0ca7fb11553cead04ffd883c17",
+  "docs/verification/aws/deployment.json": "737f51d0819b6c72958a8f1b91f277b00847b57290fe54bc48e034e1ceeccdb5",
+  "docs/verification/aws/list.png": "22b3bad21d06574b5469cd8456525ba73d90cce7eca6a639f500faca013b0c5e",
+  "docs/verification/aws/mobile-detail.png": "ee6b9f33441c1b653daa832503e557a689f4760eac78dae74c0a25cb6006ad9f",
+  "docs/verification/aws/mobile-list.png": "5a07b7a99f23c4363a80ce84b6536dca44d142310c6e0faa93ef518e3a713b82",
+  "docs/verification/aws/public-https.json": "798f8232fce6e2725999a948284513c22f162b56a2e11f4e523628e56f540ec4",
+  "docs/verification/aws/recording.json": "5e4dbe49521d23dde5b1ed1a096a12f7afd5b72b037076742b968cf6821e88eb",
+  "docs/verification/aws/runtime/ablation.json": "8486d3749c0f28046be5df6488e78bffd395abea864aba3f971ce41cedadbae5",
+  "docs/verification/aws/runtime/calibration.json": "54b485c739aecdbeeb7b431b705ba70b84d604df761eada12b24b1c2e07e7a36",
+  "docs/verification/aws/runtime/energy.json": "a91079e271ad455d68e00dc1fae3312cf87562fa2ecb493e864a2411c5b5b9bb",
+  "docs/verification/aws/runtime/importance.json": "0eb91ede0de2ef1f845a4677fde8faa19418c289f9527baa1fb7d3289e487150",
+  "docs/verification/aws/runtime/metrics.json": "c303f64a6c09530b8d9a243227b13c7dd2ee14a7ab36f6b89232164f980c267f",
+  "docs/verification/aws/runtime/patrol.json": "3d6f0c832126714069754215629b2b6557c068bf7bf884653a1df102156d5232",
+  "docs/verification/aws/runtime/signals.json": "00e87a5305b94cbf089dcaa6c2ef354b35e6289a3046592640a7790377b03b93",
+  "docs/verification/aws/runtime/survival.json": "76f1be6a05dec97cf83f62ea8ba90f84e0bffde459fc9190014ff59f3674cf54",
+  "docs/verification/aws/upload-error.png": "0fa020ae689292f8775bcc2e67f3772fab31f48d011924750275e9e04bf71083"
+}

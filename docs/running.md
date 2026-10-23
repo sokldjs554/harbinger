@@ -5,7 +5,8 @@
 | 목적 | 필요한 절차 |
 |---|---|
 | 화면과 저장된 예제 확인 | [공개 데모](https://sokldjs554.github.io/harbinger/) 접속 |
-| CSV 업로드와 새 계산 | README의 Docker 실행 |
+| 설치 없이 CSV 업로드와 새 계산 | [AWS 데모](https://sokldjs554.github.io/harbinger/live.html) 접속 |
+| 로컬에서 CSV 업로드와 새 계산 | README의 Docker 실행 |
 | Docker 없이 Python으로 실행 | 아래 Python 직접 실행 |
 | 전체 실험의 모델·평가 재현 | Python 설치 후 전체 실험 재현 |
 | 코드 변경 후 검사 | 개발자 검사 |

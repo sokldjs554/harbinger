@@ -1,0 +1,14 @@
+{
+  "commit": "5e54df21b6b7c31473689526c20b0e7881e75dee",
+  "region": "ap-southeast-2",
+  "instance_id": "i-0aaec13273afe3197",
+  "created": true,
+  "started_from_stopped": false,
+  "browser_verified": true,
+  "ip": "13.236.137.0",
+  "url": "https://13.236.137.0/console/",
+  "reboot_verified": true,
+  "renewal_dry_run": true,
+  "data": "synthetic; full scale=1 months=36 seed=20260101",
+  "ssh_closed": true
+}

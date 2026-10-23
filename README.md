@@ -2,11 +2,11 @@
 
 시설 점검 기록으로 **먼저 확인할 설비를 고르고, 점검 원문과 이후 고장 결과로 판단을 검토하는 서비스**입니다. Python으로 이력을 전처리하고 모델을 비교한 뒤, FastAPI와 웹 화면으로 연결했습니다.
 
-[공개 데모](https://sokldjs554.github.io/harbinger/) · [80초 사용 영상](https://sokldjs554.github.io/harbinger/walkthrough.mp4) · [로컬 실행](#실행) · [평가 방법](docs/evaluation.md)
+[AWS 실제 계산 데모](https://sokldjs554.github.io/harbinger/live.html) · [저장 예제](https://sokldjs554.github.io/harbinger/) · [80초 예제 영상](https://sokldjs554.github.io/harbinger/walkthrough.mp4) · [로컬 실행](#실행) · [평가 방법](docs/evaluation.md)
 
-기본 예제와 아래 성능은 **합성 데이터**에 기반합니다. 공개 데모는 저장된 모델 응답을 재생하며, **CSV 업로드와 새 계산은 로컬 API에서 실행**합니다.
+기본 예제와 아래 성능은 **합성 데이터**에 기반합니다. **AWS 데모에서는 CSV 업로드와 새 계산을 바로 사용할 수 있습니다.** 저장 예제는 미리 계산한 모델 응답을 재생합니다. 실제 고객 성능을 검증한 결과는 아닙니다.
 
-![설비 목록에서 점검 원문과 판단 근거로 이동하는 화면](docs/verification/dense-static/list.png)
+![설비 목록에서 점검 원문과 판단 근거로 이동하는 화면](docs/verification/aws/list.png)
 
 ## 주제를 선택한 이유
 
@@ -21,11 +21,11 @@
 3. **과거 검증**에서 같은 날짜·설비·점검 수를 기준으로 모델과 규칙의 선택 결과를 비교합니다. 이후 30일의 관측이 부족한 날짜는 **평가 보류**로 표시합니다.
 4. **고객사별 결과**와 보고서 내보내기를 확인합니다. 한 기준일의 고객사별 표와 별도 고객사 보류 실험은 구분해 표시합니다.
 
-| 기능 | 공개 데모 | 로컬 API |
+| 기능 | 저장 예제 | AWS·로컬 API |
 |---|---|---|
 | 설비 목록·상세·원문 탐색 | 저장된 합성 예제 | 현재 분석 자료 |
 | 과거 검증·모델 비교 | 미리 계산한 날짜와 조건 | 입력 조건으로 새 계산 |
-| CSV 업로드 | 로컬 실행 안내 | 업로드 검사 후 분석 |
+| CSV 업로드 | 실제 계산 데모 안내 | 업로드 검사 후 분석 |
 | CSV·JSON·한국어 Markdown 내보내기 | 저장된 결과 | 마지막으로 적용한 계산 결과 |
 
 목록으로 돌아오면 필터·정렬·페이지·스크롤·초점을 복원합니다. CSV 검사나 분석이 실패하면 이전 기록을 유지하며, 내보내기에는 마지막 계산에 실제로 적용한 조건을 기록합니다. [모바일 화면](docs/verification/dense-static/mobile-list.png) · [동작 검증 기록](docs/verification/README.md)
@@ -75,7 +75,7 @@
 
 ## 실행
 
-화면만 확인하려면 설치 없이 [공개 데모](https://sokldjs554.github.io/harbinger/)를 열면 됩니다. **CSV 업로드와 새 계산**을 사용하려면 아래처럼 로컬 서버를 실행합니다.
+설치 없이 **CSV 업로드와 새 계산**을 사용하려면 [AWS 데모](https://sokldjs554.github.io/harbinger/live.html)를 엽니다. 직접 실행하려면 아래 명령으로 로컬 서버를 시작합니다.
 
 준비: Git 설치, Docker 실행
 
@@ -108,11 +108,12 @@ UTF-8/BOM CSV, 최대 **5 MiB / 20,000행 / 설비 500개 / 고객사 10개 / �
 | 모델 개발과 기여도 실험 | HGB/로지스틱/Cox/AFT/PyTorch, [평가 계약](docs/evaluation.md), `artifacts/contribution.json` |
 | 고객별 검증 | `artifacts/loso.json`: 선정·미선정·보류 조건과 자체 정답 기간별 결과 |
 | API·웹·설명·다운로드 | `src/harbinger/api/routers/workbench.py`, `src/harbinger/api/analysis.py`, `src/harbinger/console/workbench.js` |
+| AWS 배포·운영 검증 | [HTTPS·CSV·재부팅·갱신 시험 기록](docs/verification/aws/README.md), [중지·비용·운영 안내](deploy/aws/README.md) |
 | 재현·실행 검증 | [검증 기록 및 미완료 항목](docs/verification/README.md), `Dockerfile`, `.github/workflows/ci.yml` |
 
 검증 명령과 브라우저 검사 방법은 [개발자 검사 안내](docs/running.md#개발자-검사)를 참고하세요.
 
-모델 버전 **v20261021-103259**, 원자료 해시와 평가 파일 버전은 `artifacts/release.json`에 기록합니다. 모델·원자료 바이너리는 로컬 생성물이며 공개 정적 데모에는 합성 계산 응답만 넣습니다. 선택적 TensorFlow 패리티는 이번 버전에서 재실행하지 않았습니다. 기존 산출물은 `artifacts/archive/fd346c7/`와 Git 이력에 보존합니다.
+모델 버전 **v20261021-103259**, 원자료 해시와 평가 파일 버전은 `artifacts/release.json`에 기록합니다. 모델·원자료 바이너리는 로컬 생성물이며 공개 정적 데모에는 합성 계산 응답만 넣습니다. AWS 런타임은 같은 전체 합성 조건으로 재학습한 `v20261023-161741`이며, 배포 커밋과 별도 평가 파일은 [AWS 검증 기록](docs/verification/aws/README.md)에 보존했습니다. 선택적 TensorFlow 패리티는 이번 버전에서 재실행하지 않았습니다. 기존 산출물은 `artifacts/archive/fd346c7/`와 Git 이력에 보존합니다.
 
 ## 개발 방식
 

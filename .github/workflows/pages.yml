@@ -28,6 +28,7 @@ jobs:
           python-version: "3.12"
       - name: Verify saved demo and record an 80-second walkthrough
         run: |
+          bash scripts/configure_ci_apt.sh
           sudo apt-get update && sudo apt-get install -y ffmpeg
           pip install playwright
           playwright install --with-deps chromium
@@ -65,3 +66,29 @@ jobs:
         uses: actions/deploy-pages@v4
       - name: Check public assets and model version
         run: python scripts/check_public_demo.py --url '${{ steps.deploy.outputs.page_url }}'
+
+      - name: Verify public AWS entry and recorded video
+        env:
+          DEMO_BASE_URL: ${{ steps.deploy.outputs.page_url }}
+        run: |
+          python3 - <<'PY'
+          import hashlib,os,time,urllib.request
+          from pathlib import Path
+          base=os.environ['DEMO_BASE_URL'].rstrip('/')+'/'
+          for name in ['live.html','aws-checks.mp4']:
+              expected=hashlib.sha256((Path('docs/demo')/name).read_bytes()).hexdigest()
+              for attempt in range(20):
+                  try:
+                      with urllib.request.urlopen(base+name+'?aws-evidence=20261024',timeout=15) as response:
+                          actual=hashlib.sha256(response.read()).hexdigest()
+                      assert actual==expected
+                      print('Public file SHA-256 matches:',base+name)
+                      break
+                  except (OSError,AssertionError):
+                      if attempt==19:
+                          raise
+                      time.sleep(5)
+          with urllib.request.urlopen('https://13.236.137.0/health',timeout=20) as response:
+              assert response.status==200
+          print('AWS public HTTPS health also passed.')
+          PY
