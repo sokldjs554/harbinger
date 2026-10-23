@@ -1,0 +1,22 @@
+{
+  "source_workflow_run": 39983662792,
+  "source_artifact_id": 12516181112,
+  "source_artifact_sha256": "69e577678894b7f6eadb583aef3c7ee221af14a56eb7f13f394e811d5c1638fb",
+  "original_video_sha256": "61e3d45f559fb236be211c9edc8f5311b7d0921414498406e103a489994a5590",
+  "published_video_sha256": "4a65861873691a086c764d491be6b95616296c485a6d8eae00a406010ec91e2e",
+  "transcode": "libx264 CRF24, yuv420p, faststart; same frames and duration, no audio",
+  "probe": {
+    "programs": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "width": 800,
+        "height": 554
+      }
+    ],
+    "format": {
+      "duration": "33.160000",
+      "size": "696495"
+    }
+  }
+}

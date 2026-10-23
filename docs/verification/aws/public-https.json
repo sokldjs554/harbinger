@@ -1,0 +1,35 @@
+{
+  "health": {
+    "status": "ok",
+    "service": "harbinger",
+    "version": "0.1.0"
+  },
+  "provenance": {
+    "commit": "5e54df21b6b7c31473689526c20b0e7881e75dee",
+    "region": "ap-southeast-2",
+    "synthetic": true,
+    "scale": 1,
+    "months": 36,
+    "seed": 20260101,
+    "model_version": "v20261023-161741",
+    "note": "Freshly trained synthetic bundle; historical README numbers remain their recorded experiment."
+  },
+  "workbench": {
+    "mode": "live",
+    "synthetic_example": true,
+    "model_version": "v20261023-161741",
+    "limits": {
+      "bytes": 5242880,
+      "rows": 20000,
+      "assets": 500,
+      "sites": 10,
+      "years": 5,
+      "ttl_seconds": 1800
+    },
+    "observation_end": "2026-01-01T00:00:00",
+    "latest_as_of_date": "2025-12-31"
+  },
+  "verified_at_utc": "2026-10-23T16:40:09.516558+00:00",
+  "workflow_run": 39988578474,
+  "tls": "urllib.request default certificate and hostname verification"
+}
