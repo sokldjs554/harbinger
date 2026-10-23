@@ -49,3 +49,8 @@ jobs:
           else:
               raise SystemExit(result.stderr or 'Unexpected dry-run response')
           PY
+
+      - name: Confirm no instance volumes and no SSH exposure after the rejected launch
+        run: |
+          aws ec2 describe-volumes --filters Name=tag:Project,Values=harbinger --query 'Volumes[].{Id:VolumeId,State:State,Size:Size}' --output json
+          aws ec2 describe-security-groups --filters Name=group-name,Values=harbinger-web Name=tag:Project,Values=harbinger --query 'SecurityGroups[].{Name:GroupName,Inbound:IpPermissions}' --output json
