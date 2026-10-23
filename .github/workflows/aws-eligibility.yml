@@ -45,6 +45,7 @@ jobs:
           if '(DryRunOperation)' in result.stderr:
               print('IAM_LAUNCH_AUTHORIZED=true; no instance or volume created.')
           elif 'UnauthorizedOperation' in result.stderr:
+              print(result.stderr.split('Encoded authorization failure message:')[0].strip())
               print('IAM_LAUNCH_AUTHORIZED=false; update the managed policy instance-type condition. No instance or volume created.')
           else:
               raise SystemExit(result.stderr or 'Unexpected dry-run response')
