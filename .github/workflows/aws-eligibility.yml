@@ -59,7 +59,7 @@ jobs:
       - name: Read tagged host boot progress without SSH or resource changes
         run: |
           python3 - <<'PY'
-          import base64,json,re,subprocess
+          import base64,json,re,subprocess,urllib.request,urllib.error
           def aws(*args):
               return json.loads(subprocess.check_output(['aws',*args,'--output','json'],text=True))
           instances = [i for r in aws('ec2','describe-instances','--filters','Name=tag:Project,Values=harbinger','Name=tag:Name,Values=harbinger-demo')['Reservations'] for i in r['Instances'] if i['State']['Name'] not in ['terminated','shutting-down']]
@@ -73,4 +73,11 @@ jobs:
               print('Ed25519 host key in console:',bool(re.search(r'(?m)^ssh-ed25519 ',output.replace(chr(13),''))))
               lines=[line for line in output.splitlines() if not line.startswith(('ssh-','ecdsa-'))]
               print(chr(10).join(lines[-35:]))
+              if i.get('PublicIpAddress') and i['State']['Name'] == 'running':
+                  for path in ['/health','/deployment.json','/v1/workbench/info']:
+                      try:
+                          with urllib.request.urlopen('https://' + i['PublicIpAddress'] + path,timeout=8) as response:
+                              print('Public HTTPS',path,response.status,response.read(1200).decode())
+                      except (OSError,urllib.error.URLError) as error:
+                          print('Public HTTPS pending',path,str(error))
           PY
