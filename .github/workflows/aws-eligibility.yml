@@ -55,3 +55,22 @@ jobs:
         run: |
           aws ec2 describe-volumes --filters Name=tag:Project,Values=harbinger --query 'Volumes[].{Id:VolumeId,State:State,Size:Size}' --output json
           aws ec2 describe-security-groups --filters Name=group-name,Values=harbinger-web Name=tag:Project,Values=harbinger --query 'SecurityGroups[].{Name:GroupName,Inbound:IpPermissions}' --output json
+
+      - name: Read tagged host boot progress without SSH or resource changes
+        run: |
+          python3 - <<'PY'
+          import base64,json,re,subprocess
+          def aws(*args):
+              return json.loads(subprocess.check_output(['aws',*args,'--output','json'],text=True))
+          instances = [i for r in aws('ec2','describe-instances','--filters','Name=tag:Project,Values=harbinger','Name=tag:Name,Values=harbinger-demo')['Reservations'] for i in r['Instances'] if i['State']['Name'] not in ['terminated','shutting-down']]
+          for i in instances:
+              print('Instance:',i['InstanceId'],'State:',i['State']['Name'],'Launch:',i['LaunchTime'])
+              raw = aws('ec2','get-console-output','--instance-id',i['InstanceId'],'--latest').get('Output','')
+              try:
+                  output = base64.b64decode(raw,validate=True).decode()
+              except (ValueError,UnicodeDecodeError):
+                  output = raw
+              print('Ed25519 host key in console:',bool(re.search(r'(?m)^ssh-ed25519 ',output.replace(chr(13),''))))
+              lines=[line for line in output.splitlines() if not line.startswith(('ssh-','ecdsa-'))]
+              print(chr(10).join(lines[-35:]))
+          PY
