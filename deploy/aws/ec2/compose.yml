@@ -1,0 +1,29 @@
+services:
+  api:
+    image: harbinger:${HARBINGER_RELEASE}
+    container_name: harbinger-api
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      HARBINGER_DEMO_BOOTSTRAP: "0"
+      HARBINGER_LOG_LEVEL: INFO
+      PYTHONDONTWRITEBYTECODE: "1"
+      MPLCONFIGDIR: /tmp/matplotlib
+    volumes:
+      - ./runtime/data:/app/data:ro
+      - ./runtime/models:/app/models:ro
+      - ./runtime/artifacts:/app/artifacts:ro
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m,mode=1777
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 3g
+    cpus: 1.5
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
