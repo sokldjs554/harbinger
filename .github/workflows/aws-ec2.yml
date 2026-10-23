@@ -64,6 +64,7 @@ jobs:
       - name: Install browser verifier before provisioning
         run: |
           pip install playwright
+          bash scripts/configure_ci_apt.sh
           playwright install --with-deps chromium
       - name: Train full synthetic runtime bundle before provisioning
         run: |
