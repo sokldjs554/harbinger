@@ -1,0 +1,70 @@
+name: AWS read-only host identity diagnostics
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/aws-console-diagnostics.yml]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    if: github.repository == 'sokldjs554/harbinger' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af6834
+        with:
+          persist-credentials: false
+      - name: Inspect authenticated console metadata and public host keys
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          AWS_REGION: ap-southeast-2
+          AWS_DEFAULT_REGION: ap-southeast-2
+          AWS_EC2_METADATA_DISABLED: 'true'
+          AWS_PAGER: ''
+          AWS_MAX_ATTEMPTS: '3'
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, importlib.util, json, re
+          from pathlib import Path
+          spec = importlib.util.spec_from_file_location('deploy', 'deploy/aws/ec2/deploy.py')
+          deploy = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(deploy)
+          assert deploy.aws('sts', 'get-caller-identity')['Account'] == deploy.ACCOUNT
+          reservations = deploy.aws('ec2', 'describe-instances', '--filters', 'Name=tag:Project,Values=harbinger', 'Name=tag:Name,Values=harbinger-demo')['Reservations']
+          instance = deploy.select_instance([i for r in reservations for i in r['Instances']])
+          assert instance is not None, 'No owned instance; diagnostics never provisions one'
+          report = {'instance_id': instance['InstanceId'], 'state': instance['State']['Name'], 'ip': instance.get('PublicIpAddress'), 'console': []}
+          for latest in (True, False):
+              args = ('--latest',) if latest else ()
+              result = deploy.aws('ec2', 'get-console-output', '--instance-id', instance['InstanceId'], *args)
+              output = result.get('Output') or ''
+              candidates = [('text', output)]
+              try:
+                  candidates.append(('base64', base64.b64decode(output, validate=True).decode()))
+              except (ValueError, UnicodeDecodeError):
+                  pass
+              row = {'latest': latest, 'timestamp': result.get('Timestamp'), 'output_length': len(output), 'output_sha256': hashlib.sha256(output.encode()).hexdigest(), 'key_lines': []}
+              try:
+                  row['current_parser_key'] = deploy.console_host_key(output)
+              except ValueError:
+                  row['current_parser_key'] = None
+              for encoding, text in candidates:
+                  for line in text.splitlines():
+                      match = re.search(r'ssh-ed25519 ([A-Za-z0-9+/=]+)', line)
+                      if match:
+                          row['key_lines'].append({'encoding': encoding, 'prefix': line[:match.start()][:120], 'public_key': match.group(0)})
+                  row[encoding + '_host_key_markers'] = text.count('SSH HOST KEY')
+              report['console'].append(row)
+          groups = deploy.aws('ec2', 'describe-security-groups', '--group-ids', *[g['GroupId'] for g in instance['SecurityGroups']])['SecurityGroups']
+          report['ssh_ingress_present'] = any(p.get('IpProtocol') == '-1' or (p.get('IpProtocol') == 'tcp' and p.get('FromPort', 65536) <= 22 <= p.get('ToPort', -1)) for g in groups for p in g['IpPermissions'])
+          Path('host-identity-diagnostics.json').write_text(json.dumps(report, indent=2) + '\n')
+          print(json.dumps(report, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: host-identity-diagnostics
+          path: host-identity-diagnostics.json
+          retention-days: 14
