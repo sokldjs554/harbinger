@@ -1,0 +1,10 @@
+{
+  "workflow": "https://github.com/sokldjs554/harbinger/actions/runs/40094279337",
+  "commit": "3ca7203a6bb6621bd9a5d52340cb8b3e562c0e10",
+  "conclusion": "failure",
+  "stage": "Remote.__init__: authenticated console SSH host key unavailable",
+  "runtime_training_completed": true,
+  "server_files_copied": false,
+  "deployment_success": false,
+  "error": "SSH host key unavailable; refusing insecure host-key bypass"
+}

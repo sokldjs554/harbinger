@@ -1,0 +1,24 @@
+{
+  "url": "http://127.0.0.1:8020/",
+  "static": true,
+  "page_errors": [],
+  "checks": [
+    "list/detail and record dates",
+    "back/focus",
+    "same selected identities as backend metrics",
+    "pending condition export isolation",
+    "withheld outcomes",
+    "customer scope",
+    "three downloads",
+    "CSV sample",
+    "mobile all views",
+    "mobile filter disclosure, applied summary, pending date and history/scroll restoration",
+    "readable direction labels and exact live/saved mode at 320/390/650px",
+    "session close"
+  ],
+  "verification_context": {
+    "workflow_run": "https://github.com/sokldjs554/harbinger/actions/runs/40093618654",
+    "head_sha": "e4729c47ffe763529320fd9c4fb3915ab56cf30c",
+    "scope": "CI runner localhost, not deployed AWS"
+  }
+}

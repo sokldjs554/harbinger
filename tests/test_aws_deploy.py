@@ -63,7 +63,7 @@ def test_launch_contract_bounds_billable_resources():
 
 def test_host_key_comes_from_console_and_fails_closed():
     deploy = module()
-    key = "AAAAC3NzaC1lZDI1NTE5AAAAIKtestkey"
+    key = host_key().split()[1]
     text = f"boot output\r\nssh-ed25519 {key} root@host\r\n"
     assert deploy.console_host_key(text) == f"ssh-ed25519 {key}"
     assert deploy.console_host_key(base64.b64encode(text.encode()).decode()) == f"ssh-ed25519 {key}"
@@ -153,3 +153,158 @@ def test_noneligible_instance_type_is_rejected_before_provisioning():
     with pytest.raises(ValueError, match="Free Tier"):
         deploy.validate_instance_type({"InstanceType": "c7i-flex.large", "FreeTierEligible": False})
     deploy.validate_instance_type({"InstanceType": "c7i-flex.large", "FreeTierEligible": True})
+
+
+def host_key(byte=1):
+    blob = b"\x00\x00\x00\x0bssh-ed25519\x00\x00\x00\x20" + bytes([byte]) * 32
+    return "ssh-ed25519 " + base64.b64encode(blob).decode()
+
+
+def identity(instance_id="i-0123456789abcdef0", key=None):
+    return json.dumps({"instance_id": instance_id, "host_key": key or host_key()})
+
+
+def console_reader(output):
+    def read(*args):
+        assert args[:2] == ("ec2", "get-console-output")
+        return {"InstanceId": "i-0123456789abcdef0", "Output": output}
+
+    return read
+
+
+def test_explicit_identity_can_verify_existing_host_after_console_rollover():
+    deploy = module()
+    assert (
+        deploy.verified_host_key("i-0123456789abcdef0", identity(), console_reader("reboot log"))
+        == host_key()
+    )
+
+
+def test_identity_cannot_be_reused_for_another_instance():
+    deploy = module()
+    with pytest.raises(ValueError, match="instance"):
+        deploy.verified_host_key(
+            "i-1123456789abcdef0", identity(), lambda *args: pytest.fail("must reject before AWS")
+        )
+
+
+@pytest.mark.parametrize(
+    "pin",
+    [
+        "not json",
+        "[]",
+        json.dumps({"instance_id": "i-0123456789abcdef0", "host_key": host_key(), "extra": "ignored?"}),
+        identity(key="ssh-ed25519 not-base64"),
+        identity(key="ssh-ed25519 " + base64.b64encode(b"wrong wire structure").decode()),
+        identity(key=host_key() + "\nmalicious-host " + host_key(2)),
+        identity(key="ssh-rsa " + host_key().split()[1]),
+        identity(
+            key="ssh-ed25519 "
+            + base64.b64encode(base64.b64decode(host_key().split()[1]) + b"trailing").decode()
+        ),
+    ],
+)
+def test_invalid_pin_never_falls_back_to_console(pin):
+    deploy = module()
+    with pytest.raises(ValueError):
+        deploy.verified_host_key(
+            "i-0123456789abcdef0", pin, lambda *args: pytest.fail("reject malformed pin first")
+        )
+
+
+def test_pin_must_agree_with_authenticated_console_key():
+    deploy = module()
+    with pytest.raises(ValueError, match="mismatch"):
+        deploy.verified_host_key("i-0123456789abcdef0", identity(), console_reader(host_key(2)))
+
+
+def test_console_identity_still_works_without_a_pin():
+    deploy = module()
+    assert deploy.verified_host_key("i-0123456789abcdef0", None, console_reader(host_key())) == host_key()
+
+
+def test_missing_identity_fails_closed_with_actionable_input():
+    deploy = module()
+    with pytest.raises(deploy.HostKeyUnavailable, match="AWS_EC2_SSH_HOST_IDENTITY"):
+        deploy.verified_host_key("i-0123456789abcdef0", None, console_reader("reboot log"))
+
+
+def test_console_response_must_belong_to_requested_instance():
+    deploy = module()
+    with pytest.raises(ValueError, match="instance"):
+        deploy.verified_host_key(
+            "i-0123456789abcdef0", identity(), lambda *args: {"InstanceId": "i-other", "Output": host_key()}
+        )
+
+
+def test_remote_uses_only_the_verified_key_and_no_user_ssh_config(tmp_path, monkeypatch):
+    deploy = module()
+    monkeypatch.setenv("AWS_EC2_SSH_HOST_IDENTITY", identity())
+    monkeypatch.setattr(deploy, "aws", console_reader("reboot log"))
+    calls = []
+    monkeypatch.setattr(
+        deploy.time,
+        "sleep",
+        lambda seconds: pytest.fail("an explicit pin must not wait for missing console output"),
+    )
+    monkeypatch.setattr(deploy.subprocess, "run", lambda *args, **kwargs: calls.append(args[0]))
+    instance = owned("i-0123456789abcdef0")
+    instance["PublicIpAddress"] = "8.8.8.8"
+    remote = deploy.Remote(instance, tmp_path)
+    assert remote.hosts.read_text() == "8.8.8.8 " + host_key() + "\n"
+    assert remote.options[:2] == ["-F", "/dev/null"]
+    assert "StrictHostKeyChecking=yes" in remote.options
+    assert "GlobalKnownHostsFile=/dev/null" in remote.options
+    assert all(call[0] == "ssh-keygen" for call in calls)
+
+
+@pytest.mark.parametrize("pin", [None, identity()])
+def test_existing_host_preflight_only_reads_aws(monkeypatch, pin):
+    deploy = module()
+    monkeypatch.setenv("AWS_REGION", deploy.REGION)
+    if pin:
+        monkeypatch.setenv("AWS_EC2_SSH_HOST_IDENTITY", pin)
+    else:
+        monkeypatch.delenv("AWS_EC2_SSH_HOST_IDENTITY", raising=False)
+    calls = []
+
+    def read(*args):
+        calls.append(args[:2])
+        if args[:2] == ("sts", "get-caller-identity"):
+            return {"Account": deploy.ACCOUNT}
+        if args[:2] == ("ec2", "describe-instances"):
+            return {"Reservations": [{"Instances": [owned("i-0123456789abcdef0")]}]}
+        if args[:2] == ("ec2", "get-console-output"):
+            return {"InstanceId": "i-0123456789abcdef0", "Output": "key no longer retained"}
+        pytest.fail("Preflight must not mutate AWS")
+
+    monkeypatch.setattr(deploy, "aws", read)
+    if pin:
+        deploy.preflight_host_identity()
+    else:
+        with pytest.raises(deploy.HostKeyUnavailable):
+            deploy.preflight_host_identity()
+    assert set(calls) == {
+        ("sts", "get-caller-identity"),
+        ("ec2", "describe-instances"),
+        ("ec2", "get-console-output"),
+    }
+
+
+def test_conflicting_console_histories_fail_without_a_pin():
+    deploy = module()
+
+    def read(*args):
+        return {"InstanceId": "i-0123456789abcdef0", "Output": host_key(1 if "--latest" in args else 2)}
+
+    with pytest.raises(ValueError, match="conflicting"):
+        deploy.verified_host_key("i-0123456789abcdef0", None, read)
+
+
+def test_duplicate_identity_json_fields_are_rejected():
+    deploy = module()
+    pin = identity()[:-1] + ', "instance_id": "i-0123456789abcdef0"}'
+    with pytest.raises(ValueError, match="Duplicate"):
+        deploy.verified_host_key(
+            "i-0123456789abcdef0", pin, lambda *args: pytest.fail("reject duplicate fields first")
+        )

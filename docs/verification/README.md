@@ -1,5 +1,9 @@
 # 검증 기록
 
+## 2026-10-24 입력 정확성과 모니터링 보완
+
+CSV 시각 중복, 고객사 간 점검자 이력, 특징 캐시 출처와 드리프트 상태를 보완했습니다. 입력·모니터링 보완의 로컬 테스트는 117개 통과했으며, SSH 신원 확인 보완까지 포함한 최종 로컬 테스트는 **136개 통과·선택적 TensorFlow 1개 제외**입니다. 입력·모니터링 보완의 [병합본 CI](https://github.com/sokldjs554/harbinger/actions/runs/40094279272)의 API·브라우저·모바일·Docker 검증도 통과했습니다. [수정 내용과 이번 실행 증거](audit-20261024/README.md)를 확인할 수 있습니다. **이번 AWS 재배포는 서버 공개키 확인 단계에서 실패했으며 등록값 확보 전까지 미완료입니다.** 아래 83개·70개 등의 기록과 AWS 배포 성공은 당시 버전의 이력입니다.
+
 ## AWS 실제 계산 데모 — 2026-10-24
 
 [AWS 데모](https://sokldjs554.github.io/harbinger/live.html)에서 CSV 업로드와 새 모델 계산을 제공합니다. [배포 실행](https://github.com/sokldjs554/harbinger/actions/runs/39983662792)에서 신뢰 가능한 HTTPS·실제 CSV/모바일 조작·재부팅 복구·인증서 갱신 시험·임시 SSH 규칙 제거가 통과했습니다. [전체 CI](https://github.com/sokldjs554/harbinger/actions/runs/39983663133)는 83개 통과·선택적 TensorFlow 1개 제외이며 실제 API·브라우저·Docker 실행도 성공했습니다.
