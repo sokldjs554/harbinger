@@ -50,7 +50,7 @@ def main():
         "model_version": m["bundle_version"],
         "synthetic": True,
         "base_commit": "fd346c75ddae39fa6383096d7dd6adabccfdb044",
-        "code_state": "approved dense equipment workflow on codex/dwi-dense-list-review; exact source hashes below",
+        "code_state": "current source snapshot with preserved historical synthetic model/demo artifacts; source hashes do not imply model retraining",
         "observation": m["observation"],
         "sha256": {str(p): digest(p) for p in sorted(files) if p != target},
         "source_note": "survival bin-edge correction applied after fitting; zero affected full train/val/test event rows (verification/survival-edge-impact.txt)",

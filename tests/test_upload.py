@@ -42,6 +42,29 @@ def test_conflicting_asset_metadata():
         parse_csv((HEADER + ROW + row2).encode(), "2025-10-01")
 
 
+@pytest.mark.parametrize(
+    "first,second",
+    [
+        ("2025-08-01", "2025-08-01T00:00:00"),
+        ("2025-08-01T12:30:00", "2025-08-01 12:30:00"),
+        ("2025-08-01T12:30", "2025-08-01T12:30:00.000000"),
+    ],
+)
+def test_equivalent_event_timestamps_are_rejected_with_source_rows(first, second):
+    row1 = ROW.replace("2025-08-01", first)
+    row2 = ROW.replace("i1,", "i2,").replace("2025-08-01", second)
+    with pytest.raises(UploadError, match=r"중복.*2.*3"):
+        parse_csv((HEADER + row1 + row2).encode(), "2025-10-01")
+
+
+def test_distinct_event_times_and_types_are_not_deduplicated():
+    later = ROW.replace("i1,", "i2,").replace("2025-08-01", "2025-08-01T00:00:00.000001")
+    failure = ROW.replace("i1,inspection,", "w1,breakdown,")
+    tables, _ = parse_csv((HEADER + ROW + later + failure).encode(), "2025-10-01")
+    assert len(tables["inspections"]) == 2
+    assert len(tables["workorders"]) == 1
+
+
 def test_raw_text_is_not_executed_or_interpreted():
     tables, _ = parse_csv(
         (HEADER + ROW.replace("약간 소음", "<script>alert(1)</script>")).encode(), "2025-10-01"

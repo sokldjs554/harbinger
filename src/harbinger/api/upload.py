@@ -92,8 +92,6 @@ def parse_csv(content: bytes, observation_end: str):
             raise UploadError(f"{col}: 영문/숫자/밑줄/점/하이픈 1~80자만 지원합니다.")
     if df.record_id.duplicated().any():
         raise UploadError("record_id 중복: 고유한 기록 ID를 사용하세요.")
-    if df.duplicated(["asset_id", "record_type", "occurred_at"]).any():
-        raise UploadError("동일 설비·기록 종류·시각 중복입니다. 원본 기록을 확인하세요.")
     if df.asset_id.nunique() > MAX_ASSETS or df.site_id.nunique() > MAX_SITES:
         raise UploadError("처리 한도 초과: 설비 500개, 고객사 10개 이하만 지원합니다.")
     for col, allowed in [
@@ -109,6 +107,12 @@ def parse_csv(content: bytes, observation_end: str):
         raise UploadError("점검(inspection) 기록이 없어 우선순위를 계산할 수 없습니다.")
     for col in ["occurred_at", "installed"]:
         df[col] = df[col].map(timestamp)
+    duplicates = df.duplicated(["asset_id", "record_type", "occurred_at"], keep=False)
+    if duplicates.any():
+        source_rows = (df.index[duplicates] + 2).tolist()
+        raise UploadError(
+            f"동일 설비·기록 종류·시각 중복입니다. CSV 행 {source_rows[:10]}의 원본 기록을 확인하세요."
+        )
     df.loc[ins_mask, "scheduled_at"] = df.loc[ins_mask, "scheduled_at"].map(timestamp)
     if (df.occurred_at > end).any():
         raise UploadError("관측 종료 이후 기록이 있습니다. 종료일 또는 기록 날짜를 확인하세요.")

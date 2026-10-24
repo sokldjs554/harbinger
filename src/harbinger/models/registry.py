@@ -55,6 +55,7 @@ def save_bundle(
         "git_sha": _git_sha(),
         "features": features,
         "feature_hash": _hash_features(features),
+        "feature_semantics_version": metrics.get("observation", {}).get("feature_semantics_version"),
         "metrics": metrics,
         "data_meta": data_meta,
         "components": {"classifier": True, "deep": deep is not None, "energy": energy is not None},
