@@ -1,0 +1,21 @@
+{
+  "deployment": {
+    "id": 40098079557,
+    "html_url": "https://github.com/sokldjs554/harbinger/actions/runs/40098079557",
+    "head_sha": "e97a0a6c90a059dc549e453289416bf1d2be301b",
+    "run_attempt": 2,
+    "status": "completed",
+    "conclusion": "success",
+    "run_started_at": "2026-10-24T15:15:19Z",
+    "updated_at": "2026-10-24T15:34:48Z",
+    "artifact_id": 12565471848,
+    "artifact_sha256": "3425dc072836c3747fab909522a72e6ff32e12fcab12ba295c38e622058417e6"
+  },
+  "ci": {
+    "id": 40098079564,
+    "html_url": "https://github.com/sokldjs554/harbinger/actions/runs/40098079564",
+    "head_sha": "e97a0a6c90a059dc549e453289416bf1d2be301b",
+    "status": "completed",
+    "conclusion": "success"
+  }
+}

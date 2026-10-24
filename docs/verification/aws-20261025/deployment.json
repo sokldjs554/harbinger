@@ -1,0 +1,10 @@
+{
+  "commit": "e97a0a6c90a059dc549e453289416bf1d2be301b",
+  "region": "ap-southeast-2",
+  "synthetic": true,
+  "scale": 1,
+  "months": 36,
+  "seed": 20260101,
+  "model_version": "v20261024-152504",
+  "note": "Freshly trained synthetic bundle; historical README numbers remain their recorded experiment."
+}

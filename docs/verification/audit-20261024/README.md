@@ -50,7 +50,7 @@ PR 브라우저 증거: [실제 API 검사](pr-browser-api.json) · [저장 예�
 
 재배포 코드는 명시적으로 등록한 **인스턴스 ID + Ed25519 공개키**를 사용하도록 보완했습니다. 형식·키 구조·ID 일치·콘솔과의 불일치를 검사하며, 누락되면 읽기 전용 사전 검사에서 중단합니다. 신원 검사를 끄거나 확인하지 않은 `ssh-keyscan` 결과를 신뢰하지 않습니다. 독립 검토와 배포 단위 테스트 32개를 통과했습니다. 이 보완 후 로컬 전체 테스트도 **136개 통과·선택적 TensorFlow 1개 제외**(102.35초)를 확인했습니다. [최종 로컬 로그](pytest-host-identity.txt). Ruff 검사·94개 파일 형식 검사·문서 수치·릴리스 해시 검사도 통과했습니다. 이 결과는 실제 SSH 접속 성공을 입증하지 않습니다.
 
-**아직 실제 서버 공개키를 확보하지 않았습니다.** 소유자가 신뢰하는 관리 연결에서 공개키를 확인하고 `AWS_EC2_SSH_HOST_IDENTITY`를 등록한 뒤 재배포해야 합니다. [등록 방법](../../../deploy/aws/README.md#재배포에서-서버-공개키가-보이지-않을-때)을 참고합니다. 이전 AWS 배포의 성공 기록은 이번 수정의 배포 성공을 뜻하지 않습니다.
+**2026-10-25 해결:** 소유자가 AWS EC2 Instance Connect 관리 연결에서 공개키를 확인하고 `AWS_EC2_SSH_HOST_IDENTITY`를 등록했습니다. [재실행 attempt 2](https://github.com/sokldjs554/harbinger/actions/runs/40098079557/attempts/2)는 성공했으며, 소스 `e97a0a6c90a059dc549e453289416bf1d2be301b`와 새 합성 모델 `v20261024-152504`를 기존 서버에 반영했습니다. 실제 AWS 브라우저·CSV 계산·모바일, HTTPS·재부팅 복구·인증서 갱신 모의시험·SSH 규칙 제거까지 통과했습니다. [이번 배포 결과와 캡처](../aws-20261025/README.md)를 별도로 보존하며 위 실패 기록도 유지합니다. 이전 성공 실행에서 공개키를 검증했지만 실행기의 임시 파일에만 보존했던 문제는 등록된 서버 신원을 재사용하도록 보완했습니다.
 
 AWS 콘솔 출력의 범위와 `Latest` 옵션은 [AWS API 문서](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetConsoleOutput.html)와 [콘솔 출력 설명](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/troubleshoot-unreachable-instance.html)에서 확인했습니다. 실제 실패 판단은 위 실행 로그와 진단 결과를 근거로 합니다.
 
