@@ -16,12 +16,21 @@ import pandas as pd
 from harbinger.api import backtest, whatif
 from harbinger.api.records import inspection_frame, site_tables
 from harbinger.config import Settings
-from harbinger.features.build import build_features, load_tables
+from harbinger.features.build import FEATURE_SEMANTICS_VERSION, build_features, load_tables
 from harbinger.features.refresh import Refresher
 from harbinger.features.text import LAZY_MEMOS
 from harbinger.models.registry import list_versions, load_bundle
 from harbinger.monitoring.drift import feature_drift, prediction_drift
-from harbinger.monitoring.metrics import ASSETS_LOADED, DRIFT_ALERTS, MODEL_INFO
+from harbinger.monitoring.metrics import (
+    ASSETS_LOADED,
+    DRIFT_ALERTS,
+    DRIFT_LAST_ATTEMPT,
+    DRIFT_LAST_SUCCESS,
+    DRIFT_STATES,
+    DRIFT_STATUS,
+    MODEL_INFO,
+    PRED_P30,
+)
 from harbinger.prescribe.explain import Explainer, evidence_for_asset
 from harbinger.prescribe.priority import rank_patrol
 from harbinger.prescribe.schedule import recommend_interval
@@ -39,6 +48,7 @@ class Store:
         self.loaded_at: float | None = None
         self.data_meta: dict = {}
         self._refresher: Refresher | None = None
+        self._drift_cache: dict[int, dict] = {}
 
     # ---------- 로드 ----------
     def load(self) -> None:
@@ -56,11 +66,25 @@ class Store:
         self.tables = load_tables(d)
         self.X = pd.read_parquet(d / "features.parquet")
         self.bundle = load_bundle(m)
+        inspections = self.tables["inspections"]
+        if inspections.groupby("inspector_id")["site_id"].nunique().gt(1).any():
+            feature_meta_path = d / "features_meta.json"
+            feature_meta = json.loads(feature_meta_path.read_text()) if feature_meta_path.exists() else {}
+            cache_version = feature_meta.get("provenance", {}).get(
+                "feature_semantics_version", feature_meta.get("feature_semantics_version")
+            )
+            model_version = self.bundle["entry"].get("feature_semantics_version")
+            if cache_version != FEATURE_SEMANTICS_VERSION or model_version != FEATURE_SEMANTICS_VERSION:
+                raise RuntimeError(
+                    "Inspector IDs are reused across sites with legacy feature semantics; "
+                    "rebuild features and retrain the model before loading."
+                )
         meta_p = d / "meta.json"
         self.data_meta = json.loads(meta_p.read_text()) if meta_p.exists() else {}
         MODEL_INFO.labels(version=self.bundle["version"]).set(1)
         ASSETS_LOADED.set(len(self.tables["assets"]))
         self.loaded_at = time.time()
+        self._refresh_monitoring()
         log.info(
             "store loaded: assets=%d features_rows=%d bundle=%s in %.1fs",
             len(self.tables["assets"]),
@@ -116,6 +140,9 @@ class Store:
         # 점검 뒤에 생긴 고장·정비와 시간 경과를 기준 시각에 맞춰 반영한다 (features/refresh.py)
         rows = self.refresher.apply(rows, as_of)
         rows["p30"] = self.bundle["classifier"].predict_proba(rows)
+        for probability in rows["p30"]:
+            if np.isfinite(probability) and 0 <= probability <= 1:
+                PRED_P30.observe(float(probability))
         return rows
 
     def with_deep(self, rows: pd.DataFrame) -> tuple[np.ndarray | None, np.ndarray | None]:
@@ -357,21 +384,61 @@ class Store:
         }
 
     def drift(self, window_days: int = 60) -> dict:
+        """Cache by data revision and window; scrapes never run model inference."""
+        if window_days not in self._drift_cache:
+            checked_at = time.time()
+            try:
+                result = self._calculate_drift(window_days)
+            except Exception:
+                log.exception("drift calculation failed")
+                result = {
+                    "status": "error",
+                    "window_days": window_days,
+                    "features": None,
+                    "predictions": None,
+                    "model_version": (self.bundle or {}).get("version"),
+                }
+            result["computed_at"] = checked_at
+            self._drift_cache[window_days] = result
+        return self._drift_cache[window_days]
+
+    def _refresh_monitoring(self) -> None:
+        """Refresh once after load/ingestion; retain the last successful timestamp."""
+        self._drift_cache.clear()
+        result = self.drift()
+        status = result["status"]
+        DRIFT_LAST_ATTEMPT.set(result["computed_at"])
+        for state in DRIFT_STATES:
+            DRIFT_STATUS.labels(state=state).set(int(state == status))
+        DRIFT_ALERTS.set(result["features"]["n_alert"] if status == "success" else float("nan"))
+        if status == "success":
+            DRIFT_LAST_SUCCESS.set(result["computed_at"])
+
+    def _calculate_drift(self, window_days: int) -> dict:
         X = self.X
+        # Recent inspections advance monitoring, not certified outcome follow-up.
+        monitoring_end = max(self.data_end, X["t"].max()) if len(X) else self.data_end
         feats = self.bundle["entry"]["features"]
         tw = self.bundle["entry"]["metrics"].get("test_window", {})
         ref_end = pd.Timestamp(tw.get("to", str(self.data_end.date()))) - pd.Timedelta(days=365)
         ref = X[X["t"] < ref_end] if (X["t"] < ref_end).sum() > 500 else X.iloc[: len(X) // 2]
-        cur = X[X["t"] > self.data_end - pd.Timedelta(days=window_days)]
-        num_feats = [f for f in feats if f in X.columns]
-        fd = feature_drift(ref, cur, num_feats)
-        p_ref = self.bundle["classifier"].predict_proba(ref.sample(min(5000, len(ref)), random_state=0))
-        p_cur = self.bundle["classifier"].predict_proba(cur) if len(cur) else p_ref
-        DRIFT_ALERTS.set(fd["n_alert"])
+        cur = X[(X["t"] > monitoring_end - pd.Timedelta(days=window_days)) & (X["t"] <= monitoring_end)]
+        fd = feature_drift(ref, cur, feats)
+        p_ref = (
+            self.bundle["classifier"].predict_proba(ref.sample(min(5000, len(ref)), random_state=0))
+            if len(ref)
+            else np.array([])
+        )
+        p_cur = self.bundle["classifier"].predict_proba(cur) if len(cur) else np.array([])
+        predictions = prediction_drift(p_ref, p_cur)
         return {
+            "status": "success"
+            if fd["status"] == predictions["status"] == "success"
+            else "insufficient_data",
             "window_days": window_days,
             "features": fd,
-            "predictions": prediction_drift(p_ref, p_cur),
+            "predictions": predictions,
+            "data_as_of": monitoring_end.isoformat(),
             "model_version": self.bundle["version"],
         }
 
@@ -392,6 +459,7 @@ class Store:
 
     def ingest_inspections(self, site_id: str, records: list[dict]) -> dict:
         """새 점검 기록을 받아 테이블에 붙이고, 영향 받은 설비의 피처를 다시 계산한다 (사이트 단위 재계산)."""
+        observation_end = self.data_end
         ins = self.tables["inspections"]
         new = inspection_frame(ins, self.tables["assets"], site_id, records)
         self.tables["inspections"] = pd.concat([ins, new], ignore_index=True)
@@ -404,6 +472,9 @@ class Store:
             verbose=False,
         )
         self.X = pd.concat([self.X[self.X["site_id"] != site_id], Xs], ignore_index=True)
+        # Inspection ingestion alone does not certify failure-outcome completeness.
+        self._observation_end = observation_end
+        self._refresh_monitoring()
         rows = self.latest_rows(site_id, self.X["t"].max(), max_age_days=36500)
         touched = rows[rows["asset_id"].isin(set(new["asset_id"]))]
         return {

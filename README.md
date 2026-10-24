@@ -121,4 +121,4 @@ UTF-8/BOM CSV, 최대 **5 MiB / 20,000행 / 설비 500개 / 고객사 10개 / �
 
 ## 추가 문서
 
-[지원용 소개·시연 순서](docs/submission.md) · [회사·공고 조사 범위](docs/company-research.md) · [모델 설계](docs/modeling.md) · [한계](docs/limitations.md) · [실데이터 적용 체크리스트](docs/real-data-checklist.md)
+[지원용 소개·시연 순서](docs/submission.md) · [회사·공고 조사 범위](docs/company-research.md) · [모델 설계](docs/modeling.md) · [한계](docs/limitations.md) · [실데이터 적용 체크리스트](docs/real-data-checklist.md) · [친구·동료 검토 절차](docs/user-review.md) · [빈 검토 기록 양식](docs/user-review-template.md)

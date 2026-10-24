@@ -27,6 +27,8 @@ from harbinger.features.text import memo_features, novelty
 from harbinger.schema import ALL_CHECK_ITEMS, HVAC_CATEGORIES, LEGAL_CATEGORIES, AssetCategory
 
 FEATURE_GROUPS = ("st", "ck", "wo", "tx", "q", "en", "se")
+# Version 2 scopes inspector history to a site; column names alone cannot identify this change.
+FEATURE_SEMANTICS_VERSION = 2
 ID_COLS = ["inspection_id", "asset_id", "site_id", "inspector_id", "t", "memo", "category", "archetype"]
 LABEL_COLS = ["y30", "label_valid", "tte_days", "event"]
 
@@ -204,19 +206,19 @@ def build_features(
     X["q_method_manual"] = (ins["method"] == "manual").astype(float)
     X["q_photos"] = ins["photo_count"].astype(float)
     lazy_or_dup = ((tx["tx_lazy"] > 0) | (tx["tx_dup_prev"] > 0)).astype(float)
-    order = ins.sort_values(["inspector_id", "t"]).index
+    # Inspector IDs are local to each customer/site, while history spans its assets.
+    order = ins.sort_values(["site_id", "inspector_id", "t"]).index
+    inspector_keys = [ins.loc[order, "site_id"], ins.loc[order, "inspector_id"]]
     ins_sorted_lazy = lazy_or_dup.loc[order]
-    insp_lazy = ins_sorted_lazy.groupby(ins.loc[order, "inspector_id"]).transform(
+    insp_lazy = ins_sorted_lazy.groupby(inspector_keys).transform(
         lambda s: s.rolling(30, min_periods=3).mean()
     )
     X["q_inspector_lazy_rate"] = insp_lazy.reindex(X.index)
     all_good = (ov == 0).astype(float).loc[order]
-    insp_good = all_good.groupby(ins.loc[order, "inspector_id"]).transform(
-        lambda s: s.rolling(30, min_periods=3).mean()
-    )
+    insp_good = all_good.groupby(inspector_keys).transform(lambda s: s.rolling(30, min_periods=3).mean())
     X["q_inspector_good_rate"] = insp_good.reindex(X.index)
     dwell_sorted = ins.loc[order, "dwell_seconds"].astype(float)
-    insp_dwell = dwell_sorted.groupby(ins.loc[order, "inspector_id"]).transform(
+    insp_dwell = dwell_sorted.groupby(inspector_keys).transform(
         lambda s: s.rolling(30, min_periods=3).median()
     )
     X["q_inspector_dwell_med"] = insp_dwell.reindex(X.index)
@@ -332,6 +334,7 @@ def main(argv: list[str] | None = None) -> None:
     X.to_parquet(out, index=False)
     meta = {
         "rows": int(len(X)),
+        "feature_semantics_version": FEATURE_SEMANTICS_VERSION,
         "n_features": len(feature_columns(X)),
         "groups": {g: len(feature_columns(X, (g,))) for g in FEATURE_GROUPS},
     }

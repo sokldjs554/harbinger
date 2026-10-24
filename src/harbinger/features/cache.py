@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from harbinger.features.build import build_features, load_tables
+from harbinger.features.build import FEATURE_SEMANTICS_VERSION, build_features, load_tables
 
 BOUNDARY_VERSION = 2
 
@@ -29,6 +29,7 @@ def cached_features(data_dir: Path, train_end: pd.Timestamp):
     fit_until = min(tables["inspections"].performed_at.min() + pd.Timedelta(days=365), train_end)
     spec = {
         "boundary_version": BOUNDARY_VERSION,
+        "feature_semantics_version": FEATURE_SEMANTICS_VERSION,
         "source_sha256": hashes,
         "fit_until": fit_until.isoformat(),
         "observation_end": end.isoformat(),

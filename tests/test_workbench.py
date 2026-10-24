@@ -52,6 +52,28 @@ def test_invalid_upload_is_atomic(client):
     )
 
 
+def test_equivalent_timestamp_upload_keeps_existing_session(client):
+    endpoint = "/v1/workbench/upload?observation_end=2025-10-01"
+    headers = {"Content-Type": "text/csv"}
+    valid = client.post(endpoint, content=(HEADER + ROW).encode(), headers=headers)
+    assert valid.status_code == 200, valid.text
+    token = valid.json()["session_id"]
+    try:
+        analysis_url = f"/v1/workbench/sessions/{token}/analysis?as_of=2025-08-01"
+        before = client.get(analysis_url).json()
+        active = set(sessions)
+        duplicate = ROW.replace("i1,", "i2,").replace("2025-08-01", "2025-08-01T00:00:00")
+        invalid = client.post(endpoint, content=(HEADER + ROW + duplicate).encode(), headers=headers)
+        assert invalid.status_code == 422, invalid.text
+        assert "2" in invalid.json()["detail"] and "3" in invalid.json()["detail"]
+        assert set(sessions) == active
+        after = client.get(analysis_url).json()
+        assert after["assets"] == before["assets"]
+        assert after["model_version"] == before["model_version"]
+    finally:
+        client.delete(f"/v1/workbench/sessions/{token}")
+
+
 def test_example_download_is_supported_csv(client):
     from harbinger.api.upload import parse_csv
 
