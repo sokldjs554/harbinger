@@ -37,6 +37,18 @@ jobs:
           pip install pytest
           pytest --noconftest tests/test_aws_deploy.py -q
           bash -n deploy/aws/ec2/install.sh
+      - name: Check existing EC2 SSH identity before building
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          AWS_EC2_SSH_HOST_IDENTITY: ${{ secrets.AWS_EC2_SSH_HOST_IDENTITY }}
+          AWS_REGION: ap-southeast-2
+          AWS_DEFAULT_REGION: ap-southeast-2
+          AWS_EC2_METADATA_DISABLED: "true"
+          AWS_PAGER: ""
+          AWS_MAX_ATTEMPTS: "3"
+        run: python3 deploy/aws/ec2/deploy.py --check-host-identity
       - name: Require successful full CI for this exact main commit
         env:
           CI_READ_TOKEN: ${{ github.token }}
@@ -98,6 +110,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          AWS_EC2_SSH_HOST_IDENTITY: ${{ secrets.AWS_EC2_SSH_HOST_IDENTITY }}
           AWS_REGION: ap-southeast-2
           AWS_DEFAULT_REGION: ap-southeast-2
           AWS_EC2_METADATA_DISABLED: "true"

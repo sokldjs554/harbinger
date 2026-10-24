@@ -81,17 +81,105 @@ def launch_request(image, subnet_id, group_id, token):
     }
 
 
-def console_host_key(output):
+def normalize_host_key(key):
+    if not isinstance(key, str) or any(char in key for char in "\r\n"):
+        raise ValueError("Expected one Ed25519 public host key line")
+    fields = key.split(maxsplit=2)
+    if len(fields) < 2 or fields[0] != "ssh-ed25519":
+        raise ValueError("Expected an Ed25519 public host key")
+    blob = base64.b64decode(fields[1], validate=True)
+    prefix = b"\x00\x00\x00\x0bssh-ed25519\x00\x00\x00\x20"
+    if len(blob) != len(prefix) + 32 or not blob.startswith(prefix):
+        raise ValueError("Invalid Ed25519 SSH wire structure")
+    if base64.b64encode(blob).decode() != fields[1]:
+        raise ValueError("Expected canonical public-key base64")
+    return "ssh-ed25519 " + fields[1]
+
+
+def console_host_keys(output):
     candidates = [output]
     try:
         candidates.append(base64.b64decode(output, validate=True).decode())
     except (ValueError, UnicodeDecodeError):
         pass
+    keys = set()
     for text in candidates:
-        match = re.search(r"(?m)^ssh-ed25519 ([A-Za-z0-9+/=]+)(?:[ \t].*)?$", text.replace("\r", ""))
-        if match:
-            return "ssh-ed25519 " + match[1]
+        for match in re.finditer(r"(?m)^ssh-ed25519 ([A-Za-z0-9+/=]+)(?:[ \t].*)?$", text.replace("\r", "")):
+            keys.add(normalize_host_key("ssh-ed25519 " + match[1]))
+    return keys
+
+
+def console_host_key(output):
+    keys = console_host_keys(output)
+    if len(keys) == 1:
+        return keys.pop()
     raise ValueError("No verified SSH host key in EC2 console output")
+
+
+class HostKeyUnavailable(RuntimeError):
+    pass
+
+
+def verified_host_key(instance_id, identity, call_aws=None):
+    """Use authenticated console keys or an explicitly provisioned, instance-bound pin."""
+    call_aws = call_aws or aws
+    pin = None
+    if identity:
+
+        def unique_fields(pairs):
+            result = {}
+            for key, value in pairs:
+                if key in result:
+                    raise ValueError("Duplicate host identity field")
+                result[key] = value
+            return result
+
+        record = json.loads(identity, object_pairs_hook=unique_fields)
+        if not isinstance(record, dict) or set(record) != {"instance_id", "host_key"}:
+            raise ValueError("Expected instance_id and host_key in AWS_EC2_SSH_HOST_IDENTITY")
+        if record["instance_id"] != instance_id:
+            raise ValueError("Pinned SSH identity belongs to a different instance")
+        pin = normalize_host_key(record["host_key"])
+    keys = set()
+    for flags in (("--latest",), ()):
+        response = call_aws("ec2", "get-console-output", "--instance-id", instance_id, *flags)
+        if response.get("InstanceId") != instance_id:
+            raise ValueError("Console identity response belongs to a different instance")
+        keys.update(console_host_keys(response.get("Output") or ""))
+    if pin:
+        if keys and keys != {pin}:
+            raise ValueError("Authenticated console and pinned SSH host identity mismatch")
+        return pin
+    if len(keys) == 1:
+        return keys.pop()
+    if keys:
+        raise ValueError("Authenticated console contains conflicting SSH host identities")
+    raise HostKeyUnavailable(
+        "Console SSH host key unavailable. Set AWS_EC2_SSH_HOST_IDENTITY from a trusted "
+        "administrative connection; never trust an unverified ssh-keyscan result."
+    )
+
+
+def preflight_host_identity():
+    """Fail before image building when an existing host cannot be authenticated."""
+    identity = aws("sts", "get-caller-identity")
+    if identity["Account"] != ACCOUNT or os.environ.get("AWS_REGION") != REGION:
+        raise ValueError("AWS account or project region does not match reviewed policy")
+    reservations = aws(
+        "ec2",
+        "describe-instances",
+        "--filters",
+        "Name=tag:Project,Values=harbinger",
+        "Name=tag:Name,Values=harbinger-demo",
+    )["Reservations"]
+    instance = select_instance([i for r in reservations for i in r["Instances"]])
+    if instance is not None:
+        verified_host_key(instance["InstanceId"], os.environ.get("AWS_EC2_SSH_HOST_IDENTITY"))
+        print("Existing EC2 host identity verified before build.")
+    else:
+        if os.environ.get("AWS_EC2_SSH_HOST_IDENTITY"):
+            raise ValueError("Pinned identity has no matching existing instance; review replacement first")
+        print("No existing host; a new host must expose its authenticated console key after boot.")
 
 
 def remote_environment():
@@ -175,23 +263,26 @@ def wait_https(ip, sha):
 
 
 class Remote:
-    def __init__(self, instance, directory):
+    def __init__(self, instance, directory, wait_for_key=False):
         self.instance = instance
         self.ip = str(ipaddress.IPv4Address(instance["PublicIpAddress"]))
         self.key = directory / "key"
         self.hosts = directory / "known_hosts"
         subprocess.run(["ssh-keygen", "-q", "-t", "ed25519", "-f", str(self.key), "-N", ""], check=True)
-        for _ in range(60):
-            console = aws("ec2", "get-console-output", "--instance-id", instance["InstanceId"], "--latest")
+        for attempt in range(60 if wait_for_key else 1):
             try:
-                host_key = console_host_key(console.get("Output", ""))
+                host_key = verified_host_key(
+                    instance["InstanceId"], os.environ.get("AWS_EC2_SSH_HOST_IDENTITY")
+                )
                 self.hosts.write_text(f"{self.ip} {host_key}\n")
                 break
-            except ValueError:
+            except HostKeyUnavailable:
+                if not wait_for_key or attempt == 59:
+                    raise
                 time.sleep(10)
-        else:
-            raise RuntimeError("SSH host key unavailable; refusing insecure host-key bypass")
         self.options = [
+            "-F",
+            "/dev/null",
             "-i",
             str(self.key),
             "-o",
@@ -200,6 +291,8 @@ class Remote:
             "IdentitiesOnly=yes",
             "-o",
             f"UserKnownHostsFile={self.hosts}",
+            "-o",
+            "GlobalKnownHostsFile=/dev/null",
             "-o",
             "HostKeyAlgorithms=ssh-ed25519",
             "-o",
@@ -367,7 +460,7 @@ def main():
         with urllib.request.urlopen("https://checkip.amazonaws.com/", timeout=15) as response:
             runner_ip = response.read().decode().strip()
         with temporary_ssh(aws, group_id, runner_ip), tempfile.TemporaryDirectory() as temp:
-            remote = Remote(instance, Path(temp))
+            remote = Remote(instance, Path(temp), wait_for_key=created)
             # The cloud image may start SSH before package initialization has finished.
             for attempt in range(30):
                 try:
@@ -446,4 +539,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if sys.argv[1:] == ["--check-host-identity"]:
+        preflight_host_identity()
+    elif sys.argv[1:]:
+        raise SystemExit("Unknown deployment arguments")
+    else:
+        main()

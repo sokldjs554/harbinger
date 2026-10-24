@@ -36,7 +36,23 @@
 
 Ruff 검사와 93개 파일 형식 검사, release manifest 해시 검사, 문서 수치 검사, 배포 스크립트 문법 검사도 통과했습니다. 코드 검토에서 발견한 관측 종료일 연장 문제는 수정 후 별도 회귀 테스트로 확인했습니다. 기존 83개 테스트 통과 기록은 이번 실행 결과와 구별합니다.
 
-이 기록 작성 시점에는 이번 변경의 GitHub CI·AWS 배포가 아직 완료되지 않았습니다. 로컬 브라우저 설치가 실패해 브라우저·Docker 검증은 기존 CI에서 별도로 확인합니다. 로컬 테스트 통과는 공개 AWS 서비스의 동작이나 고객 실증을 입증하지 않습니다.
+[PR #9](https://github.com/sokldjs554/harbinger/pull/9)는 [PR 전체 CI](https://github.com/sokldjs554/harbinger/actions/runs/40093618654) 통과 후 병합했습니다. 병합 소스 `3ca7203a6bb6621bd9a5d52340cb8b3e562c0e10`의 [main 전체 CI](https://github.com/sokldjs554/harbinger/actions/runs/40094279272)도 통과했습니다. 전체 테스트, 축소 합성 학습·API, 실제 API 연결 브라우저, 저장 예제 모바일, Docker 빌드·API·UID 10001, 문서 수치·해시 검사를 포함합니다.
+
+PR 브라우저 증거: [실제 API 검사](pr-browser-api.json) · [저장 예제 검사](pr-browser-static.json). JavaScript 페이지 오류는 양쪽 모두 없었습니다. 이 검사는 CI 실행기의 localhost에서 수행했으며 공개 AWS 검증과 구별합니다.
+
+로컬 브라우저 설치 실패 이후 브라우저·Docker 검증은 위 CI에서 완료했습니다. 로컬 테스트와 CI 성공은 고객 실증을 입증하지 않습니다.
+
+## AWS 재배포에서 확인한 제한
+
+[첫 재배포](https://github.com/sokldjs554/harbinger/actions/runs/40094279337)는 **실패**했습니다. 새 합성 런타임 `v20261024-125054` 학습은 완료했지만 `Remote.__init__`의 SSH 서버 신원 확인에서 중단되어 새 파일을 서버에 복사하지 못했습니다. [학습 출처](aws-attempt-1/deployment.json), [해당 런타임 지표](aws-attempt-1/metrics.json), [실패 범위](aws-attempt-1/result.json)는 성공한 배포 증거가 아닙니다.
+
+[읽기 전용 진단](https://github.com/sokldjs554/harbinger/actions/runs/40096781696)에서 AWS 자격 증명으로 계정·인스턴스·보안 그룹·콘솔 조회가 성공했습니다. 최신 출력 65,535자와 기본 출력 65,369자 모두 SSH 공개키와 호스트 키 구간 표식이 없었습니다. [진단 원본](host-identity-diagnostics.json)에서 인스턴스 `i-0aaec13273afe3197`는 `running`, 임시 SSH 인바운드 규칙은 제거된 상태였습니다. 이 조회 자체는 공개 API의 현재 응답 상태를 검사한 것이 아닙니다.
+
+재배포 코드는 명시적으로 등록한 **인스턴스 ID + Ed25519 공개키**를 사용하도록 보완했습니다. 형식·키 구조·ID 일치·콘솔과의 불일치를 검사하며, 누락되면 읽기 전용 사전 검사에서 중단합니다. 신원 검사를 끄거나 확인하지 않은 `ssh-keyscan` 결과를 신뢰하지 않습니다. 독립 검토와 배포 단위 테스트 32개를 통과했습니다. 이 보완 후 로컬 전체 테스트도 **136개 통과·선택적 TensorFlow 1개 제외**(102.35초)를 확인했습니다. [최종 로컬 로그](pytest-host-identity.txt). Ruff 검사·94개 파일 형식 검사·문서 수치·릴리스 해시 검사도 통과했습니다. 이 결과는 실제 SSH 접속 성공을 입증하지 않습니다.
+
+**아직 실제 서버 공개키를 확보하지 않았습니다.** 소유자가 신뢰하는 관리 연결에서 공개키를 확인하고 `AWS_EC2_SSH_HOST_IDENTITY`를 등록한 뒤 재배포해야 합니다. [등록 방법](../../../deploy/aws/README.md#재배포에서-서버-공개키가-보이지-않을-때)을 참고합니다. 이전 AWS 배포의 성공 기록은 이번 수정의 배포 성공을 뜻하지 않습니다.
+
+AWS 콘솔 출력의 범위와 `Latest` 옵션은 [AWS API 문서](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetConsoleOutput.html)와 [콘솔 출력 설명](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/troubleshoot-unreachable-instance.html)에서 확인했습니다. 실제 실패 판단은 위 실행 로그와 진단 결과를 근거로 합니다.
 
 ## 지인·동료 검토 준비
 
