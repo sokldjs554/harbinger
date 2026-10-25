@@ -1,0 +1,39 @@
+[synth] day 1/1096 inspections=23 workorders=1 elapsed=0.0s
+[synth] day 181/1096 inspections=3589 workorders=430 elapsed=0.3s
+[synth] day 361/1096 inspections=7165 workorders=985 elapsed=0.6s
+[synth] day 541/1096 inspections=10715 workorders=1556 elapsed=0.9s
+[synth] day 721/1096 inspections=14239 workorders=2115 elapsed=1.2s
+[synth] day 901/1096 inspections=17807 workorders=2710 elapsed=1.5s
+[synth] day 1081/1096 inspections=21375 workorders=3322 elapsed=1.8s
+[synth] day 1096/1096 inspections=21680 workorders=3373 elapsed=1.8s
+[synth] done sites=4 assets=384 inspections=21680 workorders=3373 breakdowns=1072 energy_rows=4384 in 2.0s
+[features] rows=21680 features=102 pos_rate(valid)=0.0818 in 2.1s
+world 202610251: rebuilt missing_25
+world 202610251: rebuilt missing_50
+world 202610251: rebuilt missing_100
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/memo_robustness.py:79: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  dates = pd.date_range(start, end - pd.Timedelta(days=30), freq="W-MON")
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/memo_robustness.py:79: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  dates = pd.date_range(start, end - pd.Timedelta(days=30), freq="W-MON")
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/memo_robustness.py:145: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert validation["clean"].decision_at.max() + pd.Timedelta(days=30) <= split.val_end
+world 202610251, seed 17: training legacy
+/workspace/scratch/528e6091a06b/harbinger-memo/src/harbinger/models/deep.py:289: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  tot += float(loss) * len(idx)
+[deep:text] epoch 1 train=2.5068 val=0.7933
+[deep:text] epoch 2 train=1.8145 val=0.6888
+world 202610251, seed 17: training robust
+[deep:text] epoch 1 train=2.8692 val=0.7665
+[deep:text] epoch 2 train=1.9913 val=0.7024
+world 202610251, seed 17: training no_memo
+[deep:notext] epoch 1 train=2.8949 val=0.7249
+[deep:notext] epoch 2 train=1.8069 val=0.7187
+  scored validation/legacy
+  scored validation/robust
+  scored validation/no_memo
+  scored test/legacy
+  scored test/robust
+  scored test/no_memo
+world 202610251, seed 17: COMPLETE; selected=no_memo
+world 202610251: COMPLETE in 28.8s

@@ -1,0 +1,29 @@
+{
+  "exact_truncation_cause": "unconfirmed; completed-run gzip stream truncation observed",
+  "model_predictions_changed": false,
+  "selection_changed": false,
+  "repairs": [
+    {
+      "world": "data-202610251",
+      "path": "missing_25-memos.csv.gz",
+      "before_sha256": "0af6bd4660820c889a029e3ac9024258e395f51b8a3814f9ba3ce2fc45ca1663",
+      "after_sha256": "d1af6ba8a294a46a73270fe7e0bb4324f3c3b1d8fdd6642a03f89122d7cf2ce0",
+      "original_bytes": 1494733,
+      "restored_bytes": 1897240,
+      "prefix_bytes_verified": 6792507,
+      "full_payload_bytes": 8540633,
+      "basis": "deterministic raw-inspection perturbation, seed202611251, rate.25, start2025-01-01"
+    },
+    {
+      "world": "data-202610252",
+      "path": "model-17/validation/rows.csv.gz",
+      "before_sha256": "b0ba828785cd5facea9cf28e2b57cb5df58bc773e9140badc2dc8a683a25e2f3",
+      "after_sha256": "d454202c3c1546ce1eec671f9ec658ea6cc0c35452e409de9d7b87244a17c756",
+      "original_bytes": 18614,
+      "restored_bytes": 101658,
+      "prefix_bytes_verified": 230598,
+      "full_payload_bytes": 1271289,
+      "basis": "same-world model29 validation cohort; identical cohort construction for both learning seeds"
+    }
+  ]
+}

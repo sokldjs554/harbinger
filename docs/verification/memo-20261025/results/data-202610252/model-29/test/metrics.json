@@ -1,0 +1,1388 @@
+{
+  "legacy": {
+    "clean": {
+      "n": 47564,
+      "pos_rate": 0.08012362290808174,
+      "auroc": 0.7534490493954688,
+      "pr_auc": 0.23333598291533347,
+      "brier": 0.06769526371462904,
+      "ece": 0.00669766671798316,
+      "pr_auc_lift": 2.912199604141937,
+      "logloss": 0.24735680810079907,
+      "precision_at_k": 0.24036363636363636,
+      "selected": 5500,
+      "decisions": 550,
+      "per_site": {
+        "S01": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S02": {
+          "hits": 57,
+          "selected": 220
+        },
+        "S03": {
+          "hits": 69,
+          "selected": 220
+        },
+        "S04": {
+          "hits": 65,
+          "selected": 220
+        },
+        "S05": {
+          "hits": 33,
+          "selected": 220
+        },
+        "S06": {
+          "hits": 65,
+          "selected": 220
+        },
+        "S07": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S08": {
+          "hits": 33,
+          "selected": 220
+        },
+        "S09": {
+          "hits": 77,
+          "selected": 220
+        },
+        "S10": {
+          "hits": 56,
+          "selected": 220
+        },
+        "S11": {
+          "hits": 76,
+          "selected": 220
+        },
+        "S12": {
+          "hits": 56,
+          "selected": 220
+        },
+        "S13": {
+          "hits": 45,
+          "selected": 220
+        },
+        "S14": {
+          "hits": 66,
+          "selected": 220
+        },
+        "S15": {
+          "hits": 75,
+          "selected": 220
+        },
+        "S16": {
+          "hits": 39,
+          "selected": 220
+        },
+        "S17": {
+          "hits": 39,
+          "selected": 220
+        },
+        "S18": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S19": {
+          "hits": 48,
+          "selected": 220
+        },
+        "S20": {
+          "hits": 46,
+          "selected": 220
+        },
+        "S21": {
+          "hits": 43,
+          "selected": 220
+        },
+        "S22": {
+          "hits": 40,
+          "selected": 220
+        },
+        "S23": {
+          "hits": 41,
+          "selected": 220
+        },
+        "S24": {
+          "hits": 61,
+          "selected": 220
+        },
+        "S25": {
+          "hits": 62,
+          "selected": 220
+        }
+      }
+    },
+    "missing_25": {
+      "n": 47564,
+      "pos_rate": 0.08012362290808174,
+      "auroc": 0.7044780369762912,
+      "pr_auc": 0.17132495043949997,
+      "brier": 0.0771397844623843,
+      "ece": 0.04370335287065725,
+      "pr_auc_lift": 2.138257660116604,
+      "logloss": 0.276334258390212,
+      "precision_at_k": 0.186,
+      "selected": 5500,
+      "decisions": 550,
+      "per_site": {
+        "S01": {
+          "hits": 29,
+          "selected": 220
+        },
+        "S02": {
+          "hits": 41,
+          "selected": 220
+        },
+        "S03": {
+          "hits": 49,
+          "selected": 220
+        },
+        "S04": {
+          "hits": 56,
+          "selected": 220
+        },
+        "S05": {
+          "hits": 22,
+          "selected": 220
+        },
+        "S06": {
+          "hits": 38,
+          "selected": 220
+        },
+        "S07": {
+          "hits": 29,
+          "selected": 220
+        },
+        "S08": {
+          "hits": 36,
+          "selected": 220
+        },
+        "S09": {
+          "hits": 47,
+          "selected": 220
+        },
+        "S10": {
+          "hits": 64,
+          "selected": 220
+        },
+        "S11": {
+          "hits": 54,
+          "selected": 220
+        },
+        "S12": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S13": {
+          "hits": 28,
+          "selected": 220
+        },
+        "S14": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S15": {
+          "hits": 51,
+          "selected": 220
+        },
+        "S16": {
+          "hits": 34,
+          "selected": 220
+        },
+        "S17": {
+          "hits": 34,
+          "selected": 220
+        },
+        "S18": {
+          "hits": 36,
+          "selected": 220
+        },
+        "S19": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S20": {
+          "hits": 36,
+          "selected": 220
+        },
+        "S21": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S22": {
+          "hits": 33,
+          "selected": 220
+        },
+        "S23": {
+          "hits": 45,
+          "selected": 220
+        },
+        "S24": {
+          "hits": 38,
+          "selected": 220
+        },
+        "S25": {
+          "hits": 51,
+          "selected": 220
+        }
+      }
+    },
+    "missing_50": {
+      "n": 47564,
+      "pos_rate": 0.08012362290808174,
+      "auroc": 0.680916634284936,
+      "pr_auc": 0.17015086672649246,
+      "brier": 0.08446542032464996,
+      "ece": 0.0755521481409174,
+      "pr_auc_lift": 2.1236042574072127,
+      "logloss": 0.30036419662942254,
+      "precision_at_k": 0.18418181818181817,
+      "selected": 5500,
+      "decisions": 550,
+      "per_site": {
+        "S01": {
+          "hits": 26,
+          "selected": 220
+        },
+        "S02": {
+          "hits": 38,
+          "selected": 220
+        },
+        "S03": {
+          "hits": 49,
+          "selected": 220
+        },
+        "S04": {
+          "hits": 50,
+          "selected": 220
+        },
+        "S05": {
+          "hits": 27,
+          "selected": 220
+        },
+        "S06": {
+          "hits": 48,
+          "selected": 220
+        },
+        "S07": {
+          "hits": 34,
+          "selected": 220
+        },
+        "S08": {
+          "hits": 30,
+          "selected": 220
+        },
+        "S09": {
+          "hits": 59,
+          "selected": 220
+        },
+        "S10": {
+          "hits": 65,
+          "selected": 220
+        },
+        "S11": {
+          "hits": 53,
+          "selected": 220
+        },
+        "S12": {
+          "hits": 41,
+          "selected": 220
+        },
+        "S13": {
+          "hits": 32,
+          "selected": 220
+        },
+        "S14": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S15": {
+          "hits": 59,
+          "selected": 220
+        },
+        "S16": {
+          "hits": 35,
+          "selected": 220
+        },
+        "S17": {
+          "hits": 35,
+          "selected": 220
+        },
+        "S18": {
+          "hits": 28,
+          "selected": 220
+        },
+        "S19": {
+          "hits": 39,
+          "selected": 220
+        },
+        "S20": {
+          "hits": 35,
+          "selected": 220
+        },
+        "S21": {
+          "hits": 41,
+          "selected": 220
+        },
+        "S22": {
+          "hits": 24,
+          "selected": 220
+        },
+        "S23": {
+          "hits": 33,
+          "selected": 220
+        },
+        "S24": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S25": {
+          "hits": 48,
+          "selected": 220
+        }
+      }
+    },
+    "missing_100": {
+      "n": 47564,
+      "pos_rate": 0.08012362290808174,
+      "auroc": 0.7128435554800326,
+      "pr_auc": 0.19565119124633942,
+      "brier": 0.09296522602557421,
+      "ece": 0.13543151283312282,
+      "pr_auc_lift": 2.4418665075940407,
+      "logloss": 0.32970868596593944,
+      "precision_at_k": 0.20927272727272728,
+      "selected": 5500,
+      "decisions": 550,
+      "per_site": {
+        "S01": {
+          "hits": 30,
+          "selected": 220
+        },
+        "S02": {
+          "hits": 51,
+          "selected": 220
+        },
+        "S03": {
+          "hits": 57,
+          "selected": 220
+        },
+        "S04": {
+          "hits": 60,
+          "selected": 220
+        },
+        "S05": {
+          "hits": 21,
+          "selected": 220
+        },
+        "S06": {
+          "hits": 60,
+          "selected": 220
+        },
+        "S07": {
+          "hits": 40,
+          "selected": 220
+        },
+        "S08": {
+          "hits": 31,
+          "selected": 220
+        },
+        "S09": {
+          "hits": 74,
+          "selected": 220
+        },
+        "S10": {
+          "hits": 55,
+          "selected": 220
+        },
+        "S11": {
+          "hits": 62,
+          "selected": 220
+        },
+        "S12": {
+          "hits": 47,
+          "selected": 220
+        },
+        "S13": {
+          "hits": 45,
+          "selected": 220
+        },
+        "S14": {
+          "hits": 56,
+          "selected": 220
+        },
+        "S15": {
+          "hits": 64,
+          "selected": 220
+        },
+        "S16": {
+          "hits": 32,
+          "selected": 220
+        },
+        "S17": {
+          "hits": 32,
+          "selected": 220
+        },
+        "S18": {
+          "hits": 43,
+          "selected": 220
+        },
+        "S19": {
+          "hits": 59,
+          "selected": 220
+        },
+        "S20": {
+          "hits": 36,
+          "selected": 220
+        },
+        "S21": {
+          "hits": 33,
+          "selected": 220
+        },
+        "S22": {
+          "hits": 31,
+          "selected": 220
+        },
+        "S23": {
+          "hits": 40,
+          "selected": 220
+        },
+        "S24": {
+          "hits": 46,
+          "selected": 220
+        },
+        "S25": {
+          "hits": 46,
+          "selected": 220
+        }
+      }
+    }
+  },
+  "robust": {
+    "clean": {
+      "n": 47564,
+      "pos_rate": 0.08012362290808174,
+      "auroc": 0.7501719340812094,
+      "pr_auc": 0.22154307576792887,
+      "brier": 0.06826080328717951,
+      "ece": 0.006169640322918952,
+      "pr_auc_lift": 2.765015706068163,
+      "logloss": 0.24853900014772065,
+      "precision_at_k": 0.23254545454545456,
+      "selected": 5500,
+      "decisions": 550,
+      "per_site": {
+        "S01": {
+          "hits": 41,
+          "selected": 220
+        },
+        "S02": {
+          "hits": 55,
+          "selected": 220
+        },
+        "S03": {
+          "hits": 70,
+          "selected": 220
+        },
+        "S04": {
+          "hits": 65,
+          "selected": 220
+        },
+        "S05": {
+          "hits": 35,
+          "selected": 220
+        },
+        "S06": {
+          "hits": 61,
+          "selected": 220
+        },
+        "S07": {
+          "hits": 37,
+          "selected": 220
+        },
+        "S08": {
+          "hits": 34,
+          "selected": 220
+        },
+        "S09": {
+          "hits": 70,
+          "selected": 220
+        },
+        "S10": {
+          "hits": 53,
+          "selected": 220
+        },
+        "S11": {
+          "hits": 75,
+          "selected": 220
+        },
+        "S12": {
+          "hits": 51,
+          "selected": 220
+        },
+        "S13": {
+          "hits": 45,
+          "selected": 220
+        },
+        "S14": {
+          "hits": 61,
+          "selected": 220
+        },
+        "S15": {
+          "hits": 69,
+          "selected": 220
+        },
+        "S16": {
+          "hits": 43,
+          "selected": 220
+        },
+        "S17": {
+          "hits": 39,
+          "selected": 220
+        },
+        "S18": {
+          "hits": 43,
+          "selected": 220
+        },
+        "S19": {
+          "hits": 47,
+          "selected": 220
+        },
+        "S20": {
+          "hits": 41,
+          "selected": 220
+        },
+        "S21": {
+          "hits": 48,
+          "selected": 220
+        },
+        "S22": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S23": {
+          "hits": 39,
+          "selected": 220
+        },
+        "S24": {
+          "hits": 53,
+          "selected": 220
+        },
+        "S25": {
+          "hits": 60,
+          "selected": 220
+        }
+      }
+    },
+    "missing_25": {
+      "n": 47564,
+      "pos_rate": 0.08012362290808174,
+      "auroc": 0.7425259733885894,
+      "pr_auc": 0.21479647879006608,
+      "brier": 0.06880765275718057,
+      "ece": 0.011395180926382285,
+      "pr_auc_lift": 2.680813360580085,
+      "logloss": 0.2510600232485024,
+      "precision_at_k": 0.23054545454545455,
+      "selected": 5500,
+      "decisions": 550,
+      "per_site": {
+        "S01": {
+          "hits": 41,
+          "selected": 220
+        },
+        "S02": {
+          "hits": 54,
+          "selected": 220
+        },
+        "S03": {
+          "hits": 67,
+          "selected": 220
+        },
+        "S04": {
+          "hits": 66,
+          "selected": 220
+        },
+        "S05": {
+          "hits": 33,
+          "selected": 220
+        },
+        "S06": {
+          "hits": 58,
+          "selected": 220
+        },
+        "S07": {
+          "hits": 38,
+          "selected": 220
+        },
+        "S08": {
+          "hits": 34,
+          "selected": 220
+        },
+        "S09": {
+          "hits": 65,
+          "selected": 220
+        },
+        "S10": {
+          "hits": 59,
+          "selected": 220
+        },
+        "S11": {
+          "hits": 75,
+          "selected": 220
+        },
+        "S12": {
+          "hits": 52,
+          "selected": 220
+        },
+        "S13": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S14": {
+          "hits": 58,
+          "selected": 220
+        },
+        "S15": {
+          "hits": 71,
+          "selected": 220
+        },
+        "S16": {
+          "hits": 40,
+          "selected": 220
+        },
+        "S17": {
+          "hits": 36,
+          "selected": 220
+        },
+        "S18": {
+          "hits": 43,
+          "selected": 220
+        },
+        "S19": {
+          "hits": 47,
+          "selected": 220
+        },
+        "S20": {
+          "hits": 43,
+          "selected": 220
+        },
+        "S21": {
+          "hits": 47,
+          "selected": 220
+        },
+        "S22": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S23": {
+          "hits": 40,
+          "selected": 220
+        },
+        "S24": {
+          "hits": 49,
+          "selected": 220
+        },
+        "S25": {
+          "hits": 64,
+          "selected": 220
+        }
+      }
+    },
+    "missing_50": {
+      "n": 47564,
+      "pos_rate": 0.08012362290808174,
+      "auroc": 0.7371634532233118,
+      "pr_auc": 0.21155692412318952,
+      "brier": 0.06932950643109784,
+      "ece": 0.016874126748494932,
+      "pr_auc_lift": 2.64038140619139,
+      "logloss": 0.2534159852781052,
+      "precision_at_k": 0.2289090909090909,
+      "selected": 5500,
+      "decisions": 550,
+      "per_site": {
+        "S01": {
+          "hits": 40,
+          "selected": 220
+        },
+        "S02": {
+          "hits": 53,
+          "selected": 220
+        },
+        "S03": {
+          "hits": 65,
+          "selected": 220
+        },
+        "S04": {
+          "hits": 66,
+          "selected": 220
+        },
+        "S05": {
+          "hits": 32,
+          "selected": 220
+        },
+        "S06": {
+          "hits": 62,
+          "selected": 220
+        },
+        "S07": {
+          "hits": 41,
+          "selected": 220
+        },
+        "S08": {
+          "hits": 35,
+          "selected": 220
+        },
+        "S09": {
+          "hits": 66,
+          "selected": 220
+        },
+        "S10": {
+          "hits": 57,
+          "selected": 220
+        },
+        "S11": {
+          "hits": 70,
+          "selected": 220
+        },
+        "S12": {
+          "hits": 50,
+          "selected": 220
+        },
+        "S13": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S14": {
+          "hits": 57,
+          "selected": 220
+        },
+        "S15": {
+          "hits": 72,
+          "selected": 220
+        },
+        "S16": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S17": {
+          "hits": 36,
+          "selected": 220
+        },
+        "S18": {
+          "hits": 43,
+          "selected": 220
+        },
+        "S19": {
+          "hits": 47,
+          "selected": 220
+        },
+        "S20": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S21": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S22": {
+          "hits": 41,
+          "selected": 220
+        },
+        "S23": {
+          "hits": 41,
+          "selected": 220
+        },
+        "S24": {
+          "hits": 53,
+          "selected": 220
+        },
+        "S25": {
+          "hits": 64,
+          "selected": 220
+        }
+      }
+    },
+    "missing_100": {
+      "n": 47564,
+      "pos_rate": 0.08012362290808174,
+      "auroc": 0.7292126695598391,
+      "pr_auc": 0.2053985920026186,
+      "brier": 0.07033528115967748,
+      "ece": 0.027866837376301485,
+      "pr_auc_lift": 2.563521025980727,
+      "logloss": 0.25762514243561313,
+      "precision_at_k": 0.222,
+      "selected": 5500,
+      "decisions": 550,
+      "per_site": {
+        "S01": {
+          "hits": 36,
+          "selected": 220
+        },
+        "S02": {
+          "hits": 55,
+          "selected": 220
+        },
+        "S03": {
+          "hits": 62,
+          "selected": 220
+        },
+        "S04": {
+          "hits": 66,
+          "selected": 220
+        },
+        "S05": {
+          "hits": 27,
+          "selected": 220
+        },
+        "S06": {
+          "hits": 59,
+          "selected": 220
+        },
+        "S07": {
+          "hits": 35,
+          "selected": 220
+        },
+        "S08": {
+          "hits": 33,
+          "selected": 220
+        },
+        "S09": {
+          "hits": 66,
+          "selected": 220
+        },
+        "S10": {
+          "hits": 56,
+          "selected": 220
+        },
+        "S11": {
+          "hits": 75,
+          "selected": 220
+        },
+        "S12": {
+          "hits": 52,
+          "selected": 220
+        },
+        "S13": {
+          "hits": 43,
+          "selected": 220
+        },
+        "S14": {
+          "hits": 58,
+          "selected": 220
+        },
+        "S15": {
+          "hits": 74,
+          "selected": 220
+        },
+        "S16": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S17": {
+          "hits": 31,
+          "selected": 220
+        },
+        "S18": {
+          "hits": 41,
+          "selected": 220
+        },
+        "S19": {
+          "hits": 48,
+          "selected": 220
+        },
+        "S20": {
+          "hits": 36,
+          "selected": 220
+        },
+        "S21": {
+          "hits": 39,
+          "selected": 220
+        },
+        "S22": {
+          "hits": 39,
+          "selected": 220
+        },
+        "S23": {
+          "hits": 41,
+          "selected": 220
+        },
+        "S24": {
+          "hits": 50,
+          "selected": 220
+        },
+        "S25": {
+          "hits": 57,
+          "selected": 220
+        }
+      }
+    }
+  },
+  "no_memo": {
+    "clean": {
+      "n": 47564,
+      "pos_rate": 0.08012362290808174,
+      "auroc": 0.7430461611320001,
+      "pr_auc": 0.231812489660355,
+      "brier": 0.06820797703230255,
+      "ece": 0.0112979851156215,
+      "pr_auc_lift": 2.8931853209669707,
+      "logloss": 0.2504726095025971,
+      "precision_at_k": 0.2349090909090909,
+      "selected": 5500,
+      "decisions": 550,
+      "per_site": {
+        "S01": {
+          "hits": 37,
+          "selected": 220
+        },
+        "S02": {
+          "hits": 62,
+          "selected": 220
+        },
+        "S03": {
+          "hits": 68,
+          "selected": 220
+        },
+        "S04": {
+          "hits": 52,
+          "selected": 220
+        },
+        "S05": {
+          "hits": 32,
+          "selected": 220
+        },
+        "S06": {
+          "hits": 55,
+          "selected": 220
+        },
+        "S07": {
+          "hits": 45,
+          "selected": 220
+        },
+        "S08": {
+          "hits": 32,
+          "selected": 220
+        },
+        "S09": {
+          "hits": 73,
+          "selected": 220
+        },
+        "S10": {
+          "hits": 64,
+          "selected": 220
+        },
+        "S11": {
+          "hits": 72,
+          "selected": 220
+        },
+        "S12": {
+          "hits": 57,
+          "selected": 220
+        },
+        "S13": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S14": {
+          "hits": 53,
+          "selected": 220
+        },
+        "S15": {
+          "hits": 85,
+          "selected": 220
+        },
+        "S16": {
+          "hits": 40,
+          "selected": 220
+        },
+        "S17": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S18": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S19": {
+          "hits": 51,
+          "selected": 220
+        },
+        "S20": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S21": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S22": {
+          "hits": 34,
+          "selected": 220
+        },
+        "S23": {
+          "hits": 40,
+          "selected": 220
+        },
+        "S24": {
+          "hits": 61,
+          "selected": 220
+        },
+        "S25": {
+          "hits": 63,
+          "selected": 220
+        }
+      }
+    },
+    "missing_25": {
+      "n": 47564,
+      "pos_rate": 0.08012362290808174,
+      "auroc": 0.7430461611320001,
+      "pr_auc": 0.231812489660355,
+      "brier": 0.06820797703230255,
+      "ece": 0.0112979851156215,
+      "pr_auc_lift": 2.8931853209669707,
+      "logloss": 0.2504726095025971,
+      "precision_at_k": 0.2349090909090909,
+      "selected": 5500,
+      "decisions": 550,
+      "per_site": {
+        "S01": {
+          "hits": 37,
+          "selected": 220
+        },
+        "S02": {
+          "hits": 62,
+          "selected": 220
+        },
+        "S03": {
+          "hits": 68,
+          "selected": 220
+        },
+        "S04": {
+          "hits": 52,
+          "selected": 220
+        },
+        "S05": {
+          "hits": 32,
+          "selected": 220
+        },
+        "S06": {
+          "hits": 55,
+          "selected": 220
+        },
+        "S07": {
+          "hits": 45,
+          "selected": 220
+        },
+        "S08": {
+          "hits": 32,
+          "selected": 220
+        },
+        "S09": {
+          "hits": 73,
+          "selected": 220
+        },
+        "S10": {
+          "hits": 64,
+          "selected": 220
+        },
+        "S11": {
+          "hits": 72,
+          "selected": 220
+        },
+        "S12": {
+          "hits": 57,
+          "selected": 220
+        },
+        "S13": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S14": {
+          "hits": 53,
+          "selected": 220
+        },
+        "S15": {
+          "hits": 85,
+          "selected": 220
+        },
+        "S16": {
+          "hits": 40,
+          "selected": 220
+        },
+        "S17": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S18": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S19": {
+          "hits": 51,
+          "selected": 220
+        },
+        "S20": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S21": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S22": {
+          "hits": 34,
+          "selected": 220
+        },
+        "S23": {
+          "hits": 40,
+          "selected": 220
+        },
+        "S24": {
+          "hits": 61,
+          "selected": 220
+        },
+        "S25": {
+          "hits": 63,
+          "selected": 220
+        }
+      }
+    },
+    "missing_50": {
+      "n": 47564,
+      "pos_rate": 0.08012362290808174,
+      "auroc": 0.7430461611320001,
+      "pr_auc": 0.231812489660355,
+      "brier": 0.06820797703230255,
+      "ece": 0.0112979851156215,
+      "pr_auc_lift": 2.8931853209669707,
+      "logloss": 0.2504726095025971,
+      "precision_at_k": 0.2349090909090909,
+      "selected": 5500,
+      "decisions": 550,
+      "per_site": {
+        "S01": {
+          "hits": 37,
+          "selected": 220
+        },
+        "S02": {
+          "hits": 62,
+          "selected": 220
+        },
+        "S03": {
+          "hits": 68,
+          "selected": 220
+        },
+        "S04": {
+          "hits": 52,
+          "selected": 220
+        },
+        "S05": {
+          "hits": 32,
+          "selected": 220
+        },
+        "S06": {
+          "hits": 55,
+          "selected": 220
+        },
+        "S07": {
+          "hits": 45,
+          "selected": 220
+        },
+        "S08": {
+          "hits": 32,
+          "selected": 220
+        },
+        "S09": {
+          "hits": 73,
+          "selected": 220
+        },
+        "S10": {
+          "hits": 64,
+          "selected": 220
+        },
+        "S11": {
+          "hits": 72,
+          "selected": 220
+        },
+        "S12": {
+          "hits": 57,
+          "selected": 220
+        },
+        "S13": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S14": {
+          "hits": 53,
+          "selected": 220
+        },
+        "S15": {
+          "hits": 85,
+          "selected": 220
+        },
+        "S16": {
+          "hits": 40,
+          "selected": 220
+        },
+        "S17": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S18": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S19": {
+          "hits": 51,
+          "selected": 220
+        },
+        "S20": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S21": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S22": {
+          "hits": 34,
+          "selected": 220
+        },
+        "S23": {
+          "hits": 40,
+          "selected": 220
+        },
+        "S24": {
+          "hits": 61,
+          "selected": 220
+        },
+        "S25": {
+          "hits": 63,
+          "selected": 220
+        }
+      }
+    },
+    "missing_100": {
+      "n": 47564,
+      "pos_rate": 0.08012362290808174,
+      "auroc": 0.7430461611320001,
+      "pr_auc": 0.231812489660355,
+      "brier": 0.06820797703230255,
+      "ece": 0.0112979851156215,
+      "pr_auc_lift": 2.8931853209669707,
+      "logloss": 0.2504726095025971,
+      "precision_at_k": 0.2349090909090909,
+      "selected": 5500,
+      "decisions": 550,
+      "per_site": {
+        "S01": {
+          "hits": 37,
+          "selected": 220
+        },
+        "S02": {
+          "hits": 62,
+          "selected": 220
+        },
+        "S03": {
+          "hits": 68,
+          "selected": 220
+        },
+        "S04": {
+          "hits": 52,
+          "selected": 220
+        },
+        "S05": {
+          "hits": 32,
+          "selected": 220
+        },
+        "S06": {
+          "hits": 55,
+          "selected": 220
+        },
+        "S07": {
+          "hits": 45,
+          "selected": 220
+        },
+        "S08": {
+          "hits": 32,
+          "selected": 220
+        },
+        "S09": {
+          "hits": 73,
+          "selected": 220
+        },
+        "S10": {
+          "hits": 64,
+          "selected": 220
+        },
+        "S11": {
+          "hits": 72,
+          "selected": 220
+        },
+        "S12": {
+          "hits": 57,
+          "selected": 220
+        },
+        "S13": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S14": {
+          "hits": 53,
+          "selected": 220
+        },
+        "S15": {
+          "hits": 85,
+          "selected": 220
+        },
+        "S16": {
+          "hits": 40,
+          "selected": 220
+        },
+        "S17": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S18": {
+          "hits": 42,
+          "selected": 220
+        },
+        "S19": {
+          "hits": 51,
+          "selected": 220
+        },
+        "S20": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S21": {
+          "hits": 44,
+          "selected": 220
+        },
+        "S22": {
+          "hits": 34,
+          "selected": 220
+        },
+        "S23": {
+          "hits": 40,
+          "selected": 220
+        },
+        "S24": {
+          "hits": 61,
+          "selected": 220
+        },
+        "S25": {
+          "hits": 63,
+          "selected": 220
+        }
+      }
+    }
+  }
+}

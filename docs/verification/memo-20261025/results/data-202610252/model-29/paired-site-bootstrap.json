@@ -1,0 +1,86 @@
+{
+  "robust": {
+    "clean": {
+      "difference": -0.007818181818181807,
+      "ci95": [
+        -0.014181818181818184,
+        -0.0016363636363636302
+      ],
+      "site_clusters": 25,
+      "bootstrap_repeats": 2000,
+      "note": "conditional on this synthetic world; not real-world confidence"
+    },
+    "missing_25": {
+      "difference": 0.044545454545454555,
+      "ci95": [
+        0.03036363636363637,
+        0.05745454545454545
+      ],
+      "site_clusters": 25,
+      "bootstrap_repeats": 2000,
+      "note": "conditional on this synthetic world; not real-world confidence"
+    },
+    "missing_50": {
+      "difference": 0.04472727272727273,
+      "ci95": [
+        0.03327272727272729,
+        0.054913636363636366
+      ],
+      "site_clusters": 25,
+      "bootstrap_repeats": 2000,
+      "note": "conditional on this synthetic world; not real-world confidence"
+    },
+    "missing_100": {
+      "difference": 0.012727272727272726,
+      "ci95": [
+        0.0030909090909090886,
+        0.02200000000000002
+      ],
+      "site_clusters": 25,
+      "bootstrap_repeats": 2000,
+      "note": "conditional on this synthetic world; not real-world confidence"
+    }
+  },
+  "no_memo": {
+    "clean": {
+      "difference": -0.005454545454545462,
+      "ci95": [
+        -0.015454545454545443,
+        0.003822727272727261
+      ],
+      "site_clusters": 25,
+      "bootstrap_repeats": 2000,
+      "note": "conditional on this synthetic world; not real-world confidence"
+    },
+    "missing_25": {
+      "difference": 0.0489090909090909,
+      "ci95": [
+        0.03163636363636363,
+        0.06654545454545455
+      ],
+      "site_clusters": 25,
+      "bootstrap_repeats": 2000,
+      "note": "conditional on this synthetic world; not real-world confidence"
+    },
+    "missing_50": {
+      "difference": 0.05072727272727273,
+      "ci95": [
+        0.03854545454545455,
+        0.06254545454545452
+      ],
+      "site_clusters": 25,
+      "bootstrap_repeats": 2000,
+      "note": "conditional on this synthetic world; not real-world confidence"
+    },
+    "missing_100": {
+      "difference": 0.025636363636363624,
+      "ci95": [
+        0.012909090909090926,
+        0.03854545454545452
+      ],
+      "site_clusters": 25,
+      "bootstrap_repeats": 2000,
+      "note": "conditional on this synthetic world; not real-world confidence"
+    }
+  }
+}
