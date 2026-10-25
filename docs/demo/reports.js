@@ -31,7 +31,7 @@ window.HarbingerReports = function (ctx) {
   function syncPending() {
     $("report-pending").textContent =
       applied && JSON.stringify(criteria()) !== JSON.stringify(applied)
-        ? "조건 변경됨 · 적용 전 결과입니다"
+        ? "조건 변경 미적용 · 적용 전 결과입니다. ‘조건 적용’을 눌러 새로 계산하세요."
         : "";
   }
   function dateControl(value) {
@@ -100,13 +100,14 @@ window.HarbingerReports = function (ctx) {
   }
   function outcome(a) {
     return a.failed_within_30d == null
-      ? "관측 부족 · 결과 미확정"
+      ? (result.observation_confirmed === false ? "기록 완전성 미확인 · 결과 미확정" : "관측 부족 · 결과 미확정")
       : a.failed_within_30d
         ? `고장 기록 있음${a.days_to_failure != null ? ` · ${a.days_to_failure.toFixed(1)}일 후` : ""}`
         : "관측 기간 내 고장 기록 없음";
   }
   function render() {
     $("applied-conditions").textContent = "적용된 조건: " + conditionText();
+    $("report-time-context").textContent = `${applied.as_of} 당시 예측과 이후 30일 동안 확인된 기록을 비교합니다. 오늘의 고장 상태가 아닙니다.`;
     $("evaluation-note").textContent =
       result.evaluation_status === "available"
         ? "평가 조건 충족 · 학습에 쓰지 않은 시간과 완전한 이후 30일 기록을 비교합니다. 합성 학습 모델의 탐색적 평가입니다."
@@ -272,6 +273,7 @@ window.HarbingerReports = function (ctx) {
       $("report-loading").hidden = true;
       $("report-error").hidden = true;
       $("applied-conditions").textContent = "";
+      $("report-time-context").textContent = "";
     },
     async open(view) {
       currentView = view;

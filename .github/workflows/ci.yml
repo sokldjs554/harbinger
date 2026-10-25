@@ -21,7 +21,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install --index-url https://download.pytorch.org/whl/cpu 'torch==2.14.1+cpu'
           pip install -c constraints.txt -e ".[dev]"
-          pip install playwright
+          pip install 'playwright==1.56.0'
           bash scripts/configure_ci_apt.sh
           playwright install --with-deps chromium
       - name: Lint

@@ -101,3 +101,52 @@ def test_example_download_excludes_records_beyond_declared_end(client, monkeypat
     tables, _ = parse_csv(response.content, info["latest_as_of_date"])
     assert "outside-observation" not in set(tables["inspections"].inspection_id)
     assert len(tables["inspections"]) > 10
+
+
+def test_upload_confirmation_is_session_scoped_and_defaults_to_withheld(client):
+    import csv
+    import io
+
+    tokens = []
+    results = []
+    try:
+        for query in ["", "&observation_confirmed=true", "&observation_confirmed=false"]:
+            response = client.post(
+                "/v1/workbench/upload?observation_end=2025-10-01" + query,
+                content=(HEADER + ROW).encode(),
+                headers={"Content-Type": "text/csv"},
+            )
+            assert response.status_code == 200, response.text
+            token = response.json()["session_id"]
+            tokens.append(token)
+            result = client.get(f"/v1/workbench/sessions/{token}/analysis?as_of=2025-08-01").json()
+            results.append(result)
+        for result in (results[0], results[2]):
+            assert result["outcomes_observed"] is False
+            assert result["observation_confirmed"] is False
+            assert "완전성" in " ".join(result["evaluation_reasons"])
+            assert result["assets"][0]["failed_within_30d"] is None
+            assert result["assets"][0]["days_to_failure"] is None
+            assert all(s["positives"] is None and not s["metrics"] for s in result["per_site"])
+            assert all(m["precision_at_k"] is None and not m["metrics"] for m in result["comparisons"])
+        assert results[1]["observation_confirmed"] is True
+        assert results[1]["assets"][0]["failed_within_30d"] is False
+        assert results[0]["assets"][0]["p30"] == results[1]["assets"][0]["p30"]
+        for result in results:
+            assert result["assets"][0]["floor"] == 1
+            assert result["assets"][0]["zone"] == "A"
+        for fmt in ("json", "csv", "md"):
+            response = client.get(
+                f"/v1/workbench/sessions/{tokens[0]}/download?as_of=2025-08-01&format={fmt}"
+            )
+            assert response.status_code == 200
+            if fmt == "json":
+                assert response.json()["observation_confirmed"] is False
+            elif fmt == "csv":
+                rows = list(csv.DictReader(io.StringIO(response.content.decode("utf-8-sig"))))
+                assert rows[0]["failed_within_30d"] == ""
+            else:
+                assert "완전성" in response.text and "평가 보류" in response.text
+    finally:
+        for token in tokens:
+            client.delete(f"/v1/workbench/sessions/{token}")

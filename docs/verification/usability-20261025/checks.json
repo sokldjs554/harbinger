@@ -1,0 +1,31 @@
+{
+  "base_commit": "c0160adb19a9d11a22faaac67fdbd5927c8a3edd",
+  "pytest": {
+    "passed": 152,
+    "skipped": 1,
+    "seconds": 41.78
+  },
+  "browser": "Playwright 1.56.0 / Chromium 141.0.7390.37",
+  "local_api_model": "v20261025-201601",
+  "saved_model": "v20261021-103259",
+  "viewports": [
+    320,
+    390,
+    650,
+    1440
+  ],
+  "participant_retest": "not performed",
+  "production_deployment": "tracked in PR/workflow, not inferred from local tests",
+  "colleague_a_bytes_preserved": true,
+  "sha256": {
+    "src/harbinger/api/analysis.py": "ae9d0cd242eda83c4d72ac0f9d1644ceea2f8a397c7a52522808d3cb9e2f4e91",
+    "src/harbinger/api/upload.py": "b362985f525420cc5850453d48b2e5484cc00629b433a435f8091caffcd22567",
+    "src/harbinger/api/routers/workbench.py": "a701ee6a551428514243aa1c21ea86c77868538a65f901f4f5485fb3d59bccff",
+    "scripts/check_browser.py": "406973867c6c095ee2c70a3514a8cf79ff3aef5204b178a19e7b5140c241f19a",
+    "scripts/check_review_usability.py": "2e2189be30fa4eb1359b948b46666610644c1d79db283ffbafc347f70ea2307c",
+    "src/harbinger/console/index.html": "7143ccfb8e2d81b69c0a953aa0d2c95352d0348a9f01536cf94f7fa361bdc124",
+    "src/harbinger/console/workbench.js": "fb291d120911fb01896ee51da966f74a0a8a7f2b7c7984b170980ec8d22a1ee1",
+    "src/harbinger/console/workbench.css": "d4e0bee7083b0ac6d4d854837d7cb64ef41927b6ae3e4adf51025f56f6ce2fb8",
+    "src/harbinger/console/reports.js": "880f4e45eed365e2d4a5d1aaf67dd23886955627d25bdf4bb1fe53de40a40328"
+  }
+}

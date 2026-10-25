@@ -180,12 +180,40 @@
     $("filter-toggle-state").textContent = open ? "접기" : "펼치기";
     $("list-filter-fields").classList.toggle("is-open", open);
   }
+  function assetPlace(a) {
+    const evidence = saved?.evidence?.[`${date(data?.as_of)}|${a.asset_id}`];
+    const floor = a.floor ?? evidence?.floor;
+    const zone = a.zone ?? evidence?.zone;
+    return { floor, zone };
+  }
+  function assetLocation(a) {
+    const { floor, zone } = assetPlace(a);
+    const floorText = Number.isFinite(floor)
+      ? floor < 0 ? `지하 ${Math.abs(floor)}층 (B${Math.abs(floor)})` : `${floor}층`
+      : "";
+    return [floorText, zone].filter(Boolean).join(" · ") || "위치 정보 미제공";
+  }
+  function matchesSearch(a, q) {
+    if (!q) return true;
+    const floorQuery = q.match(/^(?:지하\s*(\d+)\s*층|b(\d+)|(-?\d+)\s*층)$/i);
+    if (floorQuery) {
+      const requested = floorQuery[1] || floorQuery[2]
+        ? -Number(floorQuery[1] || floorQuery[2]) : Number(floorQuery[3]);
+      return assetPlace(a).floor === requested;
+    }
+    return `${a.name} ${a.asset_id} ${assetLocation(a)} ${a.memo || ""}`
+      .toLocaleLowerCase().includes(q);
+  }
   function renderFilterSummary() {
     if (!data) return;
     const labels = ["customer", "category", "sort"].map(
       (id) => $(id).selectedOptions[0].textContent,
     );
     const appliedDate = date(data.as_of);
+    const dirty = $("as-of").value !== appliedDate;
+    $("list-pending").textContent = dirty
+      ? `기준일 변경 미적용 · 현재 목록은 ${appliedDate} 당시 예측입니다. ‘기준일 적용’을 눌러 갱신하세요.` : "";
+    $("prediction-date").textContent = `${appliedDate} 당시 기록으로 예측한 이후 30일 · 오늘의 상태를 실시간으로 보여주는 화면이 아닙니다.`;
     $("filter-summary").textContent =
       `적용: ${labels.join(" · ")} · ${appliedDate} 기준${$("as-of").value !== appliedDate ? " · 기준일 변경 미적용" : ""}`;
   }
@@ -198,10 +226,7 @@
       (a) =>
         (!f.customer || a.site_id === f.customer) &&
         (!f.category || a.category === f.category) &&
-        (!q ||
-          `${a.name} ${a.asset_id} ${a.memo || ""}`
-            .toLocaleLowerCase()
-            .includes(q)),
+        matchesSearch(a, q),
     );
     rows.sort((a, b) =>
       f.sort === "inspection"
@@ -224,7 +249,7 @@
       .map((a, index) => {
         const url = new URL(location.href);
         url.searchParams.set("asset", a.asset_id);
-        return `<tr><td class="rank">${start + index + 1}</td><td class="asset-cell"><a href="${esc(url.pathname + url.search)}" data-asset="${esc(a.asset_id)}">${esc(a.name)}</a><span class="asset-id">${esc(a.asset_id)}</span></td><td class="site-cell" title="${esc(siteName(a.site_id))}">${esc(siteName(a.site_id))}</td><td class="date-cell">${esc(date(a.inspection_at))}</td><td class="memo-cell" title="${esc(a.memo || "메모 없음")}">${esc(a.memo || "메모 없음")}</td><td class="overall-cell">${overall(a.overall)}</td><td class="risk-cell">${percent(a.p30)}</td></tr>`;
+        return `<tr><td class="rank">${start + index + 1}</td><td class="asset-cell"><a href="${esc(url.pathname + url.search)}" data-asset="${esc(a.asset_id)}">${esc(a.name)}</a><span class="asset-location">${esc(assetLocation(a))}</span><span class="asset-id">${esc(a.asset_id)}</span></td><td class="site-cell" title="${esc(siteName(a.site_id))}">${esc(siteName(a.site_id))}</td><td class="date-cell">${esc(date(a.inspection_at))}</td><td class="memo-cell" title="${esc(a.memo || "메모 없음")}">${esc(a.memo || "메모 없음")}</td><td class="overall-cell">${overall(a.overall)}</td><td class="risk-cell">${percent(a.p30)}</td></tr>`;
       })
       .join("");
     $("asset-table").hidden = !rows.length;
@@ -276,9 +301,14 @@
         : `${synthetic() ? "합성 예제" : "업로드 기록"} · Python 계산 완료`;
       return true;
     } catch (error) {
-      data = null;
-      $("result-count").textContent = "";
-      $("list-context").textContent = "분석 결과를 불러오지 못했습니다.";
+      if (data) {
+        changeUrl({ date: date(data.as_of) });
+        renderList();
+        error.message += " 이전에 적용한 기준일의 목록을 유지합니다.";
+      } else {
+        $("result-count").textContent = "";
+        $("list-context").textContent = "분석 결과를 불러오지 못했습니다.";
+      }
       errorAt("list-error", error);
       return false;
     } finally {
@@ -367,7 +397,7 @@
     $("detail-content").hidden = true;
     $("detail-error").hidden = true;
     $("detail-loading").hidden = false;
-    $("detail-asof").textContent = `${date(data?.as_of)} 기준 예측`;
+    $("detail-asof").textContent = `${date(data?.as_of)} 당시 예측`;
     try {
       const a = data?.assets.find((item) => item.asset_id === id);
       if (!a)
@@ -459,8 +489,9 @@
     const records = inspections();
     $("asset-title").textContent = a.name;
     $("asset-location").textContent =
-      `${siteName(a.site_id)} · ${categories[a.category] || a.category} · ${a.asset_id}${r?.zone ? ` · ${r.zone}` : ""}`;
+      `${siteName(a.site_id)} · ${categories[a.category] || a.category} · ${a.asset_id} · ${assetLocation(a)}`;
     $("asset-risk").textContent = percent(a.p30);
+    $("prediction-context").textContent = `${date(data.as_of)} 당시 기록으로 계산한 이후 30일 예측입니다. 현재 고장 여부나 수리 완료를 뜻하지 않습니다.`;
     $("detail-summary").innerHTML =
       `<span>최근 점검 <b>${esc(date(a.inspection_at))}</b> · ${Math.floor(a.days_since_inspection)}일 경과</span><span>현장 종합 판정 <b>${overall(a.overall)}</b></span><span>최근 90일 고장 기록 <b>${a.breakdowns_90d}건</b></span>`;
     $("record-count").textContent = r
@@ -497,7 +528,7 @@
           .reverse()
           .map(
             (w) =>
-              `<div class="workorder"><time>${esc(date(w.opened_at))}</time><span>${esc({ breakdown: "고장 수리", preventive: "예방 정비", parts: "부품 교체" }[w.type] || w.type)}</span><p>${esc(w.description || "설명 없음")}</p></div>`,
+              `<div class="workorder"><time>${esc(date(w.opened_at))}</time><span>${esc({ breakdown: "고장 발생 기록", preventive: "예방 정비", parts: "부품 교체" }[w.type] || w.type)}</span><p>${esc(w.description || "설명 없음")}</p></div>`,
           )
           .join("")
       : '<p class="source-note">제공된 상세 응답에 정비 원문이 없습니다. 전체 이력이 없다는 뜻은 아닙니다.</p>';
@@ -505,7 +536,7 @@
       `${synthetic() ? "합성 예제" : "사용자 업로드"} · ${saved ? "저장된 계산 결과" : "Python 모델 계산"} · 모델 ${data.model_version} · 예측 기준 ${data.as_of}. 이후 고장 결과는 검증에만 사용합니다.`;
     $("asset-outcome-text").textContent =
       a.failed_within_30d == null
-        ? `평가 보류 · 기준일 이후 30일 관측이 부족합니다. 정답 관측 종료 ${data.observation_end}.`
+        ? `평가 보류 · ${data.observation_confirmed === false ? "고장 기록의 완전성이 확인되지 않았습니다." : "기준일 이후 30일 관측이 부족합니다."} 자료 확인 기준일 ${date(data.observation_end)}.`
         : `${date(data.as_of)} 당시 추정 ${percent(a.p30)} → ${a.failed_within_30d ? `이후 ${a.days_to_failure?.toFixed(1) ?? "—"}일에 고장 기록 있음` : "이후 30일 관측 기간 내 고장 기록 없음"}.${data.time_held_out ? "" : " 모델 학습·보정 기간과 겹쳐 성능 평가는 보류합니다."}`;
   }
   function renderRecord(message = "") {
@@ -557,9 +588,10 @@
     });
     syncFilterDisclosure();
   };
-  $("filters").addEventListener("change", (event) => {
-    if (event.target.id === "as-of") renderFilterSummary();
-  });
+  for (const eventName of ["input", "change"])
+    $("filters").addEventListener(eventName, (event) => {
+      if (event.target.id === "as-of") renderFilterSummary();
+    });
   $("search").addEventListener("input", filterChanged);
   for (const id of ["customer", "category", "sort"])
     $(id).addEventListener("change", filterChanged);
@@ -655,6 +687,9 @@
     $("as-of").max = session.latest_as_of_date || date(session.observation_end);
     $("observation-end").value =
       session.latest_as_of_date || date(session.observation_end);
+    // A session switch can replace the date without firing an input/change event.
+    // Never carry a declaration over to a different active data source.
+    $("observation-confirm").checked = false;
     $("footer-source").textContent =
       `${synthetic() ? "합성 예제" : "사용자 업로드 · 합성 학습 모델"} · 설비의 안전 여부를 확정하지 않습니다.`;
     readFilters();
@@ -682,7 +717,7 @@
       ? `${synthetic() ? "합성 예제" : "업로드 기록"} · ${session.summary.assets}개 설비`
       : "열린 기록 없음";
     $("data-mode-note").textContent = saved
-      ? "공개 정적 데모는 저장된 합성 계산 결과를 재생합니다. CSV 업로드·임의 날짜 계산은 README의 Docker 또는 Python 로컬 실행에서 사용할 수 있습니다."
+      ? "공개 정적 데모는 저장된 합성 계산 결과를 재생합니다. 위치는 저장된 상세 응답에 포함된 설비만 표시합니다. CSV 업로드·새 계산은 AWS 실제 계산 데모 또는 로컬 실행에서 사용할 수 있습니다."
       : "지원 CSV를 검사하고 실제 Python 모델로 계산합니다. 먼저 합성 예제를 사용하거나 아래 양식으로 점검 기록을 불러오세요.";
     $("sample-csv").href = saved
       ? "./example.csv"
@@ -798,6 +833,9 @@
         ? "저장 예제 화면을 닫았습니다."
         : "기록을 닫고 해당 서버 세션을 제거했습니다.";
     });
+  for (const id of ["csv-file", "observation-end"])
+    $(id).addEventListener("change", () => { $("observation-confirm").checked = false; });
+  $("observation-end").addEventListener("input", () => { $("observation-confirm").checked = false; });
   $("upload-form").onsubmit = (event) => {
     event.preventDefault();
     if (saved) return;
@@ -808,8 +846,10 @@
       if (file.size > 5 * 1024 * 1024)
         throw Error("파일 크기 초과: 최대 5 MiB입니다.");
       const next = await api(
-        "/v1/workbench/upload?observation_end=" +
-          encodeURIComponent($("observation-end").value),
+        "/v1/workbench/upload?" + new URLSearchParams({
+          observation_end: $("observation-end").value,
+          observation_confirmed: String($("observation-confirm").checked),
+        }),
         { method: "POST", headers: { "Content-Type": "text/csv" }, body: file },
       );
       const previous = session;

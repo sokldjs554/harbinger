@@ -119,7 +119,7 @@ def example_csv(site: str = "S01", store: Store = Depends(get_store)):
     )
 
 
-def create_upload(content, end, base):
+def create_upload(content, end, base, observation_confirmed=False):
     if not compute.acquire(blocking=False):
         raise HTTPException(429, "계산 중입니다. 잠시 뒤 다시 시도하세요.")
     try:
@@ -128,6 +128,11 @@ def create_upload(content, end, base):
             if len(sessions) >= MAX_SESSIONS:
                 raise HTTPException(429, "세션 한도 8개에 도달했습니다.")
         tables, summary = parse_csv(content, end)
+        summary["observation_confirmed"] = observation_confirmed
+        if not observation_confirmed:
+            summary["warnings"].append(
+                "고장 기록 완전성 미확인: 예측·원문 탐색만 제공하며 이후 결과와 성능 평가는 보류합니다."
+            )
         store = Store(base.settings)
         store.tables = tables
         store.bundle = base.bundle
@@ -141,7 +146,12 @@ def create_upload(content, end, base):
 
 
 @router.post("/upload")
-async def upload(request: Request, observation_end: str, store: Store = Depends(get_store)):
+async def upload(
+    request: Request,
+    observation_end: str,
+    observation_confirmed: bool = False,
+    store: Store = Depends(get_store),
+):
     if request.headers.get("content-type", "").split(";")[0] not in ["text/csv", "application/octet-stream"]:
         raise HTTPException(415, "UTF-8 CSV 파일만 지원합니다(Content-Type: text/csv).")
     content = bytearray()
@@ -149,7 +159,9 @@ async def upload(request: Request, observation_end: str, store: Store = Depends(
         content.extend(chunk)
         if len(content) > MAX_BYTES:
             raise HTTPException(413, "파일 크기 초과: 최대 5 MiB입니다.")
-    return await run_in_threadpool(create_upload, bytes(content), observation_end, store)
+    return await run_in_threadpool(
+        create_upload, bytes(content), observation_end, store, observation_confirmed
+    )
 
 
 @router.delete("/sessions/{token}")
@@ -172,7 +184,15 @@ def result(token, as_of, site, k):
     if not compute.acquire(blocking=False):
         raise HTTPException(429, "계산 중입니다. 잠시 뒤 다시 시도하세요.")
     try:
-        return analyze(s.store, cutoff, site, k, s.source)
+        return analyze(
+            s.store,
+            cutoff,
+            site,
+            k,
+            s.source,
+            observation_confirmed=s.source == "synthetic-example"
+            or s.summary.get("observation_confirmed", False),
+        )
     finally:
         compute.release()
 

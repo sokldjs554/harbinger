@@ -85,3 +85,14 @@ def test_shared_example_mutation_disabled_by_default():
     with pytest.raises(HTTPException) as exc:
         ingest("S01", [], store)
     assert exc.value.status_code == 403
+
+
+def test_invalid_overall_identifies_source_row_and_meaning():
+    other = ROW.replace("i1,", "i2,").replace("2025-08-01", "2025-08-02")
+    broken = other.replace(",1,약간", ",9,약간")
+    with pytest.raises(UploadError) as exc:
+        parse_csv((HEADER + ROW + broken).encode(), "2025-10-01")
+    message = str(exc.value)
+    assert "점검 종합 판정(overall)" in message
+    assert "CSV 행 [3]" in message
+    assert "0 양호 / 1 주의 / 2 불량" in message

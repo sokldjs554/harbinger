@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/528e6091a06b/harbinger-usability/scripts/check_review_usability.py", line 139, in <module>
+    main()
+  File "/workspace/scratch/528e6091a06b/harbinger-usability/scripts/check_review_usability.py", line 132, in main
+    check_review_usability(page, args.static, args.out)
+  File "/workspace/scratch/528e6091a06b/harbinger-usability/scripts/check_review_usability.py", line 31, in check_review_usability
+    assert all(s.startswith(floor + " ·") or s.startswith(floor + " (") for s in page.locator(".asset-location").all_text_contents())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

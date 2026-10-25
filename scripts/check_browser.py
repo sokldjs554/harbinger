@@ -10,6 +10,7 @@ from urllib.parse import urlsplit
 from playwright.sync_api import expect, sync_playwright
 
 from check_mobile_filters import check_mobile_filters
+from check_review_usability import check_review_usability
 
 
 def main():
@@ -194,6 +195,7 @@ def main():
             page.wait_for_timeout(150)
             assert page.evaluate("document.documentElement.scrollWidth<=innerWidth"), view
             shot("mobile-" + view)
+        check_review_usability(page, args.static, args.out)
         page.click("#close-session")
         expect(page.locator("#dataset-source")).to_have_text("열린 기록 없음", timeout=30000)
         assert not errors, errors

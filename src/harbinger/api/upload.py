@@ -128,8 +128,20 @@ def parse_csv(content: bytes, observation_end: str):
         ("photo_count", 0, 100, ins_mask),
     ]:
         values = pd.to_numeric(df.loc[mask, col], errors="coerce")
-        if values.isna().any() or not values.between(lo, hi).all() or (values % 1 != 0).any():
-            raise UploadError(f"{col}: {lo}~{hi} 범위의 정수가 필요합니다.")
+        invalid = values.isna() | ~values.between(lo, hi) | (values % 1 != 0)
+        if invalid.any():
+            labels = {
+                "criticality": "중요도",
+                "floor": "층",
+                "overall": "점검 종합 판정",
+                "dwell_seconds": "점검 체류 시간(초)",
+                "photo_count": "사진 수",
+            }
+            source_rows = (values.index[invalid] + 2).tolist()[:10]
+            allowed = "0 양호 / 1 주의 / 2 불량" if col == "overall" else f"{lo}~{hi} 범위의 정수"
+            raise UploadError(
+                f"{labels[col]}({col}): {allowed}만 입력하세요. CSV 행 {source_rows} (헤더 포함)."
+            )
         df.loc[mask, col] = values
     if not df.loc[ins_mask, "method"].isin(["nfc", "beacon", "manual"]).all():
         raise UploadError("method: nfc, beacon, manual만 지원합니다.")
@@ -202,7 +214,7 @@ def parse_csv(content: bytes, observation_end: str):
         "warnings": [
             "업로드 모델은 합성 데이터로 학습했습니다. 실제 고객 검증 결과로 해석할 수 없습니다.",
             "이 형식에는 에너지 자료가 없어 에너지 피처는 결측 처리합니다.",
-            "고장 기록이 누락되면 평가가 왜곡됩니다. 관측 종료일까지 모든 고장을 포함해야 합니다.",
+            "고장 기록이 누락되면 평가가 왜곡됩니다. 성능을 평가하려면 자료 확인 기준일까지의 고장 기록 완전성을 확인해야 합니다.",
         ],
     }
 

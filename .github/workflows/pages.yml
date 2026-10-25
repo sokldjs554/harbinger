@@ -6,6 +6,7 @@ on:
       - "docs/demo/**"
       - ".github/workflows/pages.yml"
       - "scripts/check_browser.py"
+      - "scripts/check_review_usability.py"
       - "scripts/check_mobile_filters.py"
       - "scripts/record_workbench.py"
       - "scripts/check_public_demo.py"
@@ -30,7 +31,7 @@ jobs:
         run: |
           bash scripts/configure_ci_apt.sh
           sudo apt-get update && sudo apt-get install -y ffmpeg
-          pip install playwright
+          pip install 'playwright==1.56.0'
           playwright install --with-deps chromium
           python -m http.server 8020 --directory docs/demo > /tmp/static-server.txt 2>&1 &
           python scripts/check_browser.py --static --url http://127.0.0.1:8020/ --out /tmp/static-browser

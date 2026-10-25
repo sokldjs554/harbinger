@@ -68,7 +68,7 @@ python scripts/fill_numbers.py --check
 브라우저 조작 검사에는 Playwright와 Chromium을 추가로 설치하고, 로컬 API 서버를 실행해 둡니다.
 
 ```bash
-pip install playwright
+pip install 'playwright==1.56.0'
 playwright install chromium
 python scripts/check_browser.py --url http://localhost:8000/console/
 ```
