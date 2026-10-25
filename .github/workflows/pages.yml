@@ -11,6 +11,7 @@ on:
       - "scripts/record_workbench.py"
       - "scripts/check_public_demo.py"
       - "scripts/check_retest.py"
+      - "scripts/check_policy_display.py"
   workflow_dispatch:
 permissions:
   contents: read
@@ -36,6 +37,7 @@ jobs:
           playwright install --with-deps chromium
           python -m http.server 8020 --directory docs/demo > /tmp/static-server.txt 2>&1 &
           python scripts/check_browser.py --static --url http://127.0.0.1:8020/ --out /tmp/static-browser
+          python -m scripts.check_policy_display --url http://127.0.0.1:8020/ --out /tmp/policy-display
           python -m scripts.check_retest --url http://127.0.0.1:8020/retest.html --out /tmp/retest-recorder
           mkdir -p docs/demo/mobile-captures
           cp /tmp/static-browser/mobile-filter-*.png /tmp/static-browser/mobile-reasons.png /tmp/static-browser/mobile-detail.png docs/demo/mobile-captures/
@@ -49,6 +51,7 @@ jobs:
           name: saved-demo-verification
           path: |
             /tmp/static-browser
+            /tmp/policy-display
             /tmp/retest-recorder
             /tmp/walkthrough
             docs/demo/walkthrough.mp4

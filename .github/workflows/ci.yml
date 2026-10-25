@@ -49,6 +49,7 @@ jobs:
         run: |
           python -m http.server 8020 --directory docs/demo > /tmp/static-server.txt 2>&1 &
           python scripts/check_browser.py --static --url http://127.0.0.1:8020/ --out /tmp/static-mobile
+          python -m scripts.check_policy_display --url http://127.0.0.1:8020/ --out /tmp/policy-display
           python -m scripts.check_retest --url http://127.0.0.1:8020/retest.html --out /tmp/retest-recorder
       - uses: actions/upload-artifact@v4
         if: always()
@@ -57,6 +58,7 @@ jobs:
           path: |
             /tmp/browser-checks
             /tmp/static-mobile
+            /tmp/policy-display
             /tmp/retest-recorder
             /tmp/protected-checks
       - name: Docs numbers match artifacts

@@ -578,6 +578,7 @@ summary {
   padding: 6px;
 }
 #model-values p {
+  overflow-wrap: anywhere;
   margin: 10px 0;
 }
 .workorders {
@@ -1111,6 +1112,7 @@ summary {
   margin-top: 26px;
 }
 .provenance-details p {
+  overflow-wrap: anywhere;
   margin: 12px 0;
   line-height: 1.8;
 }

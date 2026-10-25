@@ -42,6 +42,7 @@
 - 로컬 통합 테스트: **232개 통과, 선택적 TensorFlow 1개 제외**. [출력](integrated-tests.txt). 기존 168개 통과 기준에서 추가된 회귀 검사를 포함합니다.
 - 실제 축소 합성 API의 [전체 브라우저 흐름](live-browser.json), 기존 [저장 데모](static-browser.json), 새로 생성한 [저장 데모](fresh-static-browser.json), [보호 모드](protected-browser.json) 검사 성공. 각 JavaScript 오류 0개. 저장 데모에는 로그인용 API 의존 코드를 넣지 않습니다.
 - [보호 API 검사](protected-api.txt), 접근 우회 163개/39경로 검사 성공. 이는 모든 보안 문제의 부재를 증명하는 결과는 아닙니다.
-- PR·CI·배포 링크는 실행 완료 후 이 절에 연결합니다. 이 문서의 로컬 성공만으로 공개 배포 완료를 뜻하지 않습니다.
+- [PR #14](https://github.com/sokldjs554/harbinger/pull/14)에서 최종 CI·병합·배포 상태를 확인합니다. 이 문서의 로컬 성공만으로 공개 배포 완료를 뜻하지 않습니다.
+- 긴 정책 해시로 모바일 보고서가 넘치는 문제도 [실패를 재현](policy-mobile-red.txt)한 뒤 설명 영역의 줄바꿈만 수정했습니다. [320·390·650px 실제 브라우저 검사](policy-mobile-checks.json)는 명시적인 합성 정책 fixture이며 실제 정책 성능 평가가 아닙니다.
 
 패키지의 pandas/NumPy timedelta 및 TestClient deprecation 경고는 기록에 남아 있습니다. 현재 고정 환경의 테스트와 계산은 성공했으며 미래 패키지 버전 호환까지 확인한 것은 아닙니다.
