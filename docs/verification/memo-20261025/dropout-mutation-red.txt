@@ -1,0 +1,29 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______________ test_full_dropout_masks_actual_training_input_only ______________
+
+tiny = {'root': PosixPath('/tmp/pytest-of-root/pytest-21/tiny0'), 'data': PosixPath('/tmp/pytest-of-root/pytest-21/tiny0/data...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f6e15a3b590>
+
+    def test_full_dropout_masks_actual_training_input_only(tiny, monkeypatch):
+        seen = []
+        forward = HazardNet.forward
+    
+        def observe(self, *args):
+            seen.append((self.training, args[-1].detach().clone()))
+            return forward(self, *args)
+    
+        monkeypatch.setattr(HazardNet, 'forward', observe)
+        fit(tiny, missing_aware=True, memo_dropout=1.0)
+        training = [chars for train_mode, chars in seen if train_mode]
+        validation = [chars for train_mode, chars in seen if not train_mode]
+>       assert training and all(not chars.any() for chars in training)
+E       assert ([tensor([[23, 47,  0,  ...,  0,  0,  0],\n        [27, 33,  2,  ...,  0,  0,  0],\n        [ 4,  0,  0,  ...,  0,  0,  0...      [27, 33,  2,  ...,  0,  0,  0],\n        [23, 47,  0,  ...,  0,  0,  0],\n        [35, 18,  2,  ...,  0,  0,  0]])] and False)
+E        +  where False = all(<generator object test_full_dropout_masks_actual_training_input_only.<locals>.<genexpr> at 0x7f6e152aecf0>)
+
+tests/test_deep_missing.py:116: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_deep_missing.py::test_full_dropout_masks_actual_training_input_only

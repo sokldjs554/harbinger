@@ -1,0 +1,25 @@
+{
+  "selected": "no_memo",
+  "candidates": {
+    "no_memo": {
+      "eligible": true,
+      "clean_delta": -0.0007619047619047692,
+      "missing_mean_delta": 0.06285714285714283,
+      "missing_deltas": [
+        0.06190476190476188,
+        0.06380952380952379
+      ]
+    },
+    "robust": {
+      "eligible": true,
+      "clean_delta": -0.008952380952380934,
+      "missing_mean_delta": 0.051238095238095235,
+      "missing_deltas": [
+        0.05085714285714285,
+        0.05161904761904762
+      ]
+    }
+  },
+  "basis": "validation only; clean/25%/50%",
+  "validation_sha256": "da7edf589e48a14b51349f0d3aefc378d73d9932a636b5c85018fbb0eb6b9e32"
+}

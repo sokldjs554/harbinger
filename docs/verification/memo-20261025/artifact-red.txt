@@ -1,0 +1,13 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________ test_atomic_csv_roundtrip_and_truncated_gzip_detection ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-23/test_atomic_csv_roundtrip_and_0')
+
+    def test_atomic_csv_roundtrip_and_truncated_gzip_detection(tmp_path):
+>       from scripts.memo_artifacts import verify_gzip, write_csv
+E       ModuleNotFoundError: No module named 'scripts.memo_artifacts'
+
+tests/test_memo_experiment.py:77: ModuleNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_memo_experiment.py::test_atomic_csv_roundtrip_and_truncated_gzip_detection

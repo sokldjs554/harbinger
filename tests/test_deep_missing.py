@@ -99,3 +99,19 @@ def test_legacy_checkpoint_without_new_metadata_still_loads(tiny, tmp_path):
     np.testing.assert_array_equal(
         old.predict_proba(tiny["X"].head(8)), loaded.predict_proba(tiny["X"].head(8))
     )
+
+
+def test_full_dropout_masks_actual_training_input_only(tiny, monkeypatch):
+    seen = []
+    forward = HazardNet.forward
+
+    def observe(self, *args):
+        seen.append((self.training, args[-1].detach().clone()))
+        return forward(self, *args)
+
+    monkeypatch.setattr(HazardNet, "forward", observe)
+    fit(tiny, missing_aware=True, memo_dropout=1.0)
+    training = [chars for train_mode, chars in seen if train_mode]
+    validation = [chars for train_mode, chars in seen if not train_mode]
+    assert training and all(not chars.any() for chars in training)
+    assert validation and all(chars.any() for chars in validation)

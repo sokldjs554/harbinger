@@ -11,6 +11,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from scripts.memo_artifacts import write_csv
 from scripts.robustness.contracts import (
     decision_snapshot,
     paired_site_interval,
@@ -94,7 +95,7 @@ def snapshots(sources, tables, start, end, smoke):
 
 def evaluate(models, cohorts, dest):
     reference = cohorts["clean"]
-    reference[KEYS].to_csv(dest / "rows.csv.gz", index=False)
+    write_csv(reference[KEYS], dest / "rows.csv.gz")
     scores, arrays = {}, {}
     for name, model in models.items():
         scores[name] = {}
@@ -144,9 +145,10 @@ def run(args):
     assert validation["clean"].decision_at.max() + pd.Timedelta(days=30) <= split.val_end
     assert test["clean"].decision_at.min() >= split.val_end
     for condition, frame in sources.items():
-        frame[["inspection_id", "t", "memo"]].to_csv(out / f"{condition}-memos.csv.gz", index=False)
+        write_csv(frame[["inspection_id", "t", "memo"]], out / f"{condition}-memos.csv.gz")
     source_paths = sorted(Path("src/harbinger").rglob("*.py")) + [
         Path("scripts/memo_robustness.py"),
+        Path("scripts/memo_artifacts.py"),
         Path("scripts/robustness/contracts.py"),
         Path("scripts/robustness/run.py"),
     ]

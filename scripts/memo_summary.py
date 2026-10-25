@@ -8,6 +8,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from scripts.memo_artifacts import verify_gzip
 from scripts.memo_robustness import CONDITIONS, DATA_SEEDS, MODEL_SEEDS, MODELS, choose_candidate
 from scripts.robustness.contracts import paired_site_interval, weekly_metrics
 from scripts.robustness.run import digest, metrics, write_json
@@ -42,6 +43,8 @@ def summarize(root):
         world = root / f"data-{data_seed}"
         for path, expected in json.loads((world / "sha256.json").read_text()).items():
             assert digest(world / path) == expected, path
+        for compressed in world.rglob("*.gz"):
+            verify_gzip(compressed)
         proof = json.loads((world / "provenance.json").read_text())
         assert proof["data_seed"] == data_seed and proof["scale"] == 1 and not proof["smoke"]
         assert proof["months"] == 36 and proof["model_config"]["epochs"] == 40

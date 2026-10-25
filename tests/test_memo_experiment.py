@@ -71,3 +71,15 @@ def test_final_gate_requires_all_runs_and_limits_clean_regression():
     assert not adoption_gate(bad)["passed"]
     bad[0] = dict(bad[0], missing_mean_delta=0.03, clean_delta=-0.021)
     assert not adoption_gate(bad)["passed"]
+
+
+def test_atomic_csv_roundtrip_and_truncated_gzip_detection(tmp_path):
+    from scripts.memo_artifacts import verify_gzip, write_csv
+
+    frame = pd.DataFrame({"memo": ["누수, 점검", "", "메모\n두 줄"], "value": [1, 2, 3]})
+    target = tmp_path / "rows.csv.gz"
+    write_csv(frame, target)
+    assert verify_gzip(target) == frame.to_csv(index=False).encode()
+    target.write_bytes(target.read_bytes()[:-8])
+    with pytest.raises((EOFError, OSError)):
+        verify_gzip(target)

@@ -1,0 +1,178 @@
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/memo_summary.py:79: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert phase_rows["validation"].decision_at.max() + pd.Timedelta(days=30) <= val_end
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/memo_summary.py:79: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert phase_rows["validation"].decision_at.max() + pd.Timedelta(days=30) <= val_end
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/memo_summary.py:79: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert phase_rows["validation"].decision_at.max() + pd.Timedelta(days=30) <= val_end
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/memo_summary.py:79: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert phase_rows["validation"].decision_at.max() + pd.Timedelta(days=30) <= val_end
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/memo_summary.py:79: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert phase_rows["validation"].decision_at.max() + pd.Timedelta(days=30) <= val_end
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/memo_summary.py:79: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert phase_rows["validation"].decision_at.max() + pd.Timedelta(days=30) <= val_end
+{
+  "synthetic": true,
+  "world_count": 3,
+  "training_seeds_per_world": 2,
+  "runs": [
+    {
+      "data_seed": 202610251,
+      "model_seed": 17,
+      "selected": "no_memo",
+      "clean_delta": 0.0009090909090909149,
+      "missing_mean_delta": 0.06318181818181819,
+      "clean_brier": 0.07214486966997256,
+      "legacy_clean_brier": 0.07126925789849806
+    },
+    {
+      "data_seed": 202610251,
+      "model_seed": 29,
+      "selected": "no_memo",
+      "clean_delta": 0.002545454545454545,
+      "missing_mean_delta": 0.07754545454545456,
+      "clean_brier": 0.07133073233075769,
+      "legacy_clean_brier": 0.07126846827492002
+    },
+    {
+      "data_seed": 202610252,
+      "model_seed": 17,
+      "selected": "no_memo",
+      "clean_delta": -0.0018181818181818299,
+      "missing_mean_delta": 0.05472727272727272,
+      "clean_brier": 0.06836185152801963,
+      "legacy_clean_brier": 0.06778617008708167
+    },
+    {
+      "data_seed": 202610252,
+      "model_seed": 29,
+      "selected": "no_memo",
+      "clean_delta": -0.005454545454545462,
+      "missing_mean_delta": 0.04981818181818182,
+      "clean_brier": 0.06820797703230255,
+      "legacy_clean_brier": 0.06769526371462904
+    },
+    {
+      "data_seed": 202610253,
+      "model_seed": 17,
+      "selected": "no_memo",
+      "clean_delta": 0.014000000000000012,
+      "missing_mean_delta": 0.07254545454545455,
+      "clean_brier": 0.06743136533345045,
+      "legacy_clean_brier": 0.06702991352327888
+    },
+    {
+      "data_seed": 202610253,
+      "model_seed": 29,
+      "selected": "legacy",
+      "clean_delta": 0.0,
+      "missing_mean_delta": 0.0,
+      "clean_brier": 0.06598555020051423,
+      "legacy_clean_brier": 0.06598555020051423
+    }
+  ],
+  "test_means": {
+    "legacy": {
+      "clean": {
+        "auroc": 0.7481224893098043,
+        "pr_auc": 0.2273525397050602,
+        "brier": 0.06850577061648698,
+        "logloss": 0.2500822893508719,
+        "precision_at_k": 0.23700000000000002
+      },
+      "missing_25": {
+        "auroc": 0.7004205528442625,
+        "pr_auc": 0.16139498183131865,
+        "brier": 0.08047135080435519,
+        "logloss": 0.28517988925043397,
+        "precision_at_k": 0.1763636363636364
+      },
+      "missing_50": {
+        "auroc": 0.6803008192250389,
+        "pr_auc": 0.15939999310089262,
+        "brier": 0.09054058846690531,
+        "logloss": 0.31508594945083235,
+        "precision_at_k": 0.17706060606060606
+      },
+      "missing_100": {
+        "auroc": 0.7017343926459697,
+        "pr_auc": 0.17589899391999006,
+        "brier": 0.10561941065260132,
+        "logloss": 0.36162322612094755,
+        "precision_at_k": 0.1928181818181818
+      }
+    },
+    "robust": {
+      "clean": {
+        "auroc": 0.7448282512770034,
+        "pr_auc": 0.21911062717054866,
+        "brier": 0.06919509518585579,
+        "logloss": 0.25215790485031164,
+        "precision_at_k": 0.23196969696969696
+      },
+      "missing_25": {
+        "auroc": 0.7405431224516162,
+        "pr_auc": 0.21400006471604346,
+        "brier": 0.06951405128455822,
+        "logloss": 0.2536622693818705,
+        "precision_at_k": 0.22896969696969696
+      },
+      "missing_50": {
+        "auroc": 0.737219775501809,
+        "pr_auc": 0.21207275652287608,
+        "brier": 0.06977014425199106,
+        "logloss": 0.2550065198090219,
+        "precision_at_k": 0.2287878787878788
+      },
+      "missing_100": {
+        "auroc": 0.7333891017015063,
+        "pr_auc": 0.2078861370741892,
+        "brier": 0.07027477149630874,
+        "logloss": 0.25735664377612194,
+        "precision_at_k": 0.2252727272727273
+      }
+    },
+    "no_memo": {
+      "clean": {
+        "auroc": 0.7406515601874227,
+        "pr_auc": 0.2261822692228622,
+        "brier": 0.06907321914127106,
+        "logloss": 0.25304921332719715,
+        "precision_at_k": 0.23730303030303032
+      },
+      "missing_25": {
+        "auroc": 0.7406515601874227,
+        "pr_auc": 0.2261822692228622,
+        "brier": 0.06907321914127106,
+        "logloss": 0.25304921332719715,
+        "precision_at_k": 0.23730303030303032
+      },
+      "missing_50": {
+        "auroc": 0.7406515601874227,
+        "pr_auc": 0.2261822692228622,
+        "brier": 0.06907321914127106,
+        "logloss": 0.25304921332719715,
+        "precision_at_k": 0.23730303030303032
+      },
+      "missing_100": {
+        "auroc": 0.7406515601874227,
+        "pr_auc": 0.2261822692228622,
+        "brier": 0.06907321914127106,
+        "logloss": 0.25304921332719715,
+        "precision_at_k": 0.23730303030303032
+      }
+    }
+  },
+  "adoption": {
+    "passed": true,
+    "criteria": {
+      "six_runs": true,
+      "finite": true,
+      "every_clean_drop_at_most_2pp": true,
+      "every_missing_mean_nondecreasing": true,
+      "mean_missing_gain_at_least_2pp": true,
+      "mean_clean_drop_at_most_1pp": true,
+      "mean_clean_brier_at_most_5pct_worse": true
+    }
+  },
+  "note": "Six nested runs, not six independent worlds; validation-selected policy only; no deployment or customer proof."
+}
