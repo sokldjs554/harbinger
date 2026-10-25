@@ -63,9 +63,13 @@ class HazardNet(nn.Module):
         hidden: int = 192,
         dropout: float = 0.2,
         n_bins: int = SURVIVAL_BINS,
+        missing_aware: bool = False,
     ):
         super().__init__()
         self.use_text, self.use_site = use_text, use_site
+        if missing_aware and not use_text:
+            raise ValueError("missing_aware requires use_text=True")
+        self.missing_aware = missing_aware
         self.cat_emb = nn.Embedding(len(AssetCategory), 8)
         self.arch_emb = nn.Embedding(len(ARCHETYPES), 4)
         self.site_emb = nn.Embedding(n_sites + 1, 8)  # 0 = 미지 사이트
@@ -74,6 +78,8 @@ class HazardNet(nn.Module):
             self.char_emb = nn.Embedding(vocab_size, 32, padding_idx=0)
             self.convs = nn.ModuleList([nn.Conv1d(32, 48, k, padding=k // 2) for k in (2, 3, 5)])
             d_in += 48 * 3
+            if missing_aware:
+                d_in += 1
         self.trunk = nn.Sequential(
             nn.Linear(d_in, hidden),
             nn.GELU(),
@@ -91,6 +97,10 @@ class HazardNet(nn.Module):
         if self.use_text:
             e = self.char_emb(chars).transpose(1, 2)  # B × 32 × L
             feats = [torch.relu(conv(e)).amax(dim=2) for conv in self.convs]
+            if self.missing_aware:
+                present = chars.ne(0).any(dim=1, keepdim=True).to(num.dtype)
+                feats = [f * present for f in feats]
+                feats.append(present)
             parts.extend(feats)
         logits = self.trunk(torch.cat(parts, dim=1))
         return logits  # 구간별 위험 로짓
@@ -160,7 +170,10 @@ class DeepBundle:
         site = X["site_id"].map(self.site_index).fillna(0).to_numpy(dtype=np.int64)
         if train_mode and site_dropout > 0 and rng is not None:
             site = np.where(rng.random(len(site)) < site_dropout, 0, site)
-        chars = np.array([self.vocab.encode(m) for m in X["memo"].fillna("").astype(str)], dtype=np.int64)
+        texts = X["memo"].fillna("").astype(str)
+        if self.model.missing_aware:
+            texts = texts.where(texts.str.strip().ne(""), "")
+        chars = np.array([self.vocab.encode(m) for m in texts], dtype=np.int64).reshape(-1, MAX_CHARS)
         return (
             torch.from_numpy(Z),
             torch.from_numpy(cat),
@@ -204,7 +217,19 @@ def train_deep(
     seed: int = 0,
     verbose: bool = True,
     patience: int = 6,
+    missing_aware: bool = False,
+    memo_dropout: float = 0.0,
 ) -> DeepBundle:
+    if not np.isfinite(memo_dropout) or not 0 <= memo_dropout <= 1:
+        raise ValueError("memo_dropout must be finite and in [0, 1]")
+    if memo_dropout and not missing_aware:
+        raise ValueError("memo_dropout requires missing_aware=True")
+    if missing_aware:
+        if not use_text:
+            raise ValueError("missing_aware requires use_text=True")
+        derived = {"q_inspector_lazy_rate", "q_evidence_weight", "q_evidence_sum6", "ck_overall_wmean6"}
+        if any(c.startswith("tx_") or c in derived for c in features):
+            raise ValueError("missing_aware excludes memo-derived numeric features")
     torch.manual_seed(seed)
     torch.set_num_threads(max(1, int(os.environ.get("OMP_NUM_THREADS", min(4, os.cpu_count() or 1)))))
     rng = np.random.default_rng(seed)
@@ -215,7 +240,14 @@ def train_deep(
     vocab = CharVocab(train["memo"].fillna("").astype(str).tolist())
     sites = sorted(train["site_id"].unique())
     site_index = {s: i + 1 for i, s in enumerate(sites)}
-    model = HazardNet(len(features), len(sites), len(vocab.itos), use_text=use_text, use_site=use_site)
+    model = HazardNet(
+        len(features),
+        len(sites),
+        len(vocab.itos),
+        use_text=use_text,
+        use_site=use_site,
+        missing_aware=missing_aware,
+    )
     bundle = DeepBundle(model, features, medians, means, stds, vocab, site_index, use_text, use_site)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs)
@@ -228,6 +260,9 @@ def train_deep(
     n = len(train)
     best, best_state, bad = float("inf"), None, 0
     history = []
+    # Independent generator: changing memo dropout must not change site dropout draws.
+    memo_rng = np.random.default_rng(seed + 1000003)
+    memo_rows_dropped = 0
     for ep in range(epochs):
         model.train()
         perm = torch.randperm(n)
@@ -239,7 +274,13 @@ def train_deep(
         tot = 0.0
         for i in range(0, n, batch):
             idx = perm[i : i + batch]
-            logits = model(tr_t[0][idx], tr_t[1][idx], tr_t[2][idx], site_col[idx], tr_t[4][idx])
+            chars = tr_t[4][idx]
+            if memo_dropout:
+                mask = torch.from_numpy(memo_rng.random(len(idx)) < memo_dropout)
+                chars = chars.clone()
+                chars[mask] = 0
+                memo_rows_dropped += int(mask.sum())
+            logits = model(tr_t[0][idx], tr_t[1][idx], tr_t[2][idx], site_col[idx], chars)
             loss = discrete_nll(logits, y_t[idx], e_t[idx])
             opt.zero_grad()
             loss.backward()
@@ -269,6 +310,9 @@ def train_deep(
         "epochs_run": len(history),
         "history": history,
         "n_params": sum(p.numel() for p in model.parameters()),
+        "missing_aware": missing_aware,
+        "memo_dropout": memo_dropout,
+        "memo_rows_dropped": memo_rows_dropped,
     }
     return bundle
 
@@ -287,6 +331,7 @@ def save_deep(bundle: DeepBundle, path: Path) -> None:
                 "site_index": bundle.site_index,
                 "use_text": bundle.use_text,
                 "use_site": bundle.use_site,
+                "missing_aware": bundle.model.missing_aware,
                 "meta": {k: v for k, v in bundle.meta.items() if k != "history"},
             },
             ensure_ascii=False,
@@ -305,6 +350,7 @@ def load_deep(path: Path) -> DeepBundle:
         len(vocab.itos),
         use_text=m["use_text"],
         use_site=m["use_site"],
+        missing_aware=m.get("missing_aware", False),
     )
     model.load_state_dict(torch.load(path / "hazardnet.pt", map_location="cpu"))
     model.eval()

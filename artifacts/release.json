@@ -85,7 +85,7 @@
     "src/harbinger/models/classify.py": "c01fa14ab5bf4aeed98f924eb2d5c595f081a98b46ec9fdb546076373faddb2d",
     "src/harbinger/models/coldstart.py": "f55c50453c0c16e51e84f745a0b830015c20ee93307821916546dd384d2a40d6",
     "src/harbinger/models/common.py": "552b8dc120ba45ac559755898d327861ff3e927d4df97e0f120df438170da5ab",
-    "src/harbinger/models/deep.py": "3399acabadcd8b201746b02ae7d99cf79ba589bfedf1b9205ed967b698677267",
+    "src/harbinger/models/deep.py": "f8ce67fa4dbd988d53df6f5b28e0a1a1263fbe5075492bb2b15c85e5b0a30335",
     "src/harbinger/models/energy.py": "9316b3a9d965631498ae264d8a4a21744a3c9ee6f768c6ac44d5eecedfa501f6",
     "src/harbinger/models/keras_parity.py": "36d3a6966ea4b84ce5894932cdcedf188c9afd8907c4912392ed35918aee9af2",
     "src/harbinger/models/registry.py": "e7d0eecfef02410bea990899e36f8c0154b0983b9d493416d2859a260d700b68",

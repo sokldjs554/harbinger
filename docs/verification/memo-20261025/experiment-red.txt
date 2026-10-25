@@ -1,0 +1,35 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_______ test_selection_rejects_clean_regression_and_accepts_missing_gain _______
+
+    def test_selection_rejects_clean_regression_and_accepts_missing_gain():
+>       from scripts.memo_robustness import choose_candidate
+E       ModuleNotFoundError: No module named 'scripts.memo_robustness'
+
+tests/test_memo_experiment.py:14: ModuleNotFoundError
+________ test_selection_handles_missing_condition_and_nonfinite_scores _________
+
+    def test_selection_handles_missing_condition_and_nonfinite_scores():
+>       from scripts.memo_robustness import choose_candidate
+E       ModuleNotFoundError: No module named 'scripts.memo_robustness'
+
+tests/test_memo_experiment.py:24: ModuleNotFoundError
+____ test_selection_tie_prefers_no_memo_and_does_not_use_extreme_condition _____
+
+    def test_selection_tie_prefers_no_memo_and_does_not_use_extreme_condition():
+>       from scripts.memo_robustness import choose_candidate
+E       ModuleNotFoundError: No module named 'scripts.memo_robustness'
+
+tests/test_memo_experiment.py:36: ModuleNotFoundError
+________________ test_cohort_rejects_mismatched_ids_or_outcomes ________________
+
+    def test_cohort_rejects_mismatched_ids_or_outcomes():
+>       from scripts.memo_robustness import assert_same_cohort
+E       ModuleNotFoundError: No module named 'scripts.memo_robustness'
+
+tests/test_memo_experiment.py:43: ModuleNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_memo_experiment.py::test_selection_rejects_clean_regression_and_accepts_missing_gain
+FAILED tests/test_memo_experiment.py::test_selection_handles_missing_condition_and_nonfinite_scores
+FAILED tests/test_memo_experiment.py::test_selection_tie_prefers_no_memo_and_does_not_use_extreme_condition
+FAILED tests/test_memo_experiment.py::test_cohort_rejects_mismatched_ids_or_outcomes

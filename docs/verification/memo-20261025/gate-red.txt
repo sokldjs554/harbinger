@@ -1,0 +1,11 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________ test_final_gate_requires_all_runs_and_limits_clean_regression _________
+
+    def test_final_gate_requires_all_runs_and_limits_clean_regression():
+>       from scripts.memo_summary import adoption_gate
+E       ModuleNotFoundError: No module named 'scripts.memo_summary'
+
+tests/test_memo_experiment.py:62: ModuleNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_memo_experiment.py::test_final_gate_requires_all_runs_and_limits_clean_regression

@@ -1,0 +1,263 @@
+FFFFFFFFF                                                                [100%]
+=================================== FAILURES ===================================
+_________________ test_absent_text_is_independent_of_cnn_bias __________________
+
+    def test_absent_text_is_independent_of_cnn_bias():
+        torch.manual_seed(4)
+>       model = HazardNet(2, 1, 5, missing_aware=True).eval()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: HazardNet.__init__() got an unexpected keyword argument 'missing_aware'
+
+tests/test_deep_missing.py:22: TypeError
+___________ test_missing_aware_rejects_derived_numeric_memo_features ___________
+
+tiny = {'root': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0'), 'data': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0/data...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+
+    def test_missing_aware_rejects_derived_numeric_memo_features(tiny):
+        split = split_by_time(tiny['X'], 5, 2)
+        for feature in ['tx_len', 'q_inspector_lazy_rate', 'q_evidence_weight', 'q_evidence_sum6', 'ck_overall_wmean6']:
+            with pytest.raises(ValueError, match='memo-derived'):
+>               train_deep(split.train, split.val, [feature], missing_aware=True, epochs=1)
+E               TypeError: train_deep() got an unexpected keyword argument 'missing_aware'
+
+tests/test_deep_missing.py:39: TypeError
+____________________ test_invalid_dropout_fails_early[-0.1] ____________________
+
+tiny = {'root': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0'), 'data': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0/data...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+rate = -0.1
+
+    @pytest.mark.parametrize('rate', [-.1, 1.1, float('nan')])
+    def test_invalid_dropout_fails_early(tiny, rate):
+        with pytest.raises(ValueError, match='memo_dropout'):
+>           fit(tiny, missing_aware=True, memo_dropout=rate)
+
+tests/test_deep_missing.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tiny = {'root': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0'), 'data': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0/data...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+kwargs = {'missing_aware': True, 'memo_dropout': -0.1}
+
+    def fit(tiny, **kwargs):
+        split = split_by_time(tiny['X'], 5, 2)
+        cols = model_columns(tiny['X'], tuple(g for g in FEATURE_GROUPS if g != 'tx'))
+>       return train_deep(split.train.iloc[:96], split.val.iloc[:32], cols, epochs=2, batch=32,
+                          seed=17, verbose=False, **kwargs)
+E       TypeError: train_deep() got an unexpected keyword argument 'missing_aware'
+
+tests/test_deep_missing.py:16: TypeError
+____________________ test_invalid_dropout_fails_early[1.1] _____________________
+
+tiny = {'root': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0'), 'data': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0/data...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+rate = 1.1
+
+    @pytest.mark.parametrize('rate', [-.1, 1.1, float('nan')])
+    def test_invalid_dropout_fails_early(tiny, rate):
+        with pytest.raises(ValueError, match='memo_dropout'):
+>           fit(tiny, missing_aware=True, memo_dropout=rate)
+
+tests/test_deep_missing.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tiny = {'root': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0'), 'data': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0/data...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+kwargs = {'missing_aware': True, 'memo_dropout': 1.1}
+
+    def fit(tiny, **kwargs):
+        split = split_by_time(tiny['X'], 5, 2)
+        cols = model_columns(tiny['X'], tuple(g for g in FEATURE_GROUPS if g != 'tx'))
+>       return train_deep(split.train.iloc[:96], split.val.iloc[:32], cols, epochs=2, batch=32,
+                          seed=17, verbose=False, **kwargs)
+E       TypeError: train_deep() got an unexpected keyword argument 'missing_aware'
+
+tests/test_deep_missing.py:16: TypeError
+____________________ test_invalid_dropout_fails_early[nan] _____________________
+
+tiny = {'root': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0'), 'data': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0/data...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+rate = nan
+
+    @pytest.mark.parametrize('rate', [-.1, 1.1, float('nan')])
+    def test_invalid_dropout_fails_early(tiny, rate):
+        with pytest.raises(ValueError, match='memo_dropout'):
+>           fit(tiny, missing_aware=True, memo_dropout=rate)
+
+tests/test_deep_missing.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tiny = {'root': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0'), 'data': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0/data...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+kwargs = {'missing_aware': True, 'memo_dropout': nan}
+
+    def fit(tiny, **kwargs):
+        split = split_by_time(tiny['X'], 5, 2)
+        cols = model_columns(tiny['X'], tuple(g for g in FEATURE_GROUPS if g != 'tx'))
+>       return train_deep(split.train.iloc[:96], split.val.iloc[:32], cols, epochs=2, batch=32,
+                          seed=17, verbose=False, **kwargs)
+E       TypeError: train_deep() got an unexpected keyword argument 'missing_aware'
+
+tests/test_deep_missing.py:16: TypeError
+_____________________ test_dropout_requires_safe_text_path _____________________
+
+tiny = {'root': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0'), 'data': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0/data...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+
+    def test_dropout_requires_safe_text_path(tiny):
+        with pytest.raises(ValueError, match='missing_aware'):
+>           fit(tiny, memo_dropout=.35)
+
+tests/test_deep_missing.py:50: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tiny = {'root': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0'), 'data': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0/data...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+kwargs = {'memo_dropout': 0.35}
+
+    def fit(tiny, **kwargs):
+        split = split_by_time(tiny['X'], 5, 2)
+        cols = model_columns(tiny['X'], tuple(g for g in FEATURE_GROUPS if g != 'tx'))
+>       return train_deep(split.train.iloc[:96], split.val.iloc[:32], cols, epochs=2, batch=32,
+                          seed=17, verbose=False, **kwargs)
+E       TypeError: train_deep() got an unexpected keyword argument 'memo_dropout'
+
+tests/test_deep_missing.py:16: TypeError
+______________ test_training_dropout_and_inference_normalization _______________
+
+tiny = {'root': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0'), 'data': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0/data...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-15/test_training_dropout_and_infe0')
+
+    def test_training_dropout_and_inference_normalization(tiny, tmp_path):
+        original = tiny['X'].head(4).copy(deep=True)
+>       bundle = fit(tiny, missing_aware=True, memo_dropout=1.0)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_deep_missing.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tiny = {'root': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0'), 'data': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0/data...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+kwargs = {'missing_aware': True, 'memo_dropout': 1.0}
+
+    def fit(tiny, **kwargs):
+        split = split_by_time(tiny['X'], 5, 2)
+        cols = model_columns(tiny['X'], tuple(g for g in FEATURE_GROUPS if g != 'tx'))
+>       return train_deep(split.train.iloc[:96], split.val.iloc[:32], cols, epochs=2, batch=32,
+                          seed=17, verbose=False, **kwargs)
+E       TypeError: train_deep() got an unexpected keyword argument 'missing_aware'
+
+tests/test_deep_missing.py:16: TypeError
+_____________________ test_same_seed_repeats_new_training ______________________
+
+tiny = {'root': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0'), 'data': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0/data...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+
+    def test_same_seed_repeats_new_training(tiny):
+>       a = fit(tiny, missing_aware=True, memo_dropout=.35)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_deep_missing.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tiny = {'root': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0'), 'data': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0/data...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+kwargs = {'missing_aware': True, 'memo_dropout': 0.35}
+
+    def fit(tiny, **kwargs):
+        split = split_by_time(tiny['X'], 5, 2)
+        cols = model_columns(tiny['X'], tuple(g for g in FEATURE_GROUPS if g != 'tx'))
+>       return train_deep(split.train.iloc[:96], split.val.iloc[:32], cols, epochs=2, batch=32,
+                          seed=17, verbose=False, **kwargs)
+E       TypeError: train_deep() got an unexpected keyword argument 'missing_aware'
+
+tests/test_deep_missing.py:16: TypeError
+___________ test_legacy_checkpoint_without_new_metadata_still_loads ____________
+
+tiny = {'root': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0'), 'data': PosixPath('/tmp/pytest-of-root/pytest-15/tiny0/data...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-15/test_legacy_checkpoint_without0')
+
+    def test_legacy_checkpoint_without_new_metadata_still_loads(tiny, tmp_path):
+        old = fit(tiny)
+        save_deep(old, tmp_path)
+        meta = json.loads((tmp_path / 'deep_meta.json').read_text())
+        meta.pop('missing_aware', None)
+        (tmp_path / 'deep_meta.json').write_text(json.dumps(meta))
+        loaded = load_deep(tmp_path)
+>       assert not loaded.model.missing_aware
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_deep_missing.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = HazardNet(
+  (cat_emb): Embedding(12, 8)
+  (arch_emb): Embedding(4, 4)
+  (site_emb): Embedding(5, 8)
+  (char_emb): Emb...ximate='none')
+    (5): Dropout(p=0.2, inplace=False)
+    (6): Linear(in_features=96, out_features=12, bias=True)
+  )
+)
+name = 'missing_aware'
+
+    def __getattr__(self, name: str) -> Union[Tensor, "Module"]:
+        if "_parameters" in self.__dict__:
+            _parameters = self.__dict__["_parameters"]
+            if name in _parameters:
+                return _parameters[name]
+        if "_buffers" in self.__dict__:
+            _buffers = self.__dict__["_buffers"]
+            if name in _buffers:
+                return _buffers[name]
+        if "_modules" in self.__dict__:
+            modules = self.__dict__["_modules"]
+            if name in modules:
+                return modules[name]
+>       raise AttributeError(
+            f"'{type(self).__name__}' object has no attribute '{name}'"
+        )
+E       AttributeError: 'HazardNet' object has no attribute 'missing_aware'
+
+/tmp/harbinger-review-venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1972: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_deep_missing.py::test_absent_text_is_independent_of_cnn_bias
+FAILED tests/test_deep_missing.py::test_missing_aware_rejects_derived_numeric_memo_features
+FAILED tests/test_deep_missing.py::test_invalid_dropout_fails_early[-0.1] - T...
+FAILED tests/test_deep_missing.py::test_invalid_dropout_fails_early[1.1] - Ty...
+FAILED tests/test_deep_missing.py::test_invalid_dropout_fails_early[nan] - Ty...
+FAILED tests/test_deep_missing.py::test_dropout_requires_safe_text_path - Typ...
+FAILED tests/test_deep_missing.py::test_training_dropout_and_inference_normalization
+FAILED tests/test_deep_missing.py::test_same_seed_repeats_new_training - Type...
+FAILED tests/test_deep_missing.py::test_legacy_checkpoint_without_new_metadata_still_loads
