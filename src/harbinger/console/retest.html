@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Harbinger 사용 검토 기록</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f4ef;color:#21211f;font:15px/1.6 system-ui,sans-serif}main{max-width:1000px;margin:auto;padding:30px 24px 80px}header{border-bottom:3px solid #222;padding-bottom:20px}h1{font-size:30px;letter-spacing:-1px;margin:4px 0 12px}h2{font-size:19px;margin:8px 0}p{margin:8px 0}small,.sub{color:#595951}label{display:block;font-size:13px;font-weight:600}input,select,textarea,button{font:inherit;max-width:100%}input,select,textarea{width:100%;padding:8px;border:1px solid #777;background:white;color:#222;border-radius:0}textarea{min-height:65px;resize:vertical}input[type=checkbox]{width:auto}button{border:1px solid #333;background:white;color:#222;padding:7px 12px;cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #cf5a20;outline-offset:2px}button:disabled{opacity:.4;cursor:default}button.primary{background:#252522;color:white}.meta,.fields{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}.fields{grid-template-columns:1fr 2fr;margin:12px 0}.task{border-top:1px solid #aaa;padding:20px 0}.task.running{border-left:4px solid #c15120;padding-left:14px}.actions{display:flex;flex-wrap:wrap;gap:7px}.clock{font-variant-numeric:tabular-nums;margin:10px 0;font-size:14px}.status{font-weight:600;color:#924011}.footer{border-top:3px solid #222;padding-top:20px;margin-top:30px}#notice{min-height:1.6em;font-weight:600;color:#983900}a{color:inherit}code{overflow-wrap:anywhere}@media(max-width:650px){main{padding:20px 16px 50px}.meta,.fields{grid-template-columns:1fr}h1{font-size:25px}.actions button{flex:1 1 40%}}
+</style></head><body><main>
+<header><p class="sub">HARBINGER / 진행자 기록지</p><h1>직접 사용한 과정을 남깁니다</h1><p>참가자가 데모를 조작하는 동안 진행자가 기록합니다. 과업마다 시작하고, 시스템을 기다릴 때는 ‘대기’, 설명이나 휴식에는 ‘중단’을 누르세요.</p><p class="sub">기록은 이 화면에만 있으며 서버로 전송하거나 자동 저장하지 않습니다. 다른 탭에서 데모를 사용해도 시계는 계속 갑니다. 창을 닫기 전에 JSON을 내려받으세요. 회사 정보·이름·연락처는 입력하지 마세요.</p><a href="./" target="_blank" rel="noopener">데모를 새 탭에서 열기 ↗</a></header>
+<section aria-label="검토 조건"><div class="meta">
+<label>참가자 별칭 *<input id="participant" maxlength="40" autocomplete="off"></label>
+<label>진행자 별칭 *<input id="observer" maxlength="40" autocomplete="off"></label>
+<label>검토 날짜 *<input id="date" type="date"></label>
+<label>확인한 버전·커밋 *<input id="version" maxlength="100" placeholder="화면 또는 배포 기록에서 확인"></label>
+<label>실행 환경 *<select id="mode"><option value="">선택</option><option value="local">로컬 실제 계산</option><option value="live">AWS 실제 계산</option><option value="saved">저장 결과 재생</option></select></label>
+<label>검토 시점 *<select id="phase"><option value="">선택</option><option value="before">수정 전</option><option value="after">수정 후</option></select></label>
+<label>같은 과업·자료를 구분할 이름 *<input id="scenario" maxlength="120" placeholder="예: 예제 S01 / 기준일 / 파일 해시"></label>
+<label>검토 경험<input id="experience" maxlength="180" placeholder="첫 사용, 이전 검토·영상 시청 여부"></label>
+<label>기록 종류<select id="kind"><option value="human">실제 참가자 관찰</option><option value="tool-test">자동 도구 검사</option></select></label>
+</div><label><input id="consent" type="checkbox"> 참가자가 관찰과 기록에 동의했습니다. 공개 인용·배포 동의는 별도로 확인합니다. *</label></section>
+<section id="tasks" aria-label="일곱 과업"></section>
+<section class="footer"><h2>기록을 보관합니다</h2><p>‘미실시’와 ‘미완료’는 성공에 포함되지 않습니다. 대기 시간은 진행자가 버튼으로 구분한 값이며 서버 응답시간 계측값이 아닙니다. 재검토는 이전 사용 경험의 영향을 받으므로 시간 차이를 곧바로 개선의 인과 효과로 해석하지 않습니다.</p><button id="export" class="primary">JSON 내려받기</button><p id="notice" role="status" aria-live="polite"></p><small>수정 전 기록이 없으면 이번 결과만 남깁니다. 이전 시간을 기억으로 채우지 않습니다.</small></section>
+</main><script src="retest.js"></script></body></html>

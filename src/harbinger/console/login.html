@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>harbinger 로그인</title><link rel="stylesheet" href="style.css"></head>
+<body><main style="max-width:28rem;margin:10vh auto;padding:2rem">
+<h1>harbinger 로그인</h1><p>지정된 고객사의 기록에 접근하려면 로그인하세요.</p>
+<form id="login-form">
+<p><label>사용자 이름 <input name="username" autocomplete="username" required maxlength="80"></label></p>
+<p><label>비밀번호 <input name="password" type="password" autocomplete="current-password" required maxlength="256"></label></p>
+<button type="submit">로그인</button><p id="login-error" role="alert"></p>
+</form></main><script src="login.js"></script></body></html>

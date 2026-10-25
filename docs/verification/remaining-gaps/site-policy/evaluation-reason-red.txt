@@ -1,0 +1,47 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____ test_selected_policy_is_not_evaluated_before_reserved_test_boundary ______
+
+    def test_selected_policy_is_not_evaluated_before_reserved_test_boundary():
+        from types import SimpleNamespace
+    
+        from harbinger.api.analysis import analyze
+    
+        rows = pd.DataFrame(
+            [
+                {
+                    "asset_id": "a",
+                    "site_id": "S1",
+                    "t": pd.Timestamp("2025-08-01"),
+                    "p30": 0.1,
+                    "name": "a",
+                    "category": "pump",
+                    "memo": "",
+                    "ck_overall": 0,
+                    "st_age_years": 5,
+                    "wo_days_since_bd": 100.0,
+                    "wo_bd_90d": 0,
+                    "policy_test_start": "2025-10-01",
+                    "selected_model": "logistic",
+                }
+            ]
+        )
+        store = SimpleNamespace(
+            latest_rows=lambda *a, **kw: rows.copy(),
+            data_end=pd.Timestamp("2025-12-01"),
+            tables={"workorders": pd.DataFrame(columns=["asset_id", "type", "opened_at"])},
+            bundle={
+                "version": "test",
+                "comparators": {},
+                "entry": {"metrics": {"observation": {"boundary_version": 2, "max_observed_at": "2025-07-01"}}},
+            },
+        )
+        result = analyze(store, pd.Timestamp("2025-09-01"))
+        assert result["time_held_out"] is False
+>       assert not any("메타데이터가 없습니다" in reason for reason in result["evaluation_reasons"])
+E       assert not True
+E        +  where True = any(<generator object test_selected_policy_is_not_evaluated_before_reserved_test_boundary.<locals>.<genexpr> at 0x7feeb4b345f0>)
+
+tests/test_site_policy.py:289: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_site_policy.py::test_selected_policy_is_not_evaluated_before_reserved_test_boundary

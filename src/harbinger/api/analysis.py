@@ -26,7 +26,12 @@ def analyze(store, as_of, site=None, k=10, source="synthetic-example", observati
     cutoff = heldout_start(store)
     period_complete = as_of + pd.Timedelta(days=30) <= store.data_end
     observed = period_complete and observation_confirmed
-    held_out = cutoff is not None and as_of >= cutoff
+    selection_test = pd.to_datetime(
+        rows.get("policy_test_start", pd.Series(dtype=object)), errors="coerce"
+    ).max()
+    selection_held_out = pd.isna(selection_test) or as_of >= selection_test
+    model_held_out = cutoff is not None and as_of >= cutoff
+    held_out = model_held_out and selection_held_out
     reasons = []
     if not observation_confirmed:
         reasons.append(
@@ -34,8 +39,10 @@ def analyze(store, as_of, site=None, k=10, source="synthetic-example", observati
         )
     if not period_complete:
         reasons.append("기준일 이후 30일의 관측이 완료되지 않았습니다.")
-    if not held_out:
+    if not model_held_out:
         reasons.append("모델 학습·보정 관측 종료 이전이거나 모델 관측 메타데이터가 없습니다.")
+    if not selection_held_out:
+        reasons.append("사이트 모델 선택 이후 예약된 보류 평가 시작일 이전입니다.")
     if rows.empty:
         reasons.append("이 기준일 이전에 점검된 설비가 없습니다.")
     index = breakdown_index(store)
@@ -116,6 +123,10 @@ def analyze(store, as_of, site=None, k=10, source="synthetic-example", observati
                     "floor": r.get("st_floor"),
                     "zone": r.get("zone"),
                     "p30": r["p30"],
+                    "selected_model": r.get("selected_model", "baseline"),
+                    "policy_revision": r.get("policy_revision"),
+                    "policy_reason": r.get("policy_reason", "no_policy"),
+                    "policy_test_start": r.get("policy_test_start"),
                     "memo": r["memo"],
                     "inspection_at": r["t"].isoformat(),
                     "overall": int(r["ck_overall"]),
@@ -135,6 +146,7 @@ def analyze(store, as_of, site=None, k=10, source="synthetic-example", observati
             "as_of": as_of.isoformat(),
             "observation_end": store.data_end.isoformat(),
             "model_observed_until": cutoff.isoformat() if cutoff is not None else None,
+            "selection_test_start": selection_test.isoformat() if pd.notna(selection_test) else None,
             "outcomes_observed": bool(observed),
             "observation_confirmed": bool(observation_confirmed),
             "time_held_out": bool(held_out),
@@ -142,6 +154,21 @@ def analyze(store, as_of, site=None, k=10, source="synthetic-example", observati
             "evaluation_status": "withheld" if reasons else "available",
             "evaluation_reasons": reasons,
             "assets": records,
+            "model_routing": list(
+                {
+                    (r["site_id"], r["selected_model"], r["policy_revision"], r["policy_reason"]): {
+                        key: r[key]
+                        for key in (
+                            "site_id",
+                            "selected_model",
+                            "policy_revision",
+                            "policy_reason",
+                            "policy_test_start",
+                        )
+                    }
+                    for r in records
+                }.values()
+            ),
             "comparisons": comparisons,
             "per_site": per_site,
             "interpretation": "30일 내 비계획 고장 위험의 탐색적 순위. 합성 학습 모델이며 안전·고장 예방 효과를 보증하지 않습니다.",
@@ -167,6 +194,12 @@ def markdown_report(result):
         "| 방법 | Precision@K | Recall@K | AUROC |",
         "|---|---:|---:|---:|",
     ]
+
+    for route in result.get("model_routing", []):
+        lines.insert(
+            8,
+            f"- 사이트 {route['site_id']}: {route['selected_model']} / 정책 {route['policy_revision'] or '없음'} / {route['policy_reason']}",
+        )
 
     def fmt(x):
         return "평가 보류" if x is None else f"{x:.4f}"

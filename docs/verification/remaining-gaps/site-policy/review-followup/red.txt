@@ -1,0 +1,56 @@
+F.FF                                                                     [100%]
+=================================== FAILURES ===================================
+_ test_pooled_replay_requires_every_contributing_site_to_be_held_out[site_order0] _
+
+site_order = ['S1', 'S2']
+
+    @pytest.mark.parametrize('site_order', [['S1', 'S2'], ['S2', 'S1']])
+    def test_pooled_replay_requires_every_contributing_site_to_be_held_out(site_order):
+        rows = pd.DataFrame([{
+            'site_id': site, 'asset_id': f'{site}-{i}', 'name': f'{site}-{i}',
+            't': pd.Timestamp('2025-08-31'), 'category': 'pump', 'zone': 'A',
+            'st_floor': 1, 'st_criticality': 1, 'p30': .1, 'ck_overall': 0,
+            'policy_test_start': '2025-10-01' if site == 'S2' else None,
+        } for site in site_order for i in range(5)])
+        store = SimpleNamespace(
+            X=rows, data_end=pd.Timestamp('2025-12-31'),
+            latest_rows=lambda site, as_of: rows[rows.site_id == site].copy(),
+            tables={'sites': pd.DataFrame({'site_id': site_order}),
+                    'workorders': pd.DataFrame({'asset_id': ['S1-0', 'S2-0'],
+                                               'type': 'breakdown', 'opened_at': pd.Timestamp('2025-09-10')})},
+            bundle={'entry': {'metrics': {'observation': {
+                'boundary_version': 2, 'max_observed_at': '2025-07-01'}}}},
+        )
+        date = pd.Timestamp('2025-09-01')
+        assert replay_site(store, 'S1', date, date, k=2)['weeks'][0]['held_out'] is True
+        assert replay_site(store, 'S2', date, date, k=2)['weeks'][0]['held_out'] is False
+        pooled = replay(store, 'all', date, date, k=2)
+        assert pooled['weeks'][0]['n_assets'] == 10  # Preserve the actual comparison denominator.
+>       assert pooled['weeks'][0]['held_out'] is False
+E       assert True is False
+
+tests/test_policy_integration.py:36: AssertionError
+_ test_legacy_report_identifies_selected_model_and_withholds_baseline_headline _
+
+    def test_legacy_report_identifies_selected_model_and_withholds_baseline_headline():
+        store = report_store('logistic')
+        result = build_report(store, 'S1', pd.Timestamp('2026-10-25'))
+>       assert result['model']['selected_model'] == 'logistic'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'selected_model'
+
+tests/test_policy_integration.py:71: KeyError
+_ test_legacy_baseline_report_preserves_headline_with_explicit_reference_scope _
+
+    def test_legacy_baseline_report_preserves_headline_with_explicit_reference_scope():
+        result = build_report(report_store('baseline'), 'S1', pd.Timestamp('2026-10-25'))
+        assert result['model']['headline'] == {'auroc': .88}
+>       assert result['model']['headline_scope'] == 'stored_bundle_baseline_reference'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'headline_scope'
+
+tests/test_policy_integration.py:92: KeyError
+=========================== short test summary info ============================
+FAILED tests/test_policy_integration.py::test_pooled_replay_requires_every_contributing_site_to_be_held_out[site_order0]
+FAILED tests/test_policy_integration.py::test_legacy_report_identifies_selected_model_and_withholds_baseline_headline
+FAILED tests/test_policy_integration.py::test_legacy_baseline_report_preserves_headline_with_explicit_reference_scope

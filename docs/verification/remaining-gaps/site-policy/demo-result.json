@@ -1,0 +1,467 @@
+{
+  "kind": "synthetic-operational-demonstration",
+  "source_sha256": {
+    "src/harbinger/models/site_policy.py": "6784f7292fc372e98d585dbae87b0fdc9d00e833791f6f68d0627bec6504872e",
+    "src/harbinger/api/store.py": "2ea3a59c9272025e33b57dd9cae9474f354194ebe31f21beae55aaf0cc426156",
+    "src/harbinger/api/analysis.py": "61d37f725e68fc571c263c234f95c54a19cb5f4950e2ca8c0998afca822782d0",
+    "src/harbinger/api/backtest.py": "489f3c564301fd2958d0fe8c6521da8be07d9325b867433b21e709b2036e4da5",
+    "src/harbinger/api/whatif.py": "c9cf273d3b3daaeb85058197a2822947723c01a319a40642f4f8c530ef9badfb",
+    "scripts/site_policy.py": "d1db22ca1b542e204630c3bc0c9940b1af4cc707bf317d760ccc0b702deabf74",
+    "docs/verification/remaining-gaps/site-policy/run_demo.py": "3697b3627aa6f912529efe1b6fffa4368a73667f1336d460187fd54ea5f9456d"
+  },
+  "heldout_performance_evaluated": false,
+  "runtime": {
+    "seed": 20260101,
+    "months": 12,
+    "scale": 0.12,
+    "assets": 466,
+    "model_version": "v20261025-231343"
+  },
+  "selection": {
+    "proposal": "/tmp/hb-gap-policy-demo/proposal.json",
+    "sites": {
+      "S01": {
+        "model": "without_text",
+        "reason": "validation_brier"
+      },
+      "S02": {
+        "model": "baseline",
+        "reason": "baseline_not_improved"
+      },
+      "S03": {
+        "model": "baseline",
+        "reason": "baseline_not_improved"
+      },
+      "S04": {
+        "model": "baseline",
+        "reason": "baseline_not_improved"
+      }
+    },
+    "effective_from": "2026-10-25T14:23:05.978606",
+    "data_sources": {
+      "assets.parquet": "fdd348ea258d37349e75faf194451ac9f59c551ce64f85e111df026d1ac7e336",
+      "energy.parquet": "81bbb7f1371ee10bacfa0da9175731b37052ebb403385420ef222eb2f1385a81",
+      "inspections.parquet": "2c41e1cd5a8afc79ff68787e300e44eed3dd57659e2c04ea9a2c22a86be3e819",
+      "inspectors.parquet": "27efa474ddcabd5247214b867ba03fec82faa2f742381cdafc6e0982884f8b71",
+      "latent.parquet": "e8992a3ea89dc109e22ee48155a88abb92257398239a03aa0077b938d1ef5b95",
+      "sites.parquet": "9e5bb826bd6592e59fe0dde1f133fe72fcdca71a2a57fa3ba916feb23b8f4208",
+      "workorders.parquet": "3f2ed312488f172736d15994ecaa2f6328daff3234f4f9647be6236f152f69ea",
+      "features.parquet": "5182d94945e315025a11e80919762e897b48e66e8b4d8cb8d58252448ac37261",
+      "features_meta.json": "d397a24fd9c33840cb7b8cbbb5ff2a4cbb248c377c0829d49e054f5596e76e30"
+    }
+  },
+  "activation": {
+    "revision": "140b05c16fcd62bd05406e89eb214526443b281acccdc60d81798bb7a80caea7",
+    "operation": "activate"
+  },
+  "cas_conflict": {
+    "rejected": true,
+    "reason": "prior revision mismatch"
+  },
+  "baseline_rollback": {
+    "revision": "55004555d6fdc53036e14955d92aa5c5154799d78a85001734c1583f67a3fb1b",
+    "operation": "rollback"
+  },
+  "prior_revision_rollback": {
+    "revision": "718eab3b75d1f7dced5dea11db82b6fa909ecfbfc1ccac74aa0289a5c570113f",
+    "operation": "rollback"
+  },
+  "historical_baseline_parity": true,
+  "corrupted_weights_fallback": true,
+  "model_comparisons": [
+    {
+      "site_id": "S01",
+      "n": 104,
+      "selected_model": "without_text",
+      "policy_revision": "140b05c16fcd62bd05406e89eb214526443b281acccdc60d81798bb7a80caea7",
+      "policy_reason": "validation_brier",
+      "policy_test_start": "2027-01-01T00:00:00",
+      "max_absolute_prediction_error": 0.0
+    },
+    {
+      "site_id": "S02",
+      "n": 198,
+      "selected_model": "baseline",
+      "policy_revision": "140b05c16fcd62bd05406e89eb214526443b281acccdc60d81798bb7a80caea7",
+      "policy_reason": "baseline_not_improved",
+      "policy_test_start": "2027-01-01T00:00:00",
+      "max_absolute_prediction_error": 0.0
+    },
+    {
+      "site_id": "S03",
+      "n": 83,
+      "selected_model": "baseline",
+      "policy_revision": "140b05c16fcd62bd05406e89eb214526443b281acccdc60d81798bb7a80caea7",
+      "policy_reason": "baseline_not_improved",
+      "policy_test_start": "2027-01-01T00:00:00",
+      "max_absolute_prediction_error": 0.0
+    },
+    {
+      "site_id": "S04",
+      "n": 81,
+      "selected_model": "baseline",
+      "policy_revision": "140b05c16fcd62bd05406e89eb214526443b281acccdc60d81798bb7a80caea7",
+      "policy_reason": "baseline_not_improved",
+      "policy_test_start": "2027-01-01T00:00:00",
+      "max_absolute_prediction_error": 0.0
+    }
+  ],
+  "analysis_evaluation_status": "withheld",
+  "explanation_checks": [
+    {
+      "site_id": "S01",
+      "asset_id": "A-S01-0001",
+      "selected_model": "without_text",
+      "policy_revision": "140b05c16fcd62bd05406e89eb214526443b281acccdc60d81798bb7a80caea7",
+      "explanation": {
+        "contributions": null,
+        "status": "unavailable_for_selected_model",
+        "selected_model": "without_text",
+        "evidence": {
+          "recent_inspections": [
+            {
+              "performed_at": "2023-11-04T15:20",
+              "overall": 0,
+              "memo": "점검 완료.",
+              "memo_highlighted": "점검 완료.",
+              "flagged_items": [],
+              "dwell_seconds": 80,
+              "inspector_id": "I-S01-05"
+            },
+            {
+              "performed_at": "2023-11-26T14:08",
+              "overall": 0,
+              "memo": "벨트 장력 조금 느슨 표지판 교체",
+              "memo_highlighted": "벨트 장력 [조금] [느슨] 표지판 교체",
+              "flagged_items": [],
+              "dwell_seconds": 112,
+              "inspector_id": "I-S01-05"
+            },
+            {
+              "performed_at": "2023-12-16T10:13",
+              "overall": 0,
+              "memo": "평소보다 소음 조금 큼 / 손으로 느껴지는 정도의 미세 진동 / 벨트 분진 소량",
+              "memo_highlighted": "평소보다 소음 [조금] 큼 / 손으로 느껴지는 정도의 [미세] 진동 / 벨트 분진 [소량]",
+              "flagged_items": [],
+              "dwell_seconds": 70,
+              "inspector_id": "I-S01-05"
+            }
+          ],
+          "recent_workorders": [
+            {
+              "opened_at": "2023-02-16T08:31",
+              "type": "preventive",
+              "description": "연간 예방정비",
+              "downtime_hours": 0.0
+            },
+            {
+              "opened_at": "2023-07-06T17:21",
+              "type": "breakdown",
+              "description": "환풍기 고장 수리",
+              "downtime_hours": 2.8
+            }
+          ]
+        }
+      }
+    },
+    {
+      "site_id": "S02",
+      "asset_id": "A-S02-0001",
+      "selected_model": "baseline",
+      "policy_revision": "140b05c16fcd62bd05406e89eb214526443b281acccdc60d81798bb7a80caea7",
+      "explanation": {
+        "contributions": [
+          {
+            "feature": "wo_days_since_pm",
+            "label": "마지막 예방정비 후 경과일",
+            "value": 1043.8113134434375,
+            "contribution": 0.39442959693970636
+          },
+          {
+            "feature": "wo_site_bd_180d_per_asset",
+            "label": "사이트 최근 180일 설비당 고장",
+            "value": 0.0,
+            "contribution": -0.3771930367813017
+          },
+          {
+            "feature": "tx_n_groups_ewm",
+            "label": "증상군 지수가중 평균",
+            "value": 0.6849783779755726,
+            "contribution": 0.2450518158192595
+          },
+          {
+            "feature": "ck_interval_days",
+            "label": "점검 간격(일)",
+            "value": 12.077223927210648,
+            "contribution": 0.1547666572952422
+          },
+          {
+            "feature": "q_evidence_weight",
+            "label": "이번 점검 증거 가중치",
+            "value": 0.8500000000000001,
+            "contribution": -0.09514843286188931
+          },
+          {
+            "feature": "q_inspector_dwell_med",
+            "label": "점검자 체류 중앙값",
+            "value": 143.5,
+            "contribution": -0.09502182438079602
+          }
+        ],
+        "status": "available",
+        "selected_model": "baseline",
+        "evidence": {
+          "recent_inspections": [
+            {
+              "performed_at": "2023-11-24T15:41",
+              "overall": 0,
+              "memo": "이상 無 / 표지판 교체",
+              "memo_highlighted": "이상 無 / 표지판 교체",
+              "flagged_items": [],
+              "dwell_seconds": 8,
+              "inspector_id": "I-S02-06"
+            },
+            {
+              "performed_at": "2023-12-07T12:59",
+              "overall": 1,
+              "memo": "운전 소음 커짐 / 결로인지 누수인지 확인 필요 / 전류 미세 상승",
+              "memo_highlighted": "운전 소음 커짐 / 결로인지 누수인지 확인 필요 / 전류 [미세] 상승",
+              "flagged_items": [
+                "소음(주의)"
+              ],
+              "dwell_seconds": 181,
+              "inspector_id": "I-S02-06"
+            },
+            {
+              "performed_at": "2023-12-19T14:50",
+              "overall": 0,
+              "memo": "정상 운전 중, 청소 실시",
+              "memo_highlighted": "정상 운전 중, 청소 실시",
+              "flagged_items": [],
+              "dwell_seconds": 132,
+              "inspector_id": "I-S02-06"
+            }
+          ],
+          "recent_workorders": [
+            {
+              "opened_at": "2023-04-09T18:49",
+              "type": "breakdown",
+              "description": "펌프 고장 수리",
+              "downtime_hours": 13.3
+            },
+            {
+              "opened_at": "2023-06-14T15:29",
+              "type": "breakdown",
+              "description": "펌프 고장 수리",
+              "downtime_hours": 4.9
+            },
+            {
+              "opened_at": "2023-09-01T13:24",
+              "type": "preventive",
+              "description": "연간 예방정비",
+              "downtime_hours": 0.0
+            },
+            {
+              "opened_at": "2023-12-16T18:59",
+              "type": "preventive",
+              "description": "펌프 주의 항목 정비",
+              "downtime_hours": 0.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "site_id": "S03",
+      "asset_id": "A-S03-0001",
+      "selected_model": "baseline",
+      "policy_revision": "140b05c16fcd62bd05406e89eb214526443b281acccdc60d81798bb7a80caea7",
+      "explanation": {
+        "contributions": [
+          {
+            "feature": "wo_site_bd_180d_per_asset",
+            "label": "사이트 최근 180일 설비당 고장",
+            "value": 0.0,
+            "contribution": -0.3642335137604621
+          },
+          {
+            "feature": "wo_days_since_pm",
+            "label": "마지막 예방정비 후 경과일",
+            "value": 1207.845500486285,
+            "contribution": 0.26484095702021543
+          },
+          {
+            "feature": "tx_n_groups_ewm",
+            "label": "증상군 지수가중 평균",
+            "value": 0.5591120316770134,
+            "contribution": 0.2307528170804125
+          },
+          {
+            "feature": "tx_weak_on_good_sum6",
+            "label": "양호 판정인데 메모에 약신호(6회 중)",
+            "value": 2.0,
+            "contribution": 0.15675718350798667
+          },
+          {
+            "feature": "tx_weak_score_ewm",
+            "label": "약신호 지수가중 평균",
+            "value": 0.5056988728521566,
+            "contribution": 0.1250803887672725
+          },
+          {
+            "feature": "st_age_years",
+            "label": "설비 연식(년)",
+            "value": 5.437252805776739,
+            "contribution": -0.10246764928629432
+          }
+        ],
+        "status": "available",
+        "selected_model": "baseline",
+        "evidence": {
+          "recent_inspections": [
+            {
+              "performed_at": "2023-11-24T17:13",
+              "overall": 0,
+              "memo": "운전 상태 양호.",
+              "memo_highlighted": "운전 상태 양호.",
+              "flagged_items": [],
+              "dwell_seconds": 105,
+              "inspector_id": "I-S03-06"
+            },
+            {
+              "performed_at": "2023-12-13T15:37",
+              "overall": 0,
+              "memo": "약간의 소음 감지",
+              "memo_highlighted": "[약간]의 소음 감지",
+              "flagged_items": [],
+              "dwell_seconds": 86,
+              "inspector_id": "I-S03-06"
+            },
+            {
+              "performed_at": "2023-12-25T15:30",
+              "overall": 0,
+              "memo": "소음 약간 있으나 운전 양호",
+              "memo_highlighted": "소음 [약간] 있으나 운전 양호",
+              "flagged_items": [],
+              "dwell_seconds": 90,
+              "inspector_id": "I-S03-06"
+            }
+          ],
+          "recent_workorders": [
+            {
+              "opened_at": "2023-07-05T18:10",
+              "type": "preventive",
+              "description": "연간 예방정비",
+              "downtime_hours": 0.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "site_id": "S04",
+      "asset_id": "A-S04-0001",
+      "selected_model": "baseline",
+      "policy_revision": "140b05c16fcd62bd05406e89eb214526443b281acccdc60d81798bb7a80caea7",
+      "explanation": {
+        "contributions": [
+          {
+            "feature": "wo_site_bd_180d_per_asset",
+            "label": "사이트 최근 180일 설비당 고장",
+            "value": 0.0,
+            "contribution": -0.3313683604527586
+          },
+          {
+            "feature": "wo_days_since_pm",
+            "label": "마지막 예방정비 후 경과일",
+            "value": 1032.2780854670484,
+            "contribution": 0.2729826020240809
+          },
+          {
+            "feature": "tx_n_groups_ewm",
+            "label": "증상군 지수가중 평균",
+            "value": 0.21071430426062102,
+            "contribution": -0.2565112970279699
+          },
+          {
+            "feature": "q_delay_days",
+            "label": "점검 지연(일)",
+            "value": 6.2061088375,
+            "contribution": 0.13037691993783754
+          },
+          {
+            "feature": "q_evidence_weight",
+            "label": "이번 점검 증거 가중치",
+            "value": 0.2,
+            "contribution": 0.10713086716796705
+          },
+          {
+            "feature": "q_inspector_dwell_med",
+            "label": "점검자 체류 중앙값",
+            "value": 15.0,
+            "contribution": 0.10491631201246478
+          }
+        ],
+        "status": "available",
+        "selected_model": "baseline",
+        "evidence": {
+          "recent_inspections": [
+            {
+              "performed_at": "2023-11-10T08:26",
+              "overall": 0,
+              "memo": "점검 완료.",
+              "memo_highlighted": "점검 완료.",
+              "flagged_items": [],
+              "dwell_seconds": 234,
+              "inspector_id": "I-S04-01"
+            },
+            {
+              "performed_at": "2023-11-29T13:52",
+              "overall": 0,
+              "memo": "소음 약간 있으나 운전 양호.",
+              "memo_highlighted": "소음 [약간] 있으나 운전 양호.",
+              "flagged_items": [],
+              "dwell_seconds": 133,
+              "inspector_id": "I-S04-01"
+            },
+            {
+              "performed_at": "2023-12-21T13:56",
+              "overall": 0,
+              "memo": "이상없음",
+              "memo_highlighted": "이상없음",
+              "flagged_items": [],
+              "dwell_seconds": 19,
+              "inspector_id": "I-S04-01"
+            }
+          ],
+          "recent_workorders": [
+            {
+              "opened_at": "2023-06-11T08:20",
+              "type": "breakdown",
+              "description": "펌프 고장 수리",
+              "downtime_hours": 1.6
+            },
+            {
+              "opened_at": "2023-09-21T09:31",
+              "type": "breakdown",
+              "description": "펌프 고장 수리",
+              "downtime_hours": 1.7
+            },
+            {
+              "opened_at": "2023-12-28T07:47",
+              "type": "preventive",
+              "description": "연간 예방정비",
+              "downtime_hours": 0.0
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "as_of": "2026-10-25T14:28:12.607083",
+  "limitations": [
+    "Synthetic data only; old records scored after activation only to check routing.",
+    "Validation window reuses historical synthetic data; new held-out test not evaluated.",
+    "Small-sample selection is not evidence of customer optimization."
+  ]
+}

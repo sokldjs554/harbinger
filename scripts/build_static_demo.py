@@ -106,7 +106,7 @@ def main() -> None:
     cdir = console_dir()
     for f in ("style.css", "charts.js", "memo.js", "app.js"):
         shutil.copy(cdir / f, a.out / f)
-    html = (cdir / "index.html").read_text()
+    html = (cdir / "index.html").read_text().replace('<script src="auth.js"></script>', "")
     html = html.replace(
         '<script src="charts.js"></script>',
         '<script>window.HARBINGER_STATIC = true;</script>\n<script src="charts.js"></script>',

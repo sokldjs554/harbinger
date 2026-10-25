@@ -27,6 +27,15 @@ def build_report(store: Store, site_id: str, as_of) -> dict:
     quality = store.quality(site_id, as_of, 180)
     rows = store.latest_rows(site_id, as_of)
     top = rows.nlargest(10, "p30") if len(rows) else rows
+    # Use the trace attached to the actual scored rows, not a model identity
+    # inferred from the bundle's stored aggregate metrics.
+    trace = store.routing_trace(rows.iloc[0]) if len(rows) else store.model_for(site_id, as_of)[1]
+    trace = {
+        key: trace.get(key)
+        for key in ("selected_model", "policy_revision", "policy_reason", "policy_test_start")
+    }
+    baseline_headline = store.bundle["entry"].get("metrics", {}).get("headline")
+    is_baseline = trace["selected_model"] == "baseline"
     return {
         "site": summary,
         "as_of": as_of.isoformat(timespec="minutes"),
@@ -36,6 +45,7 @@ def build_report(store: Store, site_id: str, as_of) -> dict:
                 "name": r["name"],
                 "category": r["category"],
                 "p30": float(r["p30"]),
+                **store.routing_trace(r),
                 "criticality": int(r["st_criticality"]),
                 "last_overall": int(r["ck_overall"]),
                 "last_inspection_at": r["t"].isoformat(timespec="minutes"),
@@ -68,7 +78,16 @@ def build_report(store: Store, site_id: str, as_of) -> dict:
         },
         "model": {
             "version": store.bundle["version"],
-            "headline": store.bundle["entry"].get("metrics", {}).get("headline"),
+            **trace,
+            "headline": baseline_headline if is_baseline else None,
+            "headline_status": "stored_reference" if is_baseline else "withheld_for_selected_model",
+            "headline_scope": "stored_bundle_baseline_reference",
+            "baseline_reference": {
+                "selected_model": "baseline",
+                "version": store.bundle["version"],
+                "scope": "stored_bundle_baseline_reference",
+                "headline": baseline_headline,
+            },
         },
         "caveats": [
             "모든 수치는 합성 데이터 기반 데모입니다.",
@@ -84,6 +103,11 @@ def to_markdown(r: dict) -> str:
         f"# {s['name']} 합성 실험 리포트",
         "",
         f"기준 시점: {r['as_of']} · 설비 {s['n_assets']}개 · 점검자 {s['n_inspectors']}명 · 모델 {r['model']['version']}",
+        "",
+        f"- 실제 점수 모델: {r['model']['selected_model']}",
+        f"- 정책 리비전: {r['model']['policy_revision'] or '없음'} · 적용 이유: {r['model']['policy_reason']}",
+        f"- 정책 보류 평가 시작: {r['model']['policy_test_start'] or '해당 없음'}",
+        "- 모델 headline은 기본 모델의 저장된 참조 지표이며, 현재 사이트의 선택 모델 평가가 아닙니다.",
         "",
         "## 1. 요약",
         "",

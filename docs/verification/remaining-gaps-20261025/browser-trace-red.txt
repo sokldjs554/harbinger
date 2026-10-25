@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/scratch/528e6091a06b/harbinger-memo/scripts/check_protected_stack.py", line 201, in <module>
+    run(parser.parse_args())
+  File "/workspace/scratch/528e6091a06b/harbinger-memo/scripts/check_protected_stack.py", line 183, in run
+    checks = browser_check(base, json.loads((directory / "credentials.json").read_text()), args.out)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/528e6091a06b/harbinger-memo/scripts/check_protected_stack.py", line 68, in browser_check
+    assert {r["selected_model"] for r in values} == {r["selected_model"] for r in result["assets"]}
+            ~^^^^^^^^^^^^^^^^^^
+KeyError: 'selected_model'

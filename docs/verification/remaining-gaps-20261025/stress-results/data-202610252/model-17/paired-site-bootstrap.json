@@ -1,0 +1,336 @@
+{
+  "stress_minus_clean": {
+    "legacy": {
+      "cluster_asset": {
+        "difference": -0.062,
+        "ci95": [
+          -0.07709090909090907,
+          -0.04818181818181819
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "cluster_inspector": {
+        "difference": -0.062,
+        "ci95": [
+          -0.0789090909090909,
+          -0.04636363636363636
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "selective_missing": {
+        "difference": -0.04563636363636364,
+        "ci95": [
+          -0.059454545454545454,
+          -0.030909090909090914
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "hangul_substitution": {
+        "difference": -0.007454545454545464,
+        "ci95": [
+          -0.01327272727272727,
+          -0.0016363636363636574
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "abbreviations": {
+        "difference": -0.0058181818181818334,
+        "ci95": [
+          -0.010727272727272752,
+          -0.0009090909090909149
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "delay_7d": {
+        "difference": -0.014000000000000012,
+        "ci95": [
+          -0.0196409090909091,
+          -0.00854545454545455
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      }
+    },
+    "robust": {
+      "cluster_asset": {
+        "difference": -0.0009090909090909149,
+        "ci95": [
+          -0.007636363636363636,
+          0.005454545454545434
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "cluster_inspector": {
+        "difference": -0.0030909090909090886,
+        "ci95": [
+          -0.009272727272727294,
+          0.003095454545454518
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "selective_missing": {
+        "difference": -0.0005454545454545434,
+        "ci95": [
+          -0.006181818181818177,
+          0.0049090909090909185
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "hangul_substitution": {
+        "difference": -0.0020000000000000018,
+        "ci95": [
+          -0.005272727272727262,
+          0.0012727272727272587
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "abbreviations": {
+        "difference": -0.0014545454545454584,
+        "ci95": [
+          -0.00454545454545452,
+          0.0018227272727272864
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "delay_7d": {
+        "difference": -0.006727272727272721,
+        "ci95": [
+          -0.011636363636363639,
+          -0.002545454545454545
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      }
+    },
+    "no_memo": {
+      "cluster_asset": {
+        "difference": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "cluster_inspector": {
+        "difference": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "selective_missing": {
+        "difference": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "hangul_substitution": {
+        "difference": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "abbreviations": {
+        "difference": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "delay_7d": {
+        "difference": -0.005636363636363634,
+        "ci95": [
+          -0.00982272727272729,
+          -0.0009045454545454854
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      }
+    }
+  },
+  "candidate_minus_legacy": {
+    "robust": {
+      "clean": {
+        "difference": 0.002727272727272717,
+        "ci95": [
+          -0.005636363636363635,
+          0.011272727272727268
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "cluster_asset": {
+        "difference": 0.0638181818181818,
+        "ci95": [
+          0.04945454545454547,
+          0.07818636363636361
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "cluster_inspector": {
+        "difference": 0.06163636363636363,
+        "ci95": [
+          0.04636363636363636,
+          0.07745454545454544
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "selective_missing": {
+        "difference": 0.047818181818181815,
+        "ci95": [
+          0.03345454545454546,
+          0.0601818181818182
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "hangul_substitution": {
+        "difference": 0.008181818181818179,
+        "ci95": [
+          -0.000913636363636369,
+          0.017640909090909075
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "abbreviations": {
+        "difference": 0.007090909090909092,
+        "ci95": [
+          -0.0010909090909090868,
+          0.016181818181818186
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "delay_7d": {
+        "difference": 0.010000000000000009,
+        "ci95": [
+          0.0018181818181818299,
+          0.01818636363636359
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      }
+    },
+    "no_memo": {
+      "clean": {
+        "difference": -0.0018181818181818299,
+        "ci95": [
+          -0.013999999999999985,
+          0.011272727272727268
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "cluster_asset": {
+        "difference": 0.06018181818181817,
+        "ci95": [
+          0.04690909090909093,
+          0.07345909090909088
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "cluster_inspector": {
+        "difference": 0.06018181818181817,
+        "ci95": [
+          0.04418181818181818,
+          0.07618636363636364
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "selective_missing": {
+        "difference": 0.04381818181818181,
+        "ci95": [
+          0.031268181818181834,
+          0.056549999999999996
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "hangul_substitution": {
+        "difference": 0.005636363636363634,
+        "ci95": [
+          -0.007272727272727265,
+          0.020727272727272733
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "abbreviations": {
+        "difference": 0.0040000000000000036,
+        "ci95": [
+          -0.0074545454545454646,
+          0.015999999999999986
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      },
+      "delay_7d": {
+        "difference": 0.006545454545454549,
+        "ci95": [
+          -0.005636363636363634,
+          0.019272727272727275
+        ],
+        "site_clusters": 25,
+        "bootstrap_repeats": 2000,
+        "note": "conditional on this synthetic world; not real-world confidence"
+      }
+    }
+  }
+}

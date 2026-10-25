@@ -66,11 +66,12 @@ def main():
             out["artifacts"][name] = safe_json(json.loads(path.read_text()))
     # docs/demo is generated output tracked in Git; refuse arbitrary destination deletion.
     args.out.mkdir(parents=True, exist_ok=True)
-    for name in ["index.html", "workbench.js", "workbench.css", "reports.js"]:
+    for name in ["index.html", "workbench.js", "workbench.css", "reports.js", "retest.html", "retest.js"]:
         shutil.copy2(console_dir() / name, args.out / name)
     html = (
         (args.out / "index.html")
         .read_text()
+        .replace('<script src="auth.js"></script>', "")
         .replace(
             '<script src="workbench.js">',
             '<script>window.HARBINGER_SAVED=true;</script><script src="workbench.js">',

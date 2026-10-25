@@ -1,0 +1,22 @@
+202610251 all raw parquet hashes and committed prior evidence verified
+202610251 17 legacy all saved model component hashes verified
+202610251 17 robust all saved model component hashes verified
+202610251 17 no_memo all saved model component hashes verified
+202610251 29 legacy all saved model component hashes verified
+202610251 29 robust all saved model component hashes verified
+202610251 29 no_memo all saved model component hashes verified
+202610252 all raw parquet hashes and committed prior evidence verified
+202610252 17 legacy all saved model component hashes verified
+202610252 17 robust all saved model component hashes verified
+202610252 17 no_memo all saved model component hashes verified
+202610252 29 legacy all saved model component hashes verified
+202610252 29 robust all saved model component hashes verified
+202610252 29 no_memo all saved model component hashes verified
+202610253 all raw parquet hashes and committed prior evidence verified
+202610253 17 legacy all saved model component hashes verified
+202610253 17 robust all saved model component hashes verified
+202610253 17 no_memo all saved model component hashes verified
+202610253 29 legacy all saved model component hashes verified
+202610253 29 robust all saved model component hashes verified
+202610253 29 no_memo all saved model component hashes verified
+PASS: 18 frozen models; 3 original worlds; no weights changed

@@ -1,0 +1,19 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__________ test_future_validation_outcomes_cannot_be_certified_today ___________
+
+candidate = (PosixPath('/tmp/pytest-of-root/pytest-51/test_future_validation_outcome0/models'), {'version': 'v1', 'classifier': Cl...-01         True
+79  1.0    1        pump       office      S1      a79 2098-02-01         True
+
+[80 rows x 8 columns])
+
+    def test_future_validation_outcomes_cannot_be_certified_today(candidate):
+        root, bundle, frame = candidate
+        frame['t'] = pd.Timestamp('2098-02-01')
+>       with pytest.raises(ValueError, match='temporal'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_site_policy.py:295: Failed
+=========================== short test summary info ============================
+FAILED tests/test_site_policy.py::test_future_validation_outcomes_cannot_be_certified_today

@@ -7,6 +7,7 @@ window.HarbingerReports = function (ctx) {
   const number = (v) => (v == null ? "—" : Number(v).toFixed(3));
   const names = {
     current_model: "현재 모델",
+    baseline: "기본 HGB 모델",
     logistic: "단순 모델 로지스틱",
     without_text: "메모 제거 모델",
     without_history: "고장 이력 제거 모델",
@@ -98,6 +99,9 @@ window.HarbingerReports = function (ctx) {
   function conditionText() {
     return `${applied.as_of} 기준 · ${applied.site ? ctx.siteName(applied.site) : "전체 고객사"} · 고객사마다 ${applied.k}개 선택 · 분석 설비 ${result.assets.length.toLocaleString()}개`;
   }
+  function routingText() {
+    return (result.model_routing || []).map((r) => `${r.site_id}: ${names[r.selected_model] || r.selected_model} (${r.selected_model}), 정책 ${r.policy_revision || "기본값"}, 사유 ${r.policy_reason || "미기록"}, 평가 시작 ${r.policy_test_start || "별도 지정 없음"}`).join("; ") || "저장된 응답에 사용 모델 정보 없음";
+  }
   function outcome(a) {
     return a.failed_within_30d == null
       ? (result.observation_confirmed === false ? "기록 완전성 미확인 · 결과 미확정" : "관측 부족 · 결과 미확정")
@@ -149,7 +153,7 @@ window.HarbingerReports = function (ctx) {
         .join("") ||
       '<tr><td colspan="6">이 기준일의 고객사별 결과가 없습니다.</td></tr>';
     $("report-provenance").textContent =
-      `${ctx.saved() ? "저장된 Python 응답 재생" : "Python 모델 계산"} · 데이터 ${result.source.startsWith("synthetic") ? "합성 예제" : "사용자 업로드"} · 모델 ${result.model_version} · 모델 관측 종료 ${result.model_observed_until || "미제공"} · 정답 관측 종료 ${result.observation_end}. 현재 표는 고객사 보류 실험과 다릅니다.`;
+      `${ctx.saved() ? "저장된 Python 응답 재생" : "Python 모델 계산"} · 데이터 ${result.source.startsWith("synthetic") ? "합성 예제" : "사용자 업로드"} · 모델 ${result.model_version} · 모델 관측 종료 ${result.model_observed_until || "미제공"} · 정답 관측 종료 ${result.observation_end}. 현재 표는 고객사 보류 실험과 다릅니다. 사용 모델: ${routingText()}.`;
     $("download-status").textContent = "";
     document
       .querySelectorAll("[data-format]")
@@ -219,6 +223,10 @@ window.HarbingerReports = function (ctx) {
         "memo",
         "failed_within_30d",
         "days_to_failure",
+        "selected_model",
+        "policy_revision",
+        "policy_reason",
+        "policy_test_start",
       ];
       const cell = (v) => {
         let s = String(v ?? "");
@@ -233,7 +241,7 @@ window.HarbingerReports = function (ctx) {
       mime = "text/csv";
     } else {
       body =
-        `# harbinger 분석 보고서\n\n${conditionText()}\n\n데이터: ${result.source}\n\n계산: ${ctx.saved() ? "저장된 Python 모델 응답 재생" : "Python 모델 계산"}\n\n모델: ${result.model_version}\n\n모델 관측 종료: ${result.model_observed_until || "미제공"}\n\n정답 관측 종료: ${result.observation_end}\n\n평가: ${result.evaluation_status === "available" ? "평가 조건 충족" : "평가 보류"}\n\n${result.evaluation_reasons.join("\n")}\n\n| 방법 | 선택 설비 고장 비율 | 고장 설비 발견 비율 | AUROC | PR-AUC | Brier |\n|---|---:|---:|---:|---:|---:|\n` +
+        `# harbinger 분석 보고서\n\n${conditionText()}\n\n데이터: ${result.source}\n\n계산: ${ctx.saved() ? "저장된 Python 모델 응답 재생" : "Python 모델 계산"}\n\n모델: ${result.model_version}\n\n사용 모델: ${routingText()}\n\n모델 관측 종료: ${result.model_observed_until || "미제공"}\n\n정답 관측 종료: ${result.observation_end}\n\n평가: ${result.evaluation_status === "available" ? "평가 조건 충족" : "평가 보류"}\n\n${result.evaluation_reasons.join("\n")}\n\n| 방법 | 선택 설비 고장 비율 | 고장 설비 발견 비율 | AUROC | PR-AUC | Brier |\n|---|---:|---:|---:|---:|---:|\n` +
         result.comparisons
           .map(
             (m) =>

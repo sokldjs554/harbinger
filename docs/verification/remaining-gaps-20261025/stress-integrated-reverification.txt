@@ -1,0 +1,206 @@
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:37: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert rows.decision_at.max() + pd.Timedelta(days=30) <= pd.Timestamp(proof["observation_end"])
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:37: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert rows.decision_at.max() + pd.Timedelta(days=30) <= pd.Timestamp(proof["observation_end"])
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:37: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert rows.decision_at.max() + pd.Timedelta(days=30) <= pd.Timestamp(proof["observation_end"])
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+/workspace/scratch/528e6091a06b/harbinger-memo/scripts/extended_stress/summary.py:44: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  sources.source_t <= rows.decision_at - pd.Timedelta(days=7 if condition == "delay_7d" else 0)
+{
+  "verified_runs": 6,
+  "means": {
+    "legacy": {
+      "clean": {
+        "auroc": 0.7481224893098043,
+        "pr_auc": 0.2273525397050602,
+        "brier": 0.06850577061648698,
+        "logloss": 0.2500822893508719,
+        "precision_at_k": 0.23700000000000002
+      },
+      "cluster_asset": {
+        "auroc": 0.6802059109486344,
+        "pr_auc": 0.1571094863267701,
+        "brier": 0.09072912231731373,
+        "logloss": 0.3154137620107346,
+        "precision_at_k": 0.1744848484848485
+      },
+      "cluster_inspector": {
+        "auroc": 0.6834755818416722,
+        "pr_auc": 0.15796490941572552,
+        "brier": 0.09044369708752524,
+        "logloss": 0.31406939645437,
+        "precision_at_k": 0.17533333333333334
+      },
+      "selective_missing": {
+        "auroc": 0.7182328415663966,
+        "pr_auc": 0.17241477689341597,
+        "brier": 0.08142338572254408,
+        "logloss": 0.2842035575031496,
+        "precision_at_k": 0.18763636363636363
+      },
+      "hangul_substitution": {
+        "auroc": 0.7418986957888093,
+        "pr_auc": 0.22147260438784622,
+        "brier": 0.06838563948879241,
+        "logloss": 0.25021043716165997,
+        "precision_at_k": 0.2306666666666667
+      },
+      "abbreviations": {
+        "auroc": 0.7461884780176978,
+        "pr_auc": 0.2254769920755274,
+        "brier": 0.06834608042163542,
+        "logloss": 0.249715809850748,
+        "precision_at_k": 0.23360606060606062
+      },
+      "delay_7d": {
+        "auroc": 0.7379630586906257,
+        "pr_auc": 0.2134010476130205,
+        "brier": 0.06922639611161842,
+        "logloss": 0.2530916612911039,
+        "precision_at_k": 0.22718181818181818
+      }
+    },
+    "robust": {
+      "clean": {
+        "auroc": 0.7448282512770034,
+        "pr_auc": 0.21911062717054866,
+        "brier": 0.06919509518585579,
+        "logloss": 0.25215790485031164,
+        "precision_at_k": 0.23196969696969696
+      },
+      "cluster_asset": {
+        "auroc": 0.7390478378423779,
+        "pr_auc": 0.2133954430500782,
+        "brier": 0.06968798626506835,
+        "logloss": 0.25459075265401615,
+        "precision_at_k": 0.22960606060606062
+      },
+      "cluster_inspector": {
+        "auroc": 0.7392465276813507,
+        "pr_auc": 0.21140092009913605,
+        "brier": 0.06972657956561748,
+        "logloss": 0.2545872889112191,
+        "precision_at_k": 0.22990909090909092
+      },
+      "selective_missing": {
+        "auroc": 0.742331533843193,
+        "pr_auc": 0.2152114935609982,
+        "brier": 0.06937620492672188,
+        "logloss": 0.2529586934850417,
+        "precision_at_k": 0.22981818181818184
+      },
+      "hangul_substitution": {
+        "auroc": 0.7433562865848274,
+        "pr_auc": 0.21856068171988893,
+        "brier": 0.069279592599783,
+        "logloss": 0.2526608075861657,
+        "precision_at_k": 0.23196969696969696
+      },
+      "abbreviations": {
+        "auroc": 0.7434031516653542,
+        "pr_auc": 0.21892631786220698,
+        "brier": 0.069329956213847,
+        "logloss": 0.2529599685354636,
+        "precision_at_k": 0.2317878787878788
+      },
+      "delay_7d": {
+        "auroc": 0.7364681680150703,
+        "pr_auc": 0.20728760053744466,
+        "brier": 0.069791452614641,
+        "logloss": 0.25461117262674166,
+        "precision_at_k": 0.2238787878787879
+      }
+    },
+    "no_memo": {
+      "clean": {
+        "auroc": 0.7406515601874227,
+        "pr_auc": 0.2261822692228622,
+        "brier": 0.06907321914127106,
+        "logloss": 0.25304921332719715,
+        "precision_at_k": 0.23730303030303032
+      },
+      "cluster_asset": {
+        "auroc": 0.7406515601874227,
+        "pr_auc": 0.2261822692228622,
+        "brier": 0.06907321914127106,
+        "logloss": 0.25304921332719715,
+        "precision_at_k": 0.23730303030303032
+      },
+      "cluster_inspector": {
+        "auroc": 0.7406515601874227,
+        "pr_auc": 0.2261822692228622,
+        "brier": 0.06907321914127106,
+        "logloss": 0.25304921332719715,
+        "precision_at_k": 0.23730303030303032
+      },
+      "selective_missing": {
+        "auroc": 0.7406515601874227,
+        "pr_auc": 0.2261822692228622,
+        "brier": 0.06907321914127106,
+        "logloss": 0.25304921332719715,
+        "precision_at_k": 0.23730303030303032
+      },
+      "hangul_substitution": {
+        "auroc": 0.7406515601874227,
+        "pr_auc": 0.2261822692228622,
+        "brier": 0.06907321914127106,
+        "logloss": 0.25304921332719715,
+        "precision_at_k": 0.23730303030303032
+      },
+      "abbreviations": {
+        "auroc": 0.7406515601874227,
+        "pr_auc": 0.2261822692228622,
+        "brier": 0.06907321914127106,
+        "logloss": 0.25304921332719715,
+        "precision_at_k": 0.23730303030303032
+      },
+      "delay_7d": {
+        "auroc": 0.735045547481616,
+        "pr_auc": 0.21661154062006013,
+        "brier": 0.06953178805436365,
+        "logloss": 0.25478600396671225,
+        "precision_at_k": 0.2292121212121212
+      }
+    }
+  }
+}

@@ -57,6 +57,10 @@ def _item(row: dict, days: float | None, extra: dict | None = None) -> dict:
         "category": row["category"],
         "zone": row["zone"],
         "p30": float(row["p30"]),
+        **{
+            key: row.get(key)
+            for key in ("selected_model", "policy_revision", "policy_reason", "policy_test_start")
+        },
         "days_since_inspection": float(row["days_since_inspection"]),
         "failed_within_30d": days is not None,
         "days_to_failure": None if days is None else round(days, 1),
@@ -106,9 +110,14 @@ def replay_site(
         harb_items.sort(key=lambda x: -x["p30"])
         rr_rows = rows.nsmallest(k, "t")
         rr_items = [_item(r, days[r["asset_id"]]) for r in rr_rows.to_dict("records")]
+        selection_test = pd.to_datetime(
+            rows.get("policy_test_start", pd.Series(dtype=object)), errors="coerce"
+        ).max()
         week = {
             "as_of": d.date().isoformat(),
-            "held_out": bool(held is not None and as_of >= held),
+            "held_out": bool(
+                held is not None and as_of >= held and (pd.isna(selection_test) or as_of >= selection_test)
+            ),
             "n_assets": int(len(rows)),
             "base_rate": float(np.mean([v is not None for v in days.values()])),
             "harbinger": {"n": len(harb_items), "hits": int(sum(i["failed_within_30d"] for i in harb_items))},
@@ -158,9 +167,11 @@ def replay(
     """site='all' 이면 사이트별 결과를 주 단위로 합산한다(목록은 생략). 첫 계산은 오래 걸려 결과를 캐시한다."""
     start = start if start is not None else (heldout_start(store) or store.X["t"].min())
     end = end if end is not None else last_scorable_day(store)
-    key = (site, start.date().isoformat(), end.date().isoformat(), step_days, k)
+    policy_path = store.settings.model_dir / "site-policy.json" if hasattr(store, "settings") else None
+    policy_bytes = policy_path.read_bytes() if policy_path and policy_path.exists() else b""
+    key = (policy_bytes, site, start.date().isoformat(), end.date().isoformat(), step_days, k)
     cache = store.__dict__.setdefault("_replay_cache", {})
-    if key in cache:
+    if not policy_bytes and key in cache:
         return cache[key]
     if site != "all":
         out = replay_site(store, site, start, end, step_days, k, with_items=True)
@@ -182,6 +193,7 @@ def replay(
                         "round_robin": {"n": 0, "hits": 0},
                     },
                 )
+                m["held_out"] = bool(m["held_out"] and w["held_out"])
                 m["n_assets"] += w["n_assets"]
                 m["_base"] += w["base_rate"] * w["n_assets"]
                 for who in ("harbinger", "round_robin"):
@@ -208,9 +220,12 @@ def replay(
     out["evaluation_status"] = "available" if eligible else "withheld"
     out["excluded_weeks"] = len(out["weeks"]) - len(eligible)
     out["evaluation_reason"] = (
-        None if eligible else "모델 관측 종료 이후이면서 30일 결과가 관측된 주가 없습니다."
+        None
+        if eligible
+        else "모델 관측 종료와 포함 사이트의 정책 보류 평가 경계를 모두 지난, 30일 결과가 관측된 주가 없습니다."
     )
-    cache[key] = out
+    if not policy_bytes:
+        cache[key] = out
     return out
 
 

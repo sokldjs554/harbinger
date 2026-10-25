@@ -15,6 +15,8 @@ from fastapi.responses import FileResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from harbinger import __version__
+from harbinger.api.auth import AuthManager, enforce_auth
+from harbinger.api.auth import router as auth_router
 from harbinger.api.routers import admin, energy, health, patrol, replay, report, risk, sites, text, workbench
 from harbinger.api.store import Store, console_dir
 from harbinger.config import settings
@@ -45,6 +47,8 @@ def _setup_logging() -> None:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     _setup_logging()
+    app.state.auth_settings = settings
+    app.state.auth = AuthManager(settings)
     store = Store(settings)
     store.load()
     app.state.store = store
@@ -54,6 +58,8 @@ async def lifespan(app: FastAPI):
             await asyncio.sleep(60)
             with workbench.lock:
                 workbench.cleanup()
+            with app.state.auth.lock:
+                app.state.auth.cleanup()
 
     reaper = asyncio.create_task(expire_sessions())
     try:
@@ -70,6 +76,11 @@ app = FastAPI(
     lifespan=lifespan,
     description="사람이 쓴 점검 기록에서 설비 고장의 전조를 읽는다 — 센서 없는 시설의 예지보전·순찰 처방 API. 모든 데이터는 합성(SYNTHETIC)이다.",
 )
+
+
+app.state.auth_settings = settings
+app.middleware("http")(enforce_auth)
+app.include_router(auth_router)
 
 
 @app.middleware("http")

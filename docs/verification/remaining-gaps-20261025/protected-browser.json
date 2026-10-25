@@ -1,0 +1,13 @@
+{
+  "human_results": false,
+  "page_errors": [],
+  "checks": [
+    "anonymous login redirect",
+    "two separate browser accounts",
+    "site-limited selection and JSON export",
+    "direct cross-site denial",
+    "cross-user analysis token denial",
+    "logout revocation",
+    "desktop/mobile no overflow"
+  ]
+}

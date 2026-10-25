@@ -1,0 +1,79 @@
+FF....                                                                   [100%]
+=================================== FAILURES ===================================
+_________________ test_malformed_active_policy_falls_back[[]] __________________
+
+candidate = (PosixPath('/tmp/pytest-of-root/pytest-41/test_malformed_active_policy_f0/models'), {'version': 'v1', 'classifier': Cl...-01         True
+79  1.0    1        pump       office      S1      a79 2024-03-01         True
+
+[80 rows x 8 columns])
+invalid = '[]'
+
+    @pytest.mark.parametrize('invalid', ['[]', 'null', '{"schema": 99}', 'not-json'])
+    def test_malformed_active_policy_falls_back(candidate, invalid):
+        root, bundle, _ = candidate
+        (root / 'site-policy.json').write_text(invalid)
+>       model, trace = policy.resolve(root, bundle, 'S1', pd.Timestamp('2099-02-01'))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_site_policy.py:202: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/harbinger/models/site_policy.py:345: in resolve
+    return resolve_many(model_dir, bundle, [site_id], as_of)[str(site_id)]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/harbinger/models/site_policy.py:318: in resolve_many
+    active = _read_active(model_dir)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+model_dir = PosixPath('/tmp/pytest-of-root/pytest-41/test_malformed_active_policy_f0/models')
+
+    def _read_active(model_dir):
+        path = _bounded(model_dir, "site-policy.json")
+        if not path.exists():
+            return None
+        active = json.loads(path.read_text())
+>       content = {k: v for k, v in active.items() if k != "revision"}
+                                    ^^^^^^^^^^^^
+E       AttributeError: 'list' object has no attribute 'items'
+
+src/harbinger/models/site_policy.py:262: AttributeError
+________________ test_malformed_active_policy_falls_back[null] _________________
+
+candidate = (PosixPath('/tmp/pytest-of-root/pytest-41/test_malformed_active_policy_f1/models'), {'version': 'v1', 'classifier': Cl...-01         True
+79  1.0    1        pump       office      S1      a79 2024-03-01         True
+
+[80 rows x 8 columns])
+invalid = 'null'
+
+    @pytest.mark.parametrize('invalid', ['[]', 'null', '{"schema": 99}', 'not-json'])
+    def test_malformed_active_policy_falls_back(candidate, invalid):
+        root, bundle, _ = candidate
+        (root / 'site-policy.json').write_text(invalid)
+>       model, trace = policy.resolve(root, bundle, 'S1', pd.Timestamp('2099-02-01'))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_site_policy.py:202: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/harbinger/models/site_policy.py:345: in resolve
+    return resolve_many(model_dir, bundle, [site_id], as_of)[str(site_id)]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/harbinger/models/site_policy.py:318: in resolve_many
+    active = _read_active(model_dir)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+model_dir = PosixPath('/tmp/pytest-of-root/pytest-41/test_malformed_active_policy_f1/models')
+
+    def _read_active(model_dir):
+        path = _bounded(model_dir, "site-policy.json")
+        if not path.exists():
+            return None
+        active = json.loads(path.read_text())
+>       content = {k: v for k, v in active.items() if k != "revision"}
+                                    ^^^^^^^^^^^^
+E       AttributeError: 'NoneType' object has no attribute 'items'
+
+src/harbinger/models/site_policy.py:262: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_site_policy.py::test_malformed_active_policy_falls_back[[]]
+FAILED tests/test_site_policy.py::test_malformed_active_policy_falls_back[null]
