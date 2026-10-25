@@ -1,0 +1,32 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________ test_all_stale_snapshots_preserve_eligibility_evidence ____________
+
+candidate = (PosixPath('/tmp/pytest-of-agent/pytest-15/test_all_stale_snapshots_prese0/models'), {'version': 'v1', 'classifier': C...01        True   2024-05-01
+319  1.0    1        pump  ... 2024-05-01        True   2024-05-01
+
+[320 rows x 9 columns])
+
+    def test_all_stale_snapshots_preserve_eligibility_evidence(candidate):
+        import json
+    
+        from tests.test_site_policy import propose
+    
+        root, bundle, frame = candidate
+        old = frame.assign(t=pd.Timestamp('2023-01-01'))
+        assets = old[['site_id', 'asset_id']].drop_duplicates()
+        tables = {
+            'assets': assets,
+            'inspections': assets.assign(performed_at=pd.Timestamp('2023-01-01')),
+            'workorders': pd.DataFrame({'site_id':pd.Series(dtype=str), 'asset_id':pd.Series(dtype=str),
+                                       'type':pd.Series(dtype=str), 'opened_at':pd.Series(dtype='datetime64[ns]')}),
+        }
+        proposal = propose((root, bundle, old), tables=tables)
+        evidence = json.loads((root/'site-policy-evidence'/(proposal['evidence_sha256']+'.json')).read_text())
+>       assert len(evidence['grid']) == 4
+E       assert 0 == 4
+E        +  where 0 = len([])
+
+tests/test_policy_selection.py:180: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_policy_selection.py::test_all_stale_snapshots_preserve_eligibility_evidence

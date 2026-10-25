@@ -1,0 +1,16 @@
+{
+  "dataset": "ci-smoke synthetic copied models",
+  "validate_seconds": [
+    4.402172088000043,
+    0.021111567999923864,
+    0.02104974700000639,
+    0.021564769999940836
+  ],
+  "cache": {
+    "hits": 3,
+    "misses": 1,
+    "maxsize": 16,
+    "currsize": 1
+  },
+  "notes": "All four calls reread/hash bundle and evidence, verify contract/policy, targets and chronology. No HTTP latency claim."
+}

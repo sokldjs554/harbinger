@@ -1,0 +1,30 @@
+FFF      ..........                                                      [100%]
+==================================== ERRORS ====================================
+________ ERROR at setup of test_single_inspection_window_cannot_select _________
+file /workspace/harbinger/tests/test_policy_selection.py, line 8
+  def test_single_inspection_window_cannot_select(candidate):
+E       fixture 'candidate' not found
+>       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, client, cov, doctest_namespace, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, no_cover, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tiny, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, trained
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/workspace/harbinger/tests/test_policy_selection.py:8
+______________ ERROR at setup of test_contract_cannot_be_weakened ______________
+file /workspace/harbinger/tests/test_policy_selection.py, line 13
+  def test_contract_cannot_be_weakened(candidate):
+E       fixture 'candidate' not found
+>       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, client, cov, doctest_namespace, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, no_cover, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tiny, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, trained
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/workspace/harbinger/tests/test_policy_selection.py:13
+=================================== FAILURES ===================================
+__________________ test_better_brier_harmful_ranking_rejected __________________
+
+    def test_better_brier_harmful_ranking_rejected():
+>       from harbinger.models.policy_evaluation import evaluate
+E       ModuleNotFoundError: No module named 'harbinger.models.policy_evaluation'
+
+tests/test_policy_selection.py:20: ModuleNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_policy_selection.py::test_better_brier_harmful_ranking_rejected
+ERROR tests/test_policy_selection.py::test_single_inspection_window_cannot_select
+ERROR tests/test_policy_selection.py::test_contract_cannot_be_weakened

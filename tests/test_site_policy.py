@@ -37,6 +37,13 @@ def candidate(tmp_path):
     frame = frame.assign(
         site_id="S1", asset_id=[f"a{i}" for i in range(80)], t=pd.Timestamp("2024-03-01"), label_valid=True
     )
+    frame = pd.concat(
+        [
+            frame.assign(t=date, inspection_t=date)
+            for date in pd.date_range("2024-02-01", periods=4, freq="30D")
+        ],
+        ignore_index=True,
+    )
     return root, bundle, frame
 
 
@@ -47,9 +54,9 @@ def propose(candidate, **kwargs):
         bundle,
         frame,
         validation_start="2024-02-01",
-        validation_end="2024-03-01",
+        validation_end="2024-05-01",
         test_start="2099-01-01",
-        observation_end="2024-06-01",
+        observation_end="2024-08-01",
         outcomes_complete=True,
         data_hash="a" * 64,
         **kwargs,
@@ -100,7 +107,7 @@ def test_metadata_and_maturity_rejected(candidate):
             bundle,
             frame,
             validation_start="2024-02-01",
-            validation_end="2024-03-01",
+            validation_end="2024-05-01",
             test_start="2099-01-01",
             observation_end="2024-03-10",
             outcomes_complete=False,
@@ -144,9 +151,9 @@ def test_forged_selection_and_future_validation_rejected(candidate):
             bundle,
             frame,
             validation_start="2023-01-01",
-            validation_end="2024-03-01",
+            validation_end="2024-05-01",
             test_start="2024-03-15",
-            observation_end="2024-06-01",
+            observation_end="2024-08-01",
             outcomes_complete=True,
             data_hash="a" * 64,
         )
@@ -175,9 +182,7 @@ def test_store_mixed_sites_selected_probabilities_and_explanations(trained, tmp_
         observation_end=store.data_end,
         outcomes_complete=True,
         data_hash=policy.sha256(trained["data"] / "features.parquet"),
-        min_rows=2,
-        min_class=1,
-        min_improvement=0,
+        tables=store.tables,
     )
     revision = policy.activate(model_dir, store.bundle, proposal, expected_revision=None)
     as_of = pd.Timestamp("2099-02-01")

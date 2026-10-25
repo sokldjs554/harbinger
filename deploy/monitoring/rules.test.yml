@@ -1,10 +1,10 @@
-# Deterministic synthetic metric traces; no live incident or customer SLO claim.
 rule_files:
 - rules.yml
 evaluation_interval: 1m
 group_eval_order:
 - harbinger-recordings
 - harbinger-alerts
+- harbinger-workbench
 tests:
 - name: feature drift fires and recovers only with successful recent calculation
   interval: 1m
@@ -250,9 +250,11 @@ tests:
   - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{site_id}/patrol/today",le="2.5"}
     values: 0 0 0 0 0 0 0 0 0 0 0 60 120 180 240 300 360 420 480 540 600
   - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{site_id}/patrol/today",le="5.0"}
-    values: 0 60 120 180 240 300 360 420 480 540 600 660 720 780 840 900 960 1020 1080 1140 1200
+    values: 0 60 120 180 240 300 360 420 480 540 600 660 720 780 840 900 960 1020
+      1080 1140 1200
   - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{site_id}/patrol/today",le="+Inf"}
-    values: 0 60 120 180 240 300 360 420 480 540 600 660 720 780 840 900 960 1020 1080 1140 1200
+    values: 0 60 120 180 240 300 360 420 480 540 600 660 720 780 840 900 960 1020
+      1080 1140 1200
   - series: harbinger_request_seconds_count{job="harbinger",instance="api:8000",route="/v1/sites/{site_id}/patrol/today"}
     values: 0+60x20
   alert_rule_test:
@@ -307,9 +309,11 @@ tests:
   - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{id}/patrol/today",le="2.5"}
     values: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
   - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{id}/patrol/today",le="5.0"}
-    values: 0 60 120 180 240 300 360 420 480 540 600 660 720 780 840 900 960 1020 1080 1140 1200
+    values: 0 60 120 180 240 300 360 420 480 540 600 660 720 780 840 900 960 1020
+      1080 1140 1200
   - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{id}/patrol/today",le="+Inf"}
-    values: 0 60 120 180 240 300 360 420 480 540 600 660 720 780 840 900 960 1020 1080 1140 1200
+    values: 0 60 120 180 240 300 360 420 480 540 600 660 720 780 840 900 960 1020
+      1080 1140 1200
   - series: harbinger_request_seconds_count{job="harbinger",instance="api:8000",route="/v1/sites/{id}/patrol/today"}
     values: 0+60x20
   alert_rule_test:
@@ -357,3 +361,177 @@ tests:
   - expr: harbinger:prediction_p30:mean1h
     eval_time: 75m
     exp_samples: []
+- name: main path fires and recovers /v1/workbench/upload
+  interval: 1m
+  input_series:
+  - series: up{job="harbinger",instance="api:8000"}
+    values: 1+0x30
+  - series: harbinger_workbench_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/workbench/upload",outcome="success",le="2.5"}
+    values: 0+0x30
+  - series: harbinger_workbench_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/workbench/upload",outcome="success",le="5"}
+    values: 0+6x10 60+0x20
+  - series: harbinger_workbench_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/workbench/upload",outcome="success",le="+Inf"}
+    values: 0+6x10 60+0x20
+  - series: harbinger_workbench_seconds_count{job="harbinger",instance="api:8000",route="/v1/workbench/upload",outcome="success"}
+    values: 0+6x10 60+0x20
+  - series: harbinger_workbench_seconds_count{job="harbinger",instance="api:8000",route="/v1/workbench/upload",outcome="failed"}
+    values: 0+6x10 60+0x20
+  - series: harbinger_workbench_seconds_count{job="harbinger",instance="api:8000",route="/v1/workbench/upload",outcome="rejected"}
+    values: 0+6x10 60+0x20
+  alert_rule_test:
+  - eval_time: 10m
+    alertname: HarbingerWorkbenchSlow
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        route: /v1/workbench/upload
+        severity: warning
+      exp_annotations:
+        summary: Workbench successful-request p95 exceeds 2 seconds with sufficient
+          traffic
+  - eval_time: 20m
+    alertname: HarbingerWorkbenchSlow
+    exp_alerts: []
+  - eval_time: 10m
+    alertname: HarbingerWorkbenchFailures
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        route: /v1/workbench/upload
+        severity: critical
+      exp_annotations:
+        summary: Workbench requests are failing with server errors
+  - eval_time: 20m
+    alertname: HarbingerWorkbenchFailures
+    exp_alerts: []
+  - eval_time: 10m
+    alertname: HarbingerWorkbenchCapacity
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        route: /v1/workbench/upload
+        severity: warning
+      exp_annotations:
+        summary: Workbench is intentionally rejecting requests with HTTP 429
+  - eval_time: 20m
+    alertname: HarbingerWorkbenchCapacity
+    exp_alerts: []
+- name: main path fires and recovers /v1/workbench/sessions/{token}/analysis
+  interval: 1m
+  input_series:
+  - series: up{job="harbinger",instance="api:8000"}
+    values: 1+0x30
+  - series: harbinger_workbench_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/workbench/sessions/{token}/analysis",outcome="success",le="2.5"}
+    values: 0+0x30
+  - series: harbinger_workbench_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/workbench/sessions/{token}/analysis",outcome="success",le="5"}
+    values: 0+6x10 60+0x20
+  - series: harbinger_workbench_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/workbench/sessions/{token}/analysis",outcome="success",le="+Inf"}
+    values: 0+6x10 60+0x20
+  - series: harbinger_workbench_seconds_count{job="harbinger",instance="api:8000",route="/v1/workbench/sessions/{token}/analysis",outcome="success"}
+    values: 0+6x10 60+0x20
+  - series: harbinger_workbench_seconds_count{job="harbinger",instance="api:8000",route="/v1/workbench/sessions/{token}/analysis",outcome="failed"}
+    values: 0+6x10 60+0x20
+  - series: harbinger_workbench_seconds_count{job="harbinger",instance="api:8000",route="/v1/workbench/sessions/{token}/analysis",outcome="rejected"}
+    values: 0+6x10 60+0x20
+  alert_rule_test:
+  - eval_time: 10m
+    alertname: HarbingerWorkbenchSlow
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        route: /v1/workbench/sessions/{token}/analysis
+        severity: warning
+      exp_annotations:
+        summary: Workbench successful-request p95 exceeds 2 seconds with sufficient
+          traffic
+  - eval_time: 20m
+    alertname: HarbingerWorkbenchSlow
+    exp_alerts: []
+  - eval_time: 10m
+    alertname: HarbingerWorkbenchFailures
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        route: /v1/workbench/sessions/{token}/analysis
+        severity: critical
+      exp_annotations:
+        summary: Workbench requests are failing with server errors
+  - eval_time: 20m
+    alertname: HarbingerWorkbenchFailures
+    exp_alerts: []
+  - eval_time: 10m
+    alertname: HarbingerWorkbenchCapacity
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        route: /v1/workbench/sessions/{token}/analysis
+        severity: warning
+      exp_annotations:
+        summary: Workbench is intentionally rejecting requests with HTTP 429
+  - eval_time: 20m
+    alertname: HarbingerWorkbenchCapacity
+    exp_alerts: []
+- name: main path fires and recovers /v1/workbench/sessions/{token}/download
+  interval: 1m
+  input_series:
+  - series: up{job="harbinger",instance="api:8000"}
+    values: 1+0x30
+  - series: harbinger_workbench_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/workbench/sessions/{token}/download",outcome="success",le="2.5"}
+    values: 0+0x30
+  - series: harbinger_workbench_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/workbench/sessions/{token}/download",outcome="success",le="5"}
+    values: 0+6x10 60+0x20
+  - series: harbinger_workbench_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/workbench/sessions/{token}/download",outcome="success",le="+Inf"}
+    values: 0+6x10 60+0x20
+  - series: harbinger_workbench_seconds_count{job="harbinger",instance="api:8000",route="/v1/workbench/sessions/{token}/download",outcome="success"}
+    values: 0+6x10 60+0x20
+  - series: harbinger_workbench_seconds_count{job="harbinger",instance="api:8000",route="/v1/workbench/sessions/{token}/download",outcome="failed"}
+    values: 0+6x10 60+0x20
+  - series: harbinger_workbench_seconds_count{job="harbinger",instance="api:8000",route="/v1/workbench/sessions/{token}/download",outcome="rejected"}
+    values: 0+6x10 60+0x20
+  alert_rule_test:
+  - eval_time: 10m
+    alertname: HarbingerWorkbenchSlow
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        route: /v1/workbench/sessions/{token}/download
+        severity: warning
+      exp_annotations:
+        summary: Workbench successful-request p95 exceeds 2 seconds with sufficient
+          traffic
+  - eval_time: 20m
+    alertname: HarbingerWorkbenchSlow
+    exp_alerts: []
+  - eval_time: 10m
+    alertname: HarbingerWorkbenchFailures
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        route: /v1/workbench/sessions/{token}/download
+        severity: critical
+      exp_annotations:
+        summary: Workbench requests are failing with server errors
+  - eval_time: 20m
+    alertname: HarbingerWorkbenchFailures
+    exp_alerts: []
+  - eval_time: 10m
+    alertname: HarbingerWorkbenchCapacity
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        route: /v1/workbench/sessions/{token}/download
+        severity: warning
+      exp_annotations:
+        summary: Workbench is intentionally rejecting requests with HTTP 429
+  - eval_time: 20m
+    alertname: HarbingerWorkbenchCapacity
+    exp_alerts: []

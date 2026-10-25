@@ -1,0 +1,20 @@
+ID						RECLAIMABLE	SIZE		LAST ACCESSED
+0okk49041nm53mc7cumvbczpy*              	true 		1.433kB   	3 days ago
+wmjnozb3ffkgg6c4suj8cjcid*              	true 	1.543GB   	About a minute ago
+jm7rhakvvk35zjso70427wkt6               	true 	884.9kB   	4 days ago
+e9v6bn5cdbdmd3gp9l3wcxs4a               	true 	1.538GB   	About a minute ago
+l22nn4nvn2tftt5mr5bj2mczp*              	true 	1.542GB   	3 days ago
+s8eopnd50bqm0nt3j4ufo87et*              	true 	1.433kB   	About a minute ago
+rb95x6mu1m3ed0lpjwrmn66iy*              	true 	1.542GB   	4 days ago
+l7yzm6ynn23752kpv7zgazokt*              	true 	1.09MB    	About a minute ago
+5jol5xj0i3u34l1udm4bg2ray*              	true 	898.2kB   	3 days ago
+u6z8o2qzsob241rc50s70s44g*              	true 	180B      	3 days ago
+1s6wztuyp8c1i80nhn8jhv8ge               	true 	13.33kB   	2 seconds ago
+a3hsjrnscea4be81hlh0xx41e               	true 	885.6kB   	1 second ago
+l546lgef3br76u9z3rydegfjm               	true 	885kB     	Less than a second ago
+tcqoj0vtl1inr9wi9r8tfr5c9               	true 	1.07MB    	About a minute ago
+gl4crqy6d5f9n72ccmptrabmo*              	true 	180B      	About a minute ago
+65bo9d6f1556qbjb527b19g1i               	true 	20.01kB   	About a minute ago
+vx8hxldj2i7fzn3u211k9ud3e               	true 	13.92kB   	Less than a second ago
+yr41bmfzxxuqmfk4zhn1vhqml               	true 	0B        	Less than a second ago
+Total:	6.171GB

@@ -15,8 +15,8 @@ ENV PATH="/opt/venv/bin:$PATH" PYTHONUNBUFFERED=1 OMP_NUM_THREADS=2 OPENBLAS_NUM
     HARBINGER_DATA_DIR=/app/data HARBINGER_MODEL_DIR=/app/models HARBINGER_ARTIFACT_DIR=/app/artifacts \
     HARBINGER_DEMO_BOOTSTRAP=1 PORT=8000
 RUN useradd -m -u 10001 app && mkdir -p /app/data /app/models /app/artifacts && chown -R app:app /app
-COPY --from=builder /opt/venv /opt/venv
 WORKDIR /app
+COPY --from=builder /opt/venv /opt/venv
 USER app
 HEALTHCHECK --interval=30s --timeout=5s --start-period=600s --retries=3 CMD python -c "import urllib.request,os;urllib.request.urlopen(f'http://127.0.0.1:{os.environ.get(\"PORT\",\"8000\")}/health').read()" || exit 1
 EXPOSE 8000

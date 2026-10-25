@@ -1,0 +1,16 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__________ test_missing_current_reading_cannot_inherit_prior_verdict ___________
+
+    def test_missing_current_reading_cannot_inherit_prior_verdict():
+        import json
+    
+        s = store(8)
+        s.tables['energy'].loc[7, 'electricity_kwh'] = np.nan
+        result = s.energy_anomalies('S', pd.Timestamp('2024-01-08'), 1)
+>       assert result['days'][0]['anomaly'] is None
+E       assert True is None
+
+tests/test_energy_availability.py:112: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_energy_availability.py::test_missing_current_reading_cannot_inherit_prior_verdict

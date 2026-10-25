@@ -1,0 +1,20 @@
+[
+  {
+    "operation": "analysis",
+    "status": 200,
+    "seconds": 0.13079483899991828,
+    "bytes": 57517
+  },
+  {
+    "operation": "upload",
+    "status": 200,
+    "seconds": 0.3317747910000435,
+    "bytes": 840
+  },
+  {
+    "operation": "download",
+    "status": 200,
+    "seconds": 0.08609035500012396,
+    "bytes": 77239
+  }
+]

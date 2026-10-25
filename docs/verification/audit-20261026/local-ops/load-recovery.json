@@ -1,0 +1,31 @@
+{
+  "requests": [
+    {
+      "operation": "analysis",
+      "status": 200,
+      "seconds": 0.08304842100005771,
+      "bytes": 57517
+    },
+    {
+      "operation": "upload",
+      "status": 200,
+      "seconds": 0.31738497500009544,
+      "bytes": 840
+    },
+    {
+      "operation": "download",
+      "status": 200,
+      "seconds": 0.08662974199978635,
+      "bytes": 77239
+    }
+  ],
+  "health": {
+    "status": "ok",
+    "service": "harbinger",
+    "version": "0.1.0"
+  },
+  "usage": {
+    "cpu_seconds": 16.75,
+    "rss_bytes": 566140928
+  }
+}

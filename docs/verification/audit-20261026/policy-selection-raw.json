@@ -1,0 +1,37 @@
+{
+  "proposal": "/tmp/audit-policy-proposal.json",
+  "sites": {
+    "S01": {
+      "model": "baseline",
+      "reason": "candidate_gates_failed"
+    },
+    "S02": {
+      "model": "baseline",
+      "reason": "candidate_gates_failed"
+    },
+    "S03": {
+      "model": "baseline",
+      "reason": "candidate_gates_failed"
+    },
+    "S04": {
+      "model": "baseline",
+      "reason": "candidate_gates_failed"
+    },
+    "S05": {
+      "model": "baseline",
+      "reason": "insufficient_sample"
+    }
+  },
+  "effective_from": "2026-10-25T16:27:51.496551",
+  "data_sources": {
+    "assets.parquet": "74671d903ca600c78c7e686e36fc12fbad0e54e33d15d9b9d596944fc5bdb5a3",
+    "energy.parquet": "9a9c8b9fcd7a8df874f295394d4ac8f881458f5f31bcbd314c2d55f816edb999",
+    "inspections.parquet": "1b8d52bd915cf31f9f36b4907b67d75fff2599ce8d444f40b62e960ba84798cf",
+    "inspectors.parquet": "0c076abd7783b4d6bcb81947b7f58c75bf39cda9cf38e1c40c243cfb7b45a6b6",
+    "latent.parquet": "679ac25c9e816a2a11dc789f85b644d8f070f4c95ff8ccdabe75ab1ec09ed981",
+    "sites.parquet": "d5339b5853233423c1b7607d90d1f9a0cd21bd791de2ee071d6d0a84efee66ae",
+    "workorders.parquet": "9800058d1da34dc5170b4971974c7595cffb86a39c2ba6619524cec7c72cf8f9",
+    "features.parquet": "eafcd7280095872906d36560eab36c1df80e98d2e709aaf9a264bebe85486e1f",
+    "features_meta.json": "cdb65d9ab7cdc57935515c68e741927ad406e8df15aa375c13aaa5824d4a84f2"
+  }
+}

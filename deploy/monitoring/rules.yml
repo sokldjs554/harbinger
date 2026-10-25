@@ -125,3 +125,41 @@ groups:
           severity: warning
         annotations:
           summary: Drift has not been recalculated for over 24 hours
+  - name: harbinger-workbench
+    interval: 1m
+    rules:
+      - record: harbinger:workbench_success_seconds:p95_5m
+        expr: |
+          histogram_quantile(0.95, sum by (job, instance, route, le) (
+            rate(harbinger_workbench_seconds_bucket{job="harbinger",outcome="success"}[5m])
+          ))
+      - record: harbinger:workbench_success:increase5m
+        expr: sum by (job, instance, route) (increase(harbinger_workbench_seconds_count{job="harbinger",outcome="success"}[5m]))
+      - alert: HarbingerWorkbenchSlow
+        expr: |
+          (harbinger:workbench_success_seconds:p95_5m > 2)
+          and on (job, instance, route) (harbinger:workbench_success:increase5m >= 20)
+          and on (job, instance) (up{job="harbinger"} == 1)
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Workbench successful-request p95 exceeds 2 seconds with sufficient traffic
+      - alert: HarbingerWorkbenchFailures
+        expr: |
+          (sum by (job, instance, route) (rate(harbinger_workbench_seconds_count{job="harbinger",outcome="failed"}[5m])) > 0)
+          and on (job, instance) (up{job="harbinger"} == 1)
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: Workbench requests are failing with server errors
+      - alert: HarbingerWorkbenchCapacity
+        expr: |
+          (sum by (job, instance, route) (rate(harbinger_workbench_seconds_count{job="harbinger",outcome="rejected"}[5m])) > 0)
+          and on (job, instance) (up{job="harbinger"} == 1)
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: Workbench is intentionally rejecting requests with HTTP 429

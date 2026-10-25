@@ -1,0 +1,64 @@
+FFFFF                                                                    [100%]
+=================================== FAILURES ===================================
+___________________ test_absent_energy_is_not_zero_anomalies ___________________
+
+    def test_absent_energy_is_not_zero_anomalies():
+        result = store(0).energy_anomalies("S", pd.Timestamp("2024-02-14"), 30)
+>       assert result.get("status") == "no_data"
+E       AssertionError: assert None == 'no_data'
+E        +  where None = <built-in method get of dict object at 0x7fb6fc7673c0>('status')
+E        +    where <built-in method get of dict object at 0x7fb6fc7673c0> = {'site_id': 'S', 'days': [], 'anomalies': []}.get
+
+tests/test_energy_availability.py:29: AssertionError
+___________________ test_short_history_is_unknown_not_normal ___________________
+
+    def test_short_history_is_unknown_not_normal():
+        result = store(2).energy_anomalies("S", pd.Timestamp("2024-01-02"), 30)
+>       assert all(d["anomaly"] is None for d in result["days"])
+E       assert False
+E        +  where False = all(<generator object test_short_history_is_unknown_not_normal.<locals>.<genexpr> at 0x7fb6fc99ec20>)
+
+tests/test_energy_availability.py:36: AssertionError
+__________________ test_window_overlap_and_future_invariance ___________________
+
+    def test_window_overlap_and_future_invariance():
+        s = store()
+        as_of = pd.Timestamp("2024-02-14")
+        short = s.energy_anomalies("S", as_of, 14)
+        long = s.energy_anomalies("S", as_of, 30)
+        by_day = {d["day"]: d for d in long["days"]}
+>       assert short["days"] == [by_day[d["day"]] for d in short["days"]]
+E       AssertionError: assert [{'day': '202....0, ...}, ...] == [{'day': '202....0, ...}, ...]
+E         
+E         At index 0 diff: {'day': '2024-02-01', 'actual': 100.0, 'expected': 100.0, 'resid_ratio': 0.0, 'resid_ma7': None, 'z': None, 'anomaly': False} != {'day': '2024-02-01', 'actual': 100.0, 'expected': 100.0, 'resid_ratio': 0.0, 'resid_ma7': 0.0, 'z': 0.0, 'anomaly': False}
+E         Use -v to get more diff
+
+tests/test_energy_availability.py:49: AssertionError
+__________________ test_missing_model_retains_observed_values __________________
+
+    def test_missing_model_retains_observed_values():
+        result = store(10, model=False).energy_anomalies("S", pd.Timestamp("2024-02-14"), 90)
+>       assert result.get("status") == "no_model"
+E       AssertionError: assert None == 'no_model'
+E        +  where None = <built-in method get of dict object at 0x7fb6fd0aef40>('status')
+E        +    where <built-in method get of dict object at 0x7fb6fd0aef40> = {'site_id': 'S', 'days': [], 'anomalies': []}.get
+
+tests/test_energy_availability.py:59: AssertionError
+______________ test_unseen_site_has_no_future_derived_calibration ______________
+
+    def test_unseen_site_has_no_future_derived_calibration():
+        s = store()
+        s.bundle["energy"].resid_sigma = {}
+        result = s.energy_anomalies("S", pd.Timestamp("2024-02-14"), 30)
+>       assert result.get("status") == "no_model"
+E       AssertionError: assert None == 'no_model'
+E        +  where None = <built-in method get of dict object at 0x7fb6fc7a7100>('status')
+E        +    where <built-in method get of dict object at 0x7fb6fc7a7100> = {'site_id': 'S', 'window_days': 30, 'target': 'electricity_kwh', 'days': [{'day': '2024-01-16', 'actual': 100.0, 'expe...resid_ratio': 0.0, ...}, {'day': '2024-01-21', 'actual': 100.0, 'expected': 100.0, 'resid_ratio': 0.0, ...}, ...], ...}.get
+
+tests/test_energy_availability.py:68: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_energy_availability.py::test_absent_energy_is_not_zero_anomalies
+FAILED tests/test_energy_availability.py::test_short_history_is_unknown_not_normal
+FAILED tests/test_energy_availability.py::test_window_overlap_and_future_invariance
+FAILED tests/test_energy_availability.py::test_missing_model_retains_observed_values
+FAILED tests/test_energy_availability.py::test_unseen_site_has_no_future_derived_calibration

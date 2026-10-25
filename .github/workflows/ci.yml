@@ -29,7 +29,7 @@ jobs:
       - name: Tests
         run: pytest -q
       - name: Monitoring rule syntax and firing/recovery
-        run: bash scripts/check_monitoring.sh
+        run: bash scripts/check_monitoring.sh /tmp/hb-monitoring-bin
       - name: Smoke pipeline (tiny synthetic → features → eval → API)
         run: |
           harbinger synth --out /tmp/hb/data --scale 0.15 --months 12 --seed 7
@@ -42,6 +42,10 @@ jobs:
           HARBINGER_DATA_DIR=/tmp/hb/data HARBINGER_MODEL_DIR=/tmp/hb/models HARBINGER_ARTIFACT_DIR=/tmp/hb/artifacts HARBINGER_DEMO_BOOTSTRAP=0 uvicorn harbinger.api.main:app --port 8000 > /tmp/browser-server.txt 2>&1 &
           for i in $(seq 1 60); do curl -fsS http://127.0.0.1:8000/health && break || sleep 2; done
           python scripts/check_browser.py --out /tmp/browser-checks
+          python scripts/check_energy_browser.py --url http://127.0.0.1:8000/console/advanced.html#energy --out /tmp/energy-browser
+      - name: Local main-path load and real Prometheus firing/recovery
+        run: |
+          python -m scripts.check_local_operations --runtime /tmp/hb --prometheus /tmp/hb-monitoring-bin/prometheus --out /tmp/local-operations
       - name: Protected API and separate-user browser checks
         run: |
           python -m scripts.check_protected_stack --data /tmp/hb/data --models /tmp/hb/models --artifacts /tmp/hb/artifacts --out /tmp/protected-checks
@@ -61,6 +65,12 @@ jobs:
             /tmp/policy-display
             /tmp/retest-recorder
             /tmp/protected-checks
+            /tmp/energy-browser
+            /tmp/local-operations/*.json
+            /tmp/local-operations/*.yml
+            /tmp/local-operations/*.log
+            /tmp/local-operations/metrics.txt
+            /tmp/local-operations/workload.csv
       - name: Docs numbers match artifacts
         run: |
           python scripts/fill_numbers.py --check
@@ -80,11 +90,23 @@ jobs:
           tags: harbinger:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - name: Container runtime and API
         run: |
-          docker run -d --name hb-ci -p 8000:8000 -e OMP_NUM_THREADS=1 harbinger:ci
-          for i in $(seq 1 180); do curl -fsS http://127.0.0.1:8000/health && break || sleep 5; done
-          curl -fsS http://127.0.0.1:8000/health
-          curl -fsS http://127.0.0.1:8000/v1/workbench/info
+          docker run -d --name hb-ci --cpus=2 --memory=2g -p 127.0.0.1:18002:8000 -e OMP_NUM_THREADS=1 -e OPENBLAS_NUM_THREADS=1 harbinger:ci
+          for i in $(seq 1 180); do curl -fsS http://127.0.0.1:18002/health && break || sleep 5; done
+          curl -fsS http://127.0.0.1:18002/health
+          curl -fsS http://127.0.0.1:18002/v1/workbench/info
           test "$(docker exec hb-ci id -u)" = 10001
-          docker logs hb-ci
+          python -m pip install httpx==0.28.1
+          python scripts/check_docker_audit.py --out /tmp/docker-audit
+          python scripts/check_image_sources.py --container hb-ci --out /tmp/docker-audit/image.json
+          docker inspect hb-ci --format '{{json .HostConfig.NanoCpus}} {{json .HostConfig.Memory}}'
+          docker logs hb-ci > /tmp/docker-audit/container.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: docker-audit
+          path: /tmp/docker-audit

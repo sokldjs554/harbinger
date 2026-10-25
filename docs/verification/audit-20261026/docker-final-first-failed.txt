@@ -1,0 +1,292 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.47kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 1.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 222B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 1.10MB 0.0s done
+#4 DONE 0.1s
+
+#5 [builder 1/5] FROM docker.io/library/python:3.12-slim@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
+#5 resolve docker.io/library/python:3.12-slim@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704 done
+#5 CACHED
+
+#6 [builder 2/5] WORKDIR /build
+#6 DONE 0.9s
+
+#7 [builder 3/5] COPY pyproject.toml README.md constraints.txt ./
+#7 DONE 1.1s
+
+#8 [builder 4/5] COPY src ./src
+#8 DONE 0.9s
+
+#9 [builder 5/5] RUN --mount=type=secret,id=proxy_ca,target=/run/secrets/ca.pem     if [ -f /run/secrets/ca.pem ]; then export PIP_CERT=/run/secrets/ca.pem; fi &&     python -m venv /opt/venv &&     /opt/venv/bin/pip install --index-url https://download.pytorch.org/whl/cpu 'torch==2.14.1+cpu' &&     /opt/venv/bin/pip install -c constraints.txt .
+#9 3.790 Looking in indexes: https://download.pytorch.org/whl/cpu
+#9 4.418 Collecting torch==2.14.1+cpu
+#9 4.797   Downloading https://download-r2.pytorch.org/whl/cpu/torch-2.14.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (37 kB)
+#9 5.165 Collecting filelock (from torch==2.14.1+cpu)
+#9 5.406   Downloading filelock-3.32.3-py3-none-any.whl.metadata (2.0 kB)
+#9 5.720 Collecting typing-extensions>=4.10.0 (from torch==2.14.1+cpu)
+#9 5.930   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#9 6.225 Collecting setuptools>=77.0.3 (from torch==2.14.1+cpu)
+#9 6.262   Downloading https://download.pytorch.org/whl/setuptools-78.1.0-py3-none-any.whl.metadata (6.6 kB)
+#9 6.482 Collecting sympy>=1.13.3 (from torch==2.14.1+cpu)
+#9 6.625   Downloading sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
+#9 6.689 Collecting networkx>=2.5.1 (from torch==2.14.1+cpu)
+#9 6.726   Downloading networkx-3.6.1-py3-none-any.whl.metadata (6.8 kB)
+#9 6.788 Collecting jinja2 (from torch==2.14.1+cpu)
+#9 6.844   Downloading https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+#9 6.931 Collecting fsspec>=0.8.5 (from torch==2.14.1+cpu)
+#9 6.970   Downloading fsspec-2026.7.0-py3-none-any.whl.metadata (10 kB)
+#9 7.066 Collecting mpmath<1.4,>=1.1.0 (from sympy>=1.13.3->torch==2.14.1+cpu)
+#9 7.099   Downloading mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+#9 7.152 Collecting MarkupSafe>=2.0 (from jinja2->torch==2.14.1+cpu)
+#9 7.190   Downloading https://download.pytorch.org/whl/markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+#9 7.480 Downloading https://download-r2.pytorch.org/whl/cpu/torch-2.14.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl (196.3 MB)
+#9 14.35    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.3/196.3 MB 28.8 MB/s eta 0:00:00
+#9 14.52 Downloading fsspec-2026.7.0-py3-none-any.whl (206 kB)
+#9 14.61 Downloading networkx-3.6.1-py3-none-any.whl (2.1 MB)
+#9 14.73    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 25.4 MB/s eta 0:00:00
+#9 14.80 Downloading https://download.pytorch.org/whl/setuptools-78.1.0-py3-none-any.whl (1.3 MB)
+#9 14.86    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 23.5 MB/s eta 0:00:00
+#9 14.92 Downloading sympy-1.14.0-py3-none-any.whl (6.3 MB)
+#9 15.23    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.3/6.3 MB 23.6 MB/s eta 0:00:00
+#9 15.29 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#9 15.33 Downloading filelock-3.32.3-py3-none-any.whl (98 kB)
+#9 15.37 Downloading https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl (134 kB)
+#9 15.41 Downloading https://download.pytorch.org/whl/markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+#9 15.45 Downloading mpmath-1.3.0-py3-none-any.whl (536 kB)
+#9 15.51    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 536.2/536.2 kB 19.0 MB/s eta 0:00:00
+#9 15.82 Installing collected packages: mpmath, typing-extensions, sympy, setuptools, networkx, MarkupSafe, fsspec, filelock, jinja2, torch
+#9 36.31 Successfully installed MarkupSafe-3.0.3 filelock-3.32.3 fsspec-2026.7.0 jinja2-3.1.6 mpmath-1.3.0 networkx-3.6.1 setuptools-78.1.0 sympy-1.14.0 torch-2.14.1+cpu typing-extensions-4.16.0
+#9 36.70 Processing /build
+#9 36.70   Installing build dependencies: started
+#9 39.06   Installing build dependencies: finished with status 'done'
+#9 39.06   Getting requirements to build wheel: started
+#9 39.25   Getting requirements to build wheel: finished with status 'done'
+#9 39.25   Preparing metadata (pyproject.toml): started
+#9 39.42   Preparing metadata (pyproject.toml): finished with status 'done'
+#9 39.89 Collecting numpy>=2.0 (from harbinger==0.1.0)
+#9 40.11   Downloading numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+#9 40.23 Collecting pandas<3,>=2.2 (from harbinger==0.1.0)
+#9 40.32   Downloading pandas-2.3.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (91 kB)
+#9 40.62 Collecting pyarrow>=17 (from harbinger==0.1.0)
+#9 40.73   Downloading pyarrow-26.0.0-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (3.0 kB)
+#9 40.87 Collecting scipy>=1.13 (from harbinger==0.1.0)
+#9 41.02   Downloading scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+#9 41.16 Collecting scikit-learn>=1.5 (from harbinger==0.1.0)
+#9 41.21   Downloading scikit_learn-1.9.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.3 kB)
+#9 41.41 Collecting lifelines>=0.30 (from harbinger==0.1.0)
+#9 41.45   Downloading lifelines-0.30.3-py3-none-any.whl.metadata (3.5 kB)
+#9 41.55 Collecting shap>=0.46 (from harbinger==0.1.0)
+#9 41.58   Downloading shap-0.54.1-cp312-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (23 kB)
+#9 41.59 Requirement already satisfied: torch>=2.4 in /opt/venv/lib/python3.12/site-packages (from harbinger==0.1.0) (2.14.1+cpu)
+#9 41.68 Collecting fastapi>=0.115 (from harbinger==0.1.0)
+#9 41.72   Downloading fastapi-0.156.8-py3-none-any.whl.metadata (26 kB)
+#9 41.91 Collecting uvicorn>=0.30 (from uvicorn[standard]>=0.30->harbinger==0.1.0)
+#9 41.96   Downloading uvicorn-0.54.0-py3-none-any.whl.metadata (6.6 kB)
+#9 42.10 Collecting pydantic>=2.8 (from harbinger==0.1.0)
+#9 42.14   Downloading pydantic-2.14.1-py3-none-any.whl.metadata (133 kB)
+#9 42.19 Collecting pydantic-settings>=2.4 (from harbinger==0.1.0)
+#9 42.22   Downloading pydantic_settings-2.16.1-py3-none-any.whl.metadata (4.0 kB)
+#9 42.27 Collecting prometheus-client>=0.20 (from harbinger==0.1.0)
+#9 42.31   Downloading prometheus_client-0.26.0-py3-none-any.whl.metadata (2.1 kB)
+#9 42.52 Collecting matplotlib>=3.9 (from harbinger==0.1.0)
+#9 42.55   Downloading matplotlib-3.11.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (80 kB)
+#9 42.64 Collecting starlette>=0.46.0 (from fastapi>=0.115->harbinger==0.1.0)
+#9 42.68   Downloading starlette-1.9.0-py3-none-any.whl.metadata (6.6 kB)
+#9 42.70 Requirement already satisfied: typing-extensions>=4.8.0 in /opt/venv/lib/python3.12/site-packages (from fastapi>=0.115->harbinger==0.1.0) (4.16.0)
+#9 42.74 Collecting typing-inspection>=0.4.2 (from fastapi>=0.115->harbinger==0.1.0)
+#9 42.77   Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+#9 42.81 Collecting annotated-doc>=0.0.2 (from fastapi>=0.115->harbinger==0.1.0)
+#9 42.85   Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+#9 42.90 Collecting opentelemetry-api>=1.44.0 (from fastapi>=0.115->harbinger==0.1.0)
+#9 42.95   Downloading opentelemetry_api-1.45.1-py3-none-any.whl.metadata (1.4 kB)
+#9 43.02 Collecting autograd>=1.5 (from lifelines>=0.30->harbinger==0.1.0)
+#9 43.05   Downloading autograd-1.9.1-py3-none-any.whl.metadata (6.1 kB)
+#9 43.10 Collecting autograd-gamma>=0.3 (from lifelines>=0.30->harbinger==0.1.0)
+#9 43.13   Downloading autograd-gamma-0.5.0.tar.gz (4.0 kB)
+#9 43.14   Installing build dependencies: started
+#9 44.94   Installing build dependencies: finished with status 'done'
+#9 44.94   Getting requirements to build wheel: started
+#9 45.11   Getting requirements to build wheel: finished with status 'done'
+#9 45.11   Preparing metadata (pyproject.toml): started
+#9 45.30   Preparing metadata (pyproject.toml): finished with status 'done'
+#9 45.35 Collecting formulaic>=0.2.2 (from lifelines>=0.30->harbinger==0.1.0)
+#9 45.38   Downloading formulaic-1.2.2-py3-none-any.whl.metadata (7.0 kB)
+#9 45.47 Collecting contourpy>=1.0.1 (from matplotlib>=3.9->harbinger==0.1.0)
+#9 45.51   Downloading contourpy-1.4.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)
+#9 45.55 Collecting cycler>=0.10 (from matplotlib>=3.9->harbinger==0.1.0)
+#9 45.60   Downloading cycler-0.12.1-py3-none-any.whl.metadata (3.8 kB)
+#9 45.75 Collecting fonttools>=4.28.2 (from matplotlib>=3.9->harbinger==0.1.0)
+#9 45.79   Downloading fonttools-4.67.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (137 kB)
+#9 45.88 Collecting kiwisolver>=1.3.1 (from matplotlib>=3.9->harbinger==0.1.0)
+#9 45.92   Downloading kiwisolver-1.5.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (5.2 kB)
+#9 45.97 Collecting packaging>=20.0 (from matplotlib>=3.9->harbinger==0.1.0)
+#9 46.01   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+#9 46.21 Collecting pillow>=9 (from matplotlib>=3.9->harbinger==0.1.0)
+#9 46.25   Downloading pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+#9 46.31 Collecting pyparsing>=3 (from matplotlib>=3.9->harbinger==0.1.0)
+#9 46.35   Downloading pyparsing-3.3.3-py3-none-any.whl.metadata (5.9 kB)
+#9 46.39 Collecting python-dateutil>=2.7 (from matplotlib>=3.9->harbinger==0.1.0)
+#9 46.44   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+#9 46.51 Collecting pytz>=2020.1 (from pandas<3,>=2.2->harbinger==0.1.0)
+#9 46.55   Downloading pytz-2026.5-py2.py3-none-any.whl.metadata (22 kB)
+#9 46.60 Collecting tzdata>=2022.7 (from pandas<3,>=2.2->harbinger==0.1.0)
+#9 46.65   Downloading tzdata-2026.5-py2.py3-none-any.whl.metadata (1.4 kB)
+#9 46.85 Collecting annotated-types>=0.6.0 (from pydantic>=2.8->harbinger==0.1.0)
+#9 46.89   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+#9 47.51 Collecting pydantic-core==2.50.1 (from pydantic>=2.8->harbinger==0.1.0)
+#9 47.54   Downloading pydantic_core-2.50.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.5 kB)
+#9 47.60 Collecting python-dotenv>=1.2.2 (from pydantic-settings>=2.4->harbinger==0.1.0)
+#9 47.63   Downloading python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+#9 47.70 Collecting joblib>=1.4.0 (from scikit-learn>=1.5->harbinger==0.1.0)
+#9 47.74   Downloading joblib-1.6.0-py3-none-any.whl.metadata (6.5 kB)
+#9 47.81 Collecting narwhals>=2.0.1 (from scikit-learn>=1.5->harbinger==0.1.0)
+#9 47.85   Downloading narwhals-2.27.1-py3-none-any.whl.metadata (15 kB)
+#9 47.90 Collecting threadpoolctl>=3.5.0 (from scikit-learn>=1.5->harbinger==0.1.0)
+#9 47.93   Downloading threadpoolctl-3.7.0-py3-none-any.whl.metadata (24 kB)
+#9 48.00 Collecting tqdm>=4.27.0 (from shap>=0.46->harbinger==0.1.0)
+#9 48.04   Downloading tqdm-4.70.1-py3-none-any.whl.metadata (57 kB)
+#9 48.09 Collecting slicer==0.0.8 (from shap>=0.46->harbinger==0.1.0)
+#9 48.13   Downloading slicer-0.0.8-py3-none-any.whl.metadata (4.0 kB)
+#9 48.17 Collecting cloudpickle (from shap>=0.46->harbinger==0.1.0)
+#9 48.21   Downloading cloudpickle-3.1.2-py3-none-any.whl.metadata (7.1 kB)
+#9 48.22 Requirement already satisfied: filelock in /opt/venv/lib/python3.12/site-packages (from torch>=2.4->harbinger==0.1.0) (3.32.3)
+#9 48.22 Requirement already satisfied: setuptools>=77.0.3 in /opt/venv/lib/python3.12/site-packages (from torch>=2.4->harbinger==0.1.0) (78.1.0)
+#9 48.22 Requirement already satisfied: sympy>=1.13.3 in /opt/venv/lib/python3.12/site-packages (from torch>=2.4->harbinger==0.1.0) (1.14.0)
+#9 48.22 Requirement already satisfied: networkx>=2.5.1 in /opt/venv/lib/python3.12/site-packages (from torch>=2.4->harbinger==0.1.0) (3.6.1)
+#9 48.22 Requirement already satisfied: jinja2 in /opt/venv/lib/python3.12/site-packages (from torch>=2.4->harbinger==0.1.0) (3.1.6)
+#9 48.22 Requirement already satisfied: fsspec>=0.8.5 in /opt/venv/lib/python3.12/site-packages (from torch>=2.4->harbinger==0.1.0) (2026.7.0)
+#9 48.26 Collecting click>=7.0 (from uvicorn>=0.30->uvicorn[standard]>=0.30->harbinger==0.1.0)
+#9 48.30   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+#9 48.34 Collecting h11>=0.8 (from uvicorn>=0.30->uvicorn[standard]>=0.30->harbinger==0.1.0)
+#9 48.38   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#9 48.44 Collecting httptools>=0.8.0 (from uvicorn[standard]>=0.30->harbinger==0.1.0)
+#9 48.48   Downloading httptools-0.9.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
+#9 48.55 Collecting pyyaml>=5.1 (from uvicorn[standard]>=0.30->harbinger==0.1.0)
+#9 48.59   Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+#9 48.65 Collecting uvloop>=0.15.1 (from uvicorn[standard]>=0.30->harbinger==0.1.0)
+#9 48.69   Downloading uvloop-0.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.1 kB)
+#9 48.79 Collecting watchfiles>=0.20 (from uvicorn[standard]>=0.30->harbinger==0.1.0)
+#9 48.83   Downloading watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+#9 48.95 Collecting websockets>=13.0 (from uvicorn[standard]>=0.30->harbinger==0.1.0)
+#9 48.99   Downloading websockets-17.3-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.3 kB)
+#9 49.06 Collecting interface-meta>=1.2.0 (from formulaic>=0.2.2->lifelines>=0.30->harbinger==0.1.0)
+#9 49.10   Downloading interface_meta-2.0.1-py3-none-any.whl.metadata (6.4 kB)
+#9 49.48 Collecting wrapt>=1.0 (from formulaic>=0.2.2->lifelines>=0.30->harbinger==0.1.0)
+#9 49.52   Downloading wrapt-2.5.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (7.6 kB)
+#9 49.60 Collecting six>=1.5 (from python-dateutil>=2.7->matplotlib>=3.9->harbinger==0.1.0)
+#9 49.63   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+#9 49.69 Collecting anyio<5,>=4.0.0 (from starlette>=0.46.0->fastapi>=0.115->harbinger==0.1.0)
+#9 49.73   Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+#9 49.74 Requirement already satisfied: mpmath<1.4,>=1.1.0 in /opt/venv/lib/python3.12/site-packages (from sympy>=1.13.3->torch>=2.4->harbinger==0.1.0) (1.3.0)
+#9 49.75 Requirement already satisfied: MarkupSafe>=2.0 in /opt/venv/lib/python3.12/site-packages (from jinja2->torch>=2.4->harbinger==0.1.0) (3.0.3)
+#9 49.80 Collecting idna>=2.8 (from anyio<5,>=4.0.0->starlette>=0.46.0->fastapi>=0.115->harbinger==0.1.0)
+#9 49.84   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+#9 49.89 Downloading fastapi-0.156.8-py3-none-any.whl (147 kB)
+#9 49.93 Downloading lifelines-0.30.3-py3-none-any.whl (409 kB)
+#9 49.99 Downloading matplotlib-3.11.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (9.9 MB)
+#9 50.32    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.9/9.9 MB 30.2 MB/s eta 0:00:00
+#9 50.36 Downloading numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+#9 50.89    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 32.5 MB/s eta 0:00:00
+#9 50.93 Downloading pandas-2.3.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (12.4 MB)
+#9 51.42    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 25.0 MB/s eta 0:00:00
+#9 51.46 Downloading prometheus_client-0.26.0-py3-none-any.whl (64 kB)
+#9 51.50 Downloading pyarrow-26.0.0-cp312-cp312-manylinux_2_28_x86_64.whl (53.9 MB)
+#9 53.20    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 53.9/53.9 MB 31.7 MB/s eta 0:00:00
+#9 53.23 Downloading pydantic-2.14.1-py3-none-any.whl (488 kB)
+#9 53.54 Downloading pydantic_core-2.50.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.2 MB)
+#9 53.61    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 27.8 MB/s eta 0:00:00
+#9 53.65 Downloading pydantic_settings-2.16.1-py3-none-any.whl (80 kB)
+#9 53.75 Downloading scikit_learn-1.9.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (9.2 MB)
+#9 54.24    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.2/9.2 MB 28.0 MB/s eta 0:00:00
+#9 54.27 Downloading scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)
+#9 55.26    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 35.6 MB/s eta 0:00:00
+#9 55.30 Downloading shap-0.54.1-cp312-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (555 kB)
+#9 55.33    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 555.9/555.9 kB 20.8 MB/s eta 0:00:00
+#9 55.36 Downloading slicer-0.0.8-py3-none-any.whl (15 kB)
+#9 55.40 Downloading uvicorn-0.54.0-py3-none-any.whl (87 kB)
+#9 55.43 Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+#9 55.47 Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+#9 55.51 Downloading autograd-1.9.1-py3-none-any.whl (54 kB)
+#9 55.54 Downloading click-8.5.0-py3-none-any.whl (125 kB)
+#9 55.58 Downloading contourpy-1.4.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (383 kB)
+#9 55.62 Downloading cycler-0.12.1-py3-none-any.whl (8.3 kB)
+#9 55.65 Downloading fonttools-4.67.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.4 MB)
+#9 55.87    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.4/5.4 MB 24.9 MB/s eta 0:00:00
+#9 55.90 Downloading formulaic-1.2.2-py3-none-any.whl (118 kB)
+#9 55.94 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#9 55.98 Downloading httptools-0.9.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (552 kB)
+#9 55.99    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 552.8/552.8 kB 61.3 MB/s eta 0:00:00
+#9 56.02 Downloading joblib-1.6.0-py3-none-any.whl (306 kB)
+#9 56.09 Downloading cloudpickle-3.1.2-py3-none-any.whl (22 kB)
+#9 56.12 Downloading kiwisolver-1.5.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (1.5 MB)
+#9 56.16    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.5/1.5 MB 35.3 MB/s eta 0:00:00
+#9 56.20 Downloading narwhals-2.27.1-py3-none-any.whl (483 kB)
+#9 56.24 Downloading opentelemetry_api-1.45.1-py3-none-any.whl (60 kB)
+#9 56.28 Downloading packaging-26.3-py3-none-any.whl (129 kB)
+#9 56.33 Downloading pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+#9 56.59    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 27.1 MB/s eta 0:00:00
+#9 56.63 Downloading pyparsing-3.3.3-py3-none-any.whl (126 kB)
+#9 56.67 Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+#9 56.70 Downloading python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+#9 56.74 Downloading pytz-2026.5-py2.py3-none-any.whl (506 kB)
+#9 56.78 Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+#9 56.79    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 72.0 MB/s eta 0:00:00
+#9 56.83 Downloading starlette-1.9.0-py3-none-any.whl (80 kB)
+#9 56.88 Downloading threadpoolctl-3.7.0-py3-none-any.whl (26 kB)
+#9 56.91 Downloading tqdm-4.70.1-py3-none-any.whl (80 kB)
+#9 56.95 Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+#9 56.99 Downloading tzdata-2026.5-py2.py3-none-any.whl (347 kB)
+#9 57.03 Downloading uvloop-0.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.5 MB)
+#9 57.20    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 25.9 MB/s eta 0:00:00
+#9 57.23 Downloading watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (458 kB)
+#9 57.27 Downloading websockets-17.3-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (225 kB)
+#9 57.31 Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+#9 57.35 Downloading interface_meta-2.0.1-py3-none-any.whl (15 kB)
+#9 57.38 Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+#9 57.42 Downloading wrapt-2.5.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (250 kB)
+#9 57.46 Downloading idna-3.20-py3-none-any.whl (69 kB)
+#9 57.64 Building wheels for collected packages: harbinger, autograd-gamma
+#9 57.64   Building wheel for harbinger (pyproject.toml): started
+#9 57.91   Building wheel for harbinger (pyproject.toml): finished with status 'done'
+#9 57.91   Created wheel for harbinger: filename=harbinger-0.1.0-py3-none-any.whl size=209758 sha256=f25a048037674401d49d0a4b06bcaa4eedb1d13874be0ef9902302446bb8b48a
+#9 57.91   Stored in directory: /tmp/pip-ephem-wheel-cache-ut340i0o/wheels/7f/5c/67/61a4ca28ccbc7df61f55a044560f100aa81c66ef20585de495
+#9 57.92   Building wheel for autograd-gamma (pyproject.toml): started
+#9 58.11   Building wheel for autograd-gamma (pyproject.toml): finished with status 'done'
+#9 58.11   Created wheel for autograd-gamma: filename=autograd_gamma-0.5.0-py3-none-any.whl size=4118 sha256=174a7e5d55817ba3f0857d0a27a48d32b1331eb795f0266303071b3b719f6642
+#9 58.11   Stored in directory: /tmp/pip-ephem-wheel-cache-ut340i0o/wheels/50/37/21/0a719b9d89c635e89ff24bd93b862882ad675279552013b2fb
+#9 58.11 Successfully built harbinger autograd-gamma
+#9 58.25 Installing collected packages: pytz, wrapt, websockets, uvloop, tzdata, typing-inspection, tqdm, threadpoolctl, slicer, six, pyyaml, python-dotenv, pyparsing, pydantic-core, pyarrow, prometheus-client, pillow, packaging, opentelemetry-api, numpy, narwhals, kiwisolver, interface-meta, idna, httptools, h11, fonttools, cycler, cloudpickle, click, annotated-types, annotated-doc, uvicorn, scipy, python-dateutil, pydantic, joblib, contourpy, autograd, anyio, watchfiles, starlette, scikit-learn, pydantic-settings, pandas, matplotlib, autograd-gamma, shap, formulaic, fastapi, lifelines, harbinger
+#9 75.99 Successfully installed annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.15.1 autograd-1.9.1 autograd-gamma-0.5.0 click-8.5.0 cloudpickle-3.1.2 contourpy-1.4.0 cycler-0.12.1 fastapi-0.156.8 fonttools-4.67.0 formulaic-1.2.2 h11-0.16.0 harbinger-0.1.0 httptools-0.9.0 idna-3.20 interface-meta-2.0.1 joblib-1.6.0 kiwisolver-1.5.1 lifelines-0.30.3 matplotlib-3.11.2 narwhals-2.27.1 numpy-2.5.4 opentelemetry-api-1.45.1 packaging-26.3 pandas-2.3.3 pillow-13.0.0 prometheus-client-0.26.0 pyarrow-26.0.0 pydantic-2.14.1 pydantic-core-2.50.1 pydantic-settings-2.16.1 pyparsing-3.3.3 python-dateutil-2.9.0.post0 python-dotenv-1.2.4 pytz-2026.5 pyyaml-6.0.3 scikit-learn-1.9.1 scipy-1.18.1 shap-0.54.1 six-1.17.0 slicer-0.0.8 starlette-1.9.0 threadpoolctl-3.7.0 tqdm-4.70.1 typing-inspection-0.4.4 tzdata-2026.5 uvicorn-0.54.0 uvloop-0.23.0 watchfiles-1.3.0 websockets-17.3 wrapt-2.5.1
+#9 DONE 76.2s
+
+#10 [stage-1 2/4] RUN useradd -m -u 10001 app && mkdir -p /app/data /app/models /app/artifacts && chown -R app:app /app
+#10 CACHED
+
+#11 [stage-1 3/4] COPY --from=builder /opt/venv /opt/venv
+#11 DONE 2.1s
+
+#12 [stage-1 4/4] WORKDIR /app
+#12 ERROR: failed to prepare d243tw4kekosjqmhkc59aqxzw as ptunrjg8v5afjdqyxot5jozna: no space left on device
+------
+ > [stage-1 4/4] WORKDIR /app:
+------
+Dockerfile:19
+--------------------
+  17 |     RUN useradd -m -u 10001 app && mkdir -p /app/data /app/models /app/artifacts && chown -R app:app /app
+  18 |     COPY --from=builder /opt/venv /opt/venv
+  19 | >>> WORKDIR /app
+  20 |     USER app
+  21 |     HEALTHCHECK --interval=30s --timeout=5s --start-period=600s --retries=3 CMD python -c "import urllib.request,os;urllib.request.urlopen(f'http://127.0.0.1:{os.environ.get(\"PORT\",\"8000\")}/health').read()" || exit 1
+--------------------
+ERROR: failed to build: failed to solve: ResourceExhausted: failed to prepare d243tw4kekosjqmhkc59aqxzw as ptunrjg8v5afjdqyxot5jozna: no space left on device

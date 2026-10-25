@@ -341,31 +341,68 @@ class Store:
     def energy_anomalies(self, site_id: str, as_of: pd.Timestamp, days: int = 120) -> dict:
         eb = self.bundle.get("energy")
         en = self.tables["energy"]
-        g = en[
-            (en["site_id"] == site_id) & (en["day"] <= as_of) & (en["day"] > as_of - pd.Timedelta(days=days))
-        ]
-        if eb is None or g.empty:
-            return {"site_id": site_id, "days": [], "anomalies": []}
-        an = eb.anomalies(g)
-        return {
+        # Compute on preceding history, then crop the presentation window.
+        history = en[(en["site_id"] == site_id) & (en["day"] <= as_of)].sort_values("day")
+        lower = as_of - pd.Timedelta(days=days)
+        visible = history[history["day"] > lower]
+        target = eb.target if eb is not None else "electricity_kwh"
+
+        def number(value):
+            return float(value) if pd.notna(value) and np.isfinite(value) else None
+
+        out = {
             "site_id": site_id,
             "window_days": days,
-            "target": eb.target,
-            "days": [
+            "target": target,
+            "status": "no_data",
+            "days": [],
+            "anomalies": [],
+            "n_observed_days": int(visible.loc[np.isfinite(visible[target]), "day"].nunique()),
+            "n_evaluable_days": 0,
+            "n_anomaly_days": None,
+        }
+        if visible.empty:
+            return out
+        if eb is None:
+            out["status"] = "no_model"
+            out["days"] = [
                 {
                     "day": r["day"].date().isoformat(),
-                    "actual": float(r[eb.target]),
-                    "expected": float(r["yhat"]),
-                    "resid_ratio": float(r["resid_ratio"]),
-                    "resid_ma7": (None if pd.isna(r["resid_ma"]) else float(r["resid_ma"])),
-                    "z": (None if pd.isna(r["z"]) else float(r["z"])),
-                    "anomaly": bool(r["anomaly"]),
+                    "actual": number(r[target]),
+                    "expected": None,
+                    "resid_ratio": None,
+                    "resid_ma7": None,
+                    "z": None,
+                    "anomaly": None,
+                    "status": "no_model",
                 }
-                for _, r in an.iterrows()
-            ],
-            "anomalies": [r["day"].date().isoformat() for _, r in an[an["anomaly"]].iterrows()],
-            "n_anomaly_days": int(an["anomaly"].sum()),
-        }
+                for _, r in visible.iterrows()
+            ]
+            return out
+        an = eb.anomalies(history)
+        an = an[an["day"] > lower]
+
+        out["days"] = [
+            {
+                "day": r["day"].date().isoformat(),
+                "actual": number(r[target]),
+                "expected": number(r["yhat"]),
+                "resid_ratio": number(r["resid_ratio"]),
+                "resid_ma7": number(r["resid_ma"]),
+                "z": number(r["z"]),
+                "anomaly": None if pd.isna(r["anomaly"]) else bool(r["anomaly"]),
+                "status": r["status"],
+            }
+            for _, r in an.iterrows()
+        ]
+        out["n_evaluable_days"] = int(an["anomaly"].notna().sum())
+        out["anomalies"] = [d["day"] for d in out["days"] if d["anomaly"] is True]
+        if out["n_evaluable_days"]:
+            out["status"] = "available"
+            out["n_anomaly_days"] = len(out["anomalies"])
+        else:
+            out["status"] = "no_model" if (an["status"] == "no_model").all() else "insufficient_observation"
+        return out
 
     def quality(self, site_id: str, as_of: pd.Timestamp, days: int = 180) -> dict:
         ins = self.tables["inspections"]

@@ -69,6 +69,10 @@ def main():
             observation_end=provenance["observation_end"],
             outcomes_complete=args.outcomes_complete,
             data_hash=data_hash,
+            tables={
+                name: pd.read_parquet(args.data_dir / (name + ".parquet"))
+                for name in ("assets", "inspections", "workorders")
+            },
             min_rows=args.min_rows,
             min_class=args.min_class,
             min_improvement=args.min_improvement,
