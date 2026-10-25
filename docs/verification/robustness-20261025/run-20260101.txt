@@ -1,0 +1,44 @@
+[synth] day 1/1096 inspections=100 workorders=8 elapsed=0.1s
+[synth] day 181/1096 inspections=21684 workorders=2282 elapsed=2.2s
+[synth] day 361/1096 inspections=43279 workorders=5415 elapsed=4.2s
+[synth] day 541/1096 inspections=64846 workorders=8536 elapsed=6.0s
+[synth] day 721/1096 inspections=86367 workorders=11801 elapsed=7.8s
+[synth] day 901/1096 inspections=107912 workorders=15076 elapsed=9.6s
+[synth] day 1081/1096 inspections=129418 workorders=18374 elapsed=11.4s
+[synth] day 1096/1096 inspections=131201 workorders=18666 elapsed=11.6s
+[synth] done sites=25 assets=2312 inspections=131201 workorders=18666 breakdowns=5902 energy_rows=27400 in 12.5s
+[features] rows=131201 features=102 pos_rate(valid)=0.0748 in 39.5s
+/workspace/scratch/528e6091a06b/harbinger-robustness/scripts/robustness/run.py:137: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  dates = pd.date_range(split.val_end, end - pd.Timedelta(days=30), freq="W-MON")
+[world 20260101] prepared missing_25
+[world 20260101] prepared missing_50
+[world 20260101] prepared typo_10
+[world 20260101] prepared typo_30
+[world 20260101, seed 17] fit HGB / logistic / no-memo / limited
+[world 20260101, seed 17] fit PyTorch
+/workspace/scratch/528e6091a06b/harbinger-robustness/src/harbinger/models/deep.py:248: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  tot += float(loss) * len(idx)
+[deep:text] epoch 1 train=1.8449 val=0.6674
+[deep:text] epoch 6 train=1.5876 val=0.6701
+[world 20260101, seed 17] scored clean
+[world 20260101, seed 17] scored missing_25
+[world 20260101, seed 17] scored missing_50
+[world 20260101, seed 17] scored typo_10
+[world 20260101, seed 17] scored typo_30
+[world 20260101, seed 17] scored delay_3d
+[world 20260101, seed 17] scored delay_7d
+[world 20260101, seed 17] COMPLETE
+[world 20260101, seed 29] fit HGB / logistic / no-memo / limited
+[world 20260101, seed 29] fit PyTorch
+[deep:text] epoch 1 train=1.8199 val=0.6681
+[deep:text] epoch 6 train=1.5901 val=0.6669
+[world 20260101, seed 29] scored clean
+[world 20260101, seed 29] scored missing_25
+[world 20260101, seed 29] scored missing_50
+[world 20260101, seed 29] scored typo_10
+[world 20260101, seed 29] scored typo_30
+[world 20260101, seed 29] scored delay_3d
+[world 20260101, seed 29] scored delay_7d
+[world 20260101, seed 29] COMPLETE
+[world 20260101] COMPLETE in 911.7s

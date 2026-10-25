@@ -1,0 +1,447 @@
+{
+  "base_source_commit": "d9b5d7a57d6fa4c24e4ed52e3e7e44e386b5d7d7",
+  "execution_commit": "484e7ab07debd3274c9e3c254fd06033ab137d73",
+  "source_sha256": {
+    "src/harbinger/__init__.py": "cd93906046fbab2ee0f7ad8c7b76c959542138ff234ebf0313c32a33e57eea40",
+    "src/harbinger/api/__init__.py": "827755bc09d72242f225d145bb2a5f075d63096ec77281b588416d077c0b14d4",
+    "src/harbinger/api/analysis.py": "917fd42534828ac3b158d725957e77f1cc796be88894488245515158b22837d7",
+    "src/harbinger/api/backtest.py": "faeb7e71548e3c4045ad36437619a70fb4f107275fe99d9a5c30f746808f683f",
+    "src/harbinger/api/deps.py": "52a10fc56ea134b18371e0e281433806776080f25c2e268fe89580b0e48c9fce",
+    "src/harbinger/api/main.py": "283ecef07a33c85a42ca5b4455f8b99cab2f32fafdf229725c36424a0463c1f0",
+    "src/harbinger/api/records.py": "f8b54ebe60e13f65c30ca8ea1506aef6a2dedf0cc016d660464b99593b197936",
+    "src/harbinger/api/routers/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/harbinger/api/routers/admin.py": "3cb8455f680b16ccd672050927346386598c2652d6677b9c795666a6d9b4da16",
+    "src/harbinger/api/routers/energy.py": "213c982490df21aec6cfb741aae9d12d1b9522aaf6167ed78c0eeaf527edd9a9",
+    "src/harbinger/api/routers/health.py": "3e171f17ef55f2de71c8b912b9874a0d546ee0ac2154b544b7ec6a0cbefcab22",
+    "src/harbinger/api/routers/patrol.py": "de69fdcf9028163139cd30a42ec6fd7d25b8001cb1100586798f7f3de44429ff",
+    "src/harbinger/api/routers/replay.py": "c948b589b0d08662b61891449b089a5307c88f6a73f9f68d4f2320c0533bcb3b",
+    "src/harbinger/api/routers/report.py": "0f2f0a6ed701c56a442bf2da2526dddf0e85b39a7e62b2bb258ffa6405f3e211",
+    "src/harbinger/api/routers/risk.py": "4fe86e9d03e30fa27244e8202869afd79c59d5f1a603b5bbae8bf5b880e61746",
+    "src/harbinger/api/routers/sites.py": "9233b61f8170fb00da6d60b0b1ed48627ea970d883565096a5f37adf2cfaba1e",
+    "src/harbinger/api/routers/text.py": "375fb7c25f46f41719aa946639210ada0d5b967601aa046bab3c2e6a6f3a3016",
+    "src/harbinger/api/routers/workbench.py": "2f9074ad7a4eabde29c463a81ad0786b9980977ed91e59bd96894d2fa435fa32",
+    "src/harbinger/api/store.py": "3065a0718ee122929dba5ddd046b82627e0b17cdad5ab89aae8e69911b3cc5e7",
+    "src/harbinger/api/upload.py": "ce3e854b43432764edab3e437acc30f2d73d5b9b431937f43d956fb1ae51b34d",
+    "src/harbinger/api/whatif.py": "c0ef628fd920889bd54dee56617ff601b58c28faa24d9d33fa08c4dd8fb401fc",
+    "src/harbinger/cli.py": "01e268a0637ff2f921ec5673ff70738e440227726a7cfc8d4e2c955a037c1b0f",
+    "src/harbinger/config.py": "cdbabd143bb0e6aed483862e9b5ab8a89f7da7c9ccd9a428a98479f871409be7",
+    "src/harbinger/console/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/harbinger/eval/__init__.py": "4a7716790e0abb39286044b56fb85d3ec507827fbcb895c350103faf008e8e94",
+    "src/harbinger/eval/metrics.py": "eb2aa20776b2291968c23658d5126e58d15d436d00f29f0f51d268a180a4adf1",
+    "src/harbinger/eval/patrol.py": "d69c4853c39acb2887c28b4fe9bcf5189d0227b6b1e43eead82e3594344986ea",
+    "src/harbinger/eval/run.py": "2ff17f5545c6543e856a2cf668c670e886eb488c25b7a22b436c65a43377d560",
+    "src/harbinger/eval/signals.py": "422805d78c8fa7be4808cf0c815168fafe1bd49032890f70ea0a25247c293abd",
+    "src/harbinger/features/__init__.py": "3eb1b79d4adb722d936690d38233982ce4714bd52cf51f2b275f87c0a2aa318f",
+    "src/harbinger/features/build.py": "2ef1ba8941f6d02c7e815becf0a4388320ae33d4806e68f68559678d73653857",
+    "src/harbinger/features/cache.py": "8b5e085a5a83bede917d96ea0a649c25fdadcc0544470083f8b0361bb3c1f620",
+    "src/harbinger/features/energy.py": "79bc7a19aac3ebdf314097ec4ee73a0abd07b368464490159f4ebdeaf810fe5e",
+    "src/harbinger/features/refresh.py": "5df33cc949f7c434593e5039b746dfcaf797a5bed9729e533ab73bf6a0057ed4",
+    "src/harbinger/features/text.py": "839acaac8bf68cce46be85d194ed04f4ed618ce007e452c6af208c2f82e3c578",
+    "src/harbinger/models/__init__.py": "8e0bfb88b74970e167b56d970c410b05bf7c0f2b6c6ee019ab385b89df27827d",
+    "src/harbinger/models/calibration.py": "4b1928074c4aa3a846c7ebe776e36fd713ad8e8e32589f79a306fd39597543e4",
+    "src/harbinger/models/classify.py": "c01fa14ab5bf4aeed98f924eb2d5c595f081a98b46ec9fdb546076373faddb2d",
+    "src/harbinger/models/coldstart.py": "f55c50453c0c16e51e84f745a0b830015c20ee93307821916546dd384d2a40d6",
+    "src/harbinger/models/common.py": "552b8dc120ba45ac559755898d327861ff3e927d4df97e0f120df438170da5ab",
+    "src/harbinger/models/deep.py": "3399acabadcd8b201746b02ae7d99cf79ba589bfedf1b9205ed967b698677267",
+    "src/harbinger/models/energy.py": "9316b3a9d965631498ae264d8a4a21744a3c9ee6f768c6ac44d5eecedfa501f6",
+    "src/harbinger/models/keras_parity.py": "36d3a6966ea4b84ce5894932cdcedf188c9afd8907c4912392ed35918aee9af2",
+    "src/harbinger/models/registry.py": "e7d0eecfef02410bea990899e36f8c0154b0983b9d493416d2859a260d700b68",
+    "src/harbinger/models/survival.py": "c49e1d5a65fb53a0b052dea1c774d1f87989288d712a75301d40f9613c7822a7",
+    "src/harbinger/monitoring/__init__.py": "c443658701e7dfcc572c8c2a2253c41946d65ded796345a701340dd669095e96",
+    "src/harbinger/monitoring/drift.py": "2a2f883d7c4a2e267d8e7000df4fe6e12f2d77f5c696054899ccd6488a27cfe5",
+    "src/harbinger/monitoring/metrics.py": "a16ce61e9ef65e797a37f7bf9d0cc594bebf7c79a49bf73fa336c6c38c007698",
+    "src/harbinger/prescribe/__init__.py": "29594b260915747a9dde797d753dd3676bbd1d3c03216b1753ae8d930927c67c",
+    "src/harbinger/prescribe/explain.py": "e4144a5f08d03cb5e50f42c0237e4cb2695068ceb101bd8b1e09d62eed64764f",
+    "src/harbinger/prescribe/priority.py": "dd7f5aaff32a3e92ee1b942dcd0385bd5e1378e053007826a820b529cf6732e7",
+    "src/harbinger/prescribe/scenarios.py": "52f0688b248b66077e9787e0b375fecf5485ecda4fb22092ae39f4679837d97e",
+    "src/harbinger/prescribe/schedule.py": "29a2d9aea54ec1c3fdebdc0cdfba34be837e4fd4501137b15a78c24eaf347eb0",
+    "src/harbinger/schema.py": "b4dfefb8100b1d73a461399d8869b05b54ce800a7bd5fc61b8dbb87978c61d56",
+    "src/harbinger/synth/__init__.py": "6a61dbfddf320269b6d41caabde2d375a757034a937892159c868b95293a40e5",
+    "src/harbinger/synth/calendar_kr.py": "5bf994a74bf1219f16c0bf616abd0c3424f3cda69a7d35213b7f46b809de6ab7",
+    "src/harbinger/synth/generate.py": "03599d9954e83e9527f4f7b3fd3df21da38f2aba7d127e68c6dce75f2bf05a34",
+    "src/harbinger/synth/memos.py": "877da8dadd74c3aa671f16d15e5204247d5188713d0de4b1ca38365078d97668",
+    "src/harbinger/synth/sites.py": "786960a0af3aa7beb3f1307d3d08a04867a1a779e1aafc1ec1d68b4a807a8353",
+    "scripts/robustness/contracts.py": "239b47080e5379cb42a80ac38b98c747b3bac7b9ee5068c57dbc93cca069c71e",
+    "scripts/robustness/run.py": "c0e3ab6052e9b99e2eb789bcfd00b83b4cff0229b5299ceacad3db693355c4c2",
+    "scripts/robustness/summarize.py": "6d217b9623f81d93653c8bd7a5c96eb0a25b4e86059e68a4f4a3c24bd734ab20"
+  },
+  "data": {
+    "boundary_version": 2,
+    "feature_semantics_version": 2,
+    "source_sha256": {
+      "assets.parquet": "0eb613982dd86b65c390c29410c62ae2cc90cfb78a0af57ffcc43bb760c51556",
+      "energy.parquet": "c1916c3d3ee1a9f99728ecdf0382688ae781c88483ca4b15226b2603e34e46c3",
+      "inspections.parquet": "1f02ac47df40ae56190baeafa158adbc618a97e748350d3bc8f6e10371bd3800",
+      "inspectors.parquet": "2439a21bda3230166347da5300e2fc72353b511bd754ee579ead9eb44a189e5d",
+      "latent.parquet": "fb3e80ef0cde51c937633f6974631565ac825b512968599a0d8945da04f763ae",
+      "sites.parquet": "2eaf44f4ee4fac94f015343ee67039ecb406900abe8355e769131cf730c83bc5",
+      "workorders.parquet": "f6f90901c6fe61e3dddc9f3a58b211ab54ee21f71a7226df0eaf6912b0ed61a8"
+    },
+    "fit_until": "2024-01-01T08:06:28.400500",
+    "observation_end": "2026-01-01T00:00:00"
+  },
+  "data_seed": 20260101,
+  "model_seeds": [
+    17,
+    29
+  ],
+  "synthetic": true,
+  "smoke": false,
+  "scale": 1.0,
+  "months": 36,
+  "split": {
+    "train": {
+      "rows": 87577,
+      "mature_labels": 84002,
+      "immature_labels": 3575,
+      "from": "2023-01-01",
+      "to": "2025-01-01"
+    },
+    "val": {
+      "rows": 21623,
+      "to": "2025-07-01",
+      "mature_labels": 18055,
+      "immature_labels": 3568
+    },
+    "test": {
+      "rows": 22001,
+      "to": "2025-12-31"
+    }
+  },
+  "damage": {
+    "missing_25": {
+      "eligible_rows": 22001,
+      "changed_rows": 5554,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 0.25,
+      "seed": 20261101
+    },
+    "missing_50": {
+      "eligible_rows": 22001,
+      "changed_rows": 11030,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 0.5,
+      "seed": 20261101
+    },
+    "typo_10": {
+      "eligible_rows": 22001,
+      "changed_rows": 12874,
+      "eligible_characters": 234407,
+      "deleted_characters": 23646,
+      "kind": "typo",
+      "requested_rate": 0.1,
+      "seed": 20261101
+    },
+    "typo_30": {
+      "eligible_rows": 22001,
+      "changed_rows": 19327,
+      "eligible_characters": 234407,
+      "deleted_characters": 70611,
+      "kind": "typo",
+      "requested_rate": 0.3,
+      "seed": 20261101
+    }
+  },
+  "coverage": [
+    {
+      "decision_at": "2025-07-07T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-07-14T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-07-21T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-07-28T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-08-04T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-08-11T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-08-18T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-08-25T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-09-01T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-09-08T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-09-15T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-09-22T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-09-29T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-10-06T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-10-13T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-10-20T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-10-27T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-11-03T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-11-10T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-11-17T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-11-24T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    },
+    {
+      "decision_at": "2025-12-01T00:00:00",
+      "common_n": 2312,
+      "available": {
+        "clean": 2312,
+        "missing_25": 2312,
+        "missing_50": 2312,
+        "typo_10": 2312,
+        "typo_30": 2312,
+        "delay_3d": 2312,
+        "delay_7d": 2312
+      }
+    }
+  ],
+  "python": "3.12.14",
+  "packages": {
+    "numpy": "2.5.4",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.9.1",
+    "torch": "2.14.1+cpu",
+    "scipy": "1.18.1",
+    "pyarrow": "26.0.0"
+  },
+  "limits": "inspection delivery delay only; workorders immediate; synthetic deletion typos; no customer validation"
+}

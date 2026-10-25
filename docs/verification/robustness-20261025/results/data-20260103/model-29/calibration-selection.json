@@ -1,0 +1,225 @@
+{
+  "common_selection_n": 14303,
+  "schemes": {
+    "row_random": {
+      "method": "raw",
+      "selection_n": 14303,
+      "min_gain": 0.005,
+      "status": "evaluated",
+      "scores": {
+        "raw": {
+          "logloss": 0.25309937809495986,
+          "brier": 0.07078338899307508
+        },
+        "platt": {
+          "logloss": 0.2518457598044131,
+          "brier": 0.07059107303407114
+        },
+        "isotonic": {
+          "logloss": 0.25426541226156796,
+          "brier": 0.0707722364247274
+        }
+      },
+      "folds": [
+        {
+          "fold": 0,
+          "fit_n": 15267,
+          "held_n": 3817,
+          "status": "evaluated"
+        },
+        {
+          "fold": 1,
+          "fit_n": 15267,
+          "held_n": 3817,
+          "status": "evaluated"
+        },
+        {
+          "fold": 2,
+          "fit_n": 15267,
+          "held_n": 3817,
+          "status": "evaluated"
+        },
+        {
+          "fold": 3,
+          "fit_n": 15267,
+          "held_n": 3817,
+          "status": "evaluated"
+        },
+        {
+          "fold": 4,
+          "fit_n": 15268,
+          "held_n": 3816,
+          "status": "evaluated"
+        }
+      ]
+    },
+    "asset_group": {
+      "method": "raw",
+      "selection_n": 14303,
+      "min_gain": 0.005,
+      "status": "evaluated",
+      "scores": {
+        "raw": {
+          "logloss": 0.25309937809495986,
+          "brier": 0.07078338899307508
+        },
+        "platt": {
+          "logloss": 0.2518977414789039,
+          "brier": 0.07060652452904674
+        },
+        "isotonic": {
+          "logloss": 0.25394291579332834,
+          "brier": 0.0706922338870657
+        }
+      },
+      "folds": [
+        {
+          "fold": 0,
+          "fit_n": 15268,
+          "held_n": 3816,
+          "status": "evaluated"
+        },
+        {
+          "fold": 1,
+          "fit_n": 15265,
+          "held_n": 3819,
+          "status": "evaluated"
+        },
+        {
+          "fold": 2,
+          "fit_n": 15265,
+          "held_n": 3819,
+          "status": "evaluated"
+        },
+        {
+          "fold": 3,
+          "fit_n": 15269,
+          "held_n": 3815,
+          "status": "evaluated"
+        },
+        {
+          "fold": 4,
+          "fit_n": 15269,
+          "held_n": 3815,
+          "status": "evaluated"
+        }
+      ]
+    },
+    "purged_time": {
+      "method": "raw",
+      "selection_n": 14303,
+      "min_gain": 0.005,
+      "status": "evaluated",
+      "scores": {
+        "raw": {
+          "logloss": 0.25309937809495986,
+          "brier": 0.07078338899307508
+        },
+        "platt": {
+          "logloss": 0.25195262618613135,
+          "brier": 0.07061369036865385
+        },
+        "isotonic": {
+          "logloss": 0.26084348489675163,
+          "brier": 0.07102165949920318
+        }
+      },
+      "folds": [
+        {
+          "fold": 0,
+          "fit_n": 994,
+          "held_n": 4755,
+          "status": "evaluated"
+        },
+        {
+          "fold": 1,
+          "fit_n": 5745,
+          "held_n": 4712,
+          "status": "evaluated"
+        },
+        {
+          "fold": 2,
+          "fit_n": 10460,
+          "held_n": 4836,
+          "status": "evaluated"
+        }
+      ]
+    },
+    "purged_time_asset": {
+      "method": "raw",
+      "selection_n": 14303,
+      "min_gain": 0.005,
+      "status": "evaluated",
+      "scores": {
+        "raw": {
+          "logloss": 0.25309937809495986,
+          "brier": 0.07078338899307508
+        },
+        "platt": {
+          "logloss": 0.2519803513518954,
+          "brier": 0.07061379456191685
+        },
+        "isotonic": {
+          "logloss": 0.2612511343900686,
+          "brier": 0.07117279678139561
+        }
+      },
+      "folds": [
+        {
+          "fold": 0,
+          "fit_n": 659,
+          "held_n": 1583,
+          "status": "evaluated"
+        },
+        {
+          "fold": 1,
+          "fit_n": 657,
+          "held_n": 1594,
+          "status": "evaluated"
+        },
+        {
+          "fold": 2,
+          "fit_n": 672,
+          "held_n": 1578,
+          "status": "evaluated"
+        },
+        {
+          "fold": 3,
+          "fit_n": 3828,
+          "held_n": 1584,
+          "status": "evaluated"
+        },
+        {
+          "fold": 4,
+          "fit_n": 3824,
+          "held_n": 1563,
+          "status": "evaluated"
+        },
+        {
+          "fold": 5,
+          "fit_n": 3838,
+          "held_n": 1565,
+          "status": "evaluated"
+        },
+        {
+          "fold": 6,
+          "fit_n": 6944,
+          "held_n": 1621,
+          "status": "evaluated"
+        },
+        {
+          "fold": 7,
+          "fit_n": 6956,
+          "held_n": 1622,
+          "status": "evaluated"
+        },
+        {
+          "fold": 8,
+          "fit_n": 7020,
+          "held_n": 1593,
+          "status": "evaluated"
+        }
+      ]
+    }
+  }
+}
