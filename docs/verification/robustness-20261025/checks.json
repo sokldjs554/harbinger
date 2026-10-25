@@ -1,0 +1,25 @@
+{
+  "source_commit": "484e7ab",
+  "local_test_exit_code": 0,
+  "passed": 150,
+  "skipped": 1,
+  "skip_reason": "optional TensorFlow dependency not installed",
+  "ruff": "passed: src tests scripts; 97 files formatted",
+  "existing_readme_numbers": "passed",
+  "existing_release_manifest": "passed",
+  "smoke": "passed: full pipeline with scale 0.08, seed 20260101/17, two deep epochs; 38.6 seconds",
+  "review": "two reproducibility findings fixed before full runs; see review.md",
+  "production_changes": false,
+  "published_source_commit": "ac479704e430215d088025d37eccaeb586d74d42",
+  "source_tree": "edaaa19cb1fc9efe6b513e9ecf89f9054efa0606",
+  "source_tree_matches_published": true,
+  "full_runs": 6,
+  "synthetic_worlds": 3,
+  "raw_evidence_verifier_exit_code": 0,
+  "raw_evidence_verified": true,
+  "experiment_seconds_by_world": {
+    "20260101": 911.7,
+    "20260102": 870.4,
+    "20260103": 879.9
+  }
+}

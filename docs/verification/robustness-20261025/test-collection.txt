@@ -1,0 +1,153 @@
+tests/test_analysis_contract.py::test_random_comparator_uses_same_per_customer_budget
+tests/test_analysis_contract.py::test_replay_summary_excludes_nonheldout_weeks[None-flags0]
+tests/test_analysis_contract.py::test_replay_summary_excludes_nonheldout_weeks[2025-07-01-flags1]
+tests/test_analysis_contract.py::test_replay_summary_excludes_nonheldout_weeks[2025-07-01-flags2]
+tests/test_api.py::test_health_and_version
+tests/test_api.py::test_sites_and_summary
+tests/test_api.py::test_patrol_and_risk_and_schedule
+tests/test_api.py::test_energy_quality_report
+tests/test_api.py::test_admin_and_metrics
+tests/test_api.py::test_ingest_updates_risk
+tests/test_aws_deploy.py::test_refuses_duplicate_or_foreign_servers
+tests/test_aws_deploy.py::test_launch_contract_bounds_billable_resources
+tests/test_aws_deploy.py::test_host_key_comes_from_console_and_fails_closed
+tests/test_aws_deploy.py::test_ssh_rule_is_removed_after_failure
+tests/test_aws_deploy.py::test_invalid_runner_ip_cannot_open_ssh
+tests/test_aws_deploy.py::test_remote_tools_do_not_inherit_cloud_credentials
+tests/test_aws_deploy.py::test_failed_deployment_restores_compute_state[True-False-True]
+tests/test_aws_deploy.py::test_failed_deployment_restores_compute_state[False-True-True]
+tests/test_aws_deploy.py::test_failed_deployment_restores_compute_state[False-False-False]
+tests/test_aws_deploy.py::test_release_remains_rollbackable_until_browser_check_finishes
+tests/test_aws_deploy.py::test_unverified_free_plan_image_cannot_be_launched[False]
+tests/test_aws_deploy.py::test_unverified_free_plan_image_cannot_be_launched[None]
+tests/test_aws_deploy.py::test_noneligible_instance_type_is_rejected_before_provisioning
+tests/test_aws_deploy.py::test_explicit_identity_can_verify_existing_host_after_console_rollover
+tests/test_aws_deploy.py::test_identity_cannot_be_reused_for_another_instance
+tests/test_aws_deploy.py::test_invalid_pin_never_falls_back_to_console[not json]
+tests/test_aws_deploy.py::test_invalid_pin_never_falls_back_to_console[[]]
+tests/test_aws_deploy.py::test_invalid_pin_never_falls_back_to_console[{"instance_id": "i-0123456789abcdef0", "host_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEB", "extra": "ignored?"}]
+tests/test_aws_deploy.py::test_invalid_pin_never_falls_back_to_console[{"instance_id": "i-0123456789abcdef0", "host_key": "ssh-ed25519 not-base64"}]
+tests/test_aws_deploy.py::test_invalid_pin_never_falls_back_to_console[{"instance_id": "i-0123456789abcdef0", "host_key": "ssh-ed25519 d3Jvbmcgd2lyZSBzdHJ1Y3R1cmU="}]
+tests/test_aws_deploy.py::test_invalid_pin_never_falls_back_to_console[{"instance_id": "i-0123456789abcdef0", "host_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEB\\nmalicious-host ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC"}]
+tests/test_aws_deploy.py::test_invalid_pin_never_falls_back_to_console[{"instance_id": "i-0123456789abcdef0", "host_key": "ssh-rsa AAAAC3NzaC1lZDI1NTE5AAAAIAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEB"}]
+tests/test_aws_deploy.py::test_invalid_pin_never_falls_back_to_console[{"instance_id": "i-0123456789abcdef0", "host_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBdHJhaWxpbmc="}]
+tests/test_aws_deploy.py::test_pin_must_agree_with_authenticated_console_key
+tests/test_aws_deploy.py::test_console_identity_still_works_without_a_pin
+tests/test_aws_deploy.py::test_missing_identity_fails_closed_with_actionable_input
+tests/test_aws_deploy.py::test_console_response_must_belong_to_requested_instance
+tests/test_aws_deploy.py::test_remote_uses_only_the_verified_key_and_no_user_ssh_config
+tests/test_aws_deploy.py::test_existing_host_preflight_only_reads_aws[None]
+tests/test_aws_deploy.py::test_existing_host_preflight_only_reads_aws[{"instance_id": "i-0123456789abcdef0", "host_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEB"}]
+tests/test_aws_deploy.py::test_conflicting_console_histories_fail_without_a_pin
+tests/test_aws_deploy.py::test_duplicate_identity_json_fields_are_rejected
+tests/test_features.py::test_point_in_time_no_leakage
+tests/test_features.py::test_labels_consistent
+tests/test_features.py::test_feature_groups_present
+tests/test_features.py::test_text_features
+tests/test_features.py::test_rolling_uses_only_past
+tests/test_inspector_identity.py::test_other_site_history_cannot_change_existing_site_features[person-1]
+tests/test_inspector_identity.py::test_other_site_history_cannot_change_existing_site_features[person-2]
+tests/test_inspector_identity.py::test_same_site_inspector_history_combines_across_assets
+tests/test_inspector_identity.py::test_cache_rebuilds_features_without_current_inspector_identity_provenance
+tests/test_keras_parity.py::test_torch_and_keras_reach_similar_quality
+tests/test_memo_parity.py::test_analysis_matches_feature_pipeline
+tests/test_memo_parity.py::test_js_port_matches_python
+tests/test_memo_parity.py::test_api_endpoints
+tests/test_models.py::test_discrete_nll_matches_closed_form
+tests/test_models.py::test_discrete_nll_event_at_right_edge_is_observed_in_that_bin
+tests/test_models.py::test_schedule_monotone_and_legal_cap
+tests/test_models.py::test_coldstart_offset_shrinks_to_zero
+tests/test_models.py::test_calibration_helpers
+tests/test_models.py::test_psi
+tests/test_models.py::test_classifier_beats_baselines_on_tiny
+tests/test_models.py::test_matrix_and_split
+tests/test_models.py::test_registry_roundtrip
+tests/test_models.py::test_calibrator_selection_keeps_good_probabilities_and_fixes_bad_ones
+tests/test_models.py::test_calibration_is_withheld_when_folds_cannot_contain_both_classes
+tests/test_monitoring.py::test_psi_detects_discrete_and_missingness_shifts[reference0-current0]
+tests/test_monitoring.py::test_psi_detects_discrete_and_missingness_shifts[reference1-current1]
+tests/test_monitoring.py::test_psi_detects_discrete_and_missingness_shifts[reference2-current2]
+tests/test_monitoring.py::test_psi_detects_discrete_and_missingness_shifts[reference3-current3]
+tests/test_monitoring.py::test_psi_detects_discrete_and_missingness_shifts[reference4-current4]
+tests/test_monitoring.py::test_psi_detects_discrete_and_missingness_shifts[reference5-current5]
+tests/test_monitoring.py::test_psi_identical_distributions_are_zero[values0]
+tests/test_monitoring.py::test_psi_identical_distributions_are_zero[values1]
+tests/test_monitoring.py::test_psi_identical_distributions_are_zero[values2]
+tests/test_monitoring.py::test_prediction_drift_insufficient_data_is_explicit_and_json_safe
+tests/test_monitoring.py::test_feature_drift_reports_unavailable_features
+tests/test_monitoring.py::test_prediction_drift_nonfinite_values_are_json_safe
+tests/test_monitoring.py::test_reports_expose_missingness_shift_separately
+tests/test_monitoring.py::test_load_publishes_drift_before_manual_endpoint_and_caches_it
+tests/test_monitoring.py::test_prediction_requests_observe_histogram
+tests/test_monitoring.py::test_empty_current_window_is_not_replaced_with_reference_predictions
+tests/test_monitoring.py::test_ingestion_refreshes_drift_state[success]
+tests/test_monitoring.py::test_ingestion_refreshes_drift_state[insufficient_data]
+tests/test_monitoring.py::test_ingestion_refreshes_drift_state[error]
+tests/test_monitoring.py::test_shared_inspector_ids_reject_legacy_features_or_model[None-None]
+tests/test_monitoring.py::test_shared_inspector_ids_reject_legacy_features_or_model[2-None]
+tests/test_monitoring.py::test_shared_inspector_ids_reject_legacy_features_or_model[None-2]
+tests/test_monitoring.py::test_shared_inspector_ids_load_corrected_features_and_model
+tests/test_monitoring.py::test_ingestion_updates_drift_without_certifying_failure_followup[False]
+tests/test_monitoring.py::test_ingestion_updates_drift_without_certifying_failure_followup[True]
+tests/test_observation_boundary.py::test_mature_classification_labels_only
+tests/test_observation_boundary.py::test_survival_is_censored_at_each_boundary
+tests/test_observation_boundary.py::test_future_outcomes_do_not_change_training_targets
+tests/test_observation_boundary.py::test_energy_never_falls_back_to_future
+tests/test_observation_boundary.py::test_unknown_model_cutoff_is_not_invented
+tests/test_observation_boundary.py::test_explicit_data_end_censors_future_workorders
+tests/test_observation_boundary.py::test_future_records_leave_inputs_labels_and_fits_unchanged
+tests/test_prescribe.py::test_mandatory_legal_assets_always_included
+tests/test_prescribe.py::test_ranking_monotone_in_expected_loss
+tests/test_prescribe.py::test_reasons_are_strings
+tests/test_refresh.py::test_refresh_at_row_time_is_identity
+tests/test_refresh.py::test_refresh_picks_up_breakdown_after_inspection
+tests/test_refresh.py::test_refresh_never_uses_the_future
+tests/test_replay.py::test_replay_outcomes_match_workorders
+tests/test_replay.py::test_replay_all_equals_sum_of_sites
+tests/test_replay.py::test_replay_uses_only_data_before_as_of
+tests/test_replay.py::test_replay_validation
+tests/test_robustness.py::test_memo_damage_preserves_past_and_is_order_independent
+tests/test_robustness.py::test_typo_is_nonspace_character_deletion_with_measured_rate
+tests/test_robustness.py::test_invalid_damage_rate[-0.1]
+tests/test_robustness.py::test_invalid_damage_rate[1.1]
+tests/test_robustness.py::test_invalid_damage_rate[nan]
+tests/test_robustness.py::test_group_and_calendar_purge_apply_together
+tests/test_robustness.py::test_group_split_never_shares_an_asset
+tests/test_robustness.py::test_calibration_sparse_folds_are_withheld_and_mask_is_shared
+tests/test_robustness.py::test_latest_record_is_only_available_after_delay_boundary
+tests/test_robustness.py::test_weekly_top_k_uses_same_budget_and_deterministic_ties
+tests/test_robustness.py::test_delayed_snapshots_keep_decision_labels_and_reject_immature
+tests/test_robustness.py::test_rebuilt_memos_leave_past_features_and_targets_unchanged
+tests/test_robustness.py::test_completed_output_is_refused_before_preparation
+tests/test_robustness.py::test_world_cache_rejects_untracked_or_different_source
+tests/test_synth.py::test_deterministic_given_seed
+tests/test_synth.py::test_distributions_are_plausible
+tests/test_synth.py::test_checklist_columns_match_category
+tests/test_synth.py::test_memo_weak_signals_precede_failures
+tests/test_synth.py::test_latent_state_drives_failures
+tests/test_upload.py::test_csv_roundtrip_and_optional_memo
+tests/test_upload.py::test_invalid_csv_has_actionable_error[bad\n1-\ud544\uc218 \uc5f4]
+tests/test_upload.py::test_invalid_csv_has_actionable_error[record_id,record_type,site_id,asset_id,category,archetype,installed,criticality,floor,zone,occurred_at,inspector_id,overall,memo,dwell_seconds,scheduled_at,method,photo_count\ni1,inspection,client-a,pump-1,pump,office,2020-01-01,2,1,A,2025-08-01,person-1,1,\uc57d\uac04 \uc18c\uc74c,60,2025-08-01,nfc,0\ni1,inspection,client-a,pump-1,pump,office,2020-01-01,2,1,A,2025-08-01,person-1,1,\uc57d\uac04 \uc18c\uc74c,60,2025-08-01,nfc,0\n-\uc911\ubcf5]
+tests/test_upload.py::test_invalid_csv_has_actionable_error[record_id,record_type,site_id,asset_id,category,archetype,installed,criticality,floor,zone,occurred_at,inspector_id,overall,memo,dwell_seconds,scheduled_at,method,photo_count\ni1,inspection,client-a,pump-1,pump,office,2020-01-01,2,1,A,wrong,person-1,1,\uc57d\uac04 \uc18c\uc74c,60,wrong,nfc,0\n-\ub0a0\uc9dc]
+tests/test_upload.py::test_invalid_csv_has_actionable_error[record_id,record_type,site_id,asset_id,category,archetype,installed,criticality,floor,zone,occurred_at,inspector_id,overall,memo,dwell_seconds,scheduled_at,method,photo_count\ni1,inspection,client-a,pump-1,pump,office,2020-01-01,2,1,A,2025-08-01,person-1,9,\uc57d\uac04 \uc18c\uc74c,60,2025-08-01,nfc,0\n-overall]
+tests/test_upload.py::test_invalid_csv_has_actionable_error[record_id,record_type,site_id,asset_id,category,archetype,installed,criticality,floor,zone,occurred_at,inspector_id,overall,memo,dwell_seconds,scheduled_at,method,photo_count\ni1,inspection,client-a,pump-1,unknown,office,2020-01-01,2,1,A,2025-08-01,person-1,1,\uc57d\uac04 \uc18c\uc74c,60,2025-08-01,nfc,0\n-category]
+tests/test_upload.py::test_invalid_csv_has_actionable_error[record_id,record_type,site_id,asset_id,category,archetype,installed,criticality,floor,zone,occurred_at,inspector_id,overall,memo,dwell_seconds,scheduled_at,method,photo_count\ni1,inspection,client-a,pump-1,pump,office,2020-01-01,2,1,A,2025-08-01,person-1,1,\uc57d\uac04 \uc18c\uc74c,-1,2025-08-01,nfc,0\n-dwell_seconds]
+tests/test_upload.py::test_no_future_records_or_silent_dedup
+tests/test_upload.py::test_conflicting_asset_metadata
+tests/test_upload.py::test_equivalent_event_timestamps_are_rejected_with_source_rows[2025-08-01-2025-08-01T00:00:00]
+tests/test_upload.py::test_equivalent_event_timestamps_are_rejected_with_source_rows[2025-08-01T12:30:00-2025-08-01 12:30:00]
+tests/test_upload.py::test_equivalent_event_timestamps_are_rejected_with_source_rows[2025-08-01T12:30-2025-08-01T12:30:00.000000]
+tests/test_upload.py::test_distinct_event_times_and_types_are_not_deduplicated
+tests/test_upload.py::test_raw_text_is_not_executed_or_interpreted
+tests/test_upload.py::test_shared_example_mutation_disabled_by_default
+tests/test_whatif.py::test_presets_isolate_the_memo
+tests/test_whatif.py::test_whatif_does_not_mutate_state
+tests/test_whatif.py::test_replacing_last_inspection_with_itself_changes_nothing
+tests/test_whatif.py::test_whatif_validation
+tests/test_workbench.py::test_upload_session_isolation_and_withheld_results
+tests/test_workbench.py::test_invalid_upload_is_atomic
+tests/test_workbench.py::test_equivalent_timestamp_upload_keeps_existing_session
+tests/test_workbench.py::test_example_download_is_supported_csv
+tests/test_workbench.py::test_example_download_excludes_records_beyond_declared_end
+
+151 tests collected in 2.23s
