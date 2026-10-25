@@ -1,0 +1,127 @@
+# Thresholds are illustrative defaults, not customer-validated SLOs.
+groups:
+  - name: harbinger-recordings
+    interval: 1m
+    rules:
+      - record: harbinger:patrol_request_seconds:p95_5m
+        expr: |
+          histogram_quantile(0.95,
+            sum by (job, instance, route, le) (
+              rate(harbinger_request_seconds_bucket{job="harbinger",route="/v1/sites/{site_id}/patrol/today"}[5m])
+            )
+          )
+      - record: harbinger:patrol_requests:increase5m
+        expr: |
+          sum by (job, instance, route) (
+            increase(harbinger_request_seconds_count{job="harbinger",route="/v1/sites/{site_id}/patrol/today"}[5m])
+          )
+      - record: harbinger:server_errors:rate5m
+        expr: sum by (job, instance) (rate(harbinger_requests_total{job="harbinger",status=~"5.."}[5m]))
+      - record: harbinger:prediction_p30:mean1h
+        expr: |
+          (sum by (job, instance) (rate(harbinger_p30_sum{job="harbinger"}[1h]))
+            / sum by (job, instance) (rate(harbinger_p30_count{job="harbinger"}[1h])))
+          and on (job, instance)
+            (sum by (job, instance) (rate(harbinger_p30_count{job="harbinger"}[1h])) > 0)
+  - name: harbinger-alerts
+    interval: 1m
+    rules:
+      - alert: HarbingerTargetDown
+        expr: up{job="harbinger"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: Harbinger scrape target is down
+      - alert: HarbingerScrapeMissing
+        expr: absent(up{job="harbinger"})
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Harbinger scrape job has no samples
+      - alert: HarbingerModelUnavailable
+        expr: |
+          (up{job="harbinger"} == 1)
+          unless on (job, instance)
+            (max by (job, instance) (harbinger_model_loaded{job="harbinger"}) == 1)
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Harbinger model is not loaded or its metric is missing
+      - alert: HarbingerPatrolSlow
+        expr: |
+          (harbinger:patrol_request_seconds:p95_5m > 2)
+          and on (job, instance, route) (harbinger:patrol_requests:increase5m >= 20)
+          and on (job, instance) (up{job="harbinger"} == 1)
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Patrol p95 latency exceeds 2 seconds with sufficient traffic
+      - alert: HarbingerServerErrors
+        expr: |
+          (harbinger:server_errors:rate5m > 0)
+          and on (job, instance) (up{job="harbinger"} == 1)
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: Harbinger is returning server errors
+      - alert: HarbingerFeatureDrift
+        expr: |
+          (harbinger_drift_alert_features{job="harbinger"} >= 3)
+          and on (job, instance) (harbinger_drift_status{job="harbinger",state="success"} == 1)
+          and on (job, instance) ((time() - harbinger_drift_last_success_timestamp_seconds{job="harbinger"}) <= 86400)
+          and on (job, instance) (up{job="harbinger"} == 1)
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: At least three features drifted in a successful recent calculation
+      - alert: HarbingerDriftInsufficientData
+        expr: |
+          (harbinger_drift_status{job="harbinger",state="insufficient_data"} == 1)
+          and on (job, instance) (up{job="harbinger"} == 1)
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: Drift cannot be assessed because observations are insufficient
+      - alert: HarbingerDriftError
+        expr: |
+          (harbinger_drift_status{job="harbinger",state="error"} == 1)
+          and on (job, instance) (up{job="harbinger"} == 1)
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Drift calculation failed
+      - alert: HarbingerDriftNotInitialized
+        expr: |
+          (harbinger_drift_status{job="harbinger",state="not_initialized"} == 1)
+          and on (job, instance) (up{job="harbinger"} == 1)
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Drift has not been initialized
+      - alert: HarbingerDriftMetricsMissing
+        expr: |
+          (up{job="harbinger"} == 1)
+          unless on (job, instance) harbinger_drift_status{job="harbinger",state="success"}
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Drift status metrics are missing from a healthy scrape
+      - alert: HarbingerDriftStale
+        expr: |
+          ((time() - harbinger_drift_last_attempt_timestamp_seconds{job="harbinger"}) > 86400)
+          and on (job, instance) (up{job="harbinger"} == 1)
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Drift has not been recalculated for over 24 hours

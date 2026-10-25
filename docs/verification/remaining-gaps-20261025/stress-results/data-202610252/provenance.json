@@ -1,0 +1,327 @@
+{
+  "data_seed": 202610252,
+  "model_seeds": [
+    17,
+    29
+  ],
+  "synthetic": true,
+  "scale": 1,
+  "months": 36,
+  "retrained": false,
+  "selection_changed": false,
+  "design_sha256": "ddfca80482eb1f9c474fad34027de1ea356773383586489bfd29e3c770b4bdf9",
+  "design_commit": "43a4ce5",
+  "source_commit": "e757e50f2ec6d3eebf725ee1e62ac790bcbe3dd6",
+  "source_sha256": {
+    "scripts/extended_stress/__init__.py": "107927fe0a9da7a0517aa65fab499cd68fd3035e96a39d284d40eb3fdc350e66",
+    "scripts/extended_stress/contracts.py": "a88c816dc9f0dc5508a94ec5c1acf412d728756ccb9ab3d675474483a6c0d490",
+    "scripts/extended_stress/run.py": "60aaa798f007b2cdf99087563b10673cf32806ed77051a779ed2aa74d207125c",
+    "scripts/extended_stress/summary.py": "5508db9be3dd13443bdcce9567f4e97515851888feef039078def866f7e3e6a9",
+    "scripts/memo_artifacts.py": "37cfc7fe294cdf72b118d8c310be2fed825f82832429414b382c24e069075989",
+    "scripts/memo_robustness.py": "629c22c1c8c03b83eb0071bd5559a15090905bbde6d0c3c917c490a231efb833",
+    "scripts/robustness/contracts.py": "239b47080e5379cb42a80ac38b98c747b3bac7b9ee5068c57dbc93cca069c71e",
+    "scripts/robustness/run.py": "c0e3ab6052e9b99e2eb789bcfd00b83b4cff0229b5299ceacad3db693355c4c2",
+    "src/harbinger/__init__.py": "cd93906046fbab2ee0f7ad8c7b76c959542138ff234ebf0313c32a33e57eea40",
+    "src/harbinger/api/__init__.py": "827755bc09d72242f225d145bb2a5f075d63096ec77281b588416d077c0b14d4",
+    "src/harbinger/api/analysis.py": "ae9d0cd242eda83c4d72ac0f9d1644ceea2f8a397c7a52522808d3cb9e2f4e91",
+    "src/harbinger/api/backtest.py": "faeb7e71548e3c4045ad36437619a70fb4f107275fe99d9a5c30f746808f683f",
+    "src/harbinger/api/deps.py": "52a10fc56ea134b18371e0e281433806776080f25c2e268fe89580b0e48c9fce",
+    "src/harbinger/api/main.py": "283ecef07a33c85a42ca5b4455f8b99cab2f32fafdf229725c36424a0463c1f0",
+    "src/harbinger/api/records.py": "f8b54ebe60e13f65c30ca8ea1506aef6a2dedf0cc016d660464b99593b197936",
+    "src/harbinger/api/routers/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/harbinger/api/routers/admin.py": "3cb8455f680b16ccd672050927346386598c2652d6677b9c795666a6d9b4da16",
+    "src/harbinger/api/routers/energy.py": "213c982490df21aec6cfb741aae9d12d1b9522aaf6167ed78c0eeaf527edd9a9",
+    "src/harbinger/api/routers/health.py": "3e171f17ef55f2de71c8b912b9874a0d546ee0ac2154b544b7ec6a0cbefcab22",
+    "src/harbinger/api/routers/patrol.py": "de69fdcf9028163139cd30a42ec6fd7d25b8001cb1100586798f7f3de44429ff",
+    "src/harbinger/api/routers/replay.py": "c948b589b0d08662b61891449b089a5307c88f6a73f9f68d4f2320c0533bcb3b",
+    "src/harbinger/api/routers/report.py": "0f2f0a6ed701c56a442bf2da2526dddf0e85b39a7e62b2bb258ffa6405f3e211",
+    "src/harbinger/api/routers/risk.py": "4fe86e9d03e30fa27244e8202869afd79c59d5f1a603b5bbae8bf5b880e61746",
+    "src/harbinger/api/routers/sites.py": "9233b61f8170fb00da6d60b0b1ed48627ea970d883565096a5f37adf2cfaba1e",
+    "src/harbinger/api/routers/text.py": "375fb7c25f46f41719aa946639210ada0d5b967601aa046bab3c2e6a6f3a3016",
+    "src/harbinger/api/routers/workbench.py": "a701ee6a551428514243aa1c21ea86c77868538a65f901f4f5485fb3d59bccff",
+    "src/harbinger/api/store.py": "3065a0718ee122929dba5ddd046b82627e0b17cdad5ab89aae8e69911b3cc5e7",
+    "src/harbinger/api/upload.py": "b362985f525420cc5850453d48b2e5484cc00629b433a435f8091caffcd22567",
+    "src/harbinger/api/whatif.py": "c0ef628fd920889bd54dee56617ff601b58c28faa24d9d33fa08c4dd8fb401fc",
+    "src/harbinger/cli.py": "01e268a0637ff2f921ec5673ff70738e440227726a7cfc8d4e2c955a037c1b0f",
+    "src/harbinger/config.py": "cdbabd143bb0e6aed483862e9b5ab8a89f7da7c9ccd9a428a98479f871409be7",
+    "src/harbinger/console/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/harbinger/eval/__init__.py": "4a7716790e0abb39286044b56fb85d3ec507827fbcb895c350103faf008e8e94",
+    "src/harbinger/eval/metrics.py": "eb2aa20776b2291968c23658d5126e58d15d436d00f29f0f51d268a180a4adf1",
+    "src/harbinger/eval/patrol.py": "d69c4853c39acb2887c28b4fe9bcf5189d0227b6b1e43eead82e3594344986ea",
+    "src/harbinger/eval/run.py": "2ff17f5545c6543e856a2cf668c670e886eb488c25b7a22b436c65a43377d560",
+    "src/harbinger/eval/signals.py": "422805d78c8fa7be4808cf0c815168fafe1bd49032890f70ea0a25247c293abd",
+    "src/harbinger/features/__init__.py": "3eb1b79d4adb722d936690d38233982ce4714bd52cf51f2b275f87c0a2aa318f",
+    "src/harbinger/features/build.py": "2ef1ba8941f6d02c7e815becf0a4388320ae33d4806e68f68559678d73653857",
+    "src/harbinger/features/cache.py": "8b5e085a5a83bede917d96ea0a649c25fdadcc0544470083f8b0361bb3c1f620",
+    "src/harbinger/features/energy.py": "79bc7a19aac3ebdf314097ec4ee73a0abd07b368464490159f4ebdeaf810fe5e",
+    "src/harbinger/features/refresh.py": "5df33cc949f7c434593e5039b746dfcaf797a5bed9729e533ab73bf6a0057ed4",
+    "src/harbinger/features/text.py": "839acaac8bf68cce46be85d194ed04f4ed618ce007e452c6af208c2f82e3c578",
+    "src/harbinger/models/__init__.py": "8e0bfb88b74970e167b56d970c410b05bf7c0f2b6c6ee019ab385b89df27827d",
+    "src/harbinger/models/calibration.py": "4b1928074c4aa3a846c7ebe776e36fd713ad8e8e32589f79a306fd39597543e4",
+    "src/harbinger/models/classify.py": "c01fa14ab5bf4aeed98f924eb2d5c595f081a98b46ec9fdb546076373faddb2d",
+    "src/harbinger/models/coldstart.py": "f55c50453c0c16e51e84f745a0b830015c20ee93307821916546dd384d2a40d6",
+    "src/harbinger/models/common.py": "552b8dc120ba45ac559755898d327861ff3e927d4df97e0f120df438170da5ab",
+    "src/harbinger/models/deep.py": "f8ce67fa4dbd988d53df6f5b28e0a1a1263fbe5075492bb2b15c85e5b0a30335",
+    "src/harbinger/models/energy.py": "9316b3a9d965631498ae264d8a4a21744a3c9ee6f768c6ac44d5eecedfa501f6",
+    "src/harbinger/models/keras_parity.py": "36d3a6966ea4b84ce5894932cdcedf188c9afd8907c4912392ed35918aee9af2",
+    "src/harbinger/models/registry.py": "e7d0eecfef02410bea990899e36f8c0154b0983b9d493416d2859a260d700b68",
+    "src/harbinger/models/survival.py": "c49e1d5a65fb53a0b052dea1c774d1f87989288d712a75301d40f9613c7822a7",
+    "src/harbinger/monitoring/__init__.py": "c443658701e7dfcc572c8c2a2253c41946d65ded796345a701340dd669095e96",
+    "src/harbinger/monitoring/drift.py": "2a2f883d7c4a2e267d8e7000df4fe6e12f2d77f5c696054899ccd6488a27cfe5",
+    "src/harbinger/monitoring/metrics.py": "a16ce61e9ef65e797a37f7bf9d0cc594bebf7c79a49bf73fa336c6c38c007698",
+    "src/harbinger/prescribe/__init__.py": "29594b260915747a9dde797d753dd3676bbd1d3c03216b1753ae8d930927c67c",
+    "src/harbinger/prescribe/explain.py": "e4144a5f08d03cb5e50f42c0237e4cb2695068ceb101bd8b1e09d62eed64764f",
+    "src/harbinger/prescribe/priority.py": "dd7f5aaff32a3e92ee1b942dcd0385bd5e1378e053007826a820b529cf6732e7",
+    "src/harbinger/prescribe/scenarios.py": "52f0688b248b66077e9787e0b375fecf5485ecda4fb22092ae39f4679837d97e",
+    "src/harbinger/prescribe/schedule.py": "29a2d9aea54ec1c3fdebdc0cdfba34be837e4fd4501137b15a78c24eaf347eb0",
+    "src/harbinger/schema.py": "b4dfefb8100b1d73a461399d8869b05b54ce800a7bd5fc61b8dbb87978c61d56",
+    "src/harbinger/synth/__init__.py": "6a61dbfddf320269b6d41caabde2d375a757034a937892159c868b95293a40e5",
+    "src/harbinger/synth/calendar_kr.py": "5bf994a74bf1219f16c0bf616abd0c3424f3cda69a7d35213b7f46b809de6ab7",
+    "src/harbinger/synth/generate.py": "03599d9954e83e9527f4f7b3fd3df21da38f2aba7d127e68c6dce75f2bf05a34",
+    "src/harbinger/synth/memos.py": "877da8dadd74c3aa671f16d15e5204247d5188713d0de4b1ca38365078d97668",
+    "src/harbinger/synth/sites.py": "786960a0af3aa7beb3f1307d3d08a04867a1a779e1aafc1ec1d68b4a807a8353"
+  },
+  "raw_sha256": {
+    "assets.parquet": "296b4483b8eb0f2442f65e354cdf62736ea7130360a529fcc802df186d4c435a",
+    "energy.parquet": "3828623a18de19d354be3b08d702b6df96193f9e12371abdbe81ed88e4cd06eb",
+    "features.parquet": "3215dcd6c1e93b46ad0ce58a91fed1f612e5696bd240c17c0d18f360be4469fd",
+    "inspections.parquet": "10f0993a122611477f9c8f00930bb577c51b248b50b52d76c34f141725313c03",
+    "inspectors.parquet": "8b72d8988164d41cd716737310f07374b7840aaa9b0a376d420c3b71116f5f2a",
+    "latent.parquet": "03ed565e7ffc97dc1462bc1d477138f33e02c27568f2354d485162a4d85ba5dd",
+    "sites.parquet": "a145f9b524da7ceac7221f0233cb5a8b309762723664c5f038792674a7318b4a",
+    "workorders.parquet": "32dd7ade2e67e42dcf8d5ec57d7e0ec6c017ef48706ecd64b1f49cfd468ae154"
+  },
+  "prior_provenance_sha256": "0013a86bfe1a1817c2cbc7cf91ef01eb968560f675924df2d2db9f37e2b5715d",
+  "models": {
+    "17/legacy": {
+      "files": {
+        "hazardnet.pt": "a5432f49a1e5341e0ff57b408c186e604de4787e39d3e3ad448ecb4402659526",
+        "deep_meta.json": "d565aee65f5dcfe7cce871b17d632776c4e9f61d8f84de7cb0fff4004b918622"
+      },
+      "training_record_sha256": "ca69605cfdf8e8abe29e4b4976ab81e8f6bf6a774b1920a6f7df18c755f40f39"
+    },
+    "17/robust": {
+      "files": {
+        "hazardnet.pt": "0dddcc1f91a6136827f2a6469b3696cf4236893a73c7c42c83f98ba10d78229e",
+        "deep_meta.json": "5f922bb243b9b1e58ba5370b1e5bf6b2c19c49b991321b271a5834fc4e1c2c56"
+      },
+      "training_record_sha256": "b2ad7f8dfc30a9be31d26c0824865062fc2332d9358eff1893f6db003cc50d1f"
+    },
+    "17/no_memo": {
+      "files": {
+        "hazardnet.pt": "5d45d79d2ed14468b5983705634ab04ff4b3d6623a45568e5b2827227612c0fc",
+        "deep_meta.json": "f71efed73daa2ae40e62f0b7de887684e59df13d908f3188a0a32dd1c88cea8c"
+      },
+      "training_record_sha256": "b5b7ad6ce497b0026eef30412d584ded93254f1b2dd964fa90e2f186cfa3db40"
+    },
+    "29/legacy": {
+      "files": {
+        "hazardnet.pt": "33b1bdbba272394690f3d628acfe0f0ccc963ddff84d4e68d68612340e6bfec1",
+        "deep_meta.json": "3b9816a8184f90797aade72a40d26a44cf0d7ecb5ca63349aa97d61d8ad2d04a"
+      },
+      "training_record_sha256": "05423112063758a15bc006057576f44d2b391109c0573e42247921a53e7434e3"
+    },
+    "29/robust": {
+      "files": {
+        "hazardnet.pt": "ccd5a7bd085d4bc32745bb70536469187ec9338e3243c0d1b05e4c1fd05c5a3b",
+        "deep_meta.json": "44590097f4d5a9c9b495f3bc8926f4e63fe85b7e3601027576dcc9029a4381b8"
+      },
+      "training_record_sha256": "fd4e3e969dd726f2cab76a6706909b146d3b01b7cfb23b6e3e943f12708f9a14"
+    },
+    "29/no_memo": {
+      "files": {
+        "hazardnet.pt": "bb3be9f3f9b41fb0f515e9ba00ee499ee4ea2472268232da573b2f0a79a10a53",
+        "deep_meta.json": "028d5b91921ae3c8cbb238a89c40f7d669aef3901f5a8b415d09fc2fe48ee0df"
+      },
+      "training_record_sha256": "c554b9b65599fd8d7deaf863750eca4e852a81a1cba319cd0b41eef2d50e1841"
+    }
+  },
+  "fit_until": "2024-01-01T08:02:17.155116",
+  "observation_end": "2026-01-01T00:00:00",
+  "test_start": "2025-07-07T00:00:00",
+  "test_end": "2025-12-01T00:00:00",
+  "damage": {
+    "clean": {
+      "kind": "clean",
+      "delay_days": 0
+    },
+    "cluster_asset": {
+      "kind": "cluster_asset",
+      "seed": 202612252,
+      "eligible_rows": 82521,
+      "changed_rows": 41285,
+      "removed_rows": 41285,
+      "eligible_hangul_characters": 0,
+      "substituted_characters": 0,
+      "severity": {
+        "low": {
+          "eligible": 0,
+          "removed": 0
+        },
+        "medium": {
+          "eligible": 0,
+          "removed": 0
+        },
+        "high": {
+          "eligible": 0,
+          "removed": 0
+        }
+      },
+      "transformed_memo_csv_sha256": "de0a98ad413f62d5e4171062743e6b17fce44f579efde360be59cfcb19628c87"
+    },
+    "cluster_inspector": {
+      "kind": "cluster_inspector",
+      "seed": 202612252,
+      "eligible_rows": 82521,
+      "changed_rows": 41188,
+      "removed_rows": 41188,
+      "eligible_hangul_characters": 0,
+      "substituted_characters": 0,
+      "severity": {
+        "low": {
+          "eligible": 0,
+          "removed": 0
+        },
+        "medium": {
+          "eligible": 0,
+          "removed": 0
+        },
+        "high": {
+          "eligible": 0,
+          "removed": 0
+        }
+      },
+      "transformed_memo_csv_sha256": "1cd1fc71163a9703931465df820ab7254f2209389710343aa5add0e874bc8a41"
+    },
+    "selective_missing": {
+      "kind": "selective_missing",
+      "seed": 202612252,
+      "eligible_rows": 82521,
+      "changed_rows": 21876,
+      "removed_rows": 21876,
+      "eligible_hangul_characters": 0,
+      "substituted_characters": 0,
+      "severity": {
+        "low": {
+          "eligible": 49422,
+          "removed": 4884
+        },
+        "medium": {
+          "eligible": 31480,
+          "removed": 15714
+        },
+        "high": {
+          "eligible": 1619,
+          "removed": 1278
+        }
+      },
+      "transformed_memo_csv_sha256": "d27fd07f327de91f419ba756053e2406e67331c7f36b986c08ac41e05dcec8c5"
+    },
+    "hangul_substitution": {
+      "kind": "hangul_substitution",
+      "seed": 202612252,
+      "eligible_rows": 82521,
+      "changed_rows": 55891,
+      "removed_rows": 0,
+      "eligible_hangul_characters": 793546,
+      "substituted_characters": 119136,
+      "severity": {
+        "low": {
+          "eligible": 0,
+          "removed": 0
+        },
+        "medium": {
+          "eligible": 0,
+          "removed": 0
+        },
+        "high": {
+          "eligible": 0,
+          "removed": 0
+        }
+      },
+      "transformed_memo_csv_sha256": "889064f512627ee5b7bf0d14c008a938695ab9a41d499eedb53e91fbd8331747"
+    },
+    "abbreviations": {
+      "kind": "abbreviations",
+      "seed": 202612252,
+      "eligible_rows": 82521,
+      "changed_rows": 35747,
+      "removed_rows": 0,
+      "eligible_hangul_characters": 0,
+      "substituted_characters": 0,
+      "severity": {
+        "low": {
+          "eligible": 0,
+          "removed": 0
+        },
+        "medium": {
+          "eligible": 0,
+          "removed": 0
+        },
+        "high": {
+          "eligible": 0,
+          "removed": 0
+        }
+      },
+      "transformed_memo_csv_sha256": "e2f9509aee8d4655c8c47f297870b85951bd70df541ef290e324bcda295f1c7f"
+    },
+    "delay_7d": {
+      "kind": "delay_7d",
+      "delay_days": 7
+    }
+  },
+  "coverage": {
+    "clean": {
+      "rows": 47564,
+      "sites": 25,
+      "dates": 22,
+      "mean_source_age_days": 10.807847862391808
+    },
+    "cluster_asset": {
+      "rows": 47564,
+      "sites": 25,
+      "dates": 22,
+      "mean_source_age_days": 10.807847862391808
+    },
+    "cluster_inspector": {
+      "rows": 47564,
+      "sites": 25,
+      "dates": 22,
+      "mean_source_age_days": 10.807847862391808
+    },
+    "selective_missing": {
+      "rows": 47564,
+      "sites": 25,
+      "dates": 22,
+      "mean_source_age_days": 10.807847862391808
+    },
+    "hangul_substitution": {
+      "rows": 47564,
+      "sites": 25,
+      "dates": 22,
+      "mean_source_age_days": 10.807847862391808
+    },
+    "abbreviations": {
+      "rows": 47564,
+      "sites": 25,
+      "dates": 22,
+      "mean_source_age_days": 10.807847862391808
+    },
+    "delay_7d": {
+      "rows": 47564,
+      "sites": 25,
+      "dates": 22,
+      "mean_source_age_days": 17.802524603381467
+    }
+  },
+  "cohort_sha256": "e11baf19c9fd7b96eee7abd7a8ece1a4d9ed0c15d3697d65d89436c48cafbb45",
+  "python": "3.12.14",
+  "packages": {
+    "numpy": "2.5.4",
+    "pandas": "2.3.3",
+    "torch": "2.14.1+cpu",
+    "scikit-learn": "1.9.1",
+    "pyarrow": "26.0.0"
+  },
+  "limits": "Fixed synthetic worlds; invented stress distributions; inspection delivery lag only; no field or deployment claim."
+}

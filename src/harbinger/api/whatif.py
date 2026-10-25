@@ -23,8 +23,8 @@ def _finite(v):
     return None if v is None or (isinstance(v, float) and not np.isfinite(v)) else float(v)
 
 
-def _score(store, row: pd.DataFrame) -> tuple[float, float | None]:
-    p = float(store.bundle["classifier"].predict_proba(row)[0])
+def _score(store, row: pd.DataFrame, model) -> tuple[float, float | None]:
+    p = float(model.predict_proba(row)[0])
     p_deep, _ = store.with_deep(row)
     return p, (float(p_deep[0]) if p_deep is not None else None)
 
@@ -48,9 +48,10 @@ def run_whatif(store, site_id: str, asset_id: str, scenarios: list[dict]) -> dic
     # 기준선: 같은 사이트 사본에서 다시 만든 마지막 행
     Xb = build_features(sub, verbose=False)
     base_row = Xb[Xb["inspection_id"] == last["inspection_id"]]
-    base_p, base_deep = _score(store, base_row)
-    ex = store.explainer
-    features = store.bundle["classifier"].features
+    model, trace = store.model_for(site_id, performed)
+    base_p, base_deep = _score(store, base_row, model)
+    ex = store.explainer_for(trace["selected_model"])
+    features = model.features
     sv_base = ex.shap_values(base_row)[0] if ex else None
     base_matrix = to_matrix(base_row, features)
 
@@ -81,7 +82,7 @@ def run_whatif(store, site_id: str, asset_id: str, scenarios: list[dict]) -> dic
         sub2["inspections"] = pd.concat([ins_wo_last, new], ignore_index=True)
         Xn = build_features(sub2, verbose=False)
         row = Xn[Xn["inspection_id"] == rec["inspection_id"]]
-        p, p_deep = _score(store, row)
+        p, p_deep = _score(store, row, model)
         changed = []
         if ex is not None:
             sv_new = ex.shap_values(row)[0]
@@ -133,5 +134,7 @@ def run_whatif(store, site_id: str, asset_id: str, scenarios: list[dict]) -> dic
         },
         "scenarios": out_scn,
         "model_version": store.bundle["version"],
+        **trace,
+        "explanation_status": "available" if ex else "unavailable_for_selected_model",
         "note": "반사실 시뮬레이션: 마지막 점검(기준선=실제 기록)을 가상의 기록으로 바꿔 같은 시각·같은 이력에서 다시 채점했습니다. 서버 상태는 바뀌지 않습니다.",
     }

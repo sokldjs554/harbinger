@@ -34,13 +34,55 @@ harbinger eval --data data --models models --artifacts artifacts
 
 ## 알람 (Prometheus)
 
-| 조건 | 뜻 | 조치 |
+`deploy/monitoring/rules.yml`은 실제 exporter의 `*_bucket`, `*_count`, `*_sum`과
+라우트 `/v1/sites/{site_id}/patrol/today`를 사용한다. 임계값은 합성 데모용 출발점이며
+고객별 SLO 검증 결과가 아니다. `for` 기간 동안 조건이 지속되어야 발화하며 조건이 사라지면 복구된다.
+
+| 경보 | 조건 / 지속 | 조치 |
 |---|---|---|
-| `harbinger_model_loaded == 0` 5분 | 번들 로드 실패 | 로그의 `store loaded` 부재 확인, 볼륨·버전 확인 |
-| `histogram_quantile(0.95, harbinger_request_seconds{route="/v1/sites/{id}/patrol/today"}) > 2s` | 설명기(SHAP) 비용 | `explain=false` 로 호출하거나 후보 수(3k) 축소 |
-| `harbinger_drift_alert_features >= 3` | 피처 분포 이동 | 재학습 검토, 데이터 파이프라인 변경 여부 확인 |
-| `rate(harbinger_requests_total{status=~"5.."}[5m]) > 0` | 서버 오류 | 로그 `exc` 필드 |
-| `harbinger_p30` 분포의 평균이 하루 새 2배 이동 | 입력 데이터 문제(결측·단위) | 인제스트 소스 확인 |
+| `HarbingerTargetDown` | `up{job="harbinger"} == 0` / 2분 | 프로세스·네트워크·`/metrics` 응답 확인 |
+| `HarbingerScrapeMissing` | `up` 시계열 자체 없음 / 5분 | scrape job·서비스 발견·대상 설정 확인. 관측 없음은 정상 0이 아님 |
+| `HarbingerModelUnavailable` | 정상 scrape에 모델 gauge가 없거나 로드값 1인 버전 없음 / 5분 | 로그·번들 볼륨·manifest 확인 |
+| `HarbingerPatrolSlow` | 최근 5분 p95 > 2초, 요청 ≥ 20 / 5분 | 설명기(SHAP) 비용·후보 수 확인. `explain=false` 비교. 20건 미만이면 이 경보는 판단 보류 |
+| `HarbingerServerErrors` | 최근 5분 5xx 증가율 > 0 / 2분 | JSON 오류 로그와 요청 라우트 확인 |
+| `HarbingerFeatureDrift` | 성공한 계산, 성공 시각이 24시간 이내, 경보 피처 ≥ 3 / 5분 | 입력 스키마·누락·분포·관측 창 확인 후 재학습 검토 |
+| `HarbingerDriftInsufficientData` | `state="insufficient_data"` 값 1 / 15분 | 기준/현재 창 표본·성숙 관측 여부 확인. 정상 드리프트 0으로 해석하지 않음 |
+| `HarbingerDriftError` | `state="error"` 값 1 / 5분 | 예측기·피처 오류 로그 확인. 이전 성공값으로 현재 상태를 대체하지 않음 |
+| `HarbingerDriftNotInitialized` | `state="not_initialized"` 값 1 / 5분 | 초기화·모델 로드 로그 확인 |
+| `HarbingerDriftMetricsMissing` | 정상 scrape에 드리프트 상태 시계열 없음 / 5분 | exporter 버전·수집 필터 확인 |
+| `HarbingerDriftStale` | 마지막 기본 창 계산 시도 후 > 24시간 / 5분 | 입력 배치가 멈췄는지 확인. 재계산 주기는 고객 데이터 주기에 맞춰 조정 |
+
+모니터링은 기동과 공유 인제스트 후 갱신된다. 현재 `/v1/monitoring/drift`는 캐시를 읽으므로
+호출만으로 오래된 계산이 갱신되지는 않는다. 원인을 수정한 뒤 정상 인제스트 또는 재기동으로
+재계산하고 `harbinger_drift_last_attempt_timestamp_seconds`,
+`harbinger_drift_last_success_timestamp_seconds`, `harbinger_drift_status`를 함께 확인한다.
+오류·표본 부족일 때 `harbinger_drift_alert_features`는 NaN이며 정상 0이 아니다.
+
+Recording rules는 순찰 p95·요청 수·5xx 증가율과
+`harbinger:prediction_p30:mean1h`를 제공한다. 예측 평균은
+`rate(harbinger_p30_sum[1h]) / rate(harbinger_p30_count[1h])`이며 관측 건수가 0이면 보류한다.
+이는 실제 `latest_rows` 요청에서 관측한 예측으로 같은 설비가 반복 포함된다.
+전체 설비의 일별 평균이나 고객사 성능이 아니므로 단순한 전일 대비 2배 변화만으로 자동 경보하지 않는다.
+
+저장소 루트에서 검증 및 로컬 Prometheus를 실행한다(`promtool`은 공식 Prometheus 배포본에 포함):
+
+```bash
+promtool check rules deploy/monitoring/rules.yml
+promtool test rules deploy/monitoring/rules.test.yml
+promtool check config deploy/monitoring/prometheus.yml
+prometheus --config.file=deploy/monitoring/prometheus.yml --storage.tsdb.path=/tmp/harbinger-prometheus-data
+```
+
+로컬 config의 대상은 `127.0.0.1:8000`이다. Compose에서는 `deploy/prometheus.yml`에
+`rule_files: ["/etc/prometheus/monitoring/rules.yml"]`를 넣고 Prometheus 서비스에
+`./deploy/monitoring:/etc/prometheus/monitoring:ro` 볼륨을 마운트한다.
+`http://localhost:9090/api/v1/rules`에서 평가 상태·최근 오류를,
+`http://localhost:9090/api/v1/alerts`에서 pending/firing 상태를 확인한다.
+Alertmanager 수신처·연락 경로 설정은 별도이며 이 규칙 파일만으로 알림이 전달되지는 않는다.
+현재 검증은 고정 시계열에 대한 실제 promtool 실행이며 운영 사고·알림 전달 훈련을 완료했다는 뜻이 아니다.
+
+공식 문서: [규칙 설정](https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/),
+[규칙 단위 검사](https://prometheus.io/docs/prometheus/latest/configuration/unit_testing_rules/).
 
 ## 흔한 장애
 
@@ -51,4 +93,4 @@ harbinger eval --data data --models models --artifacts artifacts
 
 ## 보안·개인정보
 
-점검자 ID 는 가명 처리된 식별자여야 한다. 메모에는 사람 이름·연락처가 들어올 수 있으므로 인제스트 단계에서 마스킹을 권장한다(합성 데이터에는 없다). 콘솔은 인증이 없다 — FMS 의 SSO 뒤에 두거나 Cloud Run IAM / App Runner VPC 로 접근을 제한한다.
+점검자 ID 는 가명 처리된 식별자여야 한다. 메모에는 사람 이름·연락처가 들어올 수 있으므로 인제스트 단계에서 마스킹을 권장한다(합성 데이터에는 없다). 공개 데모는 익명이지만 [보호 모드](../protected-mode.md)에서 로그인·고객사 권한을 적용할 수 있다. SSO 연동·다중 서버 세션 공유는 범위 밖이다. 보호 모드의 `/metrics`는 관리자 쿠키 또는 읽기 전용 metrics bearer가 필요하며, 이 토큰으로 다른 API를 호출할 수 없다.

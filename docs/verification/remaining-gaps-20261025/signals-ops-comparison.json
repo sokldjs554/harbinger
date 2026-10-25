@@ -1,0 +1,201 @@
+{
+  "source": {
+    "features_path": "/tmp/hb-memo-full/data-202610251/data/features.parquet",
+    "sha256": "2d6ce147ee45a85f0e24dfae0bf9448ed988f217719ef9f22eb39d474f599e72",
+    "bytes": 19670470,
+    "n_source_rows": 126861
+  },
+  "n_valid_rows": 123415,
+  "n_source_sites": 25,
+  "n_valid_sites": 25,
+  "uncertainty": {
+    "method": "site_cluster_percentile_bootstrap",
+    "cluster_column": "site_id",
+    "confidence": 0.95,
+    "seed": 20261025,
+    "draws": 2000,
+    "minimum_clusters": 5,
+    "n_clusters": 25,
+    "estimand": "pooled_row_weighted_rate_within_each_cell",
+    "resampling": "contributing_sites_with_replacement_preserving_all_within_site_rows",
+    "quantile_method": "linear",
+    "limitations": "Descriptive synthetic-data intervals; five sites is a withholding floor, not a coverage guarantee. Assumes independent sites; cross-site inspector dependence is not covered. Pointwise intervals, not causal effects or simultaneous comparisons. No prespecified direction of change in interval width."
+  },
+  "all_15_cell_counts_and_rates_equal_legacy_on_same_source": true,
+  "cells": [
+    {
+      "cell": "by_judgement/good/without_weak",
+      "n": 75579,
+      "k": 3179,
+      "n_clusters": 25,
+      "rate": 0.042061948424827,
+      "legacy_wilson_width_same_rows": 0.0028624461204961177,
+      "cluster_width": 0.00769205522702214,
+      "width_ratio": 2.6872314458407893,
+      "ci_status": "ok"
+    },
+    {
+      "cell": "by_judgement/good/with_weak",
+      "n": 25287,
+      "k": 2699,
+      "n_clusters": 25,
+      "rate": 0.10673468580693637,
+      "legacy_wilson_width_same_rows": 0.0076118981654416384,
+      "cluster_width": 0.011127916378462985,
+      "width_ratio": 1.4619108317796772,
+      "ci_status": "ok"
+    },
+    {
+      "cell": "by_judgement/caution/without_weak",
+      "n": 7961,
+      "k": 1491,
+      "n_clusters": 25,
+      "rate": 0.18728802914206757,
+      "legacy_wilson_width_same_rows": 0.017138789101075746,
+      "cluster_width": 0.03095073157375977,
+      "width_ratio": 1.8058878833987806,
+      "ci_status": "ok"
+    },
+    {
+      "cell": "by_judgement/caution/with_weak",
+      "n": 12998,
+      "k": 1985,
+      "n_clusters": 25,
+      "rate": 0.15271580243114324,
+      "legacy_wilson_width_same_rows": 0.01236778684115386,
+      "cluster_width": 0.02563605225559798,
+      "width_ratio": 2.0728083839781193,
+      "ci_status": "ok"
+    },
+    {
+      "cell": "by_judgement/bad/without_weak",
+      "n": 1144,
+      "k": 190,
+      "n_clusters": 25,
+      "rate": 0.1660839160839161,
+      "legacy_wilson_width_same_rows": 0.04311678435565802,
+      "cluster_width": 0.039182716317909344,
+      "width_ratio": 0.9087578515759043,
+      "ci_status": "ok"
+    },
+    {
+      "cell": "by_judgement/bad/with_weak",
+      "n": 446,
+      "k": 56,
+      "n_clusters": 25,
+      "rate": 0.12556053811659193,
+      "legacy_wilson_width_same_rows": 0.06157365508152446,
+      "cluster_width": 0.06174448942647204,
+      "width_ratio": 1.00277447139887,
+      "ci_status": "ok"
+    },
+    {
+      "cell": "good_by_weak_count/0회",
+      "n": 44592,
+      "k": 1567,
+      "n_clusters": 25,
+      "rate": 0.03514083243631145,
+      "legacy_wilson_width_same_rows": 0.0034189132013737744,
+      "cluster_width": 0.005964671602303885,
+      "width_ratio": 1.7446104217875973,
+      "ci_status": "ok"
+    },
+    {
+      "cell": "good_by_weak_count/1회",
+      "n": 23437,
+      "k": 1430,
+      "n_clusters": 25,
+      "rate": 0.06101463497887955,
+      "legacy_wilson_width_same_rows": 0.006129959090031563,
+      "cluster_width": 0.01091941830399893,
+      "width_ratio": 1.7813199311160015,
+      "ci_status": "ok"
+    },
+    {
+      "cell": "good_by_weak_count/2회",
+      "n": 18120,
+      "k": 1345,
+      "n_clusters": 25,
+      "rate": 0.07422737306843268,
+      "legacy_wilson_width_same_rows": 0.007634991561151966,
+      "cluster_width": 0.01191552599834432,
+      "width_ratio": 1.5606469113826378,
+      "ci_status": "ok"
+    },
+    {
+      "cell": "good_by_weak_count/3회 이상",
+      "n": 14717,
+      "k": 1536,
+      "n_clusters": 25,
+      "rate": 0.1043690969626962,
+      "legacy_wilson_width_same_rows": 0.009880004322463026,
+      "cluster_width": 0.013475392868898428,
+      "width_ratio": 1.3639055641160989,
+      "ci_status": "ok"
+    },
+    {
+      "cell": "good_by_inspector/형식적 메모 적은 점검자",
+      "n": 36284,
+      "k": 2058,
+      "n_clusters": 25,
+      "rate": 0.05671921508102745,
+      "legacy_wilson_width_same_rows": 0.004760664012360499,
+      "cluster_width": 0.01119220693297697,
+      "width_ratio": 2.35097602013453,
+      "ci_status": "ok"
+    },
+    {
+      "cell": "good_by_inspector/중간",
+      "n": 32691,
+      "k": 1908,
+      "n_clusters": 25,
+      "rate": 0.05836468752867762,
+      "legacy_wilson_width_same_rows": 0.005083296585460542,
+      "cluster_width": 0.010983704730568929,
+      "width_ratio": 2.1607444196714747,
+      "ci_status": "ok"
+    },
+    {
+      "cell": "good_by_inspector/형식적 메모 많은 점검자",
+      "n": 31655,
+      "k": 1906,
+      "n_clusters": 25,
+      "rate": 0.06021165692623598,
+      "legacy_wilson_width_same_rows": 0.00524174559192403,
+      "cluster_width": 0.009682815084151364,
+      "width_ratio": 1.847250102917948,
+      "ci_status": "ok"
+    },
+    {
+      "cell": "good_by_dwell/short_under_20s",
+      "n": 20711,
+      "k": 1752,
+      "n_clusters": 25,
+      "rate": 0.08459272850176235,
+      "legacy_wilson_width_same_rows": 0.007580549654679802,
+      "cluster_width": 0.016909746883682575,
+      "width_ratio": 2.2306755649629513,
+      "ci_status": "ok"
+    },
+    {
+      "cell": "good_by_dwell/normal",
+      "n": 80155,
+      "k": 4126,
+      "n_clusters": 25,
+      "rate": 0.051475266670825276,
+      "legacy_wilson_width_same_rows": 0.0030596297816075785,
+      "cluster_width": 0.007277403801511748,
+      "width_ratio": 2.3785243055413336,
+      "ci_status": "ok"
+    }
+  ],
+  "historical_artifacts_modified": false,
+  "dates": {
+    "minimum_t": "2023-01-01 08:10:31.847671",
+    "maximum_t": "2025-12-31 17:59:07.020653"
+  },
+  "library_versions": {
+    "numpy": "2.5.4",
+    "pandas": "2.3.3"
+  }
+}

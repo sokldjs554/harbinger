@@ -1,0 +1,40 @@
+Expected RED: the earlier independent-deletion contract does not implement inspector-cluster missingness. This is a new scenario gap, not a claim that the earlier scenario was implemented incorrectly.
+
+Executed Python:
+import numpy as np
+import pandas as pd
+from scripts.robustness.contracts import perturb_memos
+
+# Earlier independent deletion cannot satisfy the new inspector block contract.
+n=112
+raw=pd.DataFrame({'inspection_id':[f'a{i}' for i in range(n)]+[f'b{i}' for i in range(n)],
+                  'performed_at':list(pd.date_range('2025-01-01',periods=n))*2,
+                  'site_id':'s', 'inspector_id':'p', 'memo':'소음 심함'})
+altered,_=perturb_memos(raw,'2025-01-01','missing',0.5,42)
+mask=altered.memo.eq('').to_numpy()
+np.testing.assert_array_equal(mask[:n],mask[n:],err_msg='New inspector-cluster contract absent in previous independent deletion')
+
+Actual failure output (exit 1):
+Traceback (most recent call last):
+  File "/tmp/stress-prior-contract-red.py", line 12, in <module>
+    np.testing.assert_array_equal(mask[:n],mask[n:],err_msg='New inspector-cluster contract absent in previous independent deletion')
+  File "/tmp/harbinger-review-venv/lib/python3.12/site-packages/numpy/testing/_private/utils.py", line 1128, in assert_array_equal
+    assert_array_compare(operator.__eq__, actual, desired, err_msg=err_msg,
+  File "/tmp/harbinger-review-venv/lib/python3.12/site-packages/numpy/testing/_private/utils.py", line 988, in assert_array_compare
+    raise AssertionError(msg)
+AssertionError: 
+Arrays are not equal
+New inspector-cluster contract absent in previous independent deletion
+Mismatched elements: 52 / 112 (46.4%)
+First 5 mismatches are at indices:
+ [6]: True (ACTUAL), False (DESIRED)
+ [7]: False (ACTUAL), True (DESIRED)
+ [8]: False (ACTUAL), True (DESIRED)
+ [10]: False (ACTUAL), True (DESIRED)
+ [12]: True (ACTUAL), False (DESIRED)
+ ACTUAL: array([False,  True,  True, False,  True,  True,  True, False, False,
+       False, False,  True,  True,  True,  True,  True, False, False,
+        True, False,  True, False, False,  True,  True, False, False,...
+ DESIRED: array([False,  True,  True, False,  True,  True, False,  True,  True,
+       False,  True,  True, False,  True, False,  True, False,  True,
+        True,  True, False,  True,  True,  True,  True, False,  True,...

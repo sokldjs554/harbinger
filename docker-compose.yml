@@ -25,6 +25,7 @@ services:
     ports: ["9090:9090"]
     volumes:
       - ./deploy/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./deploy/monitoring:/etc/prometheus/monitoring:ro
     depends_on: [api]
 volumes:
   harbinger-data:

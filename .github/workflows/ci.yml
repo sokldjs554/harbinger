@@ -28,6 +28,8 @@ jobs:
         run: ruff check src tests scripts && ruff format --check src tests scripts
       - name: Tests
         run: pytest -q
+      - name: Monitoring rule syntax and firing/recovery
+        run: bash scripts/check_monitoring.sh
       - name: Smoke pipeline (tiny synthetic → features → eval → API)
         run: |
           harbinger synth --out /tmp/hb/data --scale 0.15 --months 12 --seed 7
@@ -40,10 +42,15 @@ jobs:
           HARBINGER_DATA_DIR=/tmp/hb/data HARBINGER_MODEL_DIR=/tmp/hb/models HARBINGER_ARTIFACT_DIR=/tmp/hb/artifacts HARBINGER_DEMO_BOOTSTRAP=0 uvicorn harbinger.api.main:app --port 8000 > /tmp/browser-server.txt 2>&1 &
           for i in $(seq 1 60); do curl -fsS http://127.0.0.1:8000/health && break || sleep 2; done
           python scripts/check_browser.py --out /tmp/browser-checks
+      - name: Protected API and separate-user browser checks
+        run: |
+          python -m scripts.check_protected_stack --data /tmp/hb/data --models /tmp/hb/models --artifacts /tmp/hb/artifacts --out /tmp/protected-checks
       - name: Browser interactions (saved demo and mobile filters)
         run: |
           python -m http.server 8020 --directory docs/demo > /tmp/static-server.txt 2>&1 &
           python scripts/check_browser.py --static --url http://127.0.0.1:8020/ --out /tmp/static-mobile
+          python -m scripts.check_policy_display --url http://127.0.0.1:8020/ --out /tmp/policy-display
+          python -m scripts.check_retest --url http://127.0.0.1:8020/retest.html --out /tmp/retest-recorder
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -51,6 +58,9 @@ jobs:
           path: |
             /tmp/browser-checks
             /tmp/static-mobile
+            /tmp/policy-display
+            /tmp/retest-recorder
+            /tmp/protected-checks
       - name: Docs numbers match artifacts
         run: |
           python scripts/fill_numbers.py --check

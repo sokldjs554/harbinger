@@ -519,8 +519,10 @@
           })
           .join("")
       : `<p class="source-note">${saved ? "이 설비의 상세 근거는 저장된 데모에 포함되지 않았습니다. 최근 원문만 표시합니다." : "이 설비의 모델 기여도를 계산할 수 없습니다. 원문 기록을 확인해 주세요."}</p>`;
+    const selectedModel = r?.selected_model ?? a.selected_model ?? "미기록",
+      policyRevision = r?.policy_revision ?? a.policy_revision ?? "별도 정책 없음";
     $("model-values").innerHTML =
-      `<p>모델 ${esc(data.model_version)} · 예측 기준 ${esc(data.as_of)}. SHAP 기여도는 모델 점수 단위이며 확률의 변화량(%p)이 아닙니다.</p><table><thead><tr><th>항목</th><th>입력값</th><th>기여도</th></tr></thead><tbody>${contributions.map((c) => `<tr><td>${esc(c.label || c.feature)}</td><td>${Number.isFinite(c.value) ? Number(c.value.toFixed(3)) : "—"}</td><td>${Number.isFinite(c.contribution ?? c.shap) ? (c.contribution ?? c.shap).toFixed(3) : "—"}</td></tr>`).join("")}</tbody></table>`;
+      `<p>사용 모델 ${esc(selectedModel)} · 정책 ${esc(policyRevision)} · 모델 묶음 ${esc(data.model_version)} · 예측 기준 ${esc(data.as_of)}. SHAP 기여도는 모델 점수 단위이며 확률의 변화량(%p)이 아닙니다.</p><table><thead><tr><th>항목</th><th>입력값</th><th>기여도</th></tr></thead><tbody>${contributions.map((c) => `<tr><td>${esc(c.label || c.feature)}</td><td>${Number.isFinite(c.value) ? Number(c.value.toFixed(3)) : "—"}</td><td>${Number.isFinite(c.contribution ?? c.shap) ? (c.contribution ?? c.shap).toFixed(3) : "—"}</td></tr>`).join("")}</tbody></table>`;
     $("model-details").open = false;
     const orders = r?.explanation?.evidence?.recent_workorders || [];
     $("workorder-list").innerHTML = orders.length
@@ -533,7 +535,7 @@
           .join("")
       : '<p class="source-note">제공된 상세 응답에 정비 원문이 없습니다. 전체 이력이 없다는 뜻은 아닙니다.</p>';
     $("detail-provenance").textContent =
-      `${synthetic() ? "합성 예제" : "사용자 업로드"} · ${saved ? "저장된 계산 결과" : "Python 모델 계산"} · 모델 ${data.model_version} · 예측 기준 ${data.as_of}. 이후 고장 결과는 검증에만 사용합니다.`;
+      `${synthetic() ? "합성 예제" : "사용자 업로드"} · ${saved ? "저장된 계산 결과" : "Python 모델 계산"} · 사용 모델 ${selectedModel} · 모델 묶음 ${data.model_version} · 예측 기준 ${data.as_of}. 이후 고장 결과는 검증에만 사용합니다.`;
     $("asset-outcome-text").textContent =
       a.failed_within_30d == null
         ? `평가 보류 · ${data.observation_confirmed === false ? "고장 기록의 완전성이 확인되지 않았습니다." : "기준일 이후 30일 관측이 부족합니다."} 자료 확인 기준일 ${date(data.observation_end)}.`

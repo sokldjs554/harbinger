@@ -1,0 +1,17 @@
+{
+  "abbreviations-sources.csv.gz": "7a0fca129c6244fbe13eb0dd210d0e26df43e2e55775547a12f60ef800222dcc",
+  "clean-sources.csv.gz": "7a0fca129c6244fbe13eb0dd210d0e26df43e2e55775547a12f60ef800222dcc",
+  "cluster_asset-sources.csv.gz": "7a0fca129c6244fbe13eb0dd210d0e26df43e2e55775547a12f60ef800222dcc",
+  "cluster_inspector-sources.csv.gz": "7a0fca129c6244fbe13eb0dd210d0e26df43e2e55775547a12f60ef800222dcc",
+  "delay_7d-sources.csv.gz": "6e08f513508edcf0d69190d26de06abface01f3a5009ad4c54b54cdcfe642f9e",
+  "hangul_substitution-sources.csv.gz": "7a0fca129c6244fbe13eb0dd210d0e26df43e2e55775547a12f60ef800222dcc",
+  "model-17/metrics.json": "8b0fd306c3bc77882e45b146be959bf258d53d3b216e744cbbc0c6b27edb35d9",
+  "model-17/paired-site-bootstrap.json": "8e7a8f445248bed66c21d6ebe81c5c56647c70da0925336533293807f1a9697d",
+  "model-17/predictions.npz": "d6587f893126dc36f849332388b8ea264154222db2ebfe36e37e3d1b348fd73c",
+  "model-29/metrics.json": "036ab03691063a62de8ee2f4bbf8ec9fdab532c439bae19919fef4154925f7fc",
+  "model-29/paired-site-bootstrap.json": "e23dc1d74bda3e25f572544d3eff175f860f27ee2bdb0ad1b860f8dd2884a811",
+  "model-29/predictions.npz": "e9cfd63b279dee3ad77ea25e8a9808c8bbb6d22ec8027b2ad1ae544814fcd1ba",
+  "provenance.json": "976a9384e7d987d87224d73ed022ea6d892a90e1f20ceca39497b273ea006448",
+  "rows.csv.gz": "92009c0c0311efe0dd36102ec975c669036fcdb4b94dc47e31b55b9d76006968",
+  "selective_missing-sources.csv.gz": "7a0fca129c6244fbe13eb0dd210d0e26df43e2e55775547a12f60ef800222dcc"
+}

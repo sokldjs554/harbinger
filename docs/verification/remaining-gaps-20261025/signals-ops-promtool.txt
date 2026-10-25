@@ -1,0 +1,67 @@
+Official release: https://github.com/prometheus/prometheus/releases/download/v2.54.1/prometheus-2.54.1.linux-amd64.tar.gz
+Checksum source: https://github.com/prometheus/prometheus/releases/download/v2.54.1/sha256sums.txt
+SHA256 verified: 31715ef65e8a898d0f97c8c08c03b6b9afe485ac84e1698bcfec90fc6e62924f
+COMMAND: promtool --version
+promtool, version 2.54.1 (branch: HEAD, revision: e6cfa720fbe6280153fab13090a483dbd40bece3)
+  build user:       root@812ffd741951
+  build date:       20240827-10:56:41
+  go version:       go1.22.6
+  platform:         linux/amd64
+  tags:             netgo,builtinassets,stringlabels
+
+EXIT: 0
+COMMAND: promtool check rules deploy/monitoring/rules.yml
+Checking deploy/monitoring/rules.yml
+  SUCCESS: 15 rules found
+
+
+EXIT: 0
+COMMAND: promtool test rules deploy/monitoring/rules.test.yml
+Unit Testing:  deploy/monitoring/rules.test.yml
+  SUCCESS
+
+
+EXIT: 0
+COMMAND: promtool check config deploy/monitoring/prometheus.yml
+Checking deploy/monitoring/prometheus.yml
+  SUCCESS: 1 rule files found
+ SUCCESS: deploy/monitoring/prometheus.yml is valid prometheus config file syntax
+
+Checking deploy/monitoring/rules.yml
+  SUCCESS: 15 rules found
+
+
+EXIT: 0
+Official release: https://github.com/prometheus/prometheus/releases/download/v3.5.0/prometheus-3.5.0.linux-amd64.tar.gz
+Checksum source: https://github.com/prometheus/prometheus/releases/download/v3.5.0/sha256sums.txt
+SHA256 verified: e811827af26d822afb09a4f28314f61b618b12cff5369835a67f674d8b46f39a
+COMMAND: promtool --version
+promtool, version 3.5.0 (branch: HEAD, revision: 8be3a9560fbdd18a94dedec4b747c35178177202)
+  build user:       root@4451b64cb451
+  build date:       20250714-16:15:23
+  go version:       go1.24.5
+  platform:         linux/amd64
+  tags:             netgo,builtinassets
+
+EXIT: 0
+COMMAND: promtool check rules deploy/monitoring/rules.yml
+Checking deploy/monitoring/rules.yml
+  SUCCESS: 15 rules found
+
+
+EXIT: 0
+COMMAND: promtool test rules deploy/monitoring/rules.test.yml
+  SUCCESS
+
+
+EXIT: 0
+COMMAND: promtool check config deploy/monitoring/prometheus.yml
+Checking deploy/monitoring/prometheus.yml
+  SUCCESS: 1 rule files found
+ SUCCESS: deploy/monitoring/prometheus.yml is valid prometheus config file syntax
+
+Checking deploy/monitoring/rules.yml
+  SUCCESS: 15 rules found
+
+
+EXIT: 0

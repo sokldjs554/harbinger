@@ -1,0 +1,27 @@
+Negative control: replace real route {site_id} with legacy {id} in rules only. Expected rejection.
+  FAILED:
+    name: real route histogram p95 fires and recovers,
+    alertname: HarbingerPatrolSlow, time: 7m,
+        exp:[
+            0:
+              Labels:{alertname="HarbingerPatrolSlow", instance="api:8000", job="harbinger", route="/v1/sites/{site_id}/patrol/today", severity="warning"}
+              Annotations:{summary="Patrol p95 latency exceeds 2 seconds with sufficient traffic"}
+            ],
+        got:[]
+
+    expr: "harbinger:patrol_request_seconds:p95_5m", time: 7m,
+        exp: {__name__="harbinger:patrol_request_seconds:p95_5m", instance="api:8000", job="harbinger", route="/v1/sites/{site_id}/patrol/today"} 4.875E+00
+        got: nil
+
+    name: incorrect legacy route does not masquerade as current patrol latency,
+    alertname: HarbingerPatrolSlow, time: 10m,
+        exp:[],
+        got:[
+            0:
+              Labels:{alertname="HarbingerPatrolSlow", instance="api:8000", job="harbinger", route="/v1/sites/{id}/patrol/today", severity="warning"}
+              Annotations:{summary="Patrol p95 latency exceeds 2 seconds with sufficient traffic"}
+            ]
+
+
+
+EXIT: 1

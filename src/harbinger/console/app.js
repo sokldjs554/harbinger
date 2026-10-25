@@ -382,9 +382,12 @@
     q.push({ label: "체류 정상", value: sg.good_by_dwell.normal.rate, lo: sg.good_by_dwell.normal.lo, hi: sg.good_by_dwell.normal.hi, note: `n=${fmtN(sg.good_by_dwell.normal.n)}`, color: "var(--deemph)" });
     C.hbars($("#sig-quality"), q, { fmt: (v) => fmtP(v), valueName: "30일 내 고장률", labelW: 190, barHeight: 14, gap: 8, max: 0.11, maxLabel: 30, label: "점검 품질별 고장률" });
     const insp = sg.good_by_inspector.map((c) => fmtP(c.rate)).join(" / ");
+    const method = sg.uncertainty?.method === "site_cluster_percentile_bootstrap"
+      ? `95% 구간은 사이트 군집 bootstrap(${fmtN(sg.uncertainty.draws)}회, seed ${sg.uncertainty.seed})입니다. 사이트 안의 반복 설비·점검자 기록을 함께 재표집합니다. 셀별 사이트가 ${sg.uncertainty.minimum_clusters}개 미만이거나 결과가 한 종류뿐이면 구간을 보류합니다. 사이트 간 독립을 가정하며 구간 폭의 변화 방향은 단정하지 않습니다.`
+      : "이 과거 산출물은 행 독립 Wilson 구간을 사용했습니다. 설비·점검자 반복 의존성을 반영하지 않으므로 구간 폭과 포함률을 보장하지 않습니다.";
     const cc = $("#sig-caveat"); clear(cc);
     cc.append(el("b", {}, "읽을 때 주의 "), document.createTextNode(
-      `① 이 신호는 생성기가 넣은 가정입니다(“성실한 점검자는 체크리스트가 넘어가기 전에 메모에 먼저 쓴다”) — 실데이터에서 가장 먼저 다시 만들 표입니다. ② 점검자의 형식적 메모 비율로는 “양호”의 신뢰도가 갈리지 않았습니다(${insp}). 체류 20초 미만만 뚜렷했습니다. ③ 이미 “주의”·“불량”이면 약신호가 오히려 낮습니다 — 조치 절차가 이미 시작됐기 때문으로 보이며 이는 해석일 뿐입니다. ④ 신뢰구간은 설비·점검자 군집을 무시한 Wilson 구간이라 실제보다 좁습니다.`));
+      `① 이 신호는 생성기가 넣은 가정입니다(“성실한 점검자는 체크리스트가 넘어가기 전에 메모에 먼저 쓴다”) — 실데이터에서 가장 먼저 다시 만들 표입니다. ② 점검자의 형식적 메모 비율별 고장률은 ${insp}입니다. ③ 판정별 차이는 기술통계이며 인과 효과나 모델 성능을 뜻하지 않습니다. ④ ${method}`));
   };
 
   /* ---------- 점검 품질 ---------- */

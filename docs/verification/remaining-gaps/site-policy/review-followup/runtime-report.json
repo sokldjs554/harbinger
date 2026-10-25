@@ -1,0 +1,39 @@
+{
+  "kind": "synthetic-operational-integration-check",
+  "date_shift_years": 3,
+  "mutation_scope": "in-memory only",
+  "performance_claim": false,
+  "as_of": "2026-12-15T00:00:00",
+  "site_id": "S01",
+  "assets_scored": 104,
+  "model": {
+    "version": "v20261025-231343",
+    "selected_model": "without_text",
+    "policy_revision": "718eab3b75d1f7dced5dea11db82b6fa909ecfbfc1ccac74aa0289a5c570113f",
+    "policy_reason": "validation_brier",
+    "policy_test_start": "2027-01-01T00:00:00",
+    "headline": null,
+    "headline_status": "withheld_for_selected_model",
+    "headline_scope": "stored_bundle_baseline_reference",
+    "baseline_reference": {
+      "selected_model": "baseline",
+      "version": "v20261025-231343",
+      "scope": "stored_bundle_baseline_reference",
+      "headline": {
+        "auroc": 0.7520456684635788,
+        "pr_auc": 0.22833237642425708,
+        "brier": 0.07707523828764073,
+        "ece": 0.025352478031808498,
+        "patrol_precision_at_10": 0.23888888888888887,
+        "patrol_lift_vs_round_robin": 5.733333333333333
+      }
+    }
+  },
+  "checks": {
+    "direct_selected_prediction_parity": true,
+    "markdown_trace": true,
+    "top_asset_trace": true,
+    "nonbaseline_headline_withheld": true,
+    "baseline_reference_labelled": true
+  }
+}

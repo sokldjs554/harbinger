@@ -1,0 +1,5 @@
+/tmp/harbinger-review-venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+Account file saved with mode 0600. Restart the service to apply account changes.
+PASSED 163 adversarial checks
+sites ['S01', 'S02'] routes 39 shared sites 4

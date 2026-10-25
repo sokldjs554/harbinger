@@ -19,6 +19,7 @@ from harbinger.config import Settings
 from harbinger.features.build import FEATURE_SEMANTICS_VERSION, build_features, load_tables
 from harbinger.features.refresh import Refresher
 from harbinger.features.text import LAZY_MEMOS
+from harbinger.models import site_policy
 from harbinger.models.registry import list_versions, load_bundle
 from harbinger.monitoring.drift import feature_drift, prediction_drift
 from harbinger.monitoring.metrics import (
@@ -66,6 +67,12 @@ class Store:
         self.tables = load_tables(d)
         self.X = pd.read_parquet(d / "features.parquet")
         self.bundle = load_bundle(m)
+        try:
+            self.bundle["_policy_bundle_hash"] = site_policy.bundle_hash(m, self.bundle)
+        except (OSError, ValueError):
+            # The optional policy may not weaken the existing baseline loader.
+            # Unverifiable in-memory bundles cannot activate policy routing.
+            self.bundle["_policy_bundle_hash"] = None
         inspections = self.tables["inspections"]
         if inspections.groupby("inspector_id")["site_id"].nunique().gt(1).any():
             feature_meta_path = d / "features_meta.json"
@@ -126,6 +133,35 @@ class Store:
         ts = pd.Timestamp(as_of)
         return ts + pd.Timedelta(hours=23, minutes=59) if ts == ts.normalize() else ts
 
+    def model_for(self, site_id: str, as_of: pd.Timestamp):
+        return site_policy.resolve(self.settings.model_dir, self.bundle, site_id, as_of)
+
+    def explainer_for(self, selected_model: str):
+        # Existing TreeExplainer is certified only for the baseline classifier.
+        # Returning unavailable is safer than displaying another model's SHAP.
+        return self.explainer if selected_model == "baseline" else None
+
+    def score_rows(self, rows: pd.DataFrame, as_of: pd.Timestamp) -> pd.DataFrame:
+        rows = rows.copy()
+        routes = site_policy.resolve_many(
+            self.settings.model_dir, self.bundle, rows["site_id"].unique(), as_of
+        )
+        for site_id, index in rows.groupby("site_id").groups.items():
+            model, trace = routes[str(site_id)]
+            rows.loc[index, "p30"] = model.predict_proba(rows.loc[index])
+            for key, value in trace.items():
+                if key not in rows:
+                    rows[key] = pd.Series(index=rows.index, dtype=object)
+                rows.loc[index, key] = value
+        return rows
+
+    @staticmethod
+    def routing_trace(row) -> dict:
+        return {
+            key: row.get(key)
+            for key in ("selected_model", "policy_revision", "policy_reason", "policy_test_start")
+        }
+
     # ---------- 예측 ----------
     def latest_rows(self, site_id: str | None, as_of: pd.Timestamp, max_age_days: int = 120) -> pd.DataFrame:
         X = self.X
@@ -139,7 +175,7 @@ class Store:
         rows = rows.merge(self.tables["assets"][["asset_id", "name", "zone"]], on="asset_id", how="left")
         # 점검 뒤에 생긴 고장·정비와 시간 경과를 기준 시각에 맞춰 반영한다 (features/refresh.py)
         rows = self.refresher.apply(rows, as_of)
-        rows["p30"] = self.bundle["classifier"].predict_proba(rows)
+        rows = self.score_rows(rows, as_of)
         for probability in rows["p30"]:
             if np.isfinite(probability) and 0 <= probability <= 1:
                 PRED_P30.observe(float(probability))
@@ -179,11 +215,14 @@ class Store:
                 r["category"], float(r["p30"]), np.array(surv) if surv else None
             ),
             "model_version": self.bundle["version"],
+            **self.routing_trace(r),
         }
         if explain:
-            ex = self.explainer
+            ex = self.explainer_for(r["selected_model"])
             out["explanation"] = {
                 "contributions": ex.top_contributions(rows, k=6)[0] if ex else None,
+                "status": "available" if ex else "unavailable_for_selected_model",
+                "selected_model": r["selected_model"],
                 "evidence": evidence_for_asset(
                     self.tables["inspections"], self.tables["workorders"], asset_id, as_of
                 ),
@@ -200,10 +239,11 @@ class Store:
                 "note": "해당 시점에 유효한 점검 기록이 없습니다.",
             }
         expl = None
-        if explain and self.explainer is not None:
+        ex = self.explainer_for(rows.iloc[0]["selected_model"]) if explain else None
+        if ex is not None:
             # 상위 후보 3k 개만 설명해 비용을 줄인다
             cand = rows.nlargest(min(len(rows), 3 * k), "p30")
-            contrib = self.explainer.top_contributions(cand, k=4)
+            contrib = ex.top_contributions(cand, k=4)
             cmap = dict(zip(cand["asset_id"], contrib))
             expl = [cmap.get(a, []) for a in rows["asset_id"]]
         items = rank_patrol(rows, as_of, k=k, explanations=expl)
@@ -214,7 +254,11 @@ class Store:
             "n_assets_considered": int(len(rows)),
             "expected_breakdowns_in_list": float(sum(i.p30 for i in items)),
             "expected_breakdowns_round_robin": float(rows.nsmallest(k, "t")["p30"].sum()),
-            "items": [i.to_dict() for i in items],
+            "items": [
+                i.to_dict() | self.routing_trace(rows[rows.asset_id == i.asset_id].iloc[0]) for i in items
+            ],
+            "explanation_status": "available" if ex else "unavailable_for_selected_model",
+            **self.routing_trace(rows.iloc[0]),
             "model_version": self.bundle["version"],
         }
 
@@ -232,6 +276,7 @@ class Store:
                     "name": r["name"],
                     "category": r["category"],
                     "p30": float(r["p30"]),
+                    **self.routing_trace(r),
                     "current_interval_days": (
                         None if pd.isna(r["ck_interval_days"]) else float(r["ck_interval_days"])
                     ),

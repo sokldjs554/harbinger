@@ -7,6 +7,7 @@ import json
 import secrets
 import threading
 import time
+from contextlib import nullcontext
 from dataclasses import dataclass
 
 import pandas as pd
@@ -15,6 +16,7 @@ from fastapi.responses import Response
 from starlette.concurrency import run_in_threadpool
 
 from harbinger.api.analysis import analyze, markdown_report, safe_json
+from harbinger.api.auth import owner, principal
 from harbinger.api.deps import get_store
 from harbinger.api.store import Store
 from harbinger.api.upload import MAX_BYTES, UploadError, export_example, parse_csv, timestamp
@@ -33,6 +35,7 @@ class Session:
     expires: float
     source: str
     summary: dict
+    owner: str | None = None
 
 
 sessions: dict[str, Session] = {}
@@ -44,13 +47,17 @@ def cleanup():
             del sessions[key]
 
 
-def register(store, source, summary):
-    with lock:
+def register(store, source, summary, owner_id=None, auth_manager=None):
+    # Hold the auth lock through registration so concurrent logout cannot leave an
+    # uploaded session behind after its owner was revoked.
+    with auth_manager.lock if auth_manager is not None else nullcontext(), lock:
+        if auth_manager is not None and auth_manager.lookup(owner_id) is None:
+            raise HTTPException(401, "Login expired during analysis")
         cleanup()
         if len(sessions) >= MAX_SESSIONS:
             raise HTTPException(429, "분석 세션이 가득 찼습니다. 기존 세션을 닫거나 30분 뒤 다시 시도하세요.")
         token = secrets.token_urlsafe(24)
-        sessions[token] = Session(store, time.monotonic() + TTL, source, summary)
+        sessions[token] = Session(store, time.monotonic() + TTL, source, summary, owner_id)
     default = min(store.data_end - pd.Timedelta(days=45), store.X.t.max())
     return {
         "session_id": token,
@@ -65,10 +72,10 @@ def register(store, source, summary):
     }
 
 
-def session(token):
+def session(token, owner_id=None):
     with lock:
         cleanup()
-        if token not in sessions:
+        if token not in sessions or sessions[token].owner != owner_id:
             raise HTTPException(
                 404, "세션이 만료되었거나 존재하지 않습니다. 예제 또는 CSV를 다시 불러오세요."
             )
@@ -95,7 +102,7 @@ def info(store: Store = Depends(get_store)):
 
 
 @router.post("/example")
-def example(store: Store = Depends(get_store)):
+def example(request: Request, store: Store = Depends(get_store)):
     return register(
         store,
         "synthetic-example",
@@ -105,6 +112,8 @@ def example(store: Store = Depends(get_store)):
             "sites": len(store.tables["sites"]),
             "warnings": ["모든 예제 기록과 고장 결과는 합성 데이터입니다."],
         },
+        owner(request),
+        request.app.state.auth if owner(request) else None,
     )
 
 
@@ -119,7 +128,9 @@ def example_csv(site: str = "S01", store: Store = Depends(get_store)):
     )
 
 
-def create_upload(content, end, base, observation_confirmed=False):
+def create_upload(
+    content, end, base, observation_confirmed=False, owner_id=None, allowed_sites=None, auth_manager=None
+):
     if not compute.acquire(blocking=False):
         raise HTTPException(429, "계산 중입니다. 잠시 뒤 다시 시도하세요.")
     try:
@@ -128,6 +139,8 @@ def create_upload(content, end, base, observation_confirmed=False):
             if len(sessions) >= MAX_SESSIONS:
                 raise HTTPException(429, "세션 한도 8개에 도달했습니다.")
         tables, summary = parse_csv(content, end)
+        if allowed_sites is not None and not set(tables["sites"].site_id).issubset(allowed_sites):
+            raise HTTPException(403, "CSV contains an unauthorized site")
         summary["observation_confirmed"] = observation_confirmed
         if not observation_confirmed:
             summary["warnings"].append(
@@ -138,7 +151,7 @@ def create_upload(content, end, base, observation_confirmed=False):
         store.bundle = base.bundle
         store._observation_end = pd.Timestamp(summary["observation_end"])
         store.X = build_features(tables, data_end=store._observation_end, verbose=False)
-        return register(store, "uploaded-csv; synthetic-trained-model", summary)
+        return register(store, "uploaded-csv; synthetic-trained-model", summary, owner_id, auth_manager)
     except UploadError as exc:
         raise HTTPException(422, str(exc)) from exc
     finally:
@@ -159,20 +172,31 @@ async def upload(
         content.extend(chunk)
         if len(content) > MAX_BYTES:
             raise HTTPException(413, "파일 크기 초과: 최대 5 MiB입니다.")
+    p = principal(request)
+    allowed = p.sites if p and p.role != "admin" else None
     return await run_in_threadpool(
-        create_upload, bytes(content), observation_end, store, observation_confirmed
+        create_upload,
+        bytes(content),
+        observation_end,
+        store,
+        observation_confirmed,
+        owner(request),
+        allowed,
+        request.app.state.auth if owner(request) else None,
     )
 
 
 @router.delete("/sessions/{token}")
-def close_session(token: str):
+def close_session(token: str, request: Request):
     with lock:
+        if owner(request) is not None:
+            session(token, owner(request))
         sessions.pop(token, None)
     return {"deleted": True}
 
 
-def result(token, as_of, site, k):
-    s = session(token)
+def result(token, as_of, site, k, owner_id=None):
+    s = session(token, owner_id)
     try:
         cutoff = timestamp(as_of, end_of_day=True)
     except UploadError as exc:
@@ -198,13 +222,15 @@ def result(token, as_of, site, k):
 
 
 @router.get("/sessions/{token}/analysis")
-def analysis(token: str, as_of: str, site: str | None = None, k: int = Query(10, ge=1, le=50)):
-    return result(token, as_of, site, k)
+def analysis(
+    request: Request, token: str, as_of: str, site: str | None = None, k: int = Query(10, ge=1, le=50)
+):
+    return result(token, as_of, site, k, owner(request))
 
 
 @router.get("/sessions/{token}/assets/{asset_id}")
-def evidence(token: str, asset_id: str, as_of: str):
-    s = session(token)
+def evidence(request: Request, token: str, asset_id: str, as_of: str):
+    s = session(token, owner(request))
     try:
         cutoff = timestamp(as_of, end_of_day=True)
     except UploadError as exc:
@@ -225,13 +251,14 @@ def evidence(token: str, asset_id: str, as_of: str):
 
 @router.get("/sessions/{token}/download")
 def download(
+    request: Request,
     token: str,
     as_of: str,
     site: str | None = None,
     k: int = Query(10, ge=1, le=50),
     format: str = Query("json", pattern="^(json|csv|md)$"),
 ):
-    r = result(token, as_of, site, k)
+    r = result(token, as_of, site, k, owner(request))
     if format == "md":
         body, mime = markdown_report(r), "text/markdown; charset=utf-8"
     elif format == "csv":

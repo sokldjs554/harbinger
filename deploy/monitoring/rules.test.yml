@@ -1,0 +1,359 @@
+# Deterministic synthetic metric traces; no live incident or customer SLO claim.
+rule_files:
+- rules.yml
+evaluation_interval: 1m
+group_eval_order:
+- harbinger-recordings
+- harbinger-alerts
+tests:
+- name: feature drift fires and recovers only with successful recent calculation
+  interval: 1m
+  input_series:
+  - series: up{job="harbinger",instance="api:8000"}
+    values: 1+0x40
+  - series: harbinger_model_loaded{job="harbinger",instance="api:8000",version="v1"}
+    values: 1+0x40
+  - series: harbinger_drift_status{job="harbinger",instance="api:8000",state="success"}
+    values: 1+0x40
+  - series: harbinger_drift_alert_features{job="harbinger",instance="api:8000"}
+    values: 3+0x9 0+0x30
+  - series: harbinger_drift_last_success_timestamp_seconds{job="harbinger",instance="api:8000"}
+    values: 0+60x40
+  alert_rule_test:
+  - eval_time: 4m
+    alertname: HarbingerFeatureDrift
+    exp_alerts: []
+  - eval_time: 6m
+    alertname: HarbingerFeatureDrift
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        severity: warning
+      exp_annotations:
+        summary: At least three features drifted in a successful recent calculation
+  - eval_time: 12m
+    alertname: HarbingerFeatureDrift
+    exp_alerts: []
+- name: insufficient data and errors are distinct from drift and recover
+  interval: 1m
+  input_series:
+  - series: up{job="harbinger",instance="api:8000"}
+    values: 1+0x40
+  - series: harbinger_drift_status{job="harbinger",instance="api:8000",state="insufficient_data"}
+    values: 1+0x19 0+0x20
+  - series: harbinger_drift_status{job="harbinger",instance="api:8000",state="error"}
+    values: 0+0x19 1+0x9 0+0x10
+  - series: harbinger_drift_status{job="harbinger",instance="api:8000",state="success"}
+    values: 0+0x29 1+0x10
+  - series: harbinger_drift_alert_features{job="harbinger",instance="api:8000"}
+    values: 9+0x29 0+0x10
+  - series: harbinger_drift_last_success_timestamp_seconds{job="harbinger",instance="api:8000"}
+    values: 0+60x40
+  alert_rule_test:
+  - eval_time: 14m
+    alertname: HarbingerDriftInsufficientData
+    exp_alerts: []
+  - eval_time: 16m
+    alertname: HarbingerDriftInsufficientData
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        severity: warning
+        state: insufficient_data
+      exp_annotations:
+        summary: Drift cannot be assessed because observations are insufficient
+  - eval_time: 16m
+    alertname: HarbingerFeatureDrift
+    exp_alerts: []
+  - eval_time: 26m
+    alertname: HarbingerDriftInsufficientData
+    exp_alerts: []
+  - eval_time: 26m
+    alertname: HarbingerDriftError
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        severity: critical
+        state: error
+      exp_annotations:
+        summary: Drift calculation failed
+  - eval_time: 26m
+    alertname: HarbingerFeatureDrift
+    exp_alerts: []
+  - eval_time: 32m
+    alertname: HarbingerDriftError
+    exp_alerts: []
+  - eval_time: 36m
+    alertname: HarbingerFeatureDrift
+    exp_alerts: []
+- name: missing scrape is not healthy zero
+  interval: 1m
+  input_series: []
+  alert_rule_test:
+  - eval_time: 4m
+    alertname: HarbingerScrapeMissing
+    exp_alerts: []
+  - eval_time: 6m
+    alertname: HarbingerScrapeMissing
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        severity: critical
+      exp_annotations:
+        summary: Harbinger scrape job has no samples
+  - eval_time: 6m
+    alertname: HarbingerFeatureDrift
+    exp_alerts: []
+  - eval_time: 6m
+    alertname: HarbingerTargetDown
+    exp_alerts: []
+- name: failed target scrape fires and recovers
+  interval: 1m
+  input_series:
+  - series: up{job="harbinger",instance="api:8000"}
+    values: 0+0x3 1+0x10
+  alert_rule_test:
+  - eval_time: 2m
+    alertname: HarbingerTargetDown
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        severity: critical
+      exp_annotations:
+        summary: Harbinger scrape target is down
+  - eval_time: 5m
+    alertname: HarbingerTargetDown
+    exp_alerts: []
+  - eval_time: 6m
+    alertname: HarbingerScrapeMissing
+    exp_alerts: []
+- name: healthy scrape with missing model and drift telemetry then recovery
+  interval: 1m
+  input_series:
+  - series: up{job="harbinger",instance="api:8000"}
+    values: 1+0x20
+  - series: harbinger_model_loaded{job="harbinger",instance="api:8000",version="v1"}
+    values: _ _ _ _ _ _ _ _ _ _ 1+0x10
+  - series: harbinger_drift_status{job="harbinger",instance="api:8000",state="success"}
+    values: _ _ _ _ _ _ _ _ _ _ 1+0x10
+  alert_rule_test:
+  - eval_time: 6m
+    alertname: HarbingerModelUnavailable
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        severity: critical
+      exp_annotations:
+        summary: Harbinger model is not loaded or its metric is missing
+  - eval_time: 6m
+    alertname: HarbingerDriftMetricsMissing
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        severity: warning
+      exp_annotations:
+        summary: Drift status metrics are missing from a healthy scrape
+  - eval_time: 12m
+    alertname: HarbingerModelUnavailable
+    exp_alerts: []
+  - eval_time: 12m
+    alertname: HarbingerDriftMetricsMissing
+    exp_alerts: []
+  - eval_time: 6m
+    alertname: HarbingerFeatureDrift
+    exp_alerts: []
+- name: explicit zero model is unavailable and initialized state recovers
+  interval: 1m
+  input_series:
+  - series: up{job="harbinger",instance="api:8000"}
+    values: 1+0x20
+  - series: harbinger_model_loaded{job="harbinger",instance="api:8000",version="v1"}
+    values: 0+0x9 1+0x10
+  - series: harbinger_drift_status{job="harbinger",instance="api:8000",state="not_initialized"}
+    values: 1+0x9 0+0x10
+  - series: harbinger_drift_status{job="harbinger",instance="api:8000",state="success"}
+    values: 0+0x9 1+0x10
+  alert_rule_test:
+  - eval_time: 6m
+    alertname: HarbingerModelUnavailable
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        severity: critical
+      exp_annotations:
+        summary: Harbinger model is not loaded or its metric is missing
+  - eval_time: 12m
+    alertname: HarbingerModelUnavailable
+    exp_alerts: []
+  - eval_time: 6m
+    alertname: HarbingerDriftNotInitialized
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        severity: warning
+        state: not_initialized
+      exp_annotations:
+        summary: Drift has not been initialized
+  - eval_time: 12m
+    alertname: HarbingerDriftNotInitialized
+    exp_alerts: []
+  - eval_time: 6m
+    alertname: HarbingerDriftMetricsMissing
+    exp_alerts: []
+- name: stale successful calculation is distinct from current drift
+  interval: 1m
+  input_series:
+  - series: up{job="harbinger",instance="api:8000"}
+    values: 1+0x1460
+  - series: harbinger_drift_status{job="harbinger",instance="api:8000",state="success"}
+    values: 1+0x1460
+  - series: harbinger_drift_last_attempt_timestamp_seconds{job="harbinger",instance="api:8000"}
+    values: 0+0x1450 87060+60x9
+  - series: harbinger_drift_last_success_timestamp_seconds{job="harbinger",instance="api:8000"}
+    values: 0+0x1460
+  - series: harbinger_drift_alert_features{job="harbinger",instance="api:8000"}
+    values: 9+0x1460
+  alert_rule_test:
+  - eval_time: 24h
+    alertname: HarbingerDriftStale
+    exp_alerts: []
+  - eval_time: 24h6m
+    alertname: HarbingerDriftStale
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        severity: warning
+      exp_annotations:
+        summary: Drift has not been recalculated for over 24 hours
+  - eval_time: 24h6m
+    alertname: HarbingerFeatureDrift
+    exp_alerts: []
+  - eval_time: 24h12m
+    alertname: HarbingerDriftStale
+    exp_alerts: []
+- name: real route histogram p95 fires and recovers
+  interval: 1m
+  input_series:
+  - series: up{job="harbinger",instance="api:8000"}
+    values: 1+0x20
+  - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{site_id}/patrol/today",le="1.0"}
+    values: 0 0 0 0 0 0 0 0 0 0 0 60 120 180 240 300 360 420 480 540 600
+  - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{site_id}/patrol/today",le="2.5"}
+    values: 0 0 0 0 0 0 0 0 0 0 0 60 120 180 240 300 360 420 480 540 600
+  - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{site_id}/patrol/today",le="5.0"}
+    values: 0 60 120 180 240 300 360 420 480 540 600 660 720 780 840 900 960 1020 1080 1140 1200
+  - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{site_id}/patrol/today",le="+Inf"}
+    values: 0 60 120 180 240 300 360 420 480 540 600 660 720 780 840 900 960 1020 1080 1140 1200
+  - series: harbinger_request_seconds_count{job="harbinger",instance="api:8000",route="/v1/sites/{site_id}/patrol/today"}
+    values: 0+60x20
+  alert_rule_test:
+  - eval_time: 4m
+    alertname: HarbingerPatrolSlow
+    exp_alerts: []
+  - eval_time: 7m
+    alertname: HarbingerPatrolSlow
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        severity: warning
+        route: /v1/sites/{site_id}/patrol/today
+      exp_annotations:
+        summary: Patrol p95 latency exceeds 2 seconds with sufficient traffic
+  - eval_time: 16m
+    alertname: HarbingerPatrolSlow
+    exp_alerts: []
+  promql_expr_test:
+  - expr: harbinger:patrol_request_seconds:p95_5m
+    eval_time: 7m
+    exp_samples:
+    - labels: harbinger:patrol_request_seconds:p95_5m{job="harbinger",instance="api:8000",route="/v1/sites/{site_id}/patrol/today"}
+      value: 4.875
+- name: slow latency with too few observations is withheld
+  interval: 1m
+  input_series:
+  - series: up{job="harbinger",instance="api:8000"}
+    values: 1+0x20
+  - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{site_id}/patrol/today",le="1.0"}
+    values: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{site_id}/patrol/today",le="2.5"}
+    values: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{site_id}/patrol/today",le="5.0"}
+    values: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+  - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{site_id}/patrol/today",le="+Inf"}
+    values: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+  - series: harbinger_request_seconds_count{job="harbinger",instance="api:8000",route="/v1/sites/{site_id}/patrol/today"}
+    values: 0+1x20
+  alert_rule_test:
+  - eval_time: 10m
+    alertname: HarbingerPatrolSlow
+    exp_alerts: []
+- name: incorrect legacy route does not masquerade as current patrol latency
+  interval: 1m
+  input_series:
+  - series: up{job="harbinger",instance="api:8000"}
+    values: 1+0x20
+  - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{id}/patrol/today",le="1.0"}
+    values: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{id}/patrol/today",le="2.5"}
+    values: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{id}/patrol/today",le="5.0"}
+    values: 0 60 120 180 240 300 360 420 480 540 600 660 720 780 840 900 960 1020 1080 1140 1200
+  - series: harbinger_request_seconds_bucket{job="harbinger",instance="api:8000",route="/v1/sites/{id}/patrol/today",le="+Inf"}
+    values: 0 60 120 180 240 300 360 420 480 540 600 660 720 780 840 900 960 1020 1080 1140 1200
+  - series: harbinger_request_seconds_count{job="harbinger",instance="api:8000",route="/v1/sites/{id}/patrol/today"}
+    values: 0+60x20
+  alert_rule_test:
+  - eval_time: 10m
+    alertname: HarbingerPatrolSlow
+    exp_alerts: []
+- name: server error counters fire and recover
+  interval: 1m
+  input_series:
+  - series: up{job="harbinger",instance="api:8000"}
+    values: 1+0x20
+  - series: harbinger_requests_total{job="harbinger",instance="api:8000",status="500",route="/v1/sites"}
+    values: 0+1x10 10+0x9
+  - series: harbinger_requests_total{job="harbinger",instance="api:8000",status="200",route="/v1/sites"}
+    values: 0+10x20
+  alert_rule_test:
+  - eval_time: 1m
+    alertname: HarbingerServerErrors
+    exp_alerts: []
+  - eval_time: 4m
+    alertname: HarbingerServerErrors
+    exp_alerts:
+    - exp_labels:
+        job: harbinger
+        instance: api:8000
+        severity: critical
+      exp_annotations:
+        summary: Harbinger is returning server errors
+  - eval_time: 16m
+    alertname: HarbingerServerErrors
+    exp_alerts: []
+- name: prediction mean uses sum over count and suppresses no observations
+  interval: 1m
+  input_series:
+  - series: harbinger_p30_sum{job="harbinger",instance="api:8000"}
+    values: 0+1x10 10+0x70
+  - series: harbinger_p30_count{job="harbinger",instance="api:8000"}
+    values: 0+10x10 100+0x70
+  promql_expr_test:
+  - expr: harbinger:prediction_p30:mean1h
+    eval_time: 10m
+    exp_samples:
+    - labels: harbinger:prediction_p30:mean1h{job="harbinger",instance="api:8000"}
+      value: 0.1
+  - expr: harbinger:prediction_p30:mean1h
+    eval_time: 75m
+    exp_samples: []

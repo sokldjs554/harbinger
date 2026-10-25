@@ -1,0 +1,15 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________ test_negative_duration_is_never_accepted_as_rounding_tolerance ________
+
+    def test_negative_duration_is_never_accepted_as_rounding_tolerance():
+        r = record()
+        r["tasks"][0].update(result="not_attempted", events=[], active_ms=-1, waiting_ms=0, paused_ms=0)
+>       with pytest.raises(ValueError, match="duration"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_retest_records.py:115: Failed
+=========================== short test summary info ============================
+FAILED tests/test_retest_records.py::test_negative_duration_is_never_accepted_as_rounding_tolerance
+1 failed in 0.03s
