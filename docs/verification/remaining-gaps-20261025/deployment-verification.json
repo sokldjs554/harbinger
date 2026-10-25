@@ -1,0 +1,31 @@
+{
+  "verified_at_kst": "2026-10-26",
+  "deployed_source_commit": "c3981e5c9593aeff88d2db38d37342010b79f091",
+  "runtime_model_version": "v20261025-152437",
+  "pr": {
+    "number": 14,
+    "url": "https://github.com/sokldjs554/harbinger/pull/14",
+    "merged": true
+  },
+  "runs": {
+    "pr_ci": 40204513658,
+    "main_ci": 40205274736,
+    "pages": 40205274756,
+    "aws": 40205274677
+  },
+  "run_conclusions": {
+    "pr_ci": "success",
+    "main_ci": "success",
+    "pages": "success",
+    "aws": "success"
+  },
+  "aws_artifact": {
+    "id": 12604046594,
+    "sha256": "f7e4973f540a941fe043234d1d31523c14567b97e4e2cb94bc78e4ddae4132e9",
+    "downloaded_and_sha256_verified": true
+  },
+  "public_mode": "anonymous synthetic demo; baseline HGB; no protected login accounts deployed",
+  "validation_scope": "GitHub runner trusted HTTPS, actual CSV/model browser flow, mobile, reboot recovery, certificate renewal dry run, temporary SSH rule cleanup; source/model/artifact agreement",
+  "field_performance_verified": false,
+  "human_retest_completed": false
+}

@@ -11,6 +11,17 @@
 | 고객별 선택이 문서에 머묾 | 검증 근거·해시를 저장한 선택, 원자적 활성화·롤백, 실제 추론과 보고서 연결 | 실제 고객 최적성·예약한 미래 테스트 성능은 미검증 |
 | 사용성 개선의 재측정 근거 부재 | 7과업 기록 도구, 도움·미실시·대기 분리, JSON 검증과 일치 조건의 전후 비교 | 실제 참가자의 전후 기록은 아직 없음 |
 
+## 공개 반영까지 확인했습니다
+
+2026-10-26 한국 시간 기준 [PR #14](https://github.com/sokldjs554/harbinger/pull/14)를 병합하고 공개 배포를 확인했습니다. 배포 소스는 `c3981e5c9593aeff88d2db38d37342010b79f091`, AWS 모델은 `v20261025-152437`입니다. 이 절을 추가한 후속 문서 커밋과 실행 소스를 구분합니다.
+
+- [최종 PR CI](https://github.com/sokldjs554/harbinger/actions/runs/40204513658), [병합본 CI](https://github.com/sokldjs554/harbinger/actions/runs/40205274736), [Pages](https://github.com/sokldjs554/harbinger/actions/runs/40205274756), [AWS](https://github.com/sokldjs554/harbinger/actions/runs/40205274677) 모두 성공했습니다.
+- [배포 출처](aws/deployment.json)와 [운영 검사 결과](aws/deployment-result.json)의 커밋이 일치합니다. 기존 시드니 인스턴스를 재사용했으며 새 인스턴스를 만들지 않았습니다. 신뢰 가능한 HTTPS·인증서 갱신 모의시험·재부팅 복구·임시 SSH 규칙 정리를 확인했습니다.
+- [실제 AWS 브라우저 검사](aws/browser-checks.json)에서 정상 CSV 계산, 오류 회복, 내보내기, 모바일·필터·초점 복원과 JavaScript 오류 0개를 확인했습니다. [사용성 관련 자동 검사](aws/review-checks.json)는 사람의 평가 결과가 아닙니다.
+- 배포 artifact ZIP의 SHA256을 대조해 내려받았고, [모델 평가 파일](aws/metrics.json)의 버전 일치와 [새 신호표](aws/signals.json)의 고객사 단위 bootstrap 적용도 확인했습니다. [검증 출처 요약](deployment-verification.json).
+
+공개 데모는 익명 합성 자료입니다. 보호 모드와 고객사 모델 정책은 재현 가능한 선택형 기능이며, 공개 데모에 영구 로그인 계정을 만들거나 실제 고객별 정책을 배포한 것은 아닙니다. 실제 사람의 전후 재측정·현장 성능·장기 알림 전달은 위 표의 미검증 범위로 남습니다.
+
 ## 반복 기록과 경보 조건을 바로잡았습니다
 
 [신호표·경보 상세](signals-ops.md), [전체 신호표](signals-ops-full.json), [전후 비교](signals-ops-comparison.json). 같은 점추정을 유지하고 내부 반복 기록을 고객사 단위로 묶었습니다. 15개 셀 중 한 구간은 더 좁아졌습니다. 항상 넓어진다고 주장하지 않습니다. 기존 역사적 `artifacts/signals.json`은 보존하고 화면에 구식 Wilson 방식임을 표시합니다.
