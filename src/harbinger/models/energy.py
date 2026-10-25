@@ -1,7 +1,7 @@
 """에너지 기대사용량 회귀(HGB) → 잔차 비율 → 이상일 탐지.
 
 질문: "이 건물의 이번 주 전기 사용량은 날씨·재실을 감안했을 때 정상인가?"
-답이 '아니오'이고 HVAC 설비의 점검 약신호가 함께 올라가면, 설비 효율 저하의 독립적인 증거가 된다.
+에너지 잔차는 추가 확인 신호이며 특정 설비의 고장이나 인과관계를 입증하지 않는다.
 """
 
 from __future__ import annotations
@@ -54,10 +54,21 @@ class EnergyBundle:
         out = []
         for sid, g in df.sort_values("day").groupby("site_id"):
             g = g.copy()
-            g["resid_ma"] = g["resid_ratio"].rolling(window, min_periods=max(3, window // 2)).mean()
-            sigma = self.resid_sigma.get(sid, float(df["resid_ratio"].std()))
-            g["z"] = g["resid_ma"] / (sigma + 1e-9)
-            g["anomaly"] = g["z"] > z
+            g["resid_ma"] = (
+                g.set_index("day")["resid_ratio"]
+                .rolling(f"{window}D", min_periods=max(3, window // 2))
+                .mean()
+                .to_numpy()
+            )
+            sigma = self.resid_sigma.get(sid)
+            calibrated = sid in self.site_codes and sigma is not None and np.isfinite(sigma) and sigma > 0
+            g["z"] = g["resid_ma"] / sigma if calibrated else np.nan
+            valid = np.isfinite(g["z"]) & np.isfinite(g[self.target]) & np.isfinite(g["resid_ratio"])
+            g.loc[~valid, "z"] = np.nan
+            g["status"] = np.where(
+                valid, "available", "insufficient_observation" if calibrated else "no_model"
+            )
+            g["anomaly"] = pd.array(np.where(valid, g["z"] > z, None), dtype="boolean")
             out.append(g)
         return pd.concat(out, ignore_index=True)
 

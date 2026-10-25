@@ -1,0 +1,116 @@
+[
+  {
+    "received_at": "2026-10-25T17:02:58.060362+00:00",
+    "state": "firing",
+    "alert": {
+      "annotations": {
+        "summary": "Workbench successful-request p95 exceeds 2 seconds with sufficient traffic"
+      },
+      "endsAt": "2026-10-25T17:06:58.057Z",
+      "startsAt": "2026-10-25T17:02:58.057Z",
+      "generatorURL": "http://523a1951bec4:19090/graph?g0.expr=%28harbinger%3Aworkbench_success_seconds%3Ap95_5m+%3E+0.001%29+and+on+%28job%2C+instance%2C+route%29+%28harbinger%3Aworkbench_success%3Aincrease5m+%3E%3D+1%29+and+on+%28job%2C+instance%29+%28up%7Bjob%3D%22harbinger%22%7D+%3D%3D+1%29&g0.tab=1",
+      "labels": {
+        "alertname": "HarbingerWorkbenchSlow",
+        "instance": "127.0.0.1:18000",
+        "job": "harbinger",
+        "route": "/v1/workbench/sessions/{token}/analysis",
+        "severity": "warning"
+      }
+    }
+  },
+  {
+    "received_at": "2026-10-25T17:03:14.063951+00:00",
+    "state": "firing",
+    "alert": {
+      "annotations": {
+        "summary": "Workbench requests are failing with server errors"
+      },
+      "endsAt": "2026-10-25T17:07:14.057Z",
+      "startsAt": "2026-10-25T17:03:14.057Z",
+      "generatorURL": "http://523a1951bec4:19090/graph?g0.expr=%28sum+by+%28job%2C+instance%2C+route%29+%28rate%28harbinger_workbench_seconds_count%7Bjob%3D%22harbinger%22%2Coutcome%3D%22failed%22%7D%5B10s%5D%29%29+%3E+0%29+and+on+%28job%2C+instance%29+%28up%7Bjob%3D%22harbinger%22%7D+%3D%3D+1%29&g0.tab=1",
+      "labels": {
+        "alertname": "HarbingerWorkbenchFailures",
+        "instance": "127.0.0.1:18000",
+        "job": "harbinger",
+        "route": "/v1/workbench/sessions/{token}/analysis",
+        "severity": "critical"
+      }
+    }
+  },
+  {
+    "received_at": "2026-10-25T17:03:19.060129+00:00",
+    "state": "resolved",
+    "alert": {
+      "annotations": {
+        "summary": "Workbench successful-request p95 exceeds 2 seconds with sufficient traffic"
+      },
+      "endsAt": "2026-10-25T17:03:19.057Z",
+      "startsAt": "2026-10-25T17:02:58.057Z",
+      "generatorURL": "http://523a1951bec4:19090/graph?g0.expr=%28harbinger%3Aworkbench_success_seconds%3Ap95_5m+%3E+0.001%29+and+on+%28job%2C+instance%2C+route%29+%28harbinger%3Aworkbench_success%3Aincrease5m+%3E%3D+1%29+and+on+%28job%2C+instance%29+%28up%7Bjob%3D%22harbinger%22%7D+%3D%3D+1%29&g0.tab=1",
+      "labels": {
+        "alertname": "HarbingerWorkbenchSlow",
+        "instance": "127.0.0.1:18000",
+        "job": "harbinger",
+        "route": "/v1/workbench/sessions/{token}/analysis",
+        "severity": "warning"
+      }
+    }
+  },
+  {
+    "received_at": "2026-10-25T17:03:28.060029+00:00",
+    "state": "firing",
+    "alert": {
+      "annotations": {
+        "summary": "Workbench successful-request p95 exceeds 2 seconds with sufficient traffic"
+      },
+      "endsAt": "2026-10-25T17:07:28.057Z",
+      "startsAt": "2026-10-25T17:03:28.057Z",
+      "generatorURL": "http://523a1951bec4:19090/graph?g0.expr=%28harbinger%3Aworkbench_success_seconds%3Ap95_5m+%3E+0.001%29+and+on+%28job%2C+instance%2C+route%29+%28harbinger%3Aworkbench_success%3Aincrease5m+%3E%3D+1%29+and+on+%28job%2C+instance%29+%28up%7Bjob%3D%22harbinger%22%7D+%3D%3D+1%29&g0.tab=1",
+      "labels": {
+        "alertname": "HarbingerWorkbenchSlow",
+        "instance": "127.0.0.1:18000",
+        "job": "harbinger",
+        "route": "/v1/workbench/sessions/{token}/analysis",
+        "severity": "warning"
+      }
+    }
+  },
+  {
+    "received_at": "2026-10-25T17:03:35.060192+00:00",
+    "state": "resolved",
+    "alert": {
+      "annotations": {
+        "summary": "Workbench successful-request p95 exceeds 2 seconds with sufficient traffic"
+      },
+      "endsAt": "2026-10-25T17:03:35.057Z",
+      "startsAt": "2026-10-25T17:03:28.057Z",
+      "generatorURL": "http://523a1951bec4:19090/graph?g0.expr=%28harbinger%3Aworkbench_success_seconds%3Ap95_5m+%3E+0.001%29+and+on+%28job%2C+instance%2C+route%29+%28harbinger%3Aworkbench_success%3Aincrease5m+%3E%3D+1%29+and+on+%28job%2C+instance%29+%28up%7Bjob%3D%22harbinger%22%7D+%3D%3D+1%29&g0.tab=1",
+      "labels": {
+        "alertname": "HarbingerWorkbenchSlow",
+        "instance": "127.0.0.1:18000",
+        "job": "harbinger",
+        "route": "/v1/workbench/sessions/{token}/analysis",
+        "severity": "warning"
+      }
+    }
+  },
+  {
+    "received_at": "2026-10-25T17:03:35.061484+00:00",
+    "state": "resolved",
+    "alert": {
+      "annotations": {
+        "summary": "Workbench requests are failing with server errors"
+      },
+      "endsAt": "2026-10-25T17:03:35.057Z",
+      "startsAt": "2026-10-25T17:03:14.057Z",
+      "generatorURL": "http://523a1951bec4:19090/graph?g0.expr=%28sum+by+%28job%2C+instance%2C+route%29+%28rate%28harbinger_workbench_seconds_count%7Bjob%3D%22harbinger%22%2Coutcome%3D%22failed%22%7D%5B10s%5D%29%29+%3E+0%29+and+on+%28job%2C+instance%29+%28up%7Bjob%3D%22harbinger%22%7D+%3D%3D+1%29&g0.tab=1",
+      "labels": {
+        "alertname": "HarbingerWorkbenchFailures",
+        "instance": "127.0.0.1:18000",
+        "job": "harbinger",
+        "route": "/v1/workbench/sessions/{token}/analysis",
+        "severity": "critical"
+      }
+    }
+  }
+]

@@ -44,6 +44,8 @@ def select_instance(instances):
         active.append(instance)
     if len(active) > 1:
         raise ValueError("Multiple harbinger instances found; no instance was changed")
+    if not active and os.environ.get("HARBINGER_EXISTING_INSTANCE_ONLY") == "1":
+        raise ValueError("Existing-instance-only deployment: no matching server; creation is disabled")
     return active[0] if active else None
 
 
@@ -253,10 +255,15 @@ def wait_https(ip, sha):
             with urllib.request.urlopen(f"https://{ip}/health", timeout=8) as response:
                 assert response.status == 200
             with urllib.request.urlopen(f"https://{ip}/deployment.json", timeout=8) as response:
-                assert json.load(response)["commit"] == sha
+                deployment = json.load(response)
+                assert deployment["commit"] == sha
             with urllib.request.urlopen(f"https://{ip}/v1/workbench/info", timeout=8) as response:
-                assert json.load(response)["mode"] == "live"
-            return
+                info = json.load(response)
+                assert info["mode"] == "live"
+                assert info["model_version"] == deployment["model_version"]
+            with urllib.request.urlopen(f"https://{ip}/version", timeout=8) as response:
+                assert json.load(response)["model_version"] == deployment["model_version"]
+            return deployment
         except (OSError, urllib.error.URLError, AssertionError, ValueError):
             time.sleep(5)
     raise TimeoutError("Trusted HTTPS health, version and live API did not recover")
@@ -484,7 +491,7 @@ def main():
                 )
                 aws("ec2", "reboot-instances", "--instance-ids", instance_id)
                 time.sleep(30)
-                wait_https(remote.ip, sha)
+                verified_release = wait_https(remote.ip, sha)
                 subprocess.run(
                     [
                         sys.executable,
@@ -499,6 +506,19 @@ def main():
                     timeout=900,
                     env=remote_environment(),
                 )
+                subprocess.run(
+                    [
+                        sys.executable,
+                        "scripts/check_energy_browser.py",
+                        "--url",
+                        f"https://{remote.ip}/console/advanced.html#energy",
+                        "--out",
+                        str(package / "browser" / "energy"),
+                    ],
+                    check=True,
+                    timeout=300,
+                    env=remote_environment(),
+                )
             result = {
                 "commit": sha,
                 "region": REGION,
@@ -506,6 +526,9 @@ def main():
                 "created": created,
                 "started_from_stopped": started,
                 "browser_verified": True,
+                "energy_withholding_verified": True,
+                "model_version": verified_release["model_version"],
+                "source_model_versions_verified": True,
                 "ip": remote.ip,
                 "url": f"https://{remote.ip}/console/",
                 "reboot_verified": True,

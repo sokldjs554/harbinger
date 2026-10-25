@@ -1,0 +1,332 @@
+FFFFFFFFFFFFF                                                            [100%]
+=================================== FAILURES ===================================
+_ test_workbench_status_and_latency_are_observable[/v1/workbench/upload-200-success] _
+
+status = 200, outcome = 'success', route = '/v1/workbench/upload'
+
+    @pytest.mark.parametrize("status,outcome", [(200, "success"), (429, "rejected"), (422, "client_error"), (503, "failed")])
+    @pytest.mark.parametrize("route", ["/v1/workbench/upload", "/v1/workbench/sessions/{token}/analysis", "/v1/workbench/sessions/{token}/download"])
+    def test_workbench_status_and_latency_are_observable(status, outcome, route):
+        app = FastAPI()
+        app.add_api_route(route, lambda: None)
+        request = Request({"type": "http", "method": "GET", "path": route.replace("{token}", "secret-token"), "route": app.routes[-1]})
+        labels = {"route": route, "outcome": outcome}
+        metric = "harbinger_workbench_seconds_count"
+        before = registry.get_sample_value(metric, labels) or 0
+    
+        async def respond(_request):
+            return Response(status_code=status)
+    
+        asyncio.run(metrics_middleware(request, respond))
+>       assert registry.get_sample_value(metric, labels) == before + 1
+E       AssertionError: assert None == (0 + 1)
+E        +  where None = get_sample_value('harbinger_workbench_seconds_count', {'route': '/v1/workbench/upload', 'outcome': 'success'})
+E        +    where get_sample_value = <prometheus_client.registry.CollectorRegistry object at 0x7fd600bc2e10>.get_sample_value
+
+tests/test_workbench_monitoring.py:28: AssertionError
+_ test_workbench_status_and_latency_are_observable[/v1/workbench/upload-429-rejected] _
+
+status = 429, outcome = 'rejected', route = '/v1/workbench/upload'
+
+    @pytest.mark.parametrize("status,outcome", [(200, "success"), (429, "rejected"), (422, "client_error"), (503, "failed")])
+    @pytest.mark.parametrize("route", ["/v1/workbench/upload", "/v1/workbench/sessions/{token}/analysis", "/v1/workbench/sessions/{token}/download"])
+    def test_workbench_status_and_latency_are_observable(status, outcome, route):
+        app = FastAPI()
+        app.add_api_route(route, lambda: None)
+        request = Request({"type": "http", "method": "GET", "path": route.replace("{token}", "secret-token"), "route": app.routes[-1]})
+        labels = {"route": route, "outcome": outcome}
+        metric = "harbinger_workbench_seconds_count"
+        before = registry.get_sample_value(metric, labels) or 0
+    
+        async def respond(_request):
+            return Response(status_code=status)
+    
+        asyncio.run(metrics_middleware(request, respond))
+>       assert registry.get_sample_value(metric, labels) == before + 1
+E       AssertionError: assert None == (0 + 1)
+E        +  where None = get_sample_value('harbinger_workbench_seconds_count', {'route': '/v1/workbench/upload', 'outcome': 'rejected'})
+E        +    where get_sample_value = <prometheus_client.registry.CollectorRegistry object at 0x7fd600bc2e10>.get_sample_value
+
+tests/test_workbench_monitoring.py:28: AssertionError
+_ test_workbench_status_and_latency_are_observable[/v1/workbench/upload-422-client_error] _
+
+status = 422, outcome = 'client_error', route = '/v1/workbench/upload'
+
+    @pytest.mark.parametrize("status,outcome", [(200, "success"), (429, "rejected"), (422, "client_error"), (503, "failed")])
+    @pytest.mark.parametrize("route", ["/v1/workbench/upload", "/v1/workbench/sessions/{token}/analysis", "/v1/workbench/sessions/{token}/download"])
+    def test_workbench_status_and_latency_are_observable(status, outcome, route):
+        app = FastAPI()
+        app.add_api_route(route, lambda: None)
+        request = Request({"type": "http", "method": "GET", "path": route.replace("{token}", "secret-token"), "route": app.routes[-1]})
+        labels = {"route": route, "outcome": outcome}
+        metric = "harbinger_workbench_seconds_count"
+        before = registry.get_sample_value(metric, labels) or 0
+    
+        async def respond(_request):
+            return Response(status_code=status)
+    
+        asyncio.run(metrics_middleware(request, respond))
+>       assert registry.get_sample_value(metric, labels) == before + 1
+E       AssertionError: assert None == (0 + 1)
+E        +  where None = get_sample_value('harbinger_workbench_seconds_count', {'route': '/v1/workbench/upload', 'outcome': 'client_error'})
+E        +    where get_sample_value = <prometheus_client.registry.CollectorRegistry object at 0x7fd600bc2e10>.get_sample_value
+
+tests/test_workbench_monitoring.py:28: AssertionError
+_ test_workbench_status_and_latency_are_observable[/v1/workbench/upload-503-failed] _
+
+status = 503, outcome = 'failed', route = '/v1/workbench/upload'
+
+    @pytest.mark.parametrize("status,outcome", [(200, "success"), (429, "rejected"), (422, "client_error"), (503, "failed")])
+    @pytest.mark.parametrize("route", ["/v1/workbench/upload", "/v1/workbench/sessions/{token}/analysis", "/v1/workbench/sessions/{token}/download"])
+    def test_workbench_status_and_latency_are_observable(status, outcome, route):
+        app = FastAPI()
+        app.add_api_route(route, lambda: None)
+        request = Request({"type": "http", "method": "GET", "path": route.replace("{token}", "secret-token"), "route": app.routes[-1]})
+        labels = {"route": route, "outcome": outcome}
+        metric = "harbinger_workbench_seconds_count"
+        before = registry.get_sample_value(metric, labels) or 0
+    
+        async def respond(_request):
+            return Response(status_code=status)
+    
+        asyncio.run(metrics_middleware(request, respond))
+>       assert registry.get_sample_value(metric, labels) == before + 1
+E       AssertionError: assert None == (0 + 1)
+E        +  where None = get_sample_value('harbinger_workbench_seconds_count', {'route': '/v1/workbench/upload', 'outcome': 'failed'})
+E        +    where get_sample_value = <prometheus_client.registry.CollectorRegistry object at 0x7fd600bc2e10>.get_sample_value
+
+tests/test_workbench_monitoring.py:28: AssertionError
+_ test_workbench_status_and_latency_are_observable[/v1/workbench/sessions/{token}/analysis-200-success] _
+
+status = 200, outcome = 'success'
+route = '/v1/workbench/sessions/{token}/analysis'
+
+    @pytest.mark.parametrize("status,outcome", [(200, "success"), (429, "rejected"), (422, "client_error"), (503, "failed")])
+    @pytest.mark.parametrize("route", ["/v1/workbench/upload", "/v1/workbench/sessions/{token}/analysis", "/v1/workbench/sessions/{token}/download"])
+    def test_workbench_status_and_latency_are_observable(status, outcome, route):
+        app = FastAPI()
+        app.add_api_route(route, lambda: None)
+        request = Request({"type": "http", "method": "GET", "path": route.replace("{token}", "secret-token"), "route": app.routes[-1]})
+        labels = {"route": route, "outcome": outcome}
+        metric = "harbinger_workbench_seconds_count"
+        before = registry.get_sample_value(metric, labels) or 0
+    
+        async def respond(_request):
+            return Response(status_code=status)
+    
+        asyncio.run(metrics_middleware(request, respond))
+>       assert registry.get_sample_value(metric, labels) == before + 1
+E       AssertionError: assert None == (0 + 1)
+E        +  where None = get_sample_value('harbinger_workbench_seconds_count', {'route': '/v1/workbench/sessions/{token}/analysis', 'outcome': 'success'})
+E        +    where get_sample_value = <prometheus_client.registry.CollectorRegistry object at 0x7fd600bc2e10>.get_sample_value
+
+tests/test_workbench_monitoring.py:28: AssertionError
+_ test_workbench_status_and_latency_are_observable[/v1/workbench/sessions/{token}/analysis-429-rejected] _
+
+status = 429, outcome = 'rejected'
+route = '/v1/workbench/sessions/{token}/analysis'
+
+    @pytest.mark.parametrize("status,outcome", [(200, "success"), (429, "rejected"), (422, "client_error"), (503, "failed")])
+    @pytest.mark.parametrize("route", ["/v1/workbench/upload", "/v1/workbench/sessions/{token}/analysis", "/v1/workbench/sessions/{token}/download"])
+    def test_workbench_status_and_latency_are_observable(status, outcome, route):
+        app = FastAPI()
+        app.add_api_route(route, lambda: None)
+        request = Request({"type": "http", "method": "GET", "path": route.replace("{token}", "secret-token"), "route": app.routes[-1]})
+        labels = {"route": route, "outcome": outcome}
+        metric = "harbinger_workbench_seconds_count"
+        before = registry.get_sample_value(metric, labels) or 0
+    
+        async def respond(_request):
+            return Response(status_code=status)
+    
+        asyncio.run(metrics_middleware(request, respond))
+>       assert registry.get_sample_value(metric, labels) == before + 1
+E       AssertionError: assert None == (0 + 1)
+E        +  where None = get_sample_value('harbinger_workbench_seconds_count', {'route': '/v1/workbench/sessions/{token}/analysis', 'outcome': 'rejected'})
+E        +    where get_sample_value = <prometheus_client.registry.CollectorRegistry object at 0x7fd600bc2e10>.get_sample_value
+
+tests/test_workbench_monitoring.py:28: AssertionError
+_ test_workbench_status_and_latency_are_observable[/v1/workbench/sessions/{token}/analysis-422-client_error] _
+
+status = 422, outcome = 'client_error'
+route = '/v1/workbench/sessions/{token}/analysis'
+
+    @pytest.mark.parametrize("status,outcome", [(200, "success"), (429, "rejected"), (422, "client_error"), (503, "failed")])
+    @pytest.mark.parametrize("route", ["/v1/workbench/upload", "/v1/workbench/sessions/{token}/analysis", "/v1/workbench/sessions/{token}/download"])
+    def test_workbench_status_and_latency_are_observable(status, outcome, route):
+        app = FastAPI()
+        app.add_api_route(route, lambda: None)
+        request = Request({"type": "http", "method": "GET", "path": route.replace("{token}", "secret-token"), "route": app.routes[-1]})
+        labels = {"route": route, "outcome": outcome}
+        metric = "harbinger_workbench_seconds_count"
+        before = registry.get_sample_value(metric, labels) or 0
+    
+        async def respond(_request):
+            return Response(status_code=status)
+    
+        asyncio.run(metrics_middleware(request, respond))
+>       assert registry.get_sample_value(metric, labels) == before + 1
+E       AssertionError: assert None == (0 + 1)
+E        +  where None = get_sample_value('harbinger_workbench_seconds_count', {'route': '/v1/workbench/sessions/{token}/analysis', 'outcome': 'client_error'})
+E        +    where get_sample_value = <prometheus_client.registry.CollectorRegistry object at 0x7fd600bc2e10>.get_sample_value
+
+tests/test_workbench_monitoring.py:28: AssertionError
+_ test_workbench_status_and_latency_are_observable[/v1/workbench/sessions/{token}/analysis-503-failed] _
+
+status = 503, outcome = 'failed'
+route = '/v1/workbench/sessions/{token}/analysis'
+
+    @pytest.mark.parametrize("status,outcome", [(200, "success"), (429, "rejected"), (422, "client_error"), (503, "failed")])
+    @pytest.mark.parametrize("route", ["/v1/workbench/upload", "/v1/workbench/sessions/{token}/analysis", "/v1/workbench/sessions/{token}/download"])
+    def test_workbench_status_and_latency_are_observable(status, outcome, route):
+        app = FastAPI()
+        app.add_api_route(route, lambda: None)
+        request = Request({"type": "http", "method": "GET", "path": route.replace("{token}", "secret-token"), "route": app.routes[-1]})
+        labels = {"route": route, "outcome": outcome}
+        metric = "harbinger_workbench_seconds_count"
+        before = registry.get_sample_value(metric, labels) or 0
+    
+        async def respond(_request):
+            return Response(status_code=status)
+    
+        asyncio.run(metrics_middleware(request, respond))
+>       assert registry.get_sample_value(metric, labels) == before + 1
+E       AssertionError: assert None == (0 + 1)
+E        +  where None = get_sample_value('harbinger_workbench_seconds_count', {'route': '/v1/workbench/sessions/{token}/analysis', 'outcome': 'failed'})
+E        +    where get_sample_value = <prometheus_client.registry.CollectorRegistry object at 0x7fd600bc2e10>.get_sample_value
+
+tests/test_workbench_monitoring.py:28: AssertionError
+_ test_workbench_status_and_latency_are_observable[/v1/workbench/sessions/{token}/download-200-success] _
+
+status = 200, outcome = 'success'
+route = '/v1/workbench/sessions/{token}/download'
+
+    @pytest.mark.parametrize("status,outcome", [(200, "success"), (429, "rejected"), (422, "client_error"), (503, "failed")])
+    @pytest.mark.parametrize("route", ["/v1/workbench/upload", "/v1/workbench/sessions/{token}/analysis", "/v1/workbench/sessions/{token}/download"])
+    def test_workbench_status_and_latency_are_observable(status, outcome, route):
+        app = FastAPI()
+        app.add_api_route(route, lambda: None)
+        request = Request({"type": "http", "method": "GET", "path": route.replace("{token}", "secret-token"), "route": app.routes[-1]})
+        labels = {"route": route, "outcome": outcome}
+        metric = "harbinger_workbench_seconds_count"
+        before = registry.get_sample_value(metric, labels) or 0
+    
+        async def respond(_request):
+            return Response(status_code=status)
+    
+        asyncio.run(metrics_middleware(request, respond))
+>       assert registry.get_sample_value(metric, labels) == before + 1
+E       AssertionError: assert None == (0 + 1)
+E        +  where None = get_sample_value('harbinger_workbench_seconds_count', {'route': '/v1/workbench/sessions/{token}/download', 'outcome': 'success'})
+E        +    where get_sample_value = <prometheus_client.registry.CollectorRegistry object at 0x7fd600bc2e10>.get_sample_value
+
+tests/test_workbench_monitoring.py:28: AssertionError
+_ test_workbench_status_and_latency_are_observable[/v1/workbench/sessions/{token}/download-429-rejected] _
+
+status = 429, outcome = 'rejected'
+route = '/v1/workbench/sessions/{token}/download'
+
+    @pytest.mark.parametrize("status,outcome", [(200, "success"), (429, "rejected"), (422, "client_error"), (503, "failed")])
+    @pytest.mark.parametrize("route", ["/v1/workbench/upload", "/v1/workbench/sessions/{token}/analysis", "/v1/workbench/sessions/{token}/download"])
+    def test_workbench_status_and_latency_are_observable(status, outcome, route):
+        app = FastAPI()
+        app.add_api_route(route, lambda: None)
+        request = Request({"type": "http", "method": "GET", "path": route.replace("{token}", "secret-token"), "route": app.routes[-1]})
+        labels = {"route": route, "outcome": outcome}
+        metric = "harbinger_workbench_seconds_count"
+        before = registry.get_sample_value(metric, labels) or 0
+    
+        async def respond(_request):
+            return Response(status_code=status)
+    
+        asyncio.run(metrics_middleware(request, respond))
+>       assert registry.get_sample_value(metric, labels) == before + 1
+E       AssertionError: assert None == (0 + 1)
+E        +  where None = get_sample_value('harbinger_workbench_seconds_count', {'route': '/v1/workbench/sessions/{token}/download', 'outcome': 'rejected'})
+E        +    where get_sample_value = <prometheus_client.registry.CollectorRegistry object at 0x7fd600bc2e10>.get_sample_value
+
+tests/test_workbench_monitoring.py:28: AssertionError
+_ test_workbench_status_and_latency_are_observable[/v1/workbench/sessions/{token}/download-422-client_error] _
+
+status = 422, outcome = 'client_error'
+route = '/v1/workbench/sessions/{token}/download'
+
+    @pytest.mark.parametrize("status,outcome", [(200, "success"), (429, "rejected"), (422, "client_error"), (503, "failed")])
+    @pytest.mark.parametrize("route", ["/v1/workbench/upload", "/v1/workbench/sessions/{token}/analysis", "/v1/workbench/sessions/{token}/download"])
+    def test_workbench_status_and_latency_are_observable(status, outcome, route):
+        app = FastAPI()
+        app.add_api_route(route, lambda: None)
+        request = Request({"type": "http", "method": "GET", "path": route.replace("{token}", "secret-token"), "route": app.routes[-1]})
+        labels = {"route": route, "outcome": outcome}
+        metric = "harbinger_workbench_seconds_count"
+        before = registry.get_sample_value(metric, labels) or 0
+    
+        async def respond(_request):
+            return Response(status_code=status)
+    
+        asyncio.run(metrics_middleware(request, respond))
+>       assert registry.get_sample_value(metric, labels) == before + 1
+E       AssertionError: assert None == (0 + 1)
+E        +  where None = get_sample_value('harbinger_workbench_seconds_count', {'route': '/v1/workbench/sessions/{token}/download', 'outcome': 'client_error'})
+E        +    where get_sample_value = <prometheus_client.registry.CollectorRegistry object at 0x7fd600bc2e10>.get_sample_value
+
+tests/test_workbench_monitoring.py:28: AssertionError
+_ test_workbench_status_and_latency_are_observable[/v1/workbench/sessions/{token}/download-503-failed] _
+
+status = 503, outcome = 'failed'
+route = '/v1/workbench/sessions/{token}/download'
+
+    @pytest.mark.parametrize("status,outcome", [(200, "success"), (429, "rejected"), (422, "client_error"), (503, "failed")])
+    @pytest.mark.parametrize("route", ["/v1/workbench/upload", "/v1/workbench/sessions/{token}/analysis", "/v1/workbench/sessions/{token}/download"])
+    def test_workbench_status_and_latency_are_observable(status, outcome, route):
+        app = FastAPI()
+        app.add_api_route(route, lambda: None)
+        request = Request({"type": "http", "method": "GET", "path": route.replace("{token}", "secret-token"), "route": app.routes[-1]})
+        labels = {"route": route, "outcome": outcome}
+        metric = "harbinger_workbench_seconds_count"
+        before = registry.get_sample_value(metric, labels) or 0
+    
+        async def respond(_request):
+            return Response(status_code=status)
+    
+        asyncio.run(metrics_middleware(request, respond))
+>       assert registry.get_sample_value(metric, labels) == before + 1
+E       AssertionError: assert None == (0 + 1)
+E        +  where None = get_sample_value('harbinger_workbench_seconds_count', {'route': '/v1/workbench/sessions/{token}/download', 'outcome': 'failed'})
+E        +    where get_sample_value = <prometheus_client.registry.CollectorRegistry object at 0x7fd600bc2e10>.get_sample_value
+
+tests/test_workbench_monitoring.py:28: AssertionError
+________________ test_unhandled_exception_also_observes_latency ________________
+
+    def test_unhandled_exception_also_observes_latency():
+        app = FastAPI()
+        route = "/v1/workbench/sessions/{token}/analysis"
+        app.add_api_route(route, lambda: None)
+        request = Request({"type": "http", "method": "GET", "path": route, "route": app.routes[-1]})
+        before = registry.get_sample_value("harbinger_request_seconds_count", {"route": route}) or 0
+    
+        async def fail(_request):
+            raise RuntimeError("test computation failure")
+    
+        with pytest.raises(RuntimeError):
+            asyncio.run(metrics_middleware(request, fail))
+>       assert registry.get_sample_value("harbinger_request_seconds_count", {"route": route}) == before + 1
+E       AssertionError: assert 4.0 == (4.0 + 1)
+E        +  where 4.0 = get_sample_value('harbinger_request_seconds_count', {'route': '/v1/workbench/sessions/{token}/analysis'})
+E        +    where get_sample_value = <prometheus_client.registry.CollectorRegistry object at 0x7fd600bc2e10>.get_sample_value
+
+tests/test_workbench_monitoring.py:44: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_workbench_monitoring.py::test_workbench_status_and_latency_are_observable[/v1/workbench/upload-200-success]
+FAILED tests/test_workbench_monitoring.py::test_workbench_status_and_latency_are_observable[/v1/workbench/upload-429-rejected]
+FAILED tests/test_workbench_monitoring.py::test_workbench_status_and_latency_are_observable[/v1/workbench/upload-422-client_error]
+FAILED tests/test_workbench_monitoring.py::test_workbench_status_and_latency_are_observable[/v1/workbench/upload-503-failed]
+FAILED tests/test_workbench_monitoring.py::test_workbench_status_and_latency_are_observable[/v1/workbench/sessions/{token}/analysis-200-success]
+FAILED tests/test_workbench_monitoring.py::test_workbench_status_and_latency_are_observable[/v1/workbench/sessions/{token}/analysis-429-rejected]
+FAILED tests/test_workbench_monitoring.py::test_workbench_status_and_latency_are_observable[/v1/workbench/sessions/{token}/analysis-422-client_error]
+FAILED tests/test_workbench_monitoring.py::test_workbench_status_and_latency_are_observable[/v1/workbench/sessions/{token}/analysis-503-failed]
+FAILED tests/test_workbench_monitoring.py::test_workbench_status_and_latency_are_observable[/v1/workbench/sessions/{token}/download-200-success]
+FAILED tests/test_workbench_monitoring.py::test_workbench_status_and_latency_are_observable[/v1/workbench/sessions/{token}/download-429-rejected]
+FAILED tests/test_workbench_monitoring.py::test_workbench_status_and_latency_are_observable[/v1/workbench/sessions/{token}/download-422-client_error]
+FAILED tests/test_workbench_monitoring.py::test_workbench_status_and_latency_are_observable[/v1/workbench/sessions/{token}/download-503-failed]
+FAILED tests/test_workbench_monitoring.py::test_unhandled_exception_also_observes_latency

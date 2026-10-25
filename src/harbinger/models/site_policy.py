@@ -15,10 +15,13 @@ import re
 import tempfile
 from contextlib import contextmanager
 from datetime import UTC, datetime
+from functools import lru_cache
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+from harbinger.models.policy_evaluation import CONTRACT, evaluate, snapshots
 
 BASELINE = "baseline"
 WEIGHTS = (
@@ -114,12 +117,13 @@ def select_policy(
     observation_end,
     outcomes_complete,
     data_hash,
+    tables=None,
     min_rows=50,
     min_class=3,
     min_improvement=0.001,
     max_brier_regression=0.0,
 ):
-    """Freeze selection using only mature validation rows, Brier score, fixed gates.
+    """Freeze paired top-10/Brier selection on mature snapshots and fixed gates.
 
     test_start is a reserved future test boundary; this function never scores it.
     Training *and calibration* must finish before validation starts. created_at is
@@ -142,41 +146,45 @@ def select_policy(
         raise ValueError("invalid temporal boundaries: mature validation and future held-out test required")
     if not re.fullmatch("[0-9a-f]{64}", data_hash):
         raise ValueError("data hash required")
-    if min_rows < 2 or min_class < 1 or min_improvement < 0 or max_brier_regression < 0:
-        raise ValueError("invalid selection gates")
+    if min_rows < 50 or min_class < 3 or min_improvement < 0.001 or max_brier_regression != 0:
+        raise ValueError("fixed selection gates cannot be weakened")
     required = {"site_id", "asset_id", "t", "y30", "label_valid"}
     if not required <= set(frame):
         raise ValueError("missing outcomes or row metadata")
-    rows = frame.loc[(frame.t >= start) & (frame.t <= end)].copy()
-    if rows.empty or rows[list(required)].isna().any().any() or not rows.label_valid.eq(True).all():
+    dates = pd.date_range(start, end, freq="30D")
+    all_sites = sorted(frame.site_id.astype(str).unique())
+    if tables is not None:
+        rows, all_sites, dates = snapshots(frame, tables, start, end)
+    else:
+        rows = frame.loc[frame.t.isin(dates)].copy()
+        # Direct callers must supply already aligned, explicitly labelled snapshots.
+        if not rows.empty and "inspection_t" not in rows:
+            rows = rows.iloc[:0]
+    if rows[list(required)].isna().any().any() or not rows.label_valid.eq(True).all():
         raise ValueError("missing or immature validation outcomes")
     if not rows.y30.isin([0, 1]).all() or rows.duplicated(["site_id", "asset_id", "t"]).any():
         raise ValueError("invalid outcomes or duplicate target rows")
+    if len(rows):
+        inspection = pd.to_datetime(rows.inspection_t)
+        if (
+            inspection.isna().any()
+            or (inspection > rows.t).any()
+            or (inspection < rows.t - pd.Timedelta(days=120)).any()
+        ):
+            raise ValueError("invalid snapshot inspection age")
     models = candidates(bundle)
     predictions = {}
     for name, model in models.items():
-        p = np.asarray(model.predict_proba(rows), dtype=float)
+        p = np.asarray(model.predict_proba(rows), dtype=float) if len(rows) else np.array([])
         if p.shape != (len(rows),) or not np.isfinite(p).all() or ((p < 0) | (p > 1)).any():
             raise ValueError("invalid candidate probabilities")
         predictions[name] = p
-    sites, scores = {}, {}
-    for site, positions in rows.groupby("site_id").indices.items():
-        y = rows.iloc[positions].y30.to_numpy()
-        score = {name: float(np.mean((p[positions] - y) ** 2)) for name, p in predictions.items()}
-        scores[str(site)] = {"rows": len(y), "positives": int(y.sum()), "brier": score}
-        if len(y) < min_rows or min(y.sum(), len(y) - y.sum()) < min_class:
-            sites[str(site)] = {"model": BASELINE, "reason": "insufficient_sample"}
-            continue
-        best = min(score, key=lambda name: (score[name], name != BASELINE, name))
-        improves = score[BASELINE] - score[best] >= min_improvement
-        within_error = score[best] <= score[BASELINE] + max_brier_regression
-        chosen = best if improves and within_error else BASELINE
-        sites[str(site)] = {
-            "model": chosen,
-            "reason": "validation_brier" if chosen != BASELINE else "baseline_not_improved",
-        }
+    evaluation = evaluate(rows, predictions, all_sites, dates, min_rows, min_class, min_improvement)
+    sites, scores = evaluation["sites"], evaluation["scores"]
     policy = {
-        "schema": 1,
+        "schema": 2,
+        "contract": CONTRACT.copy(),
+        "candidate_family": sorted(models),
         "bundle_version": bundle["version"],
         "bundle_sha256": bundle_hash(model_dir, bundle),
         "data_sha256": data_hash,
@@ -205,9 +213,13 @@ def select_policy(
                 "asset_id": str(r.asset_id),
                 "t": r.t.isoformat(),
                 "y30": int(r.y30),
+                "inspection_t": r.inspection_t.isoformat(),
                 "probabilities": {name: float(p[i]) for name, p in predictions.items()},
             }
             for i, r in enumerate(rows.itertuples())
+        ],
+        "grid": [
+            {"site_id": site, "t": t, **counts} for (site, t), counts in rows.attrs.get("grid", {}).items()
         ],
         "test_scored": False,
     }
@@ -217,8 +229,39 @@ def select_policy(
     return {**policy, "evidence_sha256": digest}
 
 
+@lru_cache(maxsize=16)
+def _cached_decision(canonical_inputs: bytes) -> bytes:
+    """Cache only deterministic computation by immutable content, never trust checks.
+
+    Return immutable bytes so callers cannot poison cached results by mutation.
+    """
+    value = json.loads(canonical_inputs)
+    rows = pd.DataFrame(
+        value["targets"], columns=["site_id", "asset_id", "t", "y30", "inspection_t", "probabilities"]
+    )
+    rows["t"] = pd.to_datetime(rows.t)
+    rows.attrs["grid"] = {
+        (r["site_id"], r["t"]): {k: v for k, v in r.items() if k not in {"site_id", "t"}}
+        for r in value["grid"]
+    }
+    predictions = {n: np.array([r["probabilities"][n] for r in value["targets"]]) for n in value["family"]}
+    dates = pd.date_range(value["start"], value["end"], freq="30D")
+    gates = value["gates"]
+    return _json(
+        evaluate(
+            rows,
+            predictions,
+            value["sites"],
+            dates,
+            gates["min_rows"],
+            gates["min_class"],
+            gates["min_improvement"],
+        )
+    )
+
+
 def validate(model_dir, bundle, policy):
-    if policy.get("schema") != 1 or policy["bundle_version"] != bundle["version"]:
+    if policy.get("schema") != 2 or policy["bundle_version"] != bundle["version"]:
         raise ValueError("bundle version mismatch")
     actual = bundle_hash(model_dir, bundle)
     if policy["bundle_sha256"] != actual or bundle.get("_policy_bundle_hash", actual) != actual:
@@ -235,6 +278,60 @@ def validate(model_dir, bundle, policy):
         or evidence["test_scored"]
     ):
         raise ValueError("policy/evidence mismatch")
+    if policy.get("contract") != CONTRACT or policy.get("candidate_family") != sorted(candidates(bundle)):
+        raise ValueError("fixed contract or candidate family mismatch")
+    gates = policy["gates"]
+    if (
+        gates["min_rows"] < 50
+        or gates["min_class"] < 3
+        or gates["min_improvement"] < 0.001
+        or gates["max_brier_regression"] != 0
+        or not all(np.isfinite(v) for v in gates.values())
+    ):
+        raise ValueError("invalid fixed gates")
+    targets = evidence["targets"]
+    rows = pd.DataFrame(targets, columns=["site_id", "asset_id", "t", "y30", "inspection_t", "probabilities"])
+    rows["t"] = pd.to_datetime(rows.t)
+    dates = pd.date_range(_time(policy["validation_start"]), _time(policy["validation_end"]), freq="30D")
+    if len(rows) and (
+        rows.duplicated(["site_id", "asset_id", "t"]).any()
+        or not rows.t.isin(dates).all()
+        or not rows.y30.isin([0, 1]).all()
+    ):
+        raise ValueError("invalid decision targets")
+    if len(rows):
+        inspection = pd.to_datetime(rows.inspection_t)
+        if (
+            inspection.isna().any()
+            or (inspection > rows.t).any()
+            or (inspection < rows.t - pd.Timedelta(days=120)).any()
+        ):
+            raise ValueError("invalid snapshot inspection age")
+    rows.attrs["grid"] = {
+        (r["site_id"], r["t"]): {k: v for k, v in r.items() if k not in {"site_id", "t"}}
+        for r in evidence.get("grid", [])
+    }
+    predictions = {n: np.array([r["probabilities"][n] for r in targets]) for n in policy["candidate_family"]}
+    if any(not np.isfinite(p).all() or ((p < 0) | (p > 1)).any() for p in predictions.values()):
+        raise ValueError("invalid decision probabilities")
+    recalculated = json.loads(
+        _cached_decision(
+            _json(
+                {
+                    "targets": targets,
+                    "grid": evidence.get("grid", []),
+                    "family": policy["candidate_family"],
+                    "contract": policy["contract"],
+                    "sites": sorted(policy["sites"]),
+                    "start": policy["validation_start"],
+                    "end": policy["validation_end"],
+                    "gates": gates,
+                }
+            )
+        )
+    )
+    if recalculated["sites"] != policy["sites"] or recalculated["scores"] != evidence["scores"]:
+        raise ValueError("decision evidence/gates mismatch")
     cutoff, start, end, effective, test, created, observed = map(
         _time,
         (

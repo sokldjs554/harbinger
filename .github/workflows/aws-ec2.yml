@@ -39,6 +39,7 @@ jobs:
           bash -n deploy/aws/ec2/install.sh
       - name: Check existing EC2 SSH identity before building
         env:
+          HARBINGER_EXISTING_INSTANCE_ONLY: "1"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
@@ -107,6 +108,7 @@ jobs:
       - name: Provision and verify HTTPS, renewal and reboot
         id: deploy
         env:
+          HARBINGER_EXISTING_INSTANCE_ONLY: "1"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}

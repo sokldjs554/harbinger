@@ -1,0 +1,22 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______ test_cached_decision_still_checks_files_contract_and_current_time _______
+
+candidate = (PosixPath('/tmp/pytest-of-agent/pytest-11/test_cached_decision_still_che0/models'), {'version': 'v1', 'classifier': C...01        True   2024-05-01
+319  1.0    1        pump  ... 2024-05-01        True   2024-05-01
+
+[320 rows x 9 columns])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc7792bb2c0>
+
+    def test_cached_decision_still_checks_files_contract_and_current_time(candidate, monkeypatch):
+        import copy
+        from tests.test_site_policy import propose
+        root, bundle, _ = candidate
+        proposal = propose(candidate)
+>       policy._cached_decision.cache_clear()
+        ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'harbinger.models.site_policy' has no attribute '_cached_decision'
+
+tests/test_policy_selection.py:138: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_policy_selection.py::test_cached_decision_still_checks_files_contract_and_current_time

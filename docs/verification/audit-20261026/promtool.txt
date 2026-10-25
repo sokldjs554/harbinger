@@ -1,0 +1,6 @@
+Checking deploy/monitoring/rules.yml
+  SUCCESS: 20 rules found
+
+Unit Testing:  deploy/monitoring/rules.test.yml
+  SUCCESS
+

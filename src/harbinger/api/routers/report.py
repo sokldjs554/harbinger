@@ -69,7 +69,10 @@ def build_report(store: Store, site_id: str, as_of) -> dict:
             "urgent": [i for i in sched if i["urgent"]][:10],
         },
         "energy": {
-            "n_anomaly_days_90d": energy.get("n_anomaly_days", 0),
+            "status": energy.get("status", "no_data"),
+            "n_observed_days_90d": energy.get("n_observed_days", 0),
+            "n_evaluable_days_90d": energy.get("n_evaluable_days", 0),
+            "n_anomaly_days_90d": energy.get("n_anomaly_days"),
             "anomalies": energy.get("anomalies", [])[-10:],
         },
         "quality": {
@@ -140,7 +143,13 @@ def to_markdown(r: dict) -> str:
         "",
         "## 5. 에너지",
         "",
-        f"- 최근 90일 전기 사용량 이상일 {r['energy']['n_anomaly_days_90d']}일"
+        f"- 최근 90일 관측 {r['energy']['n_observed_days_90d']}일 · 판정 가능 {r['energy']['n_evaluable_days_90d']}일 · "
+        + (
+            f"이상 {r['energy']['n_anomaly_days_90d']}일"
+            if r["energy"]["n_anomaly_days_90d"] is not None
+            else "이상 여부 판정 보류"
+        )
+        + f" ({r['energy']['status']})"
         + (f": {', '.join(r['energy']['anomalies'])}" if r["energy"]["anomalies"] else ""),
         "",
         "## 6. 점검 기록 품질",

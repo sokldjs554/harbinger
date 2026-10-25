@@ -1,0 +1,87 @@
+{
+  "status": "success",
+  "data": {
+    "groups": [
+      {
+        "name": "harbinger-workbench",
+        "file": "/workspace/harbinger-runs/audit-ops-final/test-rules.yml",
+        "rules": [
+          {
+            "name": "harbinger:workbench_success_seconds:p95_5m",
+            "query": "histogram_quantile(0.95, sum by (job, instance, route, le) (rate(harbinger_workbench_seconds_bucket{job=\"harbinger\",outcome=\"success\"}[10s])))",
+            "health": "ok",
+            "evaluationTime": 0.000540699,
+            "lastEvaluation": "2026-10-25T17:03:35.057966825Z",
+            "type": "recording"
+          },
+          {
+            "name": "harbinger:workbench_success:increase5m",
+            "query": "sum by (job, instance, route) (increase(harbinger_workbench_seconds_count{job=\"harbinger\",outcome=\"success\"}[10s]))",
+            "health": "ok",
+            "evaluationTime": 0.000228658,
+            "lastEvaluation": "2026-10-25T17:03:35.058510128Z",
+            "type": "recording"
+          },
+          {
+            "state": "inactive",
+            "name": "HarbingerWorkbenchSlow",
+            "query": "(harbinger:workbench_success_seconds:p95_5m > 0.001) and on (job, instance, route) (harbinger:workbench_success:increase5m >= 1) and on (job, instance) (up{job=\"harbinger\"} == 1)",
+            "duration": 2,
+            "keepFiringFor": 0,
+            "labels": {
+              "severity": "warning"
+            },
+            "annotations": {
+              "summary": "Workbench successful-request p95 exceeds 2 seconds with sufficient traffic"
+            },
+            "alerts": [],
+            "health": "ok",
+            "evaluationTime": 0.000211593,
+            "lastEvaluation": "2026-10-25T17:03:35.05874131Z",
+            "type": "alerting"
+          },
+          {
+            "state": "inactive",
+            "name": "HarbingerWorkbenchFailures",
+            "query": "(sum by (job, instance, route) (rate(harbinger_workbench_seconds_count{job=\"harbinger\",outcome=\"failed\"}[10s])) > 0) and on (job, instance) (up{job=\"harbinger\"} == 1)",
+            "duration": 2,
+            "keepFiringFor": 0,
+            "labels": {
+              "severity": "critical"
+            },
+            "annotations": {
+              "summary": "Workbench requests are failing with server errors"
+            },
+            "alerts": [],
+            "health": "ok",
+            "evaluationTime": 0.000771521,
+            "lastEvaluation": "2026-10-25T17:03:35.058954565Z",
+            "type": "alerting"
+          },
+          {
+            "state": "inactive",
+            "name": "HarbingerWorkbenchCapacity",
+            "query": "(sum by (job, instance, route) (rate(harbinger_workbench_seconds_count{job=\"harbinger\",outcome=\"rejected\"}[10s])) > 0) and on (job, instance) (up{job=\"harbinger\"} == 1)",
+            "duration": 2,
+            "keepFiringFor": 0,
+            "labels": {
+              "severity": "warning"
+            },
+            "annotations": {
+              "summary": "Workbench is intentionally rejecting requests with HTTP 429"
+            },
+            "alerts": [],
+            "health": "ok",
+            "evaluationTime": 0.00016888,
+            "lastEvaluation": "2026-10-25T17:03:35.05972862Z",
+            "type": "alerting"
+          }
+        ],
+        "interval": 1,
+        "limit": 0,
+        "evaluationTime": 0.002018746,
+        "lastEvaluation": "2026-10-25T17:03:35.057881318Z"
+      }
+    ]
+  }
+}

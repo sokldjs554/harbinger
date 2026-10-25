@@ -1,0 +1,7 @@
+Old single-window harmful-ranking choice: {'S': {'model': 'logistic', 'reason': 'validation_brier'}}
+baseline P@10=1; candidate P@10=0
+Traceback (most recent call last):
+  File "/tmp/reproduce-old-policy.py", line 16, in <module>
+    assert p['sites']['S']['model']=='baseline','REPRODUCED: old Brier-only selector promotes harmful ranking with one window'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: REPRODUCED: old Brier-only selector promotes harmful ranking with one window

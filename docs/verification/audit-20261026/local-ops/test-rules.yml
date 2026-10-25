@@ -1,0 +1,47 @@
+groups:
+- name: harbinger-workbench
+  interval: 1s
+  rules:
+  - record: harbinger:workbench_success_seconds:p95_5m
+    expr: "histogram_quantile(0.95, sum by (job, instance, route, le) (\n  rate(harbinger_workbench_seconds_bucket{job=\"\
+      harbinger\",outcome=\"success\"}[10s])\n))\n"
+  - record: harbinger:workbench_success:increase5m
+    expr: sum by (job, instance, route) (increase(harbinger_workbench_seconds_count{job="harbinger",outcome="success"}[10s]))
+  - alert: HarbingerWorkbenchSlow
+    expr: '(harbinger:workbench_success_seconds:p95_5m > 0.001)
+
+      and on (job, instance, route) (harbinger:workbench_success:increase5m >= 1)
+
+      and on (job, instance) (up{job="harbinger"} == 1)
+
+      '
+    for: 2s
+    labels:
+      severity: warning
+    annotations:
+      summary: Workbench successful-request p95 exceeds 2 seconds with sufficient
+        traffic
+  - alert: HarbingerWorkbenchFailures
+    expr: '(sum by (job, instance, route) (rate(harbinger_workbench_seconds_count{job="harbinger",outcome="failed"}[10s]))
+      > 0)
+
+      and on (job, instance) (up{job="harbinger"} == 1)
+
+      '
+    for: 2s
+    labels:
+      severity: critical
+    annotations:
+      summary: Workbench requests are failing with server errors
+  - alert: HarbingerWorkbenchCapacity
+    expr: '(sum by (job, instance, route) (rate(harbinger_workbench_seconds_count{job="harbinger",outcome="rejected"}[10s]))
+      > 0)
+
+      and on (job, instance) (up{job="harbinger"} == 1)
+
+      '
+    for: 2s
+    labels:
+      severity: warning
+    annotations:
+      summary: Workbench is intentionally rejecting requests with HTTP 429

@@ -13,6 +13,20 @@ LATENCY = Histogram(
     registry=registry,
     buckets=(0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5),
 )
+WORKBENCH_ROUTES = frozenset(
+    {
+        "/v1/workbench/upload",
+        "/v1/workbench/sessions/{token}/analysis",
+        "/v1/workbench/sessions/{token}/download",
+    }
+)
+WORKBENCH_LATENCY = Histogram(
+    "harbinger_workbench_seconds",
+    "Main workbench request latency by outcome",
+    ["route", "outcome"],
+    registry=registry,
+    buckets=(0.01, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10, 30, 60),
+)
 PRED_P30 = Histogram(
     "harbinger_p30",
     "Observed-data latest_rows p30 scores, including repeats; excludes what-if and offline evaluation",

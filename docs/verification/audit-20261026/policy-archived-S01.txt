@@ -1,0 +1,6 @@
+dict_keys(['policy', 'scores', 'targets', 'test_scored'])
+527
+baseline brier 0.07602243764554613 precision10 0.6
+logistic brier 0.08250460780963556 precision10 0.6
+without_history brier 0.0769816183725161 precision10 0.6
+without_text brier 0.07454679639693289 precision10 0.7

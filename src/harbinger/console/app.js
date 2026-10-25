@@ -409,15 +409,20 @@
     const days = e.days || [], fx = (v) => new Date(v).toISOString().slice(5, 10);
     C.lineChart($("#energy-line"), [
       { name: "실측 kWh", color: "var(--series-1)", points: days.map((d) => ({ x: Date.parse(d.day), y: d.actual })) },
-      { name: "기대치 kWh", color: "var(--muted)", points: days.map((d) => ({ x: Date.parse(d.day), y: d.expected })) },
+      { name: "기대치 kWh", color: "var(--muted)", points: days.filter((d) => d.expected != null).map((d) => ({ x: Date.parse(d.day), y: d.expected })) },
     ], { fmtX: fx, fmtY: (v) => fmtN(v), y0: 0, xTicks: 6, label: "전기 사용량" });
     const zc = $("#energy-z");
     const pts = days.filter((d) => d.z != null).map((d) => ({ x: Date.parse(d.day), y: d.z }));
     C.lineChart(zc, [{ name: "잔차 7일 평균 z", color: "var(--series-1)", points: pts }], { fmtX: fx, fmtY: (v) => v.toFixed(1), refY: 2.5, xTicks: 6, height: 160, label: "z-score" });
+    if (!pts.length) {
+      clear(zc);
+      const reason = e.status === "no_model" ? "고객사별 판정 모델이 없어 계산을 보류합니다." : e.status === "no_data" ? "조회 기간에 관측된 자료가 없습니다." : "이동평균 계산에 필요한 관측이 부족합니다.";
+      zc.appendChild(el("div", { class: "empty" }, reason));
+    }
     const an = days.filter((d) => d.anomaly);
-    zc.prepend(el("div", { class: "legend" }, `이상일(z > 2.5) ${e.n_anomaly_days}일` + (an.length ? ": " + an.map((d) => d.day.slice(5)).join(", ") : "")));
+    zc.prepend(el("div", { class: "legend" }, `관측 ${e.n_observed_days ?? "–"}일 · 판정 가능 ${e.n_evaluable_days ?? "–"}일 · ${e.n_anomaly_days == null ? "이상 여부 판정 보류" : `이상 ${e.n_anomaly_days}일`} (${({no_data:"자료 없음", no_model:"고객사별 판정 모델 없음", insufficient_observation:"관측 부족", available:"계산 완료"})[e.status] || "상태 미확인"})` + (an.length ? ": " + an.map((d) => d.day.slice(5)).join(", ") : "")));
     const o = en.oracle_check || {}, full = ab["full(+energy)"], noen = ab["+text+quality+history"];
-    $("#energy-note").textContent = `정직하게: 이 회귀는 날씨·재실을 감안한 기대 전기량을 R² ${en.test.r2.toFixed(3)}로 잘 맞히지만(MAPE ${fmtP(en.test.mape)}), 숨은 냉방설비 열화와 여름 잔차의 상관은 ${(o.summer_corr_resid_vs_cooling_degradation ?? 0).toFixed(2)}로 약합니다. 사이트 전기량만으로는 특정 설비를 지목하지 못하고, 절제 실험에서도 에너지 피처를 더해 AUROC 가 ${full && noen ? (full.auroc - noen.auroc >= 0 ? "+" : "") + (full.auroc - noen.auroc).toFixed(3) : "–"} 만큼 움직였을 뿐입니다. 서브미터링이 있는 현장에서야 의미가 커집니다.`;
+    $("#energy-note").textContent = `저장된 합성 평가 결과이며 현재 조회 기간의 성능이 아닙니다. 날씨·재실을 감안한 기대 전기량 회귀의 R²는 ${en.test.r2.toFixed(3)}입니다(MAPE ${fmtP(en.test.mape)}), 숨은 냉방설비 열화와 여름 잔차의 상관은 ${(o.summer_corr_resid_vs_cooling_degradation == null ? "확인 불가" : o.summer_corr_resid_vs_cooling_degradation.toFixed(2))}입니다. 사이트 전기량만으로는 특정 설비를 지목하지 못하고, 절제 실험에서도 에너지 피처를 더해 AUROC 가 ${full && noen ? (full.auroc - noen.auroc >= 0 ? "+" : "") + (full.auroc - noen.auroc).toFixed(3) : "–"} 만큼 움직였을 뿐입니다. 서브미터링을 포함한 현장 성능 검증은 수행하지 않았습니다.`;
   };
 
   /* ---------- 모델·가정 ---------- */

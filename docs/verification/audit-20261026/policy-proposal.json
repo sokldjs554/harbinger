@@ -1,0 +1,63 @@
+{
+  "schema": 2,
+  "contract": {
+    "budget": 10,
+    "max_age_days": 120,
+    "step_days": 30,
+    "min_dates": 4,
+    "min_span_days": 90,
+    "min_assets": 50,
+    "min_class": 3,
+    "min_brier_improvement": 0.001,
+    "replicates": 2000,
+    "seed": 20261026,
+    "alpha": 0.05,
+    "quantile_method": "linear"
+  },
+  "candidate_family": [
+    "baseline",
+    "logistic",
+    "without_history",
+    "without_text"
+  ],
+  "bundle_version": "v20261021-115634",
+  "bundle_sha256": "1d018434fe58b84db36b9569352f9368063e6d1dbea7e0024f3016fba85e29e8",
+  "data_sha256": "67d980a12ed881632c15a115284360382434110dd28eaa80a4d96a9ec30de89c",
+  "created_at": "2026-10-25T16:27:51.496551",
+  "train_observed_until": "2023-09-01T00:00:00",
+  "validation_start": "2023-09-02T00:00:00",
+  "validation_end": "2023-12-01T00:00:00",
+  "observation_end": "2024-01-01T00:00:00",
+  "effective_from": "2026-10-25T16:27:51.496551",
+  "test_start": "2099-01-01T00:00:00",
+  "outcomes_complete": true,
+  "sites": {
+    "S01": {
+      "model": "baseline",
+      "reason": "candidate_gates_failed"
+    },
+    "S02": {
+      "model": "baseline",
+      "reason": "candidate_gates_failed"
+    },
+    "S03": {
+      "model": "baseline",
+      "reason": "candidate_gates_failed"
+    },
+    "S04": {
+      "model": "baseline",
+      "reason": "candidate_gates_failed"
+    },
+    "S05": {
+      "model": "baseline",
+      "reason": "insufficient_sample"
+    }
+  },
+  "gates": {
+    "min_rows": 50,
+    "min_class": 3,
+    "min_improvement": 0.001,
+    "max_brier_regression": 0.0
+  },
+  "evidence_sha256": "971d80d30e12bb089b972675e3f423649058e86c59fa34974435db43ca7c3a9b"
+}

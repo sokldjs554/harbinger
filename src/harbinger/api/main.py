@@ -20,7 +20,7 @@ from harbinger.api.auth import router as auth_router
 from harbinger.api.routers import admin, energy, health, patrol, replay, report, risk, sites, text, workbench
 from harbinger.api.store import Store, console_dir
 from harbinger.config import settings
-from harbinger.monitoring.metrics import LATENCY, REQUESTS, render
+from harbinger.monitoring.metrics import LATENCY, REQUESTS, WORKBENCH_LATENCY, WORKBENCH_ROUTES, render
 
 
 class JsonFormatter(logging.Formatter):
@@ -92,15 +92,27 @@ async def metrics_middleware(request: Request, call_next):
         matched = request.scope.get("route")
         return getattr(matched, "path", "/static-or-unmatched")
 
+    status = 500
     try:
         resp = await call_next(request)
         status = resp.status_code
-    except Exception:
-        REQUESTS.labels(route=route_label(), status="500").inc()
-        raise
-    REQUESTS.labels(route=route_label(), status=str(status)).inc()
-    LATENCY.labels(route=route_label()).observe(time.perf_counter() - t0)
-    return resp
+        return resp
+    finally:
+        route = route_label()
+        elapsed = time.perf_counter() - t0
+        REQUESTS.labels(route=route, status=str(status)).inc()
+        LATENCY.labels(route=route).observe(elapsed)
+        if route in WORKBENCH_ROUTES:
+            outcome = (
+                "failed"
+                if status >= 500
+                else "rejected"
+                if status == 429
+                else "client_error"
+                if status >= 400
+                else "success"
+            )
+            WORKBENCH_LATENCY.labels(route=route, outcome=outcome).observe(elapsed)
 
 
 @app.get("/metrics", include_in_schema=False)

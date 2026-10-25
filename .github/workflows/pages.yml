@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - "docs/demo/**"
+      - "artifacts/release.json"
       - ".github/workflows/pages.yml"
       - "scripts/check_browser.py"
       - "scripts/check_review_usability.py"
