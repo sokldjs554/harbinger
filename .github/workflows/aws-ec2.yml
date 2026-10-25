@@ -79,7 +79,7 @@ jobs:
           docker build -t "harbinger:$GITHUB_SHA" .
       - name: Install browser verifier before provisioning
         run: |
-          pip install playwright
+          pip install 'playwright==1.56.0'
           bash scripts/configure_ci_apt.sh
           playwright install --with-deps chromium
       - name: Train full synthetic runtime bundle before provisioning

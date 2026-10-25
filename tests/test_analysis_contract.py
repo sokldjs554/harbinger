@@ -36,6 +36,11 @@ def test_random_comparator_uses_same_per_customer_budget():
         },
     )
     result = analyze(store, pd.Timestamp("2025-09-01"), k=1)
+    unconfirmed = analyze(store, pd.Timestamp("2025-09-01"), k=1, observation_confirmed=False)
+    assert result["evaluation_status"] == "available"
+    assert unconfirmed["evaluation_status"] == "withheld"
+    assert all(m["metrics"] == {} and m["precision_at_k"] is None for m in unconfirmed["comparisons"])
+    assert all(a["failed_within_30d"] is None for a in unconfirmed["assets"])
     row = next(r for r in result["comparisons"] if r["method"] == "random_expectation")
     assert row["precision_at_k"] == 0.5  # 1 random pick from each site, not from pooled assets
     current = next(r for r in result["comparisons"] if r["method"] == "current_model")

@@ -21,13 +21,18 @@ def safe_json(value):
     return value
 
 
-def analyze(store, as_of, site=None, k=10, source="synthetic-example"):
+def analyze(store, as_of, site=None, k=10, source="synthetic-example", observation_confirmed=True):
     rows = store.latest_rows(site, as_of, max_age_days=36500).copy()
     cutoff = heldout_start(store)
-    observed = as_of + pd.Timedelta(days=30) <= store.data_end
+    period_complete = as_of + pd.Timedelta(days=30) <= store.data_end
+    observed = period_complete and observation_confirmed
     held_out = cutoff is not None and as_of >= cutoff
     reasons = []
-    if not observed:
+    if not observation_confirmed:
+        reasons.append(
+            "고장 기록의 완전성이 확인되지 않았습니다. 시설 데이터 담당자 확인 후 다시 업로드하면 평가할 수 있습니다."
+        )
+    if not period_complete:
         reasons.append("기준일 이후 30일의 관측이 완료되지 않았습니다.")
     if not held_out:
         reasons.append("모델 학습·보정 관측 종료 이전이거나 모델 관측 메타데이터가 없습니다.")
@@ -95,7 +100,9 @@ def analyze(store, as_of, site=None, k=10, source="synthetic-example"):
                     "assets": len(group),
                     "positives": pos if observed else None,
                     "status": "available" if ok else "withheld",
-                    "reason": None if ok else "관측 30일·모델 시간 보류·양성/음성 각 3개 조건 확인 필요",
+                    "reason": None
+                    if ok
+                    else "고장 기록 완전성·관측 30일·모델 시간 보류·양성/음성 각 3개 조건 확인 필요",
                     "metrics": classification_metrics(group.outcome, group.p30) if ok else {},
                 }
             )
@@ -106,6 +113,8 @@ def analyze(store, as_of, site=None, k=10, source="synthetic-example"):
                     "site_id": r["site_id"],
                     "name": r["name"],
                     "category": r["category"],
+                    "floor": r.get("st_floor"),
+                    "zone": r.get("zone"),
                     "p30": r["p30"],
                     "memo": r["memo"],
                     "inspection_at": r["t"].isoformat(),
@@ -127,6 +136,7 @@ def analyze(store, as_of, site=None, k=10, source="synthetic-example"):
             "observation_end": store.data_end.isoformat(),
             "model_observed_until": cutoff.isoformat() if cutoff is not None else None,
             "outcomes_observed": bool(observed),
+            "observation_confirmed": bool(observation_confirmed),
             "time_held_out": bool(held_out),
             "customer_holdout": "see published LOSO experiment; this session is not LOSO",
             "evaluation_status": "withheld" if reasons else "available",

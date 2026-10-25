@@ -1,0 +1,103 @@
+F..................................................s.................... [ 47%]
+......................................................................F. [ 94%]
+........F                                                                [100%]
+=================================== FAILURES ===================================
+_____________ test_random_comparator_uses_same_per_customer_budget _____________
+
+    def test_random_comparator_uses_same_per_customer_budget():
+        ids = [f"a{i}" for i in range(12)]
+        rows = pd.DataFrame(
+            {
+                "asset_id": ids,
+                "site_id": ["small"] * 3 + ["large"] * 9,
+                "t": pd.Timestamp("2025-08-30"),
+                "p30": 0.1,
+                "name": ids,
+                "category": "pump",
+                "memo": "",
+                "ck_overall": 0,
+                "st_age_years": 5.0,
+                "wo_days_since_bd": 100.0,
+                "wo_bd_90d": 0,
+            }
+        )
+        wo = pd.DataFrame({"asset_id": ids[:3], "type": "breakdown", "opened_at": pd.Timestamp("2025-09-10")})
+        store = SimpleNamespace(
+            latest_rows=lambda *a, **kw: rows.copy(),
+            data_end=pd.Timestamp("2025-11-01"),
+            tables={"workorders": wo},
+            bundle={
+                "version": "test",
+                "comparators": {},
+                "entry": {"metrics": {"observation": {"boundary_version": 2, "max_observed_at": "2025-07-01"}}},
+            },
+        )
+        result = analyze(store, pd.Timestamp("2025-09-01"), k=1)
+>       unconfirmed = analyze(store, pd.Timestamp("2025-09-01"), k=1, observation_confirmed=False)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: analyze() got an unexpected keyword argument 'observation_confirmed'
+
+tests/test_analysis_contract.py:39: TypeError
+____________ test_invalid_overall_identifies_source_row_and_meaning ____________
+
+    def test_invalid_overall_identifies_source_row_and_meaning():
+        other = ROW.replace("i1,", "i2,").replace("2025-08-01", "2025-08-02")
+        broken = other.replace(",1,약간", ",9,약간")
+        with pytest.raises(UploadError) as exc:
+            parse_csv((HEADER + ROW + broken).encode(), "2025-10-01")
+        message = str(exc.value)
+>       assert "점검 종합 판정(overall)" in message
+E       AssertionError: assert '점검 종합 판정(overall)' in 'overall: 0~2 범위의 정수가 필요합니다.'
+
+tests/test_upload.py:96: AssertionError
+_____ test_upload_confirmation_is_session_scoped_and_defaults_to_withheld ______
+
+client = <starlette.testclient.TestClient object at 0x7fe774e6a060>
+
+    def test_upload_confirmation_is_session_scoped_and_defaults_to_withheld(client):
+        import csv
+        import io
+    
+        tokens = []
+        results = []
+        try:
+            for query in ["", "&observation_confirmed=true", "&observation_confirmed=false"]:
+                response = client.post(
+                    "/v1/workbench/upload?observation_end=2025-10-01" + query,
+                    content=(HEADER + ROW).encode(),
+                    headers={"Content-Type": "text/csv"},
+                )
+                assert response.status_code == 200, response.text
+                token = response.json()["session_id"]
+                tokens.append(token)
+                result = client.get(f"/v1/workbench/sessions/{token}/analysis?as_of=2025-08-01").json()
+                results.append(result)
+            for result in (results[0], results[2]):
+>               assert result["outcomes_observed"] is False
+E               assert True is False
+
+tests/test_workbench.py:125: AssertionError
+----------------------------- Captured stderr call -----------------------------
+{"ts": "2026-10-25T20:15:01", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: POST http://testserver/v1/workbench/upload?observation_end=2025-10-01 \"HTTP/1.1 200 OK\""}
+{"ts": "2026-10-25T20:15:01", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: GET http://testserver/v1/workbench/sessions/REDACTED/analysis?as_of=2025-08-01 \"HTTP/1.1 200 OK\""}
+{"ts": "2026-10-25T20:15:01", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: POST http://testserver/v1/workbench/upload?observation_end=2025-10-01&observation_confirmed=true \"HTTP/1.1 200 OK\""}
+{"ts": "2026-10-25T20:15:01", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: GET http://testserver/v1/workbench/sessions/REDACTED/analysis?as_of=2025-08-01 \"HTTP/1.1 200 OK\""}
+{"ts": "2026-10-25T20:15:01", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: POST http://testserver/v1/workbench/upload?observation_end=2025-10-01&observation_confirmed=false \"HTTP/1.1 200 OK\""}
+{"ts": "2026-10-25T20:15:01", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: GET http://testserver/v1/workbench/sessions/REDACTED/analysis?as_of=2025-08-01 \"HTTP/1.1 200 OK\""}
+{"ts": "2026-10-25T20:15:01", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: DELETE http://testserver/v1/workbench/sessions/REDACTED \"HTTP/1.1 200 OK\""}
+{"ts": "2026-10-25T20:15:01", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: DELETE http://testserver/v1/workbench/sessions/REDACTED \"HTTP/1.1 200 OK\""}
+{"ts": "2026-10-25T20:15:01", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: DELETE http://testserver/v1/workbench/sessions/REDACTED \"HTTP/1.1 200 OK\""}
+------------------------------ Captured log call -------------------------------
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/v1/workbench/upload?observation_end=2025-10-01 "HTTP/1.1 200 OK"
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/v1/workbench/sessions/REDACTED/analysis?as_of=2025-08-01 "HTTP/1.1 200 OK"
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/v1/workbench/upload?observation_end=2025-10-01&observation_confirmed=true "HTTP/1.1 200 OK"
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/v1/workbench/sessions/REDACTED/analysis?as_of=2025-08-01 "HTTP/1.1 200 OK"
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/v1/workbench/upload?observation_end=2025-10-01&observation_confirmed=false "HTTP/1.1 200 OK"
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/v1/workbench/sessions/REDACTED/analysis?as_of=2025-08-01 "HTTP/1.1 200 OK"
+INFO     httpx:_client.py:1025 HTTP Request: DELETE http://testserver/v1/workbench/sessions/REDACTED "HTTP/1.1 200 OK"
+INFO     httpx:_client.py:1025 HTTP Request: DELETE http://testserver/v1/workbench/sessions/REDACTED "HTTP/1.1 200 OK"
+INFO     httpx:_client.py:1025 HTTP Request: DELETE http://testserver/v1/workbench/sessions/REDACTED "HTTP/1.1 200 OK"
+=========================== short test summary info ============================
+FAILED tests/test_analysis_contract.py::test_random_comparator_uses_same_per_customer_budget
+FAILED tests/test_upload.py::test_invalid_overall_identifies_source_row_and_meaning
+FAILED tests/test_workbench.py::test_upload_confirmation_is_session_scoped_and_defaults_to_withheld

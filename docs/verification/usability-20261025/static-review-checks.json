@@ -1,0 +1,8 @@
+{
+  "static": true,
+  "checks": [
+    "location search and visible IDs at 320/390/650px",
+    "historical prediction and unknown repair status",
+    "pending date keeps applied date"
+  ]
+}
