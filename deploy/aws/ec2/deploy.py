@@ -44,6 +44,8 @@ def select_instance(instances):
         active.append(instance)
     if len(active) > 1:
         raise ValueError("Multiple harbinger instances found; no instance was changed")
+    if not active and os.environ.get("HARBINGER_EXISTING_INSTANCE_ONLY") == "1":
+        raise ValueError("Existing-instance-only deployment: no matching server; creation is disabled")
     return active[0] if active else None
 
 

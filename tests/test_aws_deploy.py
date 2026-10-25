@@ -308,3 +308,15 @@ def test_duplicate_identity_json_fields_are_rejected():
         deploy.verified_host_key(
             "i-0123456789abcdef0", pin, lambda *args: pytest.fail("reject duplicate fields first")
         )
+
+
+def test_existing_only_deployment_cannot_fall_through_to_creation(monkeypatch):
+    deploy = module()
+    monkeypatch.setenv("HARBINGER_EXISTING_INSTANCE_ONLY", "1")
+    with pytest.raises(ValueError, match="Existing-instance-only"):
+        deploy.select_instance([])
+    terminated = owned()
+    terminated["State"]["Name"] = "terminated"
+    with pytest.raises(ValueError, match="Existing-instance-only"):
+        deploy.select_instance([terminated])
+    assert deploy.select_instance([owned()])["InstanceId"] == "i-1"

@@ -18,3 +18,5 @@ Local final Docker rebuild failed for disk exhaustion; CI clean-runner build/run
 
 Final Docker retry: after unreferenced intermediate-image/cache cleanup, final image built and ran. 78 installed source files match; UID10001; 2CPU/2GiB limits; analysis/upload/JSON-CSV-Markdown and insufficient-energy API passed. Initial copied-fixture permission failure corrected on a separate readable copy, originals unchanged.
 Final container browser: actual final Docker image passed full list/detail/history/state restoration, mobile filters and CSV/download workflows, plus available/insufficient/no-data energy rendering. No page errors; evidence in docker/*browser-checks.json and browser/*.png.
+
+Follow-up authorization: user reviewed PR15 and requested the unsupported 100-site limit correction, final CI, merge, and existing AWS/Pages deployment. Preserve earlier no-deployment evidence as historical. Existing-instance-only guard prevents new resource creation if the expected host is absent.
