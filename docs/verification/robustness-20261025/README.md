@@ -99,6 +99,6 @@
 - [원시 결과](results/)에 실제 예측·정답·보정 fold·공통 마스크·기록 가용 시각·해시를 저장했습니다. `scripts/robustness/summarize.py`로 지표와 분할 계약을 재검증합니다.
 - [로컬 테스트 로그](tests.txt): 150개 통과, 선택적 TensorFlow 1개 제외. [검사 요약](checks.json) · [독립 코드 검토와 수정](review.md).
 - [실행 로그 20260101](run-20260101.txt) · [20260102](run-20260102.txt) · [20260103](run-20260103.txt).
-- [지인에게 보낼 요청문](../../user-review-invitation.md) · [빈 검토 기록 양식](../../user-review-template.md). 실제 응답이 도착하기 전까지 사용자 검토 결과는 미실시입니다.
+- [지인에게 보낼 요청문](../../user-review-invitation.md) · [빈 검토 기록 양식](../../user-review-template.md). 실험 당시에는 사용자 검토 절차만 준비했습니다. 이후 전달된 의견·개선·추가 문제 없음 회신은 [사용자 검토 기록](../../user-reviews/README.md)에, 다음 판단 기준은 [고객별 모델 선택](../../model-selection.md)에 정리했습니다.
 
 이번 작업은 오프라인 평가 코드와 근거 자료를 추가합니다. AWS 데모의 모델·기능에 자동으로 새 모델을 적용하지 않습니다.
