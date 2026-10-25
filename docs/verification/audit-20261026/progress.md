@@ -15,3 +15,6 @@ Environment failure: Docker disk exhausted; preserved failure log; pruned only r
 
 Final review fixes: both RED→GREEN; complete pytest 262 passed/1 optional TensorFlow skipped. Browser main/mobile and energy status checks passed. Source/package hash parity is enforced in CI Docker verification.
 Local final Docker rebuild failed for disk exhaustion; CI clean-runner build/runtime will provide separate evidence. No public deployment or AWS load.
+
+Final Docker retry: after unreferenced intermediate-image/cache cleanup, final image built and ran. 78 installed source files match; UID10001; 2CPU/2GiB limits; analysis/upload/JSON-CSV-Markdown and insufficient-energy API passed. Initial copied-fixture permission failure corrected on a separate readable copy, originals unchanged.
+Final container browser: actual final Docker image passed full list/detail/history/state restoration, mobile filters and CSV/download workflows, plus available/insufficient/no-data energy rendering. No page errors; evidence in docker/*browser-checks.json and browser/*.png.

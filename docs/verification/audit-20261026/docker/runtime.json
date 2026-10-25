@@ -1,0 +1,20 @@
+{
+  "image": "sha256:5ee599fc98b349177431b3c90a40325b42aa32674701d7391b4899d3f0ad40e5",
+  "name": "hb-audit-final",
+  "container_cpu_limit_nanocpus": 2000000000,
+  "container_memory_limit_bytes": 2147483648,
+  "startup_to_health_seconds": 85.9380802669998,
+  "bootstrap": false,
+  "uid": "10001",
+  "stats": {
+    "BlockIO": "0B / 0B",
+    "CPUPerc": "36.66%",
+    "Container": "hb-audit-final",
+    "ID": "d6fbb52fd3a5",
+    "MemPerc": "16.74%",
+    "MemUsage": "342.8MiB / 2GiB",
+    "Name": "hb-audit-final",
+    "NetIO": "6.02kB / 141kB",
+    "PIDs": "9"
+  }
+}

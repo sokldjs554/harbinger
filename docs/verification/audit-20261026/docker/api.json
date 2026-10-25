@@ -1,0 +1,116 @@
+{
+  "/health": {
+    "status": "ok",
+    "service": "harbinger",
+    "version": "0.1.0"
+  },
+  "/ready": {
+    "status": "ready",
+    "model_version": "v20261021-115634",
+    "assets": 533,
+    "feature_rows": 10381
+  },
+  "/version": {
+    "service": "0.1.0",
+    "model_version": "v20261021-115634",
+    "git_sha": "267d5d6",
+    "feature_hash": "c5a8781533",
+    "n_features": 116,
+    "headline_metrics": {
+      "auroc": 0.7107134898387639,
+      "pr_auc": 0.20253517677758692,
+      "brier": 0.08608208997001321,
+      "ece": 0.03344033007155976,
+      "patrol_precision_at_10": 0.22,
+      "patrol_lift_vs_round_robin": 3.9600000000000004
+    },
+    "data": {
+      "seed": 7,
+      "start": "2023-01-01",
+      "months": 12,
+      "scale": 0.15,
+      "rows": {
+        "sites": 5,
+        "inspectors": 24,
+        "assets": 533,
+        "inspections": 10381,
+        "workorders": 1350,
+        "energy": 1825,
+        "latent": 194545
+      },
+      "generated_at": "2026-10-21T11:56:00",
+      "synthetic": true
+    },
+    "synthetic_data": true
+  },
+  "/v1/workbench/info": {
+    "mode": "live",
+    "synthetic_example": true,
+    "model_version": "v20261021-115634",
+    "limits": {
+      "bytes": 5242880,
+      "rows": 20000,
+      "assets": 500,
+      "sites": 10,
+      "years": 5,
+      "ttl_seconds": 1800
+    },
+    "observation_end": "2024-01-01T00:00:00",
+    "latest_as_of_date": "2023-12-31"
+  },
+  "analysis": {
+    "assets": 113,
+    "model_version": "v20261021-115634",
+    "evaluation_status": "available"
+  },
+  "download_json": {
+    "status": 200,
+    "bytes": 77239
+  },
+  "download_csv": {
+    "status": 200,
+    "bytes": 21829
+  },
+  "download_md": {
+    "status": 200,
+    "bytes": 1237
+  },
+  "upload": {
+    "status": 200,
+    "analysis_status": 200,
+    "assets": 113
+  },
+  "short_energy": {
+    "site_id": "S01",
+    "window_days": 14,
+    "target": "electricity_kwh",
+    "status": "insufficient_observation",
+    "days": [
+      {
+        "day": "2023-01-01",
+        "actual": 8321.1,
+        "expected": 8516.398011630112,
+        "resid_ratio": -0.02293199676241173,
+        "resid_ma7": null,
+        "z": null,
+        "anomaly": null,
+        "status": "insufficient_observation"
+      },
+      {
+        "day": "2023-01-02",
+        "actual": 14954.0,
+        "expected": 14801.732242943768,
+        "resid_ratio": 0.010287157918886179,
+        "resid_ma7": null,
+        "z": null,
+        "anomaly": null,
+        "status": "insufficient_observation"
+      }
+    ],
+    "anomalies": [],
+    "n_observed_days": 2,
+    "n_evaluable_days": 0,
+    "n_anomaly_days": null
+  },
+  "sessions_closed": true
+}

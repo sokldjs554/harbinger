@@ -104,7 +104,7 @@ jobs:
           python scripts/check_docker_audit.py --out /tmp/docker-audit
           python scripts/check_image_sources.py --container hb-ci --out /tmp/docker-audit/image.json
           docker inspect hb-ci --format '{{json .HostConfig.NanoCpus}} {{json .HostConfig.Memory}}'
-          docker logs hb-ci > /tmp/docker-audit/container.log
+          docker logs hb-ci 2>&1 | sed -E 's@(/sessions/)[A-Za-z0-9_-]+@\1[redacted]@g' > /tmp/docker-audit/container.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
