@@ -22,7 +22,14 @@
 
 로컬 API는 실제로 학습된 축소 합성 모델 `v20261025-201601`을 사용했다. 저장 예제 모델은 기존 `v20261021-103259`를 유지했다. 학습 알고리즘·합성 성능 결과는 이번 변경 대상이 아니다. AWS 배포 절차는 기존 정책상 전체 합성 번들을 새로 학습하므로 배포 모델 버전은 해당 실행 결과로 따로 확인한다.
 
-PR의 CI·Docker, 병합 후 AWS·Pages 배포 상태는 해당 GitHub Actions 실행으로 확인한다. 로컬 검사만으로 공개 배포 완료를 주장하지 않는다.
+## 통합·공개 배포 근거
+
+- [PR #12](https://github.com/sokldjs554/harbinger/pull/12) 병합 소스: `496590191cf8222870fd7f3063041080472f0246`.
+- [PR CI·Docker](https://github.com/sokldjs554/harbinger/actions/runs/40188993266)와 [병합본 CI·Docker](https://github.com/sokldjs554/harbinger/actions/runs/40189712993) 통과.
+- [저장 예제·80초 영상 공개 배포](https://github.com/sokldjs554/harbinger/actions/runs/40189712994) 통과. 공개 파일 일치 및 AWS HTTPS health 검사도 이 실행에서 통과했다.
+- [AWS 실제 계산 배포 실행](https://github.com/sokldjs554/harbinger/actions/runs/40189712992)은 전체 합성 모델 준비, HTTPS, 재부팅, 인증서 갱신 모의시험, 실제 브라우저 과업, 임시 SSH 규칙 제거를 수행한다. **최종 배포 성공 여부는 해당 실행의 conclusion과 `aws-deployment-verification` 산출물로 확인한다.** 모델 버전·생성 여부·실제 주소도 해당 산출물에 기록된다. 로컬 검사나 배포 시작을 공개 배포 성공으로 간주하지 않는다.
+
+현재 작업 환경의 직접 IP HTTPS 접속은 프록시 인증서의 주소 불일치로 검증할 수 없었다. 진단 시 수신한 인증서는 OpenAI 프록시 발급 인증서였다. 공개 HTTPS 검증은 인증서 확인을 유지한 GitHub Actions 결과를 근거로 삼는다.
 
 ## 화면
 

@@ -37,4 +37,5 @@ Interfaces: floor/zone and observation_confirmed from Task 1; saved evidence fal
 Files: docs/user-reviews/*, docs/user-review-template.md, README.md, docs/upload-format.md, docs/verification/usability-20261025/*, artifacts/release.json.
 - [x] A 원문 보존/빈 양식 복구, B 전달 기록과 미확인 항목, 개선 대응표 및 재검토 절차.
 - [x] README/입력 명세/릴리스 해시 갱신; 테스트·린트·브라우저 검사.
-- [ ] 독립 코드 검토 후 중요한 결함 수정, PR/CI/Docker 통과, 병합 및 기존 AWS·Pages 배포 확인.
+- [x] 독립 코드 검토 후 중요한 결함 수정, PR/CI/Docker 통과, 병합 및 Pages 공개 배포 확인.
+- AWS 최종 상태는 [배포 실행 40189712992](https://github.com/sokldjs554/harbinger/actions/runs/40189712992)과 [PR #12](https://github.com/sokldjs554/harbinger/pull/12)의 최종 검증 기록으로 추적한다. 배포 시작만으로 성공으로 표시하지 않는다.
