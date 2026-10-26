@@ -1,0 +1,116 @@
+{
+  "/health": {
+    "status": "ok",
+    "service": "harbinger",
+    "version": "0.1.0"
+  },
+  "/ready": {
+    "status": "ready",
+    "model_version": "v20261026-081423",
+    "assets": 666,
+    "feature_rows": 25263
+  },
+  "/version": {
+    "service": "0.1.0",
+    "model_version": "v20261026-081423",
+    "git_sha": null,
+    "feature_hash": "c5a8781533",
+    "n_features": 116,
+    "headline_metrics": {
+      "auroc": 0.7344277561685632,
+      "pr_auc": 0.20407321599277714,
+      "brier": 0.07338033076183705,
+      "ece": 0.014940414613743378,
+      "patrol_precision_at_10": 0.24469696969696966,
+      "patrol_lift_vs_round_robin": 5.7678571428571415
+    },
+    "data": {
+      "seed": 20260101,
+      "start": "2023-01-01",
+      "months": 24,
+      "scale": 0.25,
+      "rows": {
+        "sites": 6,
+        "inspectors": 30,
+        "assets": 666,
+        "inspections": 25263,
+        "workorders": 3501,
+        "energy": 4386,
+        "latent": 486846
+      },
+      "generated_at": "2026-10-26T08:13:14",
+      "synthetic": true
+    },
+    "synthetic_data": true
+  },
+  "/v1/workbench/info": {
+    "mode": "live",
+    "synthetic_example": true,
+    "model_version": "v20261026-081423",
+    "limits": {
+      "bytes": 5242880,
+      "rows": 20000,
+      "assets": 500,
+      "sites": 10,
+      "years": 5,
+      "ttl_seconds": 1800
+    },
+    "observation_end": "2025-01-01T00:00:00",
+    "latest_as_of_date": "2024-12-31"
+  },
+  "analysis": {
+    "assets": 104,
+    "model_version": "v20261026-081423",
+    "evaluation_status": "available"
+  },
+  "download_json": {
+    "status": 200,
+    "bytes": 71064
+  },
+  "download_csv": {
+    "status": 200,
+    "bytes": 19625
+  },
+  "download_md": {
+    "status": 200,
+    "bytes": 1237
+  },
+  "upload": {
+    "status": 200,
+    "analysis_status": 200,
+    "assets": 104
+  },
+  "short_energy": {
+    "site_id": "S01",
+    "window_days": 14,
+    "target": "electricity_kwh",
+    "status": "insufficient_observation",
+    "days": [
+      {
+        "day": "2023-01-01",
+        "actual": 8574.6,
+        "expected": 8643.993981520267,
+        "resid_ratio": -0.00802799974972471,
+        "resid_ma7": null,
+        "z": null,
+        "anomaly": null,
+        "status": "insufficient_observation"
+      },
+      {
+        "day": "2023-01-02",
+        "actual": 13567.6,
+        "expected": 14133.872616745606,
+        "resid_ratio": -0.040064929980668865,
+        "resid_ma7": null,
+        "z": null,
+        "anomaly": null,
+        "status": "insufficient_observation"
+      }
+    ],
+    "anomalies": [],
+    "n_observed_days": 2,
+    "n_evaluable_days": 0,
+    "n_anomaly_days": null
+  },
+  "sessions_closed": true
+}
