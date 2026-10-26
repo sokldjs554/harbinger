@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/harbinger-runs/completion-20261026/check_patrol_browser.py", line 32, in <module>
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

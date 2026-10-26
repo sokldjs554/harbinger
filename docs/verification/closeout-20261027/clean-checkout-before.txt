@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/tmp/harbinger-closeout-20261027/docs/verification/completion-20261026/operations/verify_comparison.py", line 307, in <module>
+    main()
+  File "/tmp/harbinger-closeout-20261027/docs/verification/completion-20261026/operations/verify_comparison.py", line 288, in main
+    assert comparison == read(path), "comparison.json differs from recomputed evidence"
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: comparison.json differs from recomputed evidence

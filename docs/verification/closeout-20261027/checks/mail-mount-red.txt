@@ -1,0 +1,20 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________ test_scraper_container_cannot_read_email_credentials _____________
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-87/test_scraper_container_cannot_0')
+
+    def test_scraper_container_cannot_read_email_credentials(tmp_path):
+        module().write_bundle(tmp_path, settings(), "check-123")
+        services = yaml.safe_load((tmp_path / "compose.yml").read_text())["services"]
+        prom = " ".join(services["prometheus"]["volumes"])
+>       assert "./config:/" not in prom
+E       AssertionError: assert './config:/' not in './config:/e...:/prometheus'
+E         
+E         './config:/' is contained here:
+E           ./config:/etc/hbmonitor:ro /opt/harbinger-monitoring/data/prometheus:/prometheus
+E         ? ++++++++++
+
+tests/test_external_alerts.py:124: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_external_alerts.py::test_scraper_container_cannot_read_email_credentials

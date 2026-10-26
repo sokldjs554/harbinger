@@ -1,0 +1,7 @@
+Evaluating original test-only history and original date schedule
+Evaluating full history on exactly the same dates
+/workspace/harbinger/scripts/check_patrol_evaluation.py:166: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  val_end + pd.Timedelta(days=30), observed_end - pd.Timedelta(days=HORIZON_DAYS), freq="7D"
+/workspace/harbinger/scripts/check_patrol_evaluation.py:263: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  requested_end=(observed_end - pd.Timedelta(days=HORIZON_DAYS)).isoformat(),
+Saved /workspace/harbinger-runs/completion-20261026/patrol/actual/summary.json; 9 Store.patrol parity checks passed

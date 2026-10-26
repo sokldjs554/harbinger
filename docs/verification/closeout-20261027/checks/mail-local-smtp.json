@@ -1,0 +1,15 @@
+{
+  "scope": "local implicit TLS SMTP sink; not operator mailbox receipt",
+  "messages": [
+    {
+      "subject": "[Harbinger FIRING] HarbingerControlledNotification local-mail-check",
+      "received_at": "2026-10-26T16:26:08.084899+00:00",
+      "tls": true
+    },
+    {
+      "subject": "[Harbinger RESOLVED] HarbingerControlledNotification local-mail-check",
+      "received_at": "2026-10-26T16:26:28.092453+00:00",
+      "tls": true
+    }
+  ]
+}
