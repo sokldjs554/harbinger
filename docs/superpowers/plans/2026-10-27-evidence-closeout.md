@@ -31,38 +31,38 @@
 **Files:** `.gitignore`, six `docs/verification/completion-20261026/operations/strict/{before,after}/{api,prometheus,run}.log`, `.github/workflows/ci.yml`, `docs/verification/closeout-20261027/`.
 
 - [x] Reproduce unchanged `verify_comparison.py` failure in a fresh tracked checkout.
-- [ ] Scan original logs for credentials and compare their bytes to the existing six manifest hashes; restore byte-identical originals with narrowly scoped ignore exceptions.
-- [ ] Add unchanged offline verifier to CI. Run it successfully, then confirm deletion and byte mutation still fail in disposable copies.
-- [ ] Commit and clone the committed repository into a new directory; run the public reproduction command and preserve output.
+- [x] Scan original logs for credentials and compare their bytes to the existing six manifest hashes; restore byte-identical originals with narrowly scoped ignore exceptions.
+- [x] Add unchanged offline verifier to CI. Run it successfully, then confirm deletion and byte mutation still fail in disposable copies.
+- [x] Commit and clone the committed repository into a new directory; run the public reproduction command and preserve output.
 
 ### Task 2: Final documents and submission drafts
 
 **Files:** `README.md`, `docs/{submission,application-update,submission-evidence-20261026,job-requirements-audit}.md`, current verification summaries and final release evidence.
 
-- [ ] Recheck PR #16 merge and three final workflow results; archive small final deployment/version/check files with hashes and origin metadata.
-- [ ] Replace current progress wording with verified final status; preserve dated historical records.
-- [ ] Update self-introduction and portfolio with corrected memo experiment, frozen HGB selection and service-selection metrics. Distinguish synthetic evaluation, qualitative reviews, user's role and Codex implementation support.
-- [ ] Check document numbers/links and source/model versions; label historical video and deployment-only LOSO omission explicitly.
+- [x] Recheck PR #16 merge and three final workflow results; archive small final deployment/version/check files with hashes and origin metadata.
+- [x] Replace current progress wording with verified final status; preserve dated historical records.
+- [x] Update self-introduction and portfolio with corrected memo experiment, frozen HGB selection and service-selection metrics. Distinguish synthetic evaluation, qualitative reviews, user's role and Codex implementation support.
+- [x] Check document numbers/links and source/model versions; label historical video and deployment-only LOSO omission explicitly.
 
 ### Task 3: Human retest handoff
 
 **Files:** `docs/user-reviews/retest-guide.md`, two blank participant-specific forms and `docs/user-reviews/README.md`.
 
-- [ ] Bind instructions to the deployed source/model and actual/saved modes; keep the same seven tasks and neutral guidance.
-- [ ] Prepare A/B forms with date/timezone, version/mode, outcome, help, active/elapsed/system-wait times, unperformed option and consent. Leave all observations empty.
-- [ ] Run existing retest validator and recorder checks; preserve their status as tool tests. Incorporate human records only after actual replies arrive.
+- [x] Bind instructions to the deployed source/model and actual/saved modes; keep the same seven tasks and neutral guidance.
+- [x] Prepare A/B forms with date/timezone, version/mode, outcome, help, active/elapsed/system-wait times, unperformed option and consent. Leave all observations empty.
+- [x] Run existing retest validator and recorder checks; preserve their status as tool tests. Incorporate human records only after actual replies arrive.
 
 ### Task 4: External alert receipt
 
 **Files:** `docs/ops/runbook.md`, controlled-test protocol/blank receipt record; routing files depend on the actual channel supplied.
 
-- [ ] Obtain recipient/channel and securely configured credentials; check the chosen existing route.
-- [ ] Prepare bounded test identification, firing/recovery and receipt timestamps, current alert state and teardown proof. Keep public service available.
+- [x] Obtain recipient/channel and securely configured credentials; check the chosen existing route.
+- [x] Prepare bounded test identification, firing/recovery and receipt timestamps, current alert state and teardown proof. Keep public service available.
 - [ ] Execute with actual receiver only when configured, obtain real operator receipt, check resolved/inactive and restore normal state. Until then mark this task pending, with no fabricated receipt.
 
 ### Final verification
 
-- [ ] Run applicable regression tests/full suite, fresh-clone evidence check and document manifest checks.
+- [x] Run applicable regression tests/full suite, fresh-clone evidence check and document manifest checks.
 - [ ] Fresh whole-branch review; fix material findings and create a follow-up PR with explicit completed/pending items.
 
 **Ruling:** The user has already requested execution and preservation; routine recovery, documentation and test preparation proceed inline without another design approval. Missing actual recipient and human observations are data dependencies, not permission gates for the independent tasks.

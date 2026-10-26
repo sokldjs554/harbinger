@@ -2,6 +2,9 @@
 
 import importlib.util
 import json
+import os
+import shlex
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -149,3 +152,41 @@ def test_existing_broad_ssh_permission_is_rejected():
     with pytest.raises(ValueError):
         closed_ssh_group([{"GroupId": "sg-test", "IpPermissions": [{"IpProtocol": "-1"}]}])
     assert closed_ssh_group([{"GroupId": "sg-test", "IpPermissions": []}]) == "sg-test"
+
+
+@pytest.mark.parametrize("has_previous", [False, True])
+def test_failed_docker_rollback_still_deletes_new_credentials(tmp_path, has_previous):
+    script = (Path(__file__).resolve().parents[1] / "deploy/monitoring/install_external.sh").read_text()
+    handler = script[script.index("finish() {") : script.index("trap finish EXIT")]
+    release = tmp_path / "new"
+    (release / "config").mkdir(parents=True)
+    credentials = [release / "config" / name for name in ("smtp-password", "alertmanager.yml")]
+    for path in credentials:
+        path.write_text("test fixture")
+    (release / "compose.yml").touch()
+    previous = tmp_path / "old"
+    previous.mkdir()
+    (previous / "compose.yml").touch()
+    bundle = tmp_path / "bundle"
+    bundle.touch()
+    binary = tmp_path / "docker"
+    binary.write_text("#!/bin/sh\nexit 23\n")
+    binary.chmod(0o755)
+    setup = "\n".join(
+        f"{key}={shlex.quote(str(value))}"
+        for key, value in {
+            "bundle": bundle,
+            "release": release,
+            "previous": previous if has_previous else "",
+            "complete": 0,
+        }.items()
+    )
+    result = subprocess.run(
+        ["bash", "-c", "set -euo pipefail\n" + setup + "\n" + handler + "\ntrap finish EXIT\nexit 7\n"],
+        env={**os.environ, "PATH": str(tmp_path) + ":" + os.environ["PATH"]},
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode != 0
+    assert not bundle.exists()
+    assert all(not path.exists() for path in credentials), "rollback failure bypassed credential deletion"

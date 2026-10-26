@@ -221,6 +221,10 @@ def main():
             else:
                 raise TimeoutError("monitor not ready")
         mod.verify_on_host(bundle, root / "result.json")
+        record = json.loads((root / "result.json").read_text())
+        record["scope"] = "local authenticated implicit TLS SMTP sink; no external mail sent"
+        record["operator_receipt_confirmed"] = False
+        (root / "result.json").write_text(json.dumps(record, indent=2) + "\n")
         assert len(messages) == 2, messages
         assert "FIRING" in messages[0]["subject"] and "RESOLVED" in messages[1]["subject"]
         assert all(m["tls"] and "local-mail-check" in m["subject"] for m in messages)

@@ -1,0 +1,75 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_______ test_failed_docker_rollback_still_deletes_new_credentials[False] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-91/test_failed_docker_rollback_st0')
+has_previous = False
+
+    @pytest.mark.parametrize("has_previous", [False, True])
+    def test_failed_docker_rollback_still_deletes_new_credentials(tmp_path, has_previous):
+        script = (Path(__file__).resolve().parents[1] / "deploy/monitoring/install_external.sh").read_text()
+        handler = script[script.index("finish() {"):script.index("trap finish EXIT")]
+        release = tmp_path / "new"
+        (release / "config").mkdir(parents=True)
+        credentials = [release / "config" / name for name in ("smtp-password", "alertmanager.yml")]
+        for path in credentials:
+            path.write_text("test fixture")
+        (release / "compose.yml").touch()
+        previous = tmp_path / "old"
+        previous.mkdir()
+        (previous / "compose.yml").touch()
+        bundle = tmp_path / "bundle"
+        bundle.touch()
+        binary = tmp_path / "docker"
+        binary.write_text("#!/bin/sh\nexit 23\n")
+        binary.chmod(0o755)
+        setup = "\n".join(f"{key}={shlex.quote(str(value))}" for key, value in {
+            "bundle": bundle, "release": release, "previous": previous if has_previous else "", "complete": 0,
+        }.items())
+        result = subprocess.run(["bash", "-c", "set -euo pipefail\n" + setup + "\n" + handler + "\ntrap finish EXIT\nexit 7\n"], env={**os.environ, "PATH": str(tmp_path) + ":" + os.environ["PATH"]}, capture_output=True, text=True)
+        assert result.returncode != 0
+        assert not bundle.exists()
+>       assert all(not path.exists() for path in credentials), "rollback failure bypassed credential deletion"
+E       AssertionError: rollback failure bypassed credential deletion
+E       assert False
+E        +  where False = all(<generator object test_failed_docker_rollback_still_deletes_new_credentials.<locals>.<genexpr> at 0x7fdf42336260>)
+
+tests/test_external_alerts.py:181: AssertionError
+_______ test_failed_docker_rollback_still_deletes_new_credentials[True] ________
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-91/test_failed_docker_rollback_st1')
+has_previous = True
+
+    @pytest.mark.parametrize("has_previous", [False, True])
+    def test_failed_docker_rollback_still_deletes_new_credentials(tmp_path, has_previous):
+        script = (Path(__file__).resolve().parents[1] / "deploy/monitoring/install_external.sh").read_text()
+        handler = script[script.index("finish() {"):script.index("trap finish EXIT")]
+        release = tmp_path / "new"
+        (release / "config").mkdir(parents=True)
+        credentials = [release / "config" / name for name in ("smtp-password", "alertmanager.yml")]
+        for path in credentials:
+            path.write_text("test fixture")
+        (release / "compose.yml").touch()
+        previous = tmp_path / "old"
+        previous.mkdir()
+        (previous / "compose.yml").touch()
+        bundle = tmp_path / "bundle"
+        bundle.touch()
+        binary = tmp_path / "docker"
+        binary.write_text("#!/bin/sh\nexit 23\n")
+        binary.chmod(0o755)
+        setup = "\n".join(f"{key}={shlex.quote(str(value))}" for key, value in {
+            "bundle": bundle, "release": release, "previous": previous if has_previous else "", "complete": 0,
+        }.items())
+        result = subprocess.run(["bash", "-c", "set -euo pipefail\n" + setup + "\n" + handler + "\ntrap finish EXIT\nexit 7\n"], env={**os.environ, "PATH": str(tmp_path) + ":" + os.environ["PATH"]}, capture_output=True, text=True)
+        assert result.returncode != 0
+        assert not bundle.exists()
+>       assert all(not path.exists() for path in credentials), "rollback failure bypassed credential deletion"
+E       AssertionError: rollback failure bypassed credential deletion
+E       assert False
+E        +  where False = all(<generator object test_failed_docker_rollback_still_deletes_new_credentials.<locals>.<genexpr> at 0x7fdf4212b370>)
+
+tests/test_external_alerts.py:181: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_external_alerts.py::test_failed_docker_rollback_still_deletes_new_credentials[False]
+FAILED tests/test_external_alerts.py::test_failed_docker_rollback_still_deletes_new_credentials[True]

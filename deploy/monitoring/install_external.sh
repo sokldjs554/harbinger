@@ -13,16 +13,20 @@ test ! -e "$release"
 previous=$(readlink -f "$root/current" 2>/dev/null || true)
 complete=0
 finish() {
-  rm -f "$bundle"
+  status=$?
+  # EXIT traps also inherit errexit: a failed rollback must not bypass cleanup.
+  set +e
+  rm -f "$bundle" || status=1
   if [ "$complete" -ne 1 ]; then
     if [ -n "$previous" ] && [ -f "$previous/compose.yml" ]; then
-      docker compose -p harbinger-monitoring -f "$previous/compose.yml" up -d
+      docker compose -p harbinger-monitoring -f "$previous/compose.yml" up -d || status=1
     elif [ -f "$release/compose.yml" ]; then
-      docker compose -p harbinger-monitoring -f "$release/compose.yml" down
+      docker compose -p harbinger-monitoring -f "$release/compose.yml" down || status=1
     fi
     # Do not leave a failed deployment's credentials in a historical release.
-    rm -f "$release/config/smtp-password" "$release/config/alertmanager.yml"
+    rm -f "$release/config/smtp-password" "$release/config/alertmanager.yml" || status=1
   fi
+  exit "$status"
 }
 trap finish EXIT
 install -d -m 0750 "$root" "$root/releases" "$release"

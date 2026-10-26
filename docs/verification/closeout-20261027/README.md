@@ -14,7 +14,7 @@
 python docs/verification/completion-20261026/operations/verify_comparison.py
 ```
 
-성공 조건은 종료 코드 0과 `raw_measurement_checks_passed=true`, `overall_passed=true`, 전후 `alert_settlement=true`다. 공개 브랜치의 fresh clone 명령·커밋·실행 결과는 `fresh-clone.json`에 기록한다. 이 증거는 로컬 부하·로컬 수신 시험이며 운영자 이메일 수신 증거가 아니다.
+성공 조건은 종료 코드 0과 `raw_measurement_checks_passed=true`, `overall_passed=true`, 전후 `alert_settlement=true`다. 공개 브랜치를 새로 클론하여 통과했다. 명령·확인한 커밋·실행 결과는 [fresh-clone.json](fresh-clone.json)에 기록했다. 이 증거는 로컬 부하·로컬 수신 시험이며 운영자 이메일 수신 증거가 아니다.
 
 ## 2. 확정된 PR #16 병합·배포
 
@@ -46,3 +46,7 @@ Docker는 CI에서 비루트 UID 10001·소스 80개 해시·실제 API를 확�
 운영자는 프로젝트 소유자이며 이메일 수신을 선택했다. 수신 주소와 SMTP 비밀값은 공개 저장소에 기록하지 않는다. [외부 알림 실행 안내](../../ops/external-alerts.md)의 비밀값 설정, 시험 발화·복구·운영자 실제 수신 확인이 필요하다. 로컬 Prometheus 수신기 통과는 외부 수신 완료로 대체하지 않는다. 실제 시험 결과는 수신 확인 후 별도 기록한다.
 
 모든 모델 성능은 합성 데이터 검증이다. 실제 고객 성능, 장기 SLA, AWS 처리량, 사람의 미측정 개선 효과는 확인되지 않았다.
+
+## 5. 후속 변경의 개발 검증
+
+[독립 검토와 실패 경로 수정](review.md), [전체 테스트](checks/full-tests-final.txt), [재검토 도구 조작](checks/retest-recorder-checks.json), [최종 로컬 SSL 시험](checks/mail-final-result.json)과 [로컬 수신 기록](checks/mail-final-smtp.json)을 남겼다. `mail-local-*`와 `mail-portable-*`는 이전 로컬 시험 원본이며, JSON의 범위 문구가 운영 호스트로 남아 있던 점을 최종 도구/기록에서 수정했다. 어느 로컬 기록도 네이버 또는 운영자 수신을 의미하지 않는다. 로컬 Docker 시험은 이미지 다운로드 중 디스크 부족으로 완료하지 못했고, 실제 컨테이너 검증은 CI와 운영 workflow에서 별도로 확인한다.

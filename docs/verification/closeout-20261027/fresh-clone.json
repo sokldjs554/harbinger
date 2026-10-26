@@ -1,0 +1,20 @@
+{
+  "clone_command": "git clone --depth 1 --branch fix/evidence-closeout-20261027 https://github.com/sokldjs554/harbinger.git /tmp/harbinger-evidence-fresh-clone",
+  "cloned_commit": "d25b84c774703deb6e3e3cfd9fd1ac0c2d8c30d9",
+  "command": "python docs/verification/completion-20261026/operations/verify_comparison.py",
+  "exit_code": 0,
+  "stdout": {
+    "raw_measurement_checks_passed": true,
+    "overall_passed": true,
+    "evidence_root": "strict",
+    "alert_settlement": {
+      "before": true,
+      "after": true
+    }
+  },
+  "working_tree_clean": true,
+  "unchanged_files": {
+    "docs/verification/completion-20261026/operations/comparison.json": "3726d2def9edc38987002a75684baed155229869afd22f7f816386c6e6c69b46",
+    "docs/verification/completion-20261026/operations/verify_comparison.py": "2fd02987fdcbfa37373f097ce2e0a08cc0c112a11f58734ea64d2b53a5770309"
+  }
+}
