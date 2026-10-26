@@ -1,0 +1,46 @@
+{
+  "verification_id": "mail-40366576243-1",
+  "started_at": "2026-10-26T17:14:14.607598+00:00",
+  "operator_receipt_confirmed": false,
+  "scope": "existing host; real email route; isolated probe fault; no public load",
+  "events": {
+    "fault_injected_at": "2026-10-26T17:14:24.642577+00:00",
+    "firing_observed_at": "2026-10-26T17:15:21.122675+00:00"
+  },
+  "health_before": {
+    "status": "ok",
+    "service": "harbinger",
+    "version": "0.1.0"
+  },
+  "version_before": "v20261026-151241",
+  "prometheus_alerts": [
+    {
+      "labels": {
+        "alertname": "HarbingerControlledNotification",
+        "instance": "127.0.0.1:19101",
+        "job": "harbinger-controlled-probe",
+        "severity": "test",
+        "verification_id": "mail-40366576243-1"
+      },
+      "annotations": {
+        "description": "Separate loopback probe stopped/restored for notification verification. This is not a customer incident.",
+        "summary": "Controlled email drill; public Harbinger remains available"
+      },
+      "state": "firing",
+      "activeAt": "2026-10-26T17:14:51.11345161Z",
+      "value": "0e+00"
+    }
+  ],
+  "transport_verified": false,
+  "error_type": "TimeoutError",
+  "test_rule_removed": true,
+  "health_after": {
+    "status": "ok",
+    "service": "harbinger",
+    "version": "0.1.0"
+  },
+  "version_after": "v20261026-151241",
+  "remaining_firing_alerts": [],
+  "normal_after_test": true,
+  "finished_at": "2026-10-26T17:19:22.912191+00:00"
+}

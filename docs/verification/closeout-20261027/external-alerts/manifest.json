@@ -1,0 +1,25 @@
+{
+  "workflow_run": 40373254666,
+  "workflow_url": "https://github.com/sokldjs554/harbinger/actions/runs/40373254666",
+  "artifact_id": 12674001251,
+  "artifact_sha256": "da74bfb29372720aa1353b0bdee058ad7ee02352b29b2ec3b1fb9a9215f7b12b",
+  "source_commit": "530faf0f8ae678f6f29c85c1e222edc742e7d83c",
+  "files": [
+    {
+      "file": "retry-deployment.json",
+      "artifact_path": "deployment.json",
+      "sha256": "f7c6ac0d22ceebea0fc67d902608cbf1d5e1cc4d3ecb9702008913572f9e555e"
+    },
+    {
+      "file": "attempt-1-result.json",
+      "artifact_path": "previous-result.json",
+      "sha256": "2188a77d53c2eb5ff3f193810065cca4a570ebbb83c7c4b01db36d9148338641"
+    },
+    {
+      "file": "retry-result.json",
+      "artifact_path": "result.json",
+      "sha256": "b67f71af8609c05daf1a8500aaeecb17b41f07d68b2d6c8494cc484d765c8afd"
+    }
+  ],
+  "operator_receipt_note": "Unmodified automatic records retain false; actual user confirmation must be recorded separately."
+}

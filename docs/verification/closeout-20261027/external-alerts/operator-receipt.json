@@ -1,0 +1,23 @@
+{
+  "verification_id": "mail-40373254666-1",
+  "source": "project owner conversation reply to explicit two-message receipt question",
+  "question_scope": "FIRING and RESOLVED messages for this verification ID",
+  "raw_reply": "응 받았어",
+  "operator_receipt_confirmed": true,
+  "firing_received": true,
+  "resolved_received": true,
+  "firing_received_at": null,
+  "resolved_received_at": null,
+  "mailbox": null,
+  "receipt_time_precision": "minute",
+  "recorded_at": "2026-10-26T18:02:36.602946+00:00",
+  "recorded_at_note": "time of writing this confirmation record, not mailbox arrival or measured user response time",
+  "limitations": [
+    "Operator self-report; no mailbox login or message headers collected",
+    "User supplied a common displayed minute, without separate per-message times or mailbox folder",
+    "No delivery latency computed from minute-resolution receipt display"
+  ],
+  "followup_reply": "10월27일 02:58",
+  "reported_receipt_time": "2026-10-27T02:58+09:00",
+  "per_message_times_distinguished": false
+}

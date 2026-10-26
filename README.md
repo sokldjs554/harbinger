@@ -151,3 +151,5 @@ UTF-8/BOM CSV, 최대 **5 MiB / 20,000행 / 설비 500개 / 고객사 10개 / �
 ## 추가 문서
 
 [지원용 소개·시연 순서](docs/submission.md) · [회사·공고 조사 범위](docs/company-research.md) · [모델 설계](docs/modeling.md) · [한계](docs/limitations.md) · [실데이터 적용 체크리스트](docs/real-data-checklist.md) · [친구·동료 검토 절차](docs/user-review.md) · [빈 검토 기록 양식](docs/user-review-template.md)
+
+공개 증거 복구와 운영자 이메일 경로는 [후속 검증 기록](docs/verification/closeout-20261027/README.md)에 정리했습니다. PR #17·#18을 병합하고, 기존 EC2에서 네이버 SSL 465 장애·복구 전송과 정상 복구를 확인했습니다. 운영자의 두 이메일 실제 수신 회신도 별도로 기록했으며, 참가자별 7과업 사용성 재측정은 아직 미수신입니다. 서비스 모델·Pages 저장 결과는 위 배포 버전을 유지합니다.
