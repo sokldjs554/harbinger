@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/harbinger-runs/completion-20261026/check_patrol_browser.py", line 17, in <module>
+    assert chosen is not None
+           ^^^^^^^^^^^^^^^^^^
+AssertionError

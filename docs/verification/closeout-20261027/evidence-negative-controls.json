@@ -1,0 +1,26 @@
+[
+  {
+    "case": "unchanged",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "output": "{\n  \"raw_measurement_checks_passed\": true,\n  \"overall_passed\": true,\n  \"evidence_root\": \"strict\",\n  \"alert_settlement\": {\n    \"before\": true,\n    \"after\": true\n  }\n}\n"
+  },
+  {
+    "case": "missing_log",
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "output": "AssertionError: comparison.json differs from recomputed evidence"
+  },
+  {
+    "case": "modified_log",
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "output": "AssertionError: comparison.json differs from recomputed evidence"
+  },
+  {
+    "case": "restored",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "output": "{\n  \"raw_measurement_checks_passed\": true,\n  \"overall_passed\": true,\n  \"evidence_root\": \"strict\",\n  \"alert_settlement\": {\n    \"before\": true,\n    \"after\": true\n  }\n}\n"
+  }
+]

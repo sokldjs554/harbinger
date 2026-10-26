@@ -1,0 +1,163 @@
+{
+  "source_commit": "e33072bc88652dc8e4bc50f9e3c68b9d44966379",
+  "cause": "Existing *.log ignore rule omitted locally present archived files",
+  "method": "Copy existing bytes; unchanged strict comparison.json and verifier; no recreated or edited log",
+  "strict_six_prior_hashes_matched": 6,
+  "extra_existing_logs": "Related historical run and training logs recovered to preserve linked evidence; an empty original is not independent proof of success",
+  "files": [
+    {
+      "path": "docs/verification/completion-20261026/checks/api.log",
+      "bytes": 74,
+      "sha256": "2b6f67613009ebad718eed894a28ef4f6f42606e9ab36210fa99430f5ee8ee4d",
+      "existing_comparison_sha256": null,
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/checks/browser-energy-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "existing_comparison_sha256": null,
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/checks/browser-live.log",
+      "bytes": 36,
+      "sha256": "fe161255c0191b0bdb9bb433570eebcef329422c4fe262c0a20b41bdf5407737",
+      "existing_comparison_sha256": null,
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/checks/browser-patrol-final.log",
+      "bytes": 81,
+      "sha256": "9418a7879dd7c9b820083df79e54faeb9b1ed338d49fdf5f42d8508ec2428c67",
+      "existing_comparison_sha256": null,
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/checks/browser-patrol-retry.log",
+      "bytes": 305,
+      "sha256": "1434f111fff4bb9158e0f017ac71094d0c30daed8c63b686f05e732ffcabc08d",
+      "existing_comparison_sha256": null,
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/checks/browser-patrol.log",
+      "bytes": 211,
+      "sha256": "c487dd7ed24b9a4a171831001be388f2f6d149a6b76778a0e9f9892154789f35",
+      "existing_comparison_sha256": null,
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/checks/browser-static.log",
+      "bytes": 36,
+      "sha256": "fe161255c0191b0bdb9bb433570eebcef329422c4fe262c0a20b41bdf5407737",
+      "existing_comparison_sha256": null,
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/checks/final-runtime.json.log",
+      "bytes": 2403,
+      "sha256": "c3312662d1528124aed41e601e09bbff3ea5fabf477e53d35d917f77d477113e",
+      "existing_comparison_sha256": null,
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/checks/final-training.log",
+      "bytes": 3317,
+      "sha256": "e62f4b253066692973cafc24be60f2e7ff444eb473ab54f80a523d819c94ea5c",
+      "existing_comparison_sha256": null,
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/operations/after/api.log",
+      "bytes": 560749,
+      "sha256": "807226c68a7928c54766eb2accef4dccecca90a93d6d740d98b40310e938ffd8",
+      "existing_comparison_sha256": null,
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/operations/after/prometheus.log",
+      "bytes": 4816,
+      "sha256": "68a9cbf0499fd44d37f305f58ba79a4f42859ca9336083c0292f490a0b5587da",
+      "existing_comparison_sha256": null,
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/operations/after/run.log",
+      "bytes": 192,
+      "sha256": "c3e8263300555646ee43ad50a46e50a68885b2301fddb8097472843a95da35b5",
+      "existing_comparison_sha256": null,
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/operations/before/api.log",
+      "bytes": 563409,
+      "sha256": "6b007d17a75a552ebc3ae1847b6944b589cc51171b73605ca2d7ae3d2cd00ea1",
+      "existing_comparison_sha256": null,
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/operations/before/prometheus.log",
+      "bytes": 4818,
+      "sha256": "5c2fb123783b4e2c63d9568fefda79d05116f34e0269047208973c9296bb7739",
+      "existing_comparison_sha256": null,
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/operations/before/run.log",
+      "bytes": 192,
+      "sha256": "c3e8263300555646ee43ad50a46e50a68885b2301fddb8097472843a95da35b5",
+      "existing_comparison_sha256": null,
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/operations/strict/after/api.log",
+      "bytes": 560749,
+      "sha256": "6812babcb8d3787538df6eca6c6e4c39bb145612902729450265f8750b788ca3",
+      "existing_comparison_sha256": "6812babcb8d3787538df6eca6c6e4c39bb145612902729450265f8750b788ca3",
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/operations/strict/after/prometheus.log",
+      "bytes": 4828,
+      "sha256": "e6fa7558b9bf241ad2bf3f6e019739e58b89a448658037d362d65edbe960706f",
+      "existing_comparison_sha256": "e6fa7558b9bf241ad2bf3f6e019739e58b89a448658037d362d65edbe960706f",
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/operations/strict/after/run.log",
+      "bytes": 192,
+      "sha256": "c3e8263300555646ee43ad50a46e50a68885b2301fddb8097472843a95da35b5",
+      "existing_comparison_sha256": "c3e8263300555646ee43ad50a46e50a68885b2301fddb8097472843a95da35b5",
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/operations/strict/before/api.log",
+      "bytes": 563409,
+      "sha256": "8935898b981a2663c49fc5f75378f12b1060712105fccffee28b9aa21f133cec",
+      "existing_comparison_sha256": "8935898b981a2663c49fc5f75378f12b1060712105fccffee28b9aa21f133cec",
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/operations/strict/before/prometheus.log",
+      "bytes": 4827,
+      "sha256": "1f6893be3e0d5fb181f466ae88d2bd4245aa315628baddf2bcd0230a960763d0",
+      "existing_comparison_sha256": "1f6893be3e0d5fb181f466ae88d2bd4245aa315628baddf2bcd0230a960763d0",
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/operations/strict/before/run.log",
+      "bytes": 192,
+      "sha256": "c3e8263300555646ee43ad50a46e50a68885b2301fddb8097472843a95da35b5",
+      "existing_comparison_sha256": "c3e8263300555646ee43ad50a46e50a68885b2301fddb8097472843a95da35b5",
+      "byte_identical_copy": true
+    },
+    {
+      "path": "docs/verification/completion-20261026/patrol/actual/run.log",
+      "bytes": 952,
+      "sha256": "98d7c6854bc7c4008e1f6d78096ff0f919ef1ba88f635d88774a4b5c72b16d56",
+      "existing_comparison_sha256": null,
+      "byte_identical_copy": true
+    }
+  ]
+}

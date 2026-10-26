@@ -1,0 +1,76 @@
+{
+  "model_version": "v20261026-093937",
+  "seconds": 1493.6,
+  "classifier": {
+    "n": 18439,
+    "pos_rate": 0.08156624545799664,
+    "auroc": 0.7679922529194856,
+    "pr_auc": 0.24055825015023924,
+    "brier": 0.06864776353208472,
+    "ece": 0.010951535639073919,
+    "pr_auc_lift": 2.9492377490161314,
+    "c_index": 0.703426317199942,
+    "calibration_method": "\uc6d0\uc2dc \ud655\ub960(\ubcf4\uc815 \uc5c6\uc74c)",
+    "calibration_val_logloss_raw": 0.2357578397853822,
+    "calibration_val_brier_raw": 0.06530979223696401,
+    "calibration_val_logloss_platt": 0.23536038657440256,
+    "calibration_val_brier_platt": 0.06523622864491524,
+    "calibration_val_logloss_isotonic": 0.23641954535884435,
+    "calibration_val_brier_isotonic": 0.06541192477258363
+  },
+  "patrol": {
+    "precision_at_k": 0.23844444444444446,
+    "historical_date_weighted_precision_at_k": 0.23844444444444443,
+    "std": 0.08493703792529285,
+    "n_site_days": 450,
+    "n_sites": 25,
+    "n_paired_site_days": 450,
+    "n_paired_sites": 25,
+    "uncertainty_status": "available",
+    "site_cluster_ci95": [
+      0.2068888888888889,
+      0.27000555555555555
+    ],
+    "delta_vs_last_inspection": 0.11644444444444443,
+    "delta_vs_last_inspection_ci95": [
+      0.09155,
+      0.1411111111111111
+    ],
+    "hits": 1073,
+    "picks": 4500,
+    "positives": 3078,
+    "historical_pooled_recall": 0.34860298895386616,
+    "recall_at_k": 0.3799501787151426,
+    "lift_vs_round_robin": 5.588541666666667,
+    "lift_vs_random": 3.4063492063492062
+  },
+  "service": {
+    "selection_hit_rate": 0.20311111111111113,
+    "historical_date_weighted_selection_hit_rate": 0.20311111111111113,
+    "std": 0.07080300730633833,
+    "n_site_days": 450,
+    "n_sites": 25,
+    "n_paired_site_days": 450,
+    "n_paired_sites": 25,
+    "uncertainty_status": "available",
+    "site_cluster_ci95": [
+      0.17555555555555558,
+      0.23044444444444445
+    ],
+    "delta_vs_last_inspection": 0.09133333333333332,
+    "delta_vs_last_inspection_ci95": [
+      0.07222222222222222,
+      0.11044999999999996
+    ],
+    "hits": 914,
+    "picks": 4500,
+    "positives": 3078,
+    "historical_pooled_recall": 0.2969460688758934,
+    "selection_recall": 0.32550949438609394,
+    "lift_vs_round_robin": 4.760416666666667,
+    "lift_vs_random": 2.948387096774194,
+    "mandatory_count": 613,
+    "overflow": 0,
+    "overflow_site_days": 0
+  }
+}
