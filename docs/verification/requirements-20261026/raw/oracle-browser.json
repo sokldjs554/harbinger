@@ -1,0 +1,6 @@
+{
+  "actual_local_api": true,
+  "description": "latent-state frozen-hazard reference, not performance upper bound",
+  "visible": true,
+  "initial_script_attempt": "failed: nonexistent selector #tab-models; corrected to actual data-tab=model and reran"
+}

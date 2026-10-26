@@ -1,0 +1,113 @@
+{
+  "scope": "Unmarked headline numerical claims; historical saved artifacts, not new training",
+  "checks": [
+    {
+      "claim": "mature test rows",
+      "observed": 18439,
+      "claimed": 18439,
+      "matches": true
+    },
+    {
+      "claim": "withheld immature train",
+      "observed": 3575,
+      "claimed": 3575,
+      "matches": true
+    },
+    {
+      "claim": "withheld immature validation",
+      "observed": 3568,
+      "claimed": 3568,
+      "matches": true
+    },
+    {
+      "claim": "feature count",
+      "observed": 116,
+      "claimed": 116,
+      "matches": true
+    },
+    {
+      "claim": "LOSO evaluated sites",
+      "observed": 8,
+      "claimed": 8,
+      "matches": true
+    },
+    {
+      "claim": "LOSO full",
+      "observed": "0.7706",
+      "claimed": "0.7706",
+      "matches": true
+    },
+    {
+      "claim": "LOSO without_text",
+      "observed": "0.7620",
+      "claimed": "0.7620",
+      "matches": true
+    },
+    {
+      "claim": "LOSO without_history",
+      "observed": "0.7429",
+      "claimed": "0.7429",
+      "matches": true
+    },
+    {
+      "claim": "patrol weekly dates",
+      "observed": 18,
+      "claimed": 18,
+      "matches": true
+    },
+    {
+      "claim": "patrol sites",
+      "observed": 25,
+      "claimed": 25,
+      "matches": true
+    },
+    {
+      "claim": "patrol K",
+      "observed": 10,
+      "claimed": 10,
+      "matches": true
+    },
+    {
+      "claim": "patrol cluster CI lower percent",
+      "observed": "21.3",
+      "claimed": "21.3",
+      "matches": true
+    },
+    {
+      "claim": "patrol cluster CI upper percent",
+      "observed": "28.1",
+      "claimed": "28.1",
+      "matches": true
+    },
+    {
+      "claim": "historical memo missing25 legacy percent",
+      "claimed": "17.64",
+      "observed": "17.64",
+      "matches": true
+    },
+    {
+      "claim": "historical memo missing25 robust percent",
+      "claimed": "22.90",
+      "observed": "22.90",
+      "matches": true
+    },
+    {
+      "claim": "historical memo missing25 no_memo percent",
+      "claimed": "23.73",
+      "observed": "23.73",
+      "matches": true
+    },
+    {
+      "claim": "historical memo selections",
+      "claimed": {
+        "no_memo": 5,
+        "legacy": 1
+      },
+      "observed": {
+        "no_memo": 5,
+        "legacy": 1
+      },
+      "matches": true
+    }
+  ]
+}

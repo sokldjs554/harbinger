@@ -1,0 +1,33 @@
+..........F                                                              [100%]
+=================================== FAILURES ===================================
+__________________ test_torch_and_keras_reach_similar_quality __________________
+
+tiny = {'root': PosixPath('/tmp/pytest-of-agent/pytest-31/tiny0'), 'data': PosixPath('/tmp/pytest-of-agent/pytest-31/tiny0/da...   0   0       False
+7012     N00007011  A-S04-0004     S04  ...     0   0       False
+
+[7013 rows x 114 columns], ...}
+
+    @pytest.mark.skipif(not tf_available(), reason="tensorflow 미설치 (선택 의존성)")
+    def test_torch_and_keras_reach_similar_quality(tiny):
+        proc = subprocess.run(
+            [sys.executable, str(SCRIPT), "--features", str(tiny["data"] / "features.parquet"), "--epochs", "12"],
+            capture_output=True,
+            text=True,
+            timeout=900,
+        )
+        assert proc.returncode == 0, proc.stderr[-2000:]
+        out = json.loads(proc.stdout.strip().splitlines()[-1])
+        assert out['evaluation_role'] == 'validation_reused_for_early_stopping'
+        assert out['independent_test'] is False
+        assert len(out['feature_sha256']) == 64
+        assert out['versions']['tensorflow']
+        assert out['versions']['torch']
+        assert out['seed'] == 0
+>       assert out["nll_gap"] < 0.25, out
+E       AssertionError: {'evaluation_role': 'validation_reused_for_early_stopping', 'independent_test': False, 'seed': 0, 'epochs_requested': 12, ...}
+E       assert 0.2694151997566223 < 0.25
+
+tests/test_keras_parity.py:91: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_keras_parity.py::test_torch_and_keras_reach_similar_quality
+1 failed, 10 passed in 24.56s

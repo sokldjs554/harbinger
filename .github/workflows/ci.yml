@@ -7,6 +7,26 @@ env:
   OMP_NUM_THREADS: "1"
   OPENBLAS_NUM_THREADS: "1"
 jobs:
+  tensorflow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TF_NUM_INTEROP_THREADS: "1"
+      TF_NUM_INTRAOP_THREADS: "1"
+      MPLCONFIGDIR: /tmp/hb-tf-mpl
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install and require both CPU frameworks
+        run: |
+          pip install --index-url https://download.pytorch.org/whl/cpu 'torch==2.14.1+cpu'
+          pip install -c constraints.txt -c tensorflow-constraints.txt -e ".[dev,tf]"
+          python -c "from harbinger.models.keras_parity import tf_available; assert tf_available(), 'TensorFlow must not skip this job'"
+      - name: Actual TensorFlow training and boundary/loss regressions
+        run: pytest tests/test_keras_parity.py -ra
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 30

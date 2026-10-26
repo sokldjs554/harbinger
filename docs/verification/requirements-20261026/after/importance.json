@@ -1,0 +1,152 @@
+[
+  {
+    "feature": "wo_days_since_pm",
+    "label": "마지막 예방정비 후 경과일",
+    "mean_abs_shap": 0.33753678811646465
+  },
+  {
+    "feature": "wo_days_since_bd",
+    "label": "마지막 고장 후 경과일",
+    "mean_abs_shap": 0.3122853325489628
+  },
+  {
+    "feature": "st_age_years",
+    "label": "설비 연식(년)",
+    "mean_abs_shap": 0.22509556927814664
+  },
+  {
+    "feature": "tx_n_groups",
+    "label": "메모 증상군 수",
+    "mean_abs_shap": 0.17595821879731527
+  },
+  {
+    "feature": "ck_noise",
+    "label": "체크리스트: 소음",
+    "mean_abs_shap": 0.15214444055426848
+  },
+  {
+    "feature": "tx_n_groups_ewm",
+    "label": "증상군 지수가중 평균",
+    "mean_abs_shap": 0.11711977408600598
+  },
+  {
+    "feature": "tx_n_groups_sum3",
+    "label": "최근 3회 증상군 합",
+    "mean_abs_shap": 0.09674563250465057
+  },
+  {
+    "feature": "ck_flag_sum6",
+    "label": "최근 6회 지적 항목 누적",
+    "mean_abs_shap": 0.08684063346532349
+  },
+  {
+    "feature": "st_archetype__hospital",
+    "label": "건물 유형=hospital",
+    "mean_abs_shap": 0.08251959389937354
+  },
+  {
+    "feature": "ck_interval_days",
+    "label": "점검 간격(일)",
+    "mean_abs_shap": 0.08215405118740073
+  },
+  {
+    "feature": "st_archetype__gov_office",
+    "label": "건물 유형=gov_office",
+    "mean_abs_shap": 0.07936288411864013
+  },
+  {
+    "feature": "st_is_legal",
+    "label": "법정점검 대상",
+    "mean_abs_shap": 0.0722177504691795
+  },
+  {
+    "feature": "wo_days_since_parts",
+    "label": "마지막 부품교체 후 경과일",
+    "mean_abs_shap": 0.06859842562057551
+  },
+  {
+    "feature": "ck_n_inspections",
+    "label": "누적 점검 횟수",
+    "mean_abs_shap": 0.06835414883820243
+  },
+  {
+    "feature": "st_is_hvac",
+    "label": "HVAC 계열",
+    "mean_abs_shap": 0.05957159600789622
+  },
+  {
+    "feature": "tx_weak_score_ewm",
+    "label": "약신호 지수가중 평균",
+    "mean_abs_shap": 0.053973688950191646
+  },
+  {
+    "feature": "ck_frac_flagged",
+    "label": "주의·불량 항목 비율",
+    "mean_abs_shap": 0.05304943586338023
+  },
+  {
+    "feature": "q_dwell_rel",
+    "label": "사이트 대비 체류 비율",
+    "mean_abs_shap": 0.05249422570208043
+  },
+  {
+    "feature": "st_archetype__office",
+    "label": "건물 유형=office",
+    "mean_abs_shap": 0.052245761726297045
+  },
+  {
+    "feature": "ck_days_since_bad",
+    "label": "마지막 불량 후 경과일",
+    "mean_abs_shap": 0.05128457352103771
+  },
+  {
+    "feature": "q_evidence_sum6",
+    "label": "최근 6회 증거 합",
+    "mean_abs_shap": 0.04939018083810384
+  },
+  {
+    "feature": "ck_n_items",
+    "label": "ck_n_items",
+    "mean_abs_shap": 0.04820061627427548
+  },
+  {
+    "feature": "ck_filter",
+    "label": "체크리스트: 필터",
+    "mean_abs_shap": 0.04702414053740652
+  },
+  {
+    "feature": "tx_weak_hits",
+    "label": "약한 수식어 수",
+    "mean_abs_shap": 0.04067304625557054
+  },
+  {
+    "feature": "en_resid_ratio_30d",
+    "label": "전기 잔차 30일",
+    "mean_abs_shap": 0.03996346906961438
+  },
+  {
+    "feature": "ck_days_since_caution",
+    "label": "마지막 주의 후 경과일",
+    "mean_abs_shap": 0.03815459902164574
+  },
+  {
+    "feature": "q_photos",
+    "label": "사진 수",
+    "mean_abs_shap": 0.03621536463333995
+  },
+  {
+    "feature": "se_sin",
+    "label": "계절(sin)",
+    "mean_abs_shap": 0.03519626894453685
+  },
+  {
+    "feature": "wo_site_bd_180d_per_asset",
+    "label": "사이트 최근 180일 설비당 고장",
+    "mean_abs_shap": 0.03356430606741022
+  },
+  {
+    "feature": "se_cos",
+    "label": "계절(cos)",
+    "mean_abs_shap": 0.03294707183577795
+  }
+]

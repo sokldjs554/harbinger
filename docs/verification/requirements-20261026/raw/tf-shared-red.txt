@@ -1,0 +1,44 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_______ test_shared_weights_match_network_logits_and_parameter_gradients _______
+
+    @pytest.mark.skipif(not tf_available(), reason='TensorFlow optional dependency absent')
+    def test_shared_weights_match_network_logits_and_parameter_gradients():
+        code = '''
+    import numpy as np
+    import torch
+    from harbinger.models.deep import HazardNet, discrete_nll
+    from harbinger.models.keras_parity import build_keras_hazard, _targets, discrete_hazard_nll
+    import tensorflow as tf
+    torch.manual_seed(19)
+    pt=HazardNet(2,1,2,use_text=False,use_site=False);pt.eval()
+    weights={'category':pt.cat_emb.weight.detach().numpy(), 'archetype':pt.arch_emb.weight.detach().numpy()}
+    for name, layer in [('hidden1',pt.trunk[0]),('hidden2',pt.trunk[3]),('hazard',pt.trunk[6])]:
+     weights[name]=[layer.weight.detach().numpy().T,layer.bias.detach().numpy()]
+    tfm=build_keras_hazard(2,initial_weights=weights)
+    num=np.array([[.1,1.],[-2.,.3],[.5,-.7],[2.,3.]],dtype=np.float32)
+    cat=np.array([0,1,2,0]);arch=np.array([0,1,2,3])
+    day=np.array([30.,60.,5.,120.],dtype=np.float32);event=np.array([1,1,0,0])
+    tl=pt(torch.tensor(num),torch.tensor(cat),torch.tensor(arch),torch.zeros(4,dtype=torch.long),torch.zeros((4,64),dtype=torch.long))
+    loss=discrete_nll(tl,torch.tensor(day),torch.tensor(event));loss.backward()
+    with tf.GradientTape() as tape:
+     kl=tfm([num,cat,arch],training=False)
+     kloss=discrete_hazard_nll(tf.constant(_targets(day,event)),kl)
+    kg=tape.gradient(kloss,tfm.get_layer('hazard').kernel)
+    np.testing.assert_allclose(kl.numpy(),tl.detach().numpy(),rtol=2e-5,atol=2e-6)
+    np.testing.assert_allclose(float(kloss),float(loss.detach()),rtol=2e-6)
+    np.testing.assert_allclose(kg.numpy(),pt.trunk[6].weight.grad.numpy().T,rtol=2e-5,atol=2e-6)
+    '''
+        proc = subprocess.run([sys.executable, '-c', code], capture_output=True, text=True, timeout=120)
+>       assert proc.returncode == 0, proc.stderr[-3000:]
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 5, in <module>
+E         ImportError: cannot import name 'build_keras_hazard' from 'harbinger.models.keras_parity' (/workspace/harbinger/src/harbinger/models/keras_parity.py). Did you mean: 'train_keras_hazard'?
+E
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/tmp/hb-tf-audit-venv/bin/python', '-c', "\nimport numpy as np\nimport torch\nfrom harbinger.m...s.keras_parity\' (/workspace/harbinger/src/harbinger/models/keras_parity.py). Did you mean: \'train_keras_hazard\'?\n').returncode
+
+tests/test_keras_parity.py:102: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_keras_parity.py::test_shared_weights_match_network_logits_and_parameter_gradients
+1 failed, 11 deselected in 2.25s

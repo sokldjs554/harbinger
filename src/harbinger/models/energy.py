@@ -92,8 +92,11 @@ def train_energy(energy_train: pd.DataFrame, target: str = "electricity_kwh", se
     # 이상 탐지 기준: 잔차 7일 이동평균의 사이트별 표준편차 (잔차 자기상관을 그대로 반영)
     sig = {}
     for s, g in tmp.sort_values("day").groupby("site_id"):
-        ma = g["rr"].rolling(7, min_periods=4).mean().dropna()
-        sig[s] = float(ma.std()) if len(ma) > 10 else float(tmp["rr"].std())
+        # Match inference's seven calendar days and minimum three observations.
+        ma = g.set_index("day")["rr"].rolling("7D", min_periods=3).mean().dropna()
+        sigma = float(ma.std()) if len(ma) > 10 else float("nan")
+        if np.isfinite(sigma) and sigma > 0:
+            sig[s] = sigma
     return EnergyBundle(model, codes, sig, target, {"rows": int(len(energy_train)), "sigma_is_7d_ma": True})
 
 

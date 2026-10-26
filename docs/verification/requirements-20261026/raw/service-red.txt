@@ -1,0 +1,179 @@
+FFFFFFF                                                                  [100%]
+=================================== FAILURES ===================================
+_______________ test_empty_history_report_preserves_unknown_risk _______________
+
+    def test_empty_history_report_preserves_unknown_risk():
+        report = {
+            "site": {
+                "name": "Empty", "n_assets": 1, "n_inspectors": 1,
+                "breakdowns_90d": 0, "downtime_hours_90d": 0,
+                "mean_p30": None, "n_high_risk(p30>=0.15)": 0,
+            },
+            "as_of": "2020-01-01", "model": {
+                "version": "test", "selected_model": "baseline", "policy_revision": None,
+                "policy_reason": "no_policy", "policy_test_start": None,
+            },
+            "patrol": {"items": [], "note": "No inspections"}, "top_risk_assets": [],
+            "schedule_changes": {"n_shorten": 0, "n_lengthen": 0, "urgent": []},
+            "energy": {"n_observed_days_90d": 0, "n_evaluable_days_90d": 0,
+                       "n_anomaly_days_90d": None, "status": "no_data", "anomalies": []},
+            "quality": {"site_average": None, "least_reliable": []}, "caveats": [],
+        }
+>       text = to_markdown(report)
+               ^^^^^^^^^^^^^^^^^^^
+
+tests/test_service_audit_regressions.py:36:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+r = {'site': {'name': 'Empty', 'n_assets': 1, 'n_inspectors': 1, 'breakdowns_90d': 0, ...}, 'as_of': '2020-01-01', 'model'...', 'policy_revision': None, 'policy_reason': 'no_policy', ...}, 'patrol': {'items': [], 'note': 'No inspections'}, ...}
+
+    def to_markdown(r: dict) -> str:
+        s = r["site"]
+        lines = [
+            f"# {s['name']} 합성 실험 리포트",
+            "",
+            f"기준 시점: {r['as_of']} · 설비 {s['n_assets']}개 · 점검자 {s['n_inspectors']}명 · 모델 {r['model']['version']}",
+            "",
+            f"- 실제 점수 모델: {r['model']['selected_model']}",
+            f"- 정책 리비전: {r['model']['policy_revision'] or '없음'} · 적용 이유: {r['model']['policy_reason']}",
+            f"- 정책 보류 평가 시작: {r['model']['policy_test_start'] or '해당 없음'}",
+            "- 모델 headline은 기본 모델의 저장된 참조 지표이며, 현재 사이트의 선택 모델 평가가 아닙니다.",
+            "",
+            "## 1. 요약",
+            "",
+            f"- 최근 90일 비계획 고장 {s['breakdowns_90d']}건, 다운타임 {s['downtime_hours_90d']:.0f}시간",
+>           f"- 30일 고장확률 평균 {s['mean_p30']:.1%}, 고위험(≥15 %) 설비 {s['n_high_risk(p30>=0.15)']}개",
+                            ^^^^^^^^^^^^^^^^^^^
+            f"- 오늘 순찰 상위 {r['patrol']['k']}개의 기대 고장 수 {r['patrol']['expected_breakdowns_in_list']:.2f} (라운드로빈 {r['patrol']['expected_breakdowns_round_robin']:.2f})",
+            "",
+            "## 2. 상위 위험 설비",
+            "",
+            "| 설비 | 종류 | P30 | 중요도 | 마지막 판정 |",
+            "|---|---|---:|:-:|:-:|",
+        ]
+E       TypeError: unsupported format string passed to NoneType.__format__
+
+src/harbinger/api/routers/report.py:118: TypeError
+_______________ test_whatif_rejects_invalid_checklist_value[-1] ________________
+
+value = -1
+
+    @pytest.mark.parametrize("value", [-1, 3, 128])
+    def test_whatif_rejects_invalid_checklist_value(value):
+>       with pytest.raises(ValidationError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValidationError
+
+tests/test_service_audit_regressions.py:43: Failed
+________________ test_whatif_rejects_invalid_checklist_value[3] ________________
+
+value = 3
+
+    @pytest.mark.parametrize("value", [-1, 3, 128])
+    def test_whatif_rejects_invalid_checklist_value(value):
+>       with pytest.raises(ValidationError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValidationError
+
+tests/test_service_audit_regressions.py:43: Failed
+_______________ test_whatif_rejects_invalid_checklist_value[128] _______________
+
+value = 128
+
+    @pytest.mark.parametrize("value", [-1, 3, 128])
+    def test_whatif_rejects_invalid_checklist_value(value):
+>       with pytest.raises(ValidationError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValidationError
+
+tests/test_service_audit_regressions.py:43: Failed
+___________________ test_upload_default_has_existing_records ___________________
+
+    def test_upload_default_has_existing_records():
+        store = SimpleNamespace(
+            data_end=pd.Timestamp("2025-08-02T23:59:59"),
+            X=pd.DataFrame({"t": [pd.Timestamp("2025-08-01")]}),
+            tables={"sites": pd.DataFrame({"site_id": ["S01"], "name": ["Site"]})},
+            bundle={"version": "test"},
+        )
+        response = workbench.register(store, "uploaded-csv", {})
+        try:
+>           assert pd.Timestamp(response["default_as_of"]) >= store.X.t.min().normalize()
+E           AssertionError: assert Timestamp('2025-06-18 00:00:00') >= Timestamp('2025-08-01 00:00:00')
+E            +  where Timestamp('2025-06-18 00:00:00') = <class 'pandas._libs.tslibs.timestamps.Timestamp'>('2025-06-18')
+E            +    where <class 'pandas._libs.tslibs.timestamps.Timestamp'> = pd.Timestamp
+E            +  and   Timestamp('2025-08-01 00:00:00') = normalize()
+E            +    where normalize = Timestamp('2025-08-01 00:00:00').normalize
+E            +      where Timestamp('2025-08-01 00:00:00') = min()
+E            +        where min = 0   2025-08-01\nName: t, dtype: datetime64[ns].min
+E            +          where 0   2025-08-01\nName: t, dtype: datetime64[ns] =            t\n0 2025-08-01.t
+E            +            where            t\n0 2025-08-01 = namespace(data_end=Timestamp('2025-08-02 23:59:59'), X=           t\n0 2025-08-01, tables={'sites':   site_id  name\n0     S01  Site}, bundle={'version': 'test'}).X
+
+tests/test_service_audit_regressions.py:56: AssertionError
+___________________ test_ingestion_invalidates_replay_cache ____________________
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-34/test_ingestion_invalidates_rep0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f34460e2480>
+
+    def test_ingestion_invalidates_replay_cache(tmp_path, monkeypatch):
+        store = Store(Settings(model_dir=tmp_path))
+        t = pd.Timestamp("2025-08-01")
+        store._observation_end = t + pd.Timedelta(days=40)
+        store.bundle = {"entry": {}}
+        store.X = pd.DataFrame({"site_id": ["S01"], "asset_id": ["A01"], "t": [t]})
+        store.tables = {
+            "sites": pd.DataFrame({"site_id": ["S01"]}),
+            "assets": pd.DataFrame({"site_id": ["S01"], "asset_id": ["A01"]}),
+            "inspections": pd.DataFrame({"site_id": ["S01"], "asset_id": ["A01"],
+                                         "scheduled_at": [t], "performed_at": [t]}),
+        }
+        calls = []
+        def replay_site(*args, **kwargs):
+            calls.append(1)
+            return {"weeks": []}
+        monkeypatch.setattr(backtest, "replay_site", replay_site)
+        monkeypatch.setattr("harbinger.api.store.build_features", lambda *a, **kw: store.X.copy())
+        monkeypatch.setattr(store, "_refresh_monitoring", lambda: None)
+        monkeypatch.setattr(store, "latest_rows", lambda *a, **kw: pd.DataFrame(columns=["asset_id"]))
+        store.replay("S01", t, t)
+        store.ingest_inspections("S01", [{"asset_id": "A01", "performed_at": t, "scheduled_at": t}])
+        store.replay("S01", t, t)
+>       assert len(calls) == 2
+E       assert 1 == 2
+E        +  where 1 = len([1])
+
+tests/test_service_audit_regressions.py:84: AssertionError
+____________ test_same_commit_deploy_keeps_previous_release_intact _____________
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-34/test_same_commit_deploy_keeps_0')
+
+    def test_same_commit_deploy_keeps_previous_release_intact(tmp_path):
+        """Run the actual installer prefix with harmless local replacements for host tools."""
+        installer = Path("deploy/aws/ec2/install.sh").read_text().split('docker load -i')[0]
+        root = tmp_path / "host"
+        sha = "a" * 40
+        previous = root / "releases" / sha
+        previous.mkdir(parents=True)
+        (previous / "marker").write_text("previous runtime")
+        (root / "current").symlink_to(previous)
+        installer = installer.replace("/opt/harbinger", str(root))
+        installer = installer.replace("/var/log/harbinger-deploy.log", str(tmp_path / "deploy.log"))
+        installer = installer.replace("/var/www/harbinger-acme", str(tmp_path / "acme"))
+        installer += '\nprintf "RELEASE=%s\\nPREVIOUS=%s\\n" "$release" "$previous"\n'
+        stubs = 'apt-get() { :; }; systemctl() { :; }; python3() { :; };\n'
+        result = subprocess.run(["bash", "-c", stubs + installer, "audit", sha, "8.8.8.8"],
+                                text=True, capture_output=True, check=True)
+        release = next(line.removeprefix("RELEASE=") for line in result.stdout.splitlines() if line.startswith("RELEASE="))
+>       assert Path(release) != previous
+E       AssertionError: assert PosixPath('/tmp/pytest-of-agent/pytest-34/test_same_commit_deploy_keeps_0/host/releases/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa') != PosixPath('/tmp/pytest-of-agent/pytest-34/test_same_commit_deploy_keeps_0/host/releases/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+E        +  where PosixPath('/tmp/pytest-of-agent/pytest-34/test_same_commit_deploy_keeps_0/host/releases/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa') = Path('/tmp/pytest-of-agent/pytest-34/test_same_commit_deploy_keeps_0/host/releases/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+
+tests/test_service_audit_regressions.py:104: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_service_audit_regressions.py::test_empty_history_report_preserves_unknown_risk
+FAILED tests/test_service_audit_regressions.py::test_whatif_rejects_invalid_checklist_value[-1]
+FAILED tests/test_service_audit_regressions.py::test_whatif_rejects_invalid_checklist_value[3]
+FAILED tests/test_service_audit_regressions.py::test_whatif_rejects_invalid_checklist_value[128]
+FAILED tests/test_service_audit_regressions.py::test_upload_default_has_existing_records
+FAILED tests/test_service_audit_regressions.py::test_ingestion_invalidates_replay_cache
+FAILED tests/test_service_audit_regressions.py::test_same_commit_deploy_keeps_previous_release_intact

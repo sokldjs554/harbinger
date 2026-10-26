@@ -45,6 +45,20 @@ ABLATIONS = {
 SURV_TIMES = [30.0, 60.0, 90.0, 180.0, 360.0]
 
 
+def constant_hazard_metrics(classifier, test: pd.DataFrame, times, km_c) -> dict:
+    """Compare HGB on the same complete test cohort as the survival models."""
+    p = classifier.predict_proba(test)
+    lam = -np.log1p(-p) / 30.0
+    survival = np.exp(-np.outer(lam, np.asarray(times)))
+    tte, event = test["tte_days"].to_numpy(), test["event"].to_numpy()
+    return {
+        "c_index": c_index_from_risk(tte, event, p),
+        **integrated_brier(survival, times, tte, event, km_c),
+        "rows": len(test),
+        "cohort": "all_test_rows_including_censored",
+    }
+
+
 def _dump(path: Path, obj) -> None:
     def finite(value):
         if isinstance(value, dict):
@@ -135,7 +149,7 @@ def run(
     for name, cols in BASELINE_FEATURES.items():
         b = train_hgb(trL, vaL, cols, seed=seed, name=name)
         base[name] = classification_metrics(teL["y30"], b.predict_proba(teL))
-    # 오라클: 숨은 열화 상태 D(t) — 합성 데이터에서만 가능한 상한선
+    # 오라클 참고선: 현재 숨은 상태 D(t)의 고정 위험률 근사; 성능 상한 아님
     lat = pd.read_parquet(data_dir / "latent.parquet")
     key = teL[["asset_id", "t"]].copy()
     key["day"] = key["t"].dt.normalize()
@@ -194,14 +208,7 @@ def run(
             surv[kind] = {"error": repr(e)}
             print(f"[eval] survival {kind} failed: {e!r}")
     # 분류기의 생존 지표 비교를 위해 HGB 의 P30 을 상수위험으로 펼친 S(t)
-    lam = -np.log(1 - hgb.predict_proba(te_all)) / 30.0
-    S_hgb = np.exp(-np.outer(lam, np.array(SURV_TIMES)))
-    surv["hgb_constant_hazard"] = {
-        "c_index": results["classifier"]["hgb_full"]["c_index"],
-        **integrated_brier(
-            S_hgb, SURV_TIMES, te_all["tte_days"].to_numpy(), te_all["event"].to_numpy(), km_c
-        ),
-    }
+    surv["hgb_constant_hazard"] = constant_hazard_metrics(hgb, te_all, SURV_TIMES, km_c)
 
     # ---------- 5. 이산시간 위험 네트 ----------
     deep_res = {}

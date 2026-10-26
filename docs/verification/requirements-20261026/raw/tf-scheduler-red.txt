@@ -1,0 +1,37 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_______________ test_keras_training_handles_all_missing_feature ________________
+
+    @pytest.mark.skipif(not tf_available(), reason='TensorFlow optional dependency absent')
+    def test_keras_training_handles_all_missing_feature():
+        code = '''
+    import json
+    import numpy as np
+    import pandas as pd
+    from harbinger.models.keras_parity import train_keras_hazard
+    train=pd.DataFrame({'st_age_years': [1.,2.,3.,4.]*8, 'en_missing': [np.nan]*32,
+     'st_category': ['pump']*32, 'st_archetype': ['office']*32,
+     'tte_days': [30.,60.,90.,120.]*8, 'event': [1,0,1,0]*8})
+    r=train_keras_hazard(train,train.iloc[:8],['st_age_years','en_missing'],epochs=3)
+    assert np.isfinite(r['val_nll']), r
+    assert np.isfinite(r['p30_val']).all(), r
+    np.testing.assert_allclose(r['learning_rates'],[0.002,0.0015,0.0005],rtol=1e-6)
+    print(json.dumps({'nll':r['val_nll']}))
+    '''
+        proc = subprocess.run([sys.executable, '-c', code], capture_output=True, text=True, timeout=120)
+>       assert proc.returncode == 0, proc.stderr[-3000:]
+E       AssertionError: WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E         I0000 00:00:1792998873.560825   45165 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+E         WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E         I0000 00:00:1792998875.893735   45165 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+E         Traceback (most recent call last):
+E           File "<string>", line 12, in <module>
+E         KeyError: 'learning_rates'
+E
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/tmp/hb-tf-audit-venv/bin/python', '-c', "\nimport json\nimport numpy as np\nimport pandas as ...OPTS=0`.\nTraceback (most recent call last):\n  File "<string>", line 12, in <module>\nKeyError: \'learning_rates\'\n').returncode
+
+tests/test_keras_parity.py:45: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_keras_parity.py::test_keras_training_handles_all_missing_feature
+1 failed, 10 deselected in 9.10s

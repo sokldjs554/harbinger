@@ -30,6 +30,7 @@ def _score(store, row: pd.DataFrame, model) -> tuple[float, float | None]:
 
 
 def run_whatif(store, site_id: str, asset_id: str, scenarios: list[dict]) -> dict:
+    store.require_current_feature_builder()
     assets = store.tables["assets"]
     arow = assets[(assets["asset_id"] == asset_id) & (assets["site_id"] == site_id)]
     if arow.empty:

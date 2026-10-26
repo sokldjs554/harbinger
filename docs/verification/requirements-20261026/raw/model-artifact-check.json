@@ -1,0 +1,9 @@
+{
+  "bundle": "v20261021-103259",
+  "features": "existing historical cache; no rebuild",
+  "test_rows": 22001,
+  "mature_test_rows": 18439,
+  "stored_hgb_survival_c_index": 0.7051560920181699,
+  "recomputed_mature_only_c_index": 0.7051560920181699,
+  "recomputed_all_test_c_index": 0.7088412536398299
+}

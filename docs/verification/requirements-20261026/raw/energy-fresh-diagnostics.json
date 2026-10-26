@@ -1,0 +1,30 @@
+{
+  "source": "/tmp/pytest-of-agent/pytest-27/tiny0/data",
+  "fit_until": "2024-07-01 00:00:00",
+  "bad_periods": [
+    {
+      "site": "S01",
+      "target": "gas_m3",
+      "period": "2024-06",
+      "bad_count": 4,
+      "raw_min": -106.42329569214616,
+      "actual_min": 110.3
+    },
+    {
+      "site": "S03",
+      "target": "electricity_kwh",
+      "period": "2024-06",
+      "bad_count": 3,
+      "raw_min": -11232.104805088335,
+      "actual_min": 20779.7
+    },
+    {
+      "site": "S04",
+      "target": "gas_m3",
+      "period": "2024-06",
+      "bad_count": 5,
+      "raw_min": -52.20693021413783,
+      "actual_min": 34.4
+    }
+  ]
+}

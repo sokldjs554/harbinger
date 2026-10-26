@@ -167,16 +167,13 @@ def _build_world(rng: np.random.Generator, cfg: GenConfig):
 
 
 def generate(cfg: GenConfig, verbose: bool = True) -> dict[str, pd.DataFrame]:
+    if isinstance(cfg.months, bool) or not isinstance(cfg.months, int) or cfg.months <= 0:
+        raise ValueError("months must be a positive integer")
     t0 = time.time()
     rng = np.random.default_rng(cfg.seed)
-    n_days = int(
-        (
-            cfg.start.replace(
-                year=cfg.start.year + cfg.months // 12, month=(cfg.start.month - 1 + cfg.months) % 12 + 1
-            )
-            - cfg.start
-        ).days
-    )
+    # Match feature provenance: calendar months carry years and clamp month ends.
+    end = pd.Timestamp(cfg.start) + pd.DateOffset(months=cfg.months)
+    n_days = (end - pd.Timestamp(cfg.start)).days
     sites_df, insp_df, assets_df, site_params = _build_world(rng, cfg)
     n = len(assets_df)
     cats = [AssetCategory(c) for c in assets_df["category"]]

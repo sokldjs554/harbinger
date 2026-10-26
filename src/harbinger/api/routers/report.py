@@ -102,6 +102,16 @@ def build_report(store: Store, site_id: str, as_of) -> dict:
 
 def to_markdown(r: dict) -> str:
     s = r["site"]
+    risk_summary = (
+        f"30일 고장확률 평균 {s['mean_p30']:.1%}, 고위험(≥15 %) 설비 {s['n_high_risk(p30>=0.15)']}개"
+        if s["mean_p30"] is not None
+        else "30일 고장확률 계산 불가 · 해당 시점의 유효한 점검 기록이 없습니다."
+    )
+    patrol_summary = (
+        f"오늘 순찰 상위 {r['patrol']['k']}개의 기대 고장 수 {r['patrol']['expected_breakdowns_in_list']:.2f} (라운드로빈 {r['patrol']['expected_breakdowns_round_robin']:.2f})"
+        if r["patrol"]["items"]
+        else "오늘 순찰 기대 고장 수 계산 불가 · 해당 시점의 유효한 점검 기록이 없습니다."
+    )
     lines = [
         f"# {s['name']} 합성 실험 리포트",
         "",
@@ -115,8 +125,8 @@ def to_markdown(r: dict) -> str:
         "## 1. 요약",
         "",
         f"- 최근 90일 비계획 고장 {s['breakdowns_90d']}건, 다운타임 {s['downtime_hours_90d']:.0f}시간",
-        f"- 30일 고장확률 평균 {s['mean_p30']:.1%}, 고위험(≥15 %) 설비 {s['n_high_risk(p30>=0.15)']}개",
-        f"- 오늘 순찰 상위 {r['patrol']['k']}개의 기대 고장 수 {r['patrol']['expected_breakdowns_in_list']:.2f} (라운드로빈 {r['patrol']['expected_breakdowns_round_robin']:.2f})",
+        f"- {risk_summary}",
+        f"- {patrol_summary}",
         "",
         "## 2. 상위 위험 설비",
         "",

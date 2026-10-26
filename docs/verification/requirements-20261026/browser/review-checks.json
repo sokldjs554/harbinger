@@ -1,0 +1,9 @@
+{
+  "static": false,
+  "checks": [
+    "location search and visible IDs at 320/390/650px",
+    "historical prediction and unknown repair status",
+    "pending date keeps applied date",
+    "unconfirmed upload and exports withheld, confirmation reset, actionable error preserves data"
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "/health": {
+    "status": "ok",
+    "service": "harbinger",
+    "version": "0.1.0"
+  },
+  "/ready": {
+    "status": "ready",
+    "model_version": "v20261026-074224",
+    "assets": 2312,
+    "feature_rows": 131201
+  },
+  "/version": {
+    "service": "0.1.0",
+    "model_version": "v20261026-074224",
+    "git_sha": "27051f0",
+    "feature_hash": "c5a8781533",
+    "n_features": 116,
+    "headline_metrics": {
+      "auroc": 0.7679922529194856,
+      "pr_auc": 0.24055825015023924,
+      "brier": 0.06864776353208472,
+      "ece": 0.010951535639073919,
+      "patrol_precision_at_10": 0.23822222222222222,
+      "patrol_lift_vs_round_robin": 5.583333333333334
+    },
+    "data": {
+      "seed": 20260101,
+      "start": "2023-01-01",
+      "months": 36,
+      "scale": 1.0,
+      "rows": {
+        "sites": 25,
+        "inspectors": 124,
+        "assets": 2312,
+        "inspections": 131201,
+        "workorders": 18666,
+        "energy": 27400,
+        "latent": 2533952
+      },
+      "generated_at": "2026-10-21T09:37:01",
+      "synthetic": true
+    },
+    "synthetic_data": true
+  },
+  "/v1/workbench/info": {
+    "mode": "live",
+    "synthetic_example": true,
+    "model_version": "v20261026-074224",
+    "limits": {
+      "bytes": 5242880,
+      "rows": 20000,
+      "assets": 500,
+      "sites": 10,
+      "years": 5,
+      "ttl_seconds": 1800
+    },
+    "observation_end": "2026-01-01T00:00:00",
+    "latest_as_of_date": "2025-12-31"
+  },
+  "empty_report": {
+    "status": 200,
+    "text": "# 정부청사 A 합성 실험 리포트\n\n기준 시점: 2022-12-31T23:59 · 설비 104개 · 점검자 5명 · 모델 v20261026-074224\n\n- 실제 점수 모델: baseline\n- 정책 리비전: 없음 · 적용 이유: no_policy\n- 정책 보류 평가 시작: 해당 없음\n- 모델 headline은 기본 모델의 저장된 참조 지표이며, 현재 사이트의 선택 모델 평가가 아닙니다.\n\n## 1. 요약\n\n- 최근 90일 비계획 고장 0건, 다운타임 0시간\n- 30일 고장확률 계산 불가 · 해당 시점의 유효한 점검 기록이 없습니다.\n- 오늘 순찰 기대 고장 수 계산 불가 · 해당 시점의 유효한 점검 기록이 없습니다.\n\n## 2. 상위 위험 설비\n\n| 설비 | 종류 | P30 | 중요도 | 마지막 판정 |\n|---|---|---:|:-:|:-:|\n\n## 3. 오늘 순찰 권고 (동선 순)\n\n\n## 4. 점검 주기 권고\n\n- 단축 권고 0개 · 연장 가능 0개 · 즉시 점검 0개\n\n## 5. 에너지\n\n- 최근 90일 관측 0일 · 판정 가능 0일 · 이상 여부 판정 보류 (no_data)\n\n## 6. 점검 기록 품질\n\n\n## 7. 유의\n\n- 모든 수치는 합성 데이터 기반 데모입니다.\n- P30 은 캘리브레이션된 30일 내 비계획 고장 확률 추정치이며 임계값은 고객사 리스크 예산에 맞춰 조정합니다.\n- 법정 점검 주기는 모델 권고와 무관하게 유지됩니다.\n"
+  },
+  "date_NaT": {
+    "status": 422,
+    "detail": {
+      "detail": "날짜 형식 오류: NaT. 유효한 시간대 없는 현장 시각이 필요합니다."
+    }
+  },
+  "date_2025-01-01T00:00:00Z": {
+    "status": 422,
+    "detail": {
+      "detail": "날짜 형식 오류: 2025-01-01T00:00:00Z. 유효한 시간대 없는 현장 시각이 필요합니다."
+    }
+  },
+  "checklist_range": {
+    "status": 422,
+    "detail": {
+      "detail": [
+        {
+          "type": "enum",
+          "loc": [
+            "body",
+            "scenarios",
+            0,
+            "items",
+            "noise"
+          ],
+          "msg": "Input should be 0, 1 or 2",
+          "input": 128,
+          "ctx": {
+            "expected": "0, 1 or 2"
+          }
+        }
+      ]
+    }
+  },
+  "energy_2023-01-02": {
+    "site_id": "S01",
+    "window_days": 14,
+    "target": "electricity_kwh",
+    "status": "insufficient_observation",
+    "days": [
+      {
+        "day": "2023-01-01",
+        "actual": 8535.3,
+        "expected": 8530.891499955229,
+        "resid_ratio": 0.0005167689736522228,
+        "resid_ma7": null,
+        "z": null,
+        "anomaly": null,
+        "status": "insufficient_observation"
+      },
+      {
+        "day": "2023-01-02",
+        "actual": 14116.2,
+        "expected": 13836.665676008548,
+        "resid_ratio": 0.020202433919910234,
+        "resid_ma7": null,
+        "z": null,
+        "anomaly": null,
+        "status": "insufficient_observation"
+      }
+    ],
+    "anomalies": [],
+    "n_observed_days": 2,
+    "n_evaluable_days": 0,
+    "n_anomaly_days": null
+  },
+  "energy_2022-12-31": {
+    "site_id": "S01",
+    "window_days": 14,
+    "target": "electricity_kwh",
+    "status": "no_data",
+    "days": [],
+    "anomalies": [],
+    "n_observed_days": 0,
+    "n_evaluable_days": 0,
+    "n_anomaly_days": null
+  }
+}

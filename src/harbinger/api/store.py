@@ -73,15 +73,27 @@ class Store:
             # The optional policy may not weaken the existing baseline loader.
             # Unverifiable in-memory bundles cannot activate policy routing.
             self.bundle["_policy_bundle_hash"] = None
+        feature_meta_path = d / "features_meta.json"
+        feature_meta = json.loads(feature_meta_path.read_text()) if feature_meta_path.exists() else {}
+        cache_version = feature_meta.get("provenance", {}).get(
+            "feature_semantics_version", feature_meta.get("feature_semantics_version")
+        )
+        model_version = self.bundle["entry"].get("feature_semantics_version")
+        known_versions = [v for v in (cache_version, model_version) if v is not None]
+        if any(
+            not isinstance(v, int) or isinstance(v, bool) or not 1 <= v <= FEATURE_SEMANTICS_VERSION
+            for v in known_versions
+        ):
+            raise RuntimeError("Unsupported feature semantics; use a supported feature/model bundle.")
+        if cache_version != model_version:
+            raise RuntimeError(
+                "Feature cache/model semantics mismatch; rebuild features and retrain the model together."
+            )
         inspections = self.tables["inspections"]
         if inspections.groupby("inspector_id")["site_id"].nunique().gt(1).any():
-            feature_meta_path = d / "features_meta.json"
-            feature_meta = json.loads(feature_meta_path.read_text()) if feature_meta_path.exists() else {}
-            cache_version = feature_meta.get("provenance", {}).get(
-                "feature_semantics_version", feature_meta.get("feature_semantics_version")
-            )
-            model_version = self.bundle["entry"].get("feature_semantics_version")
-            if cache_version != FEATURE_SEMANTICS_VERSION or model_version != FEATURE_SEMANTICS_VERSION:
+            # Version 2 introduced site-scoped inspector identity; later energy
+            # revisions must not invalidate an otherwise matched historical v2 pair.
+            if cache_version is None or cache_version < 2:
                 raise RuntimeError(
                     "Inspector IDs are reused across sites with legacy feature semantics; "
                     "rebuild features and retrain the model before loading."
@@ -131,6 +143,8 @@ class Store:
         if not as_of:
             return self.data_end
         ts = pd.Timestamp(as_of)
+        if pd.isna(ts) or ts.tzinfo is not None:
+            raise ValueError("유효한 시간대 없는 현장 시각이 필요합니다.")
         return ts + pd.Timedelta(hours=23, minutes=59) if ts == ts.normalize() else ts
 
     def model_for(self, site_id: str, as_of: pd.Timestamp):
@@ -533,6 +547,15 @@ class Store:
 
     # ---------- 인제스트 ----------
     # ---------- 재현·시뮬레이션 ----------
+    def require_current_feature_builder(self) -> None:
+        """Historical matched bundles are readable, not compatible with new feature generation."""
+        version = (self.bundle or {}).get("entry", {}).get("feature_semantics_version")
+        if version != FEATURE_SEMANTICS_VERSION:
+            raise ValueError(
+                "과거 모델의 특징 정의가 현재 계산 코드와 다릅니다. "
+                "새 자료·가상 점검을 계산하려면 전처리와 모델을 함께 재학습하세요."
+            )
+
     def replay(self, site: str, start, end, step_days: int = 7, k: int = 10) -> dict:
         return backtest.replay(self, site, start, end, step_days, k)
 
@@ -541,6 +564,7 @@ class Store:
 
     def ingest_inspections(self, site_id: str, records: list[dict]) -> dict:
         """새 점검 기록을 받아 테이블에 붙이고, 영향 받은 설비의 피처를 다시 계산한다 (사이트 단위 재계산)."""
+        self.require_current_feature_builder()
         observation_end = self.data_end
         ins = self.tables["inspections"]
         new = inspection_frame(ins, self.tables["assets"], site_id, records)
@@ -554,6 +578,9 @@ class Store:
             verbose=False,
         )
         self.X = pd.concat([self.X[self.X["site_id"] != site_id], Xs], ignore_index=True)
+        # Replay scores depend on inspection history even when the query dates
+        # and policy bytes have not changed.
+        self.__dict__.pop("_replay_cache", None)
         # Inspection ingestion alone does not certify failure-outcome completeness.
         self._observation_end = observation_end
         self._refresh_monitoring()

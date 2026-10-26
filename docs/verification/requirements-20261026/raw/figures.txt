@@ -1,0 +1,4 @@
+Fontconfig error: No writable cache directories
+/workspace/harbinger/scripts/make_figures.py:335: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  g = g[g["day"] >= g["day"].max() - pd.Timedelta(days=150)]
+figures: ['ablation.png', 'calibration.png', 'energy.png', 'importance.png', 'loso.png', 'patrol.png', 'survival.png']

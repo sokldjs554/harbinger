@@ -84,3 +84,21 @@ python scripts/record_workbench.py --url http://localhost:8000/console/
 ## Docker 실행 범위
 
 컨테이너는 비루트 UID 10001로 실행하도록 구성했습니다. 기본 공유 예제 변경 API는 비활성화하며 CSV 업로드는 독립 세션을 사용합니다. 실제 고객 자료를 다룰 때는 [보호 모드](protected-mode.md)의 로그인·고객사별 권한·세션 소유권 설정을 사용합니다. 단일 프로세스 범위와 로그인 속도 제한을 확인하세요. 공개 데모는 익명 합성 모드입니다.
+
+## TensorFlow 대조 검사
+
+공개 서비스는 TensorFlow를 요구하지 않습니다. 별도 환경에서 CPU TensorFlow/Keras와 PyTorch를 설치해 비교할 수 있습니다. CI도 이 검사를 전용 작업으로 실행하며 설치 누락을 통과로 처리하지 않습니다.
+
+```bash
+python3.12 -m venv .venv-tf
+source .venv-tf/bin/activate
+pip install --index-url https://download.pytorch.org/whl/cpu 'torch==2.14.1+cpu'
+pip install -c constraints.txt -c tensorflow-constraints.txt -e '.[dev,tf]'
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 TF_NUM_INTEROP_THREADS=1 TF_NUM_INTRAOP_THREADS=1
+pytest tests/test_keras_parity.py -ra
+python scripts/keras_parity_check.py --features data/features.parquet --train-months 24 --val-months 6 --epochs 12 --shared-initialization --out /tmp/keras-comparison.json
+```
+
+`--shared-initialization`은 학습 **전** 가중치를 공유하는 통제 실험입니다. 옵션 없이 실행하면 각 프레임워크의 독립 초기화를 사용합니다. 어느 경우든 검증 점수는 조기종료에 사용한 자료의 값이며 독립 테스트가 아닙니다. 원시 JSON에는 입력/소스 해시, 패키지 버전, 분할 경계와 기존 차이 기준 통과 여부가 포함됩니다. CLI 종료 코드 0은 유한한 점수의 계산 완료를 뜻하며, 차이 기준 통과는 JSON의 `comparison_passed`를 확인해야 합니다. CI의 실제 학습 검사는 차이 한도를 별도로 단언합니다. 실제 실행 결과와 독립 초기화 기준 실패는 [이번 감사](verification/requirements-20261026/README.md)를 참조하세요.
+
+특징 버전 3은 비물리적인 에너지 기대치의 잔차를 결측으로 처리합니다. 기존 모델을 사용할 때 특징만 새로 생성해 섞지 말고, 별도 디렉터리에서 전처리와 모델을 함께 재학습해야 합니다. 같은 버전의 과거 모델/캐시를 읽는 것과 새 특징을 생성하는 것은 구분합니다.

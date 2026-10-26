@@ -1,0 +1,289 @@
+........................................................................ [ 23%]
+........................................................................ [ 46%]
+.........FFF....FF...................................................... [ 69%]
+........................................................................ [ 92%]
+.......................                                                  [100%]
+=================================== FAILURES ===================================
+________________ test_ingestion_refreshes_drift_state[success] _________________
+
+monitoring_store = <harbinger.api.store.Store object at 0x7f08fd43dbb0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f08ff9a2630>
+outcome = 'success'
+
+    @pytest.mark.parametrize("outcome", ["success", "insufficient_data", "error"])
+    def test_ingestion_refreshes_drift_state(monitoring_store, monkeypatch, outcome):
+        from harbinger.monitoring.metrics import registry
+
+        monitoring_store.load()
+        before_success = registry.get_sample_value("harbinger_drift_last_success_timestamp_seconds")
+        rebuilt = monitoring_store.X.copy()
+        rebuilt["signal"] = 0
+        if outcome == "insufficient_data":
+            rebuilt = rebuilt.tail(10)
+        if outcome == "error":
+            # Drift includes old rows; online prediction uses the healthy latest row.
+            original = monitoring_store.bundle["classifier"].predict_proba
+
+            def fail_batch(rows):
+                if len(rows) > 1:
+                    raise RuntimeError("batch unavailable")
+                return original(rows)
+
+            monkeypatch.setattr(monitoring_store.bundle["classifier"], "predict_proba", fail_batch)
+        monkeypatch.setattr("harbinger.api.store.build_features", lambda *args, **kwargs: rebuilt)
+>       monitoring_store.ingest_inspections(
+            "S", [{"asset_id": "A", "performed_at": "2024-07-18", "scheduled_at": "2024-07-18"}]
+        )
+
+tests/test_monitoring.py:178:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/harbinger/api/store.py:567: in ingest_inspections
+    self.require_current_feature_builder()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <harbinger.api.store.Store object at 0x7f08fd43dbb0>
+
+    def require_current_feature_builder(self) -> None:
+        """Historical matched bundles are readable, not compatible with new feature generation."""
+        version = (self.bundle or {}).get("entry", {}).get("feature_semantics_version")
+        if version != FEATURE_SEMANTICS_VERSION:
+>           raise ValueError(
+                "과거 모델의 특징 정의가 현재 계산 코드와 다릅니다. "
+                "새 자료·가상 점검을 계산하려면 전처리와 모델을 함께 재학습하세요."
+            )
+E           ValueError: 과거 모델의 특징 정의가 현재 계산 코드와 다릅니다. 새 자료·가상 점검을 계산하려면 전처리와 모델을 함께 재학습하세요.
+
+src/harbinger/api/store.py:554: ValueError
+----------------------------- Captured stderr call -----------------------------
+{"ts": "2026-10-26T07:43:18", "level": "INFO", "logger": "harbinger.store", "msg": "store loaded: assets=1 features_rows=200 bundle=test in 0.0s"}
+------------------------------ Captured log call -------------------------------
+INFO     harbinger.store:store.py:107 store loaded: assets=1 features_rows=200 bundle=test in 0.0s
+___________ test_ingestion_refreshes_drift_state[insufficient_data] ____________
+
+monitoring_store = <harbinger.api.store.Store object at 0x7f08fd3b4320>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f08fe1e3680>
+outcome = 'insufficient_data'
+
+    @pytest.mark.parametrize("outcome", ["success", "insufficient_data", "error"])
+    def test_ingestion_refreshes_drift_state(monitoring_store, monkeypatch, outcome):
+        from harbinger.monitoring.metrics import registry
+
+        monitoring_store.load()
+        before_success = registry.get_sample_value("harbinger_drift_last_success_timestamp_seconds")
+        rebuilt = monitoring_store.X.copy()
+        rebuilt["signal"] = 0
+        if outcome == "insufficient_data":
+            rebuilt = rebuilt.tail(10)
+        if outcome == "error":
+            # Drift includes old rows; online prediction uses the healthy latest row.
+            original = monitoring_store.bundle["classifier"].predict_proba
+
+            def fail_batch(rows):
+                if len(rows) > 1:
+                    raise RuntimeError("batch unavailable")
+                return original(rows)
+
+            monkeypatch.setattr(monitoring_store.bundle["classifier"], "predict_proba", fail_batch)
+        monkeypatch.setattr("harbinger.api.store.build_features", lambda *args, **kwargs: rebuilt)
+>       monitoring_store.ingest_inspections(
+            "S", [{"asset_id": "A", "performed_at": "2024-07-18", "scheduled_at": "2024-07-18"}]
+        )
+
+tests/test_monitoring.py:178:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/harbinger/api/store.py:567: in ingest_inspections
+    self.require_current_feature_builder()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <harbinger.api.store.Store object at 0x7f08fd3b4320>
+
+    def require_current_feature_builder(self) -> None:
+        """Historical matched bundles are readable, not compatible with new feature generation."""
+        version = (self.bundle or {}).get("entry", {}).get("feature_semantics_version")
+        if version != FEATURE_SEMANTICS_VERSION:
+>           raise ValueError(
+                "과거 모델의 특징 정의가 현재 계산 코드와 다릅니다. "
+                "새 자료·가상 점검을 계산하려면 전처리와 모델을 함께 재학습하세요."
+            )
+E           ValueError: 과거 모델의 특징 정의가 현재 계산 코드와 다릅니다. 새 자료·가상 점검을 계산하려면 전처리와 모델을 함께 재학습하세요.
+
+src/harbinger/api/store.py:554: ValueError
+----------------------------- Captured stderr call -----------------------------
+{"ts": "2026-10-26T07:43:18", "level": "INFO", "logger": "harbinger.store", "msg": "store loaded: assets=1 features_rows=200 bundle=test in 0.0s"}
+------------------------------ Captured log call -------------------------------
+INFO     harbinger.store:store.py:107 store loaded: assets=1 features_rows=200 bundle=test in 0.0s
+_________________ test_ingestion_refreshes_drift_state[error] __________________
+
+monitoring_store = <harbinger.api.store.Store object at 0x7f08feebe9f0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f08fd43e960>
+outcome = 'error'
+
+    @pytest.mark.parametrize("outcome", ["success", "insufficient_data", "error"])
+    def test_ingestion_refreshes_drift_state(monitoring_store, monkeypatch, outcome):
+        from harbinger.monitoring.metrics import registry
+
+        monitoring_store.load()
+        before_success = registry.get_sample_value("harbinger_drift_last_success_timestamp_seconds")
+        rebuilt = monitoring_store.X.copy()
+        rebuilt["signal"] = 0
+        if outcome == "insufficient_data":
+            rebuilt = rebuilt.tail(10)
+        if outcome == "error":
+            # Drift includes old rows; online prediction uses the healthy latest row.
+            original = monitoring_store.bundle["classifier"].predict_proba
+
+            def fail_batch(rows):
+                if len(rows) > 1:
+                    raise RuntimeError("batch unavailable")
+                return original(rows)
+
+            monkeypatch.setattr(monitoring_store.bundle["classifier"], "predict_proba", fail_batch)
+        monkeypatch.setattr("harbinger.api.store.build_features", lambda *args, **kwargs: rebuilt)
+>       monitoring_store.ingest_inspections(
+            "S", [{"asset_id": "A", "performed_at": "2024-07-18", "scheduled_at": "2024-07-18"}]
+        )
+
+tests/test_monitoring.py:178:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/harbinger/api/store.py:567: in ingest_inspections
+    self.require_current_feature_builder()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <harbinger.api.store.Store object at 0x7f08feebe9f0>
+
+    def require_current_feature_builder(self) -> None:
+        """Historical matched bundles are readable, not compatible with new feature generation."""
+        version = (self.bundle or {}).get("entry", {}).get("feature_semantics_version")
+        if version != FEATURE_SEMANTICS_VERSION:
+>           raise ValueError(
+                "과거 모델의 특징 정의가 현재 계산 코드와 다릅니다. "
+                "새 자료·가상 점검을 계산하려면 전처리와 모델을 함께 재학습하세요."
+            )
+E           ValueError: 과거 모델의 특징 정의가 현재 계산 코드와 다릅니다. 새 자료·가상 점검을 계산하려면 전처리와 모델을 함께 재학습하세요.
+
+src/harbinger/api/store.py:554: ValueError
+----------------------------- Captured stderr call -----------------------------
+{"ts": "2026-10-26T07:43:18", "level": "INFO", "logger": "harbinger.store", "msg": "store loaded: assets=1 features_rows=200 bundle=test in 0.0s"}
+------------------------------ Captured log call -------------------------------
+INFO     harbinger.store:store.py:107 store loaded: assets=1 features_rows=200 bundle=test in 0.0s
+___ test_ingestion_updates_drift_without_certifying_failure_followup[False] ____
+
+monitoring_store = <harbinger.api.store.Store object at 0x7f08fd43ff20>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f08fd43cf80>
+has_observation_metadata = False
+
+    @pytest.mark.parametrize("has_observation_metadata", [False, True])
+    def test_ingestion_updates_drift_without_certifying_failure_followup(
+        monitoring_store, monkeypatch, has_observation_metadata
+    ):
+        from harbinger.api.analysis import analyze
+        from harbinger.api.backtest import last_scorable_day
+
+        monitoring_store.load()
+        previous_end = monitoring_store.data_end
+        previous_scorable = last_scorable_day(monitoring_store)
+        if has_observation_metadata:
+            monitoring_store.bundle["entry"]["metrics"]["observation"] = {
+                "observation_end": previous_end.isoformat()
+            }
+        rebuilt = monitoring_store.X.copy()
+        rebuilt["t"] += pd.Timedelta(days=365)
+        new_end = rebuilt["t"].max()
+        monkeypatch.setattr("harbinger.api.store.build_features", lambda *args, **kwargs: rebuilt)
+>       monitoring_store.ingest_inspections(
+            "S", [{"asset_id": "A", "scheduled_at": new_end.isoformat(), "performed_at": new_end.isoformat()}]
+        )
+
+tests/test_monitoring.py:238:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/harbinger/api/store.py:567: in ingest_inspections
+    self.require_current_feature_builder()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <harbinger.api.store.Store object at 0x7f08fd43ff20>
+
+    def require_current_feature_builder(self) -> None:
+        """Historical matched bundles are readable, not compatible with new feature generation."""
+        version = (self.bundle or {}).get("entry", {}).get("feature_semantics_version")
+        if version != FEATURE_SEMANTICS_VERSION:
+>           raise ValueError(
+                "과거 모델의 특징 정의가 현재 계산 코드와 다릅니다. "
+                "새 자료·가상 점검을 계산하려면 전처리와 모델을 함께 재학습하세요."
+            )
+E           ValueError: 과거 모델의 특징 정의가 현재 계산 코드와 다릅니다. 새 자료·가상 점검을 계산하려면 전처리와 모델을 함께 재학습하세요.
+
+src/harbinger/api/store.py:554: ValueError
+----------------------------- Captured stderr call -----------------------------
+{"ts": "2026-10-26T07:43:18", "level": "INFO", "logger": "harbinger.store", "msg": "store loaded: assets=1 features_rows=200 bundle=test in 0.0s"}
+------------------------------ Captured log call -------------------------------
+INFO     harbinger.store:store.py:107 store loaded: assets=1 features_rows=200 bundle=test in 0.0s
+____ test_ingestion_updates_drift_without_certifying_failure_followup[True] ____
+
+monitoring_store = <harbinger.api.store.Store object at 0x7f08fd3b5ca0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f08fd2e76e0>
+has_observation_metadata = True
+
+    @pytest.mark.parametrize("has_observation_metadata", [False, True])
+    def test_ingestion_updates_drift_without_certifying_failure_followup(
+        monitoring_store, monkeypatch, has_observation_metadata
+    ):
+        from harbinger.api.analysis import analyze
+        from harbinger.api.backtest import last_scorable_day
+
+        monitoring_store.load()
+        previous_end = monitoring_store.data_end
+        previous_scorable = last_scorable_day(monitoring_store)
+        if has_observation_metadata:
+            monitoring_store.bundle["entry"]["metrics"]["observation"] = {
+                "observation_end": previous_end.isoformat()
+            }
+        rebuilt = monitoring_store.X.copy()
+        rebuilt["t"] += pd.Timedelta(days=365)
+        new_end = rebuilt["t"].max()
+        monkeypatch.setattr("harbinger.api.store.build_features", lambda *args, **kwargs: rebuilt)
+>       monitoring_store.ingest_inspections(
+            "S", [{"asset_id": "A", "scheduled_at": new_end.isoformat(), "performed_at": new_end.isoformat()}]
+        )
+
+tests/test_monitoring.py:238:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/harbinger/api/store.py:567: in ingest_inspections
+    self.require_current_feature_builder()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <harbinger.api.store.Store object at 0x7f08fd3b5ca0>
+
+    def require_current_feature_builder(self) -> None:
+        """Historical matched bundles are readable, not compatible with new feature generation."""
+        version = (self.bundle or {}).get("entry", {}).get("feature_semantics_version")
+        if version != FEATURE_SEMANTICS_VERSION:
+>           raise ValueError(
+                "과거 모델의 특징 정의가 현재 계산 코드와 다릅니다. "
+                "새 자료·가상 점검을 계산하려면 전처리와 모델을 함께 재학습하세요."
+            )
+E           ValueError: 과거 모델의 특징 정의가 현재 계산 코드와 다릅니다. 새 자료·가상 점검을 계산하려면 전처리와 모델을 함께 재학습하세요.
+
+src/harbinger/api/store.py:554: ValueError
+----------------------------- Captured stderr call -----------------------------
+{"ts": "2026-10-26T07:43:18", "level": "INFO", "logger": "harbinger.store", "msg": "store loaded: assets=1 features_rows=200 bundle=test in 0.0s"}
+------------------------------ Captured log call -------------------------------
+INFO     harbinger.store:store.py:107 store loaded: assets=1 features_rows=200 bundle=test in 0.0s
+=============================== warnings summary ===============================
+tests/test_api.py::test_health_and_version
+tests/test_api.py::test_health_and_version
+  /workspace/harbinger/src/harbinger/models/survival.py:75: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+    Z["tte_days"] = df["tte_days"].to_numpy()
+
+tests/test_api.py::test_health_and_version
+tests/test_api.py::test_health_and_version
+  /workspace/harbinger/src/harbinger/models/survival.py:76: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+    Z["event"] = df["event"].to_numpy()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_monitoring.py::test_ingestion_refreshes_drift_state[success]
+FAILED tests/test_monitoring.py::test_ingestion_refreshes_drift_state[insufficient_data]
+FAILED tests/test_monitoring.py::test_ingestion_refreshes_drift_state[error]
+FAILED tests/test_monitoring.py::test_ingestion_updates_drift_without_certifying_failure_followup[False]
+FAILED tests/test_monitoring.py::test_ingestion_updates_drift_without_certifying_failure_followup[True]
+5 failed, 306 passed, 4 warnings in 89.20s (0:01:29)

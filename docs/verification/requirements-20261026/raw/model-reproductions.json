@@ -1,0 +1,34 @@
+{
+  "calendar_2024-11-01_3": {
+    "type": "ValueError",
+    "error": "negative dimensions are not allowed"
+  },
+  "calendar_2024-01-31_1": {
+    "type": "ValueError",
+    "error": "day is out of range for month"
+  },
+  "double_site_dropout": {
+    "configured": 0.3,
+    "training_zero_sites": 525,
+    "n": 1024,
+    "initial_only_count": 313,
+    "epoch_only_count": 303,
+    "union_count": 525,
+    "theoretical_effective_probability": 0.51
+  },
+  "ipcw_tied_event_censor": {
+    "actual": 0.33333333333333326,
+    "event_left_limit_expected": 0.25,
+    "G_at_1": 0.7500000000000001,
+    "G_before_1": 1.0
+  },
+  "interval_clipped_budget": {
+    "recommended_interval_days": 7,
+    "raw_interval_days": 3.0,
+    "legal_max_days": null,
+    "urgent": true,
+    "risk_budget": 0.05,
+    "basis": "constant_hazard",
+    "failure_probability_at_recommended_interval": 0.11236321498279656
+  }
+}

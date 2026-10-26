@@ -13,9 +13,12 @@ def _ts(v: str | None) -> pd.Timestamp | None:
     if not v:
         return None
     try:
-        return pd.Timestamp(v)
+        ts = pd.Timestamp(v)
+        if pd.isna(ts) or ts.tzinfo is not None:
+            raise ValueError("유효한 시간대 없는 현장 시각이 필요합니다.")
+        return ts
     except Exception as e:
-        raise HTTPException(422, f"날짜 형식 오류: {v}") from e
+        raise HTTPException(422, f"날짜 형식 오류: {v}. 유효한 시간대 없는 현장 시각이 필요합니다.") from e
 
 
 @router.get("/replay")

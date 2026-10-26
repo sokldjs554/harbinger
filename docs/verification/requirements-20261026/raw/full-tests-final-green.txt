@@ -1,0 +1,18 @@
+........................................................................ [ 23%]
+........................................................................ [ 46%]
+........................................................................ [ 69%]
+........................................................................ [ 92%]
+.......................                                                  [100%]
+=============================== warnings summary ===============================
+tests/test_api.py::test_health_and_version
+tests/test_api.py::test_health_and_version
+  /workspace/harbinger/src/harbinger/models/survival.py:75: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+    Z["tte_days"] = df["tte_days"].to_numpy()
+
+tests/test_api.py::test_health_and_version
+tests/test_api.py::test_health_and_version
+  /workspace/harbinger/src/harbinger/models/survival.py:76: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+    Z["event"] = df["event"].to_numpy()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+311 passed, 4 warnings in 89.03s (0:01:29)

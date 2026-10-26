@@ -27,8 +27,8 @@ from harbinger.features.text import memo_features, novelty
 from harbinger.schema import ALL_CHECK_ITEMS, HVAC_CATEGORIES, LEGAL_CATEGORIES, AssetCategory
 
 FEATURE_GROUPS = ("st", "ck", "wo", "tx", "q", "en", "se")
-# Version 2 scopes inspector history to a site; column names alone cannot identify this change.
-FEATURE_SEMANTICS_VERSION = 2
+# Version 3 withholds nonpositive OLS energy expectations; version 2 scoped inspector history.
+FEATURE_SEMANTICS_VERSION = 3
 ID_COLS = ["inspection_id", "asset_id", "site_id", "inspector_id", "t", "memo", "category", "archetype"]
 LABEL_COLS = ["y30", "label_valid", "tte_days", "event"]
 

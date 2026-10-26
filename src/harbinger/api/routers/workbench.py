@@ -59,6 +59,9 @@ def register(store, source, summary, owner_id=None, auth_manager=None):
         token = secrets.token_urlsafe(24)
         sessions[token] = Session(store, time.monotonic() + TTL, source, summary, owner_id)
     default = min(store.data_end - pd.Timedelta(days=45), store.X.t.max())
+    # Prefer a mature evaluation date, but short uploads must open on an
+    # existing inspection. Analysis still withholds incomplete follow-up.
+    default = max(default, store.X.t.min())
     return {
         "session_id": token,
         "source": source,
@@ -131,6 +134,10 @@ def example_csv(site: str = "S01", store: Store = Depends(get_store)):
 def create_upload(
     content, end, base, observation_confirmed=False, owner_id=None, allowed_sites=None, auth_manager=None
 ):
+    try:
+        base.require_current_feature_builder()
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
     if not compute.acquire(blocking=False):
         raise HTTPException(429, "계산 중입니다. 잠시 뒤 다시 시도하세요.")
     try:

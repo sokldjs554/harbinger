@@ -1,0 +1,177 @@
+{
+  "n_rows": 127639,
+  "base_rate": 0.07478905350245614,
+  "scope": "라벨 유효 점검 행 전체(학습·검증·테스트 합산) — 모델이 아니라 데이터의 기술통계",
+  "uncertainty": {
+    "method": "site_cluster_percentile_bootstrap",
+    "cluster_column": "site_id",
+    "confidence": 0.95,
+    "seed": 20261025,
+    "draws": 2000,
+    "minimum_clusters": 5,
+    "n_clusters": 25,
+    "estimand": "pooled_row_weighted_rate_within_each_cell",
+    "resampling": "contributing_sites_with_replacement_preserving_all_within_site_rows",
+    "quantile_method": "linear",
+    "limitations": "Descriptive synthetic-data intervals; five sites is a withholding floor, not a coverage guarantee. Assumes independent sites; cross-site inspector dependence is not covered. Pointwise intervals, not causal effects or simultaneous comparisons. No prespecified direction of change in interval width."
+  },
+  "by_judgement": {
+    "good": {
+      "without_weak": {
+        "n": 77999,
+        "k": 3043,
+        "rate": 0.03901332068359851,
+        "lo": 0.03401240034749731,
+        "hi": 0.04338539029712804,
+        "n_clusters": 25,
+        "ci_status": "ok"
+      },
+      "with_weak": {
+        "n": 26198,
+        "k": 2778,
+        "rate": 0.1060386289029697,
+        "lo": 0.09729434342044407,
+        "hi": 0.11381734307352846,
+        "n_clusters": 25,
+        "ci_status": "ok"
+      }
+    },
+    "caution": {
+      "without_weak": {
+        "n": 7718,
+        "k": 1375,
+        "rate": 0.17815496242549883,
+        "lo": 0.15553573493107364,
+        "hi": 0.1975652157050996,
+        "n_clusters": 25,
+        "ci_status": "ok"
+      },
+      "with_weak": {
+        "n": 14213,
+        "k": 2108,
+        "rate": 0.14831492295785548,
+        "lo": 0.13942500158959567,
+        "hi": 0.15588755556411768,
+        "n_clusters": 25,
+        "ci_status": "ok"
+      }
+    },
+    "bad": {
+      "without_weak": {
+        "n": 1028,
+        "k": 174,
+        "rate": 0.16926070038910507,
+        "lo": 0.14562777584906564,
+        "hi": 0.18575803256025814,
+        "n_clusters": 25,
+        "ci_status": "ok"
+      },
+      "with_weak": {
+        "n": 483,
+        "k": 68,
+        "rate": 0.14078674948240166,
+        "lo": 0.10889645214521453,
+        "hi": 0.16666666666666666,
+        "n_clusters": 25,
+        "ci_status": "ok"
+      }
+    }
+  },
+  "good_by_weak_count": [
+    {
+      "label": "0회",
+      "n": 46117,
+      "k": 1474,
+      "rate": 0.03196218314287573,
+      "lo": 0.028164394754542053,
+      "hi": 0.03530030668215508,
+      "n_clusters": 25,
+      "ci_status": "ok"
+    },
+    {
+      "label": "1회",
+      "n": 24168,
+      "k": 1371,
+      "rate": 0.0567279046673287,
+      "lo": 0.050605406318355035,
+      "hi": 0.06219753025643255,
+      "n_clusters": 25,
+      "ci_status": "ok"
+    },
+    {
+      "label": "2회",
+      "n": 18899,
+      "k": 1429,
+      "rate": 0.07561246626805651,
+      "lo": 0.0681381572616611,
+      "hi": 0.08268538962687569,
+      "n_clusters": 25,
+      "ci_status": "ok"
+    },
+    {
+      "label": "3회 이상",
+      "n": 15013,
+      "k": 1547,
+      "rate": 0.10304402850862586,
+      "lo": 0.09330826069097971,
+      "hi": 0.1122499390506061,
+      "n_clusters": 25,
+      "ci_status": "ok"
+    }
+  ],
+  "good_by_inspector": [
+    {
+      "label": "형식적 메모 적은 점검자",
+      "lazy_rate_median": 0.3,
+      "n": 41946,
+      "k": 2346,
+      "rate": 0.055929051637820054,
+      "lo": 0.049609347942582094,
+      "hi": 0.062078364272142514,
+      "n_clusters": 25,
+      "ci_status": "ok"
+    },
+    {
+      "label": "중간",
+      "lazy_rate_median": 0.43333333333333335,
+      "n": 30436,
+      "k": 1567,
+      "rate": 0.0514850834538047,
+      "lo": 0.04579790697759448,
+      "hi": 0.057046685507202294,
+      "n_clusters": 25,
+      "ci_status": "ok"
+    },
+    {
+      "label": "형식적 메모 많은 점검자",
+      "lazy_rate_median": 0.6333333333333333,
+      "n": 31574,
+      "k": 1900,
+      "rate": 0.06017609425476658,
+      "lo": 0.05348167523974941,
+      "hi": 0.06530855502440143,
+      "n_clusters": 25,
+      "ci_status": "ok"
+    }
+  ],
+  "good_by_dwell": {
+    "short_under_20s": {
+      "n": 18918,
+      "k": 1557,
+      "rate": 0.08230256898192198,
+      "lo": 0.0744152920399177,
+      "hi": 0.08920935871640097,
+      "n_clusters": 25,
+      "ci_status": "ok"
+    },
+    "normal": {
+      "n": 85279,
+      "k": 4264,
+      "rate": 0.05000058631081509,
+      "lo": 0.0451148953416337,
+      "hi": 0.05443415474251667,
+      "n_clusters": 25,
+      "ci_status": "ok"
+    }
+  }
+}

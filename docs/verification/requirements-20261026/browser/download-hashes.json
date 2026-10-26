@@ -1,0 +1,17 @@
+{
+  "note": "CSV downloads retained in the local execution evidence directory; hashes avoid committing duplicate synthetic records. Actual browser assertions and report are committed.",
+  "files": {
+    "uploaded.csv": {
+      "bytes": 13316,
+      "sha256": "ff6113951df6bf1fb20810c8493a3c6d60d1486e60f808ba72ef8a5cf776f549"
+    },
+    "result.csv": {
+      "bytes": 369563,
+      "sha256": "3567af436344bef10cd2db083b1e4b2d1ca8523705a73730c6ec2b779ce33a8f"
+    },
+    "example.csv": {
+      "bytes": 1546864,
+      "sha256": "e431e8167abffd53389cdd6bb11dffe60b9b12eb0b560b5a57693a1a6a9a3201"
+    }
+  }
+}
