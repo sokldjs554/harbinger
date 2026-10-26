@@ -63,8 +63,10 @@
 ### Final verification
 
 - [x] Run applicable regression tests/full suite, fresh-clone evidence check and document manifest checks.
-- [ ] Fresh whole-branch review; fix material findings and create a follow-up PR with explicit completed/pending items.
+- [x] Fresh whole-branch review; fix material findings and create a follow-up PR with explicit completed/pending items.
 
 **Ruling:** The user has already requested execution and preservation; routine recovery, documentation and test preparation proceed inline without another design approval. Missing actual recipient and human observations are data dependencies, not permission gates for the independent tasks.
 
 **Implementation choice:** Existing EC2 hosts a separate resource-limited Prometheus/Alertmanager Compose project. The test stops only a loopback probe; production API and models remain running. Normal monitoring remains installed after cleanup. Same-host failure detection is a documented limitation. Local Docker pull failed for disk capacity; own new unused image was removed, and checksum-verified native binaries passed the SSL protocol check.
+
+**Actual external attempt:** PR #17 merged as `3e6b3da`; PR/main full CI passed. Trial40366576243 failed waiting SMTP acceptance. User reports SMTP usage setting was unsaved and is now saved; retry authorized. Fix hidden artifact upload and preserve prior remote result before retry. Real operator receipt and A/B human retests remain pending.

@@ -190,3 +190,112 @@ def test_failed_docker_rollback_still_deletes_new_credentials(tmp_path, has_prev
     assert result.returncode != 0
     assert not bundle.exists()
     assert all(not path.exists() for path in credentials), "rollback failure bypassed credential deletion"
+
+
+def test_notification_failures_expose_only_safe_categories_and_smtp_codes():
+    rows = [
+        {
+            "time": "2026-10-26T17:00:00Z",
+            "msg": "Notify attempt failed, will retry later",
+            "receiver": "verification",
+            "integration": "email[0]",
+            "err": "*email.loginAuth: 535 5.7.1 authentication rejected private@example.test test-secret",
+        },
+        {
+            "time": "2026-10-26T17:00:01Z",
+            "msg": "Notify attempt failed",
+            "receiver": "verification",
+            "integration": "email[0]",
+            "err": "dial tcp smtp.example.test:465: i/o timeout private@example.test",
+        },
+        {
+            "time": "2026-10-26T17:00:02Z",
+            "msg": "Notify attempt failed",
+            "receiver": "verification",
+            "integration": "email[0]",
+            "err": "tls: x509 certificate private@example.test",
+        },
+        {
+            "time": "2026-10-26T17:00:03Z",
+            "msg": "Notify attempt failed",
+            "receiver": "operator",
+            "integration": "email[0]",
+            "err": "535 private@example.test",
+        },
+    ]
+    actual = module().email_failures("\n".join(json.dumps(row) for row in rows))
+    assert [row["category"] for row in actual] == ["authentication", "network", "tls"]
+    assert actual[0]["smtp_code"] == "535"
+    assert "private" not in json.dumps(actual) and "test-secret" not in json.dumps(actual)
+    assert all(set(row) == {"at", "receiver", "integration", "category", "smtp_code"} for row in actual)
+
+
+def test_failure_json_in_hidden_output_directory_is_included_in_artifact():
+    workflow = yaml.safe_load(
+        (Path(__file__).resolve().parents[1] / ".github/workflows/external-alerts.yml").read_text()
+    )
+    step = next(
+        s
+        for s in workflow["jobs"]["verify"]["steps"]
+        if s.get("uses", "").startswith("actions/upload-artifact@")
+    )
+    assert step["if"] == "always()"
+    assert step["with"]["path"] == ".monitoring-verification/*.json"
+    assert step["with"].get("include-hidden-files") is True
+    assert step["with"].get("if-no-files-found") == "error"
+
+
+def test_capture_preserves_previous_trial_without_misattributing_current(tmp_path, monkeypatch):
+    from scripts import deploy_external_alerts as runner
+
+    class Remote:
+        options = []
+        ip = "127.0.0.1"
+
+        def authorize(self):
+            pass
+
+    record = {"verification_id": "mail-123-1", "transport_verified": False, "error_type": "TimeoutError"}
+    monkeypatch.setattr(
+        runner.subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a, 0, json.dumps(record), "")
+    )
+    runner.capture_result(Remote(), tmp_path / "previous.json")
+    assert json.loads((tmp_path / "previous.json").read_text()) == record
+    runner.capture_result(Remote(), tmp_path / "current.json", "mail-124-1")
+    assert not (tmp_path / "current.json").exists()
+
+
+@pytest.mark.parametrize("returncode", [1, 255])
+def test_previous_evidence_read_failure_aborts_before_overwrite(tmp_path, monkeypatch, returncode):
+    from scripts import deploy_external_alerts as runner
+
+    class Remote:
+        options = []
+        ip = "127.0.0.1"
+
+        def authorize(self):
+            pass
+
+    monkeypatch.setattr(
+        runner.subprocess,
+        "run",
+        lambda *a, **k: subprocess.CompletedProcess(a, returncode, "", "private error"),
+    )
+    with pytest.raises(RuntimeError, match="retrieve") as error:
+        runner.capture_result(Remote(), tmp_path / "previous.json")
+    assert "private error" not in str(error.value)
+
+
+def test_explicitly_absent_previous_evidence_allows_first_install(tmp_path, monkeypatch):
+    from scripts import deploy_external_alerts as runner
+
+    class Remote:
+        options = []
+        ip = "127.0.0.1"
+
+        def authorize(self):
+            pass
+
+    monkeypatch.setattr(runner.subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a, 44, "", ""))
+    runner.capture_result(Remote(), tmp_path / "previous.json")
+    assert not (tmp_path / "previous.json").exists()

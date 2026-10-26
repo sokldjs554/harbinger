@@ -1,0 +1,23 @@
+........................................................................ [ 19%]
+........................................................................ [ 38%]
+........................................................................ [ 57%]
+........................................................................ [ 76%]
+........................................................................ [ 95%]
+..................                                                       [100%]
+=============================== warnings summary ===============================
+tests/test_api.py::test_health_and_version
+tests/test_api.py::test_health_and_version
+tests/test_patrol_pipeline_integration.py::test_pipeline_evaluates_full_history_with_explicit_mature_dates
+tests/test_patrol_pipeline_integration.py::test_pipeline_evaluates_full_history_with_explicit_mature_dates
+  /tmp/harbinger-closeout-20261027/src/harbinger/models/survival.py:75: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+    Z["tte_days"] = df["tte_days"].to_numpy()
+
+tests/test_api.py::test_health_and_version
+tests/test_api.py::test_health_and_version
+tests/test_patrol_pipeline_integration.py::test_pipeline_evaluates_full_history_with_explicit_mature_dates
+tests/test_patrol_pipeline_integration.py::test_pipeline_evaluates_full_history_with_explicit_mature_dates
+  /tmp/harbinger-closeout-20261027/src/harbinger/models/survival.py:76: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+    Z["event"] = df["event"].to_numpy()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+378 passed, 8 warnings in 119.55s (0:01:59)

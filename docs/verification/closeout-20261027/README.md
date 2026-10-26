@@ -50,3 +50,9 @@ Docker는 CI에서 비루트 UID 10001·소스 80개 해시·실제 API를 확�
 ## 5. 후속 변경의 개발 검증
 
 [독립 검토와 실패 경로 수정](review.md), [전체 테스트](checks/full-tests-final.txt), [재검토 도구 조작](checks/retest-recorder-checks.json), [최종 로컬 SSL 시험](checks/mail-final-result.json)과 [로컬 수신 기록](checks/mail-final-smtp.json)을 남겼다. `mail-local-*`와 `mail-portable-*`는 이전 로컬 시험 원본이며, JSON의 범위 문구가 운영 호스트로 남아 있던 점을 최종 도구/기록에서 수정했다. 어느 로컬 기록도 네이버 또는 운영자 수신을 의미하지 않는다. 로컬 Docker 시험은 이미지 다운로드 중 디스크 부족으로 완료하지 못했고, 실제 컨테이너 검증은 CI와 운영 workflow에서 별도로 확인한다.
+
+## 6. 후속 PR #17 병합과 외부 시험
+
+[PR #17](https://github.com/sokldjs554/harbinger/pull/17)은 `3e6b3da81bbd4cab705c2de0027f9740cafedb8d`로 병합했다. [PR CI](https://github.com/sokldjs554/harbinger/actions/runs/40362387991)와 [병합본 CI](https://github.com/sokldjs554/harbinger/actions/runs/40364278833)의 test·tensorflow·image가 모두 통과했다. [병합본 원본 검사·해시](main-ci/manifest.json)를 보관했다. 이 CI의 소규모 합성 모델은 검사 전용이며 공개 AWS/Pages 모델을 교체하지 않았다.
+
+[첫 외부 이메일 시험](https://github.com/sokldjs554/harbinger/actions/runs/40366576243)은 실패했다. SMTP 전송 성공을 확인하지 못했으며 운영자 수신도 미확인이다. [실패 사실·로그 발췌](external-alerts/attempt-1-summary.json), [별도 종료 후 AWS 조회 원본](external-alerts/attempt-1-host-state.json)을 보존했다. 숨김 폴더 때문에 결과 JSON 업로드가 누락된 문제를 수정하고, 사용자 SMTP 사용 설정 저장 회신에 따라 재시험을 준비한다. 이 시점에서 외부 알림 연결 완료라고 표현하지 않는다.

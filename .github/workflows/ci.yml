@@ -73,6 +73,7 @@ jobs:
           bash -n deploy/monitoring/install_external.sh
           bash scripts/check_alertmanager.sh /tmp/hb-alertmanager-bin
           python scripts/check_external_alerts.py --api-url http://127.0.0.1:8000 --prometheus /tmp/hb-monitoring-bin/prometheus --alertmanager /tmp/hb-alertmanager-bin/alertmanager --out /tmp/operator-email-local
+          python scripts/check_external_alerts.py --api-url http://127.0.0.1:8000 --prometheus /tmp/hb-monitoring-bin/prometheus --alertmanager /tmp/hb-alertmanager-bin/alertmanager --reject-auth --out /tmp/operator-email-rejected
       - name: Protected API and separate-user browser checks
         run: |
           python -m scripts.check_protected_stack --data /tmp/hb/data --models /tmp/hb/models --artifacts /tmp/hb/artifacts --out /tmp/protected-checks
@@ -100,6 +101,7 @@ jobs:
             /tmp/local-operations/workload.csv
             /tmp/operator-email-local/result.json
             /tmp/operator-email-local/smtp-messages.json
+            /tmp/operator-email-rejected/result.json
       - name: Docs numbers match artifacts
         run: |
           python scripts/fill_numbers.py --check

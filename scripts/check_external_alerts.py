@@ -31,7 +31,13 @@ def main():
     parser.add_argument("--prometheus", type=Path, required=True)
     parser.add_argument("--alertmanager", type=Path, required=True)
     parser.add_argument("--api-url", default="http://127.0.0.1:8000")
+    parser.add_argument(
+        "--reject-auth",
+        action="store_true",
+        help="Local sink returns 535; verify failure evidence and cleanup",
+    )
     args = parser.parse_args()
+    reject_auth = args.reject_auth
     parsed = urlparse(args.api_url)
     assert (
         parsed.scheme == "http"
@@ -128,7 +134,11 @@ def main():
                 elif cmd == "AUTH":
                     credentials = base64.b64decode(line.split(" ", 2)[2])
                     assert credentials == b"\0test@example.test\0local-test-only"
-                    send("235 authenticated test user")
+                    send(
+                        "535 5.7.1 deliberate local authentication rejection"
+                        if reject_auth
+                        else "235 authenticated test user"
+                    )
                 elif cmd in ("MAIL", "RCPT", "RSET", "NOOP"):
                     send("250 ok")
                 elif cmd == "DATA":
@@ -167,6 +177,9 @@ def main():
     am = args.alertmanager.resolve()
     processes = []
     original_request = mod.request
+    if reject_auth:
+        original_wait = mod.wait_for
+        mod.wait_for = lambda check, timeout=180: original_wait(check, 12 if timeout == 240 else timeout)
     mod.request = lambda url, post=False: original_request(
         url.replace("http://127.0.0.1:8000", api_url), post
     )
@@ -220,11 +233,28 @@ def main():
                     time.sleep(1)
             else:
                 raise TimeoutError("monitor not ready")
-        mod.verify_on_host(bundle, root / "result.json")
-        record = json.loads((root / "result.json").read_text())
-        record["scope"] = "local authenticated implicit TLS SMTP sink; no external mail sent"
-        record["operator_receipt_confirmed"] = False
-        (root / "result.json").write_text(json.dumps(record, indent=2) + "\n")
+        try:
+            mod.verify_on_host(bundle, root / "result.json")
+        except TimeoutError:
+            if not reject_auth:
+                raise
+        finally:
+            if (root / "result.json").exists():
+                record = json.loads((root / "result.json").read_text())
+                record["scope"] = "local authenticated implicit TLS SMTP sink; no external mail sent"
+                record["operator_receipt_confirmed"] = False
+                (root / "result.json").write_text(json.dumps(record, indent=2) + "\n")
+        if reject_auth:
+            assert not messages and record["transport_verified"] is False
+            assert record["normal_after_test"] and record["test_rule_removed"]
+            assert any(
+                e["category"] == "authentication" and e["smtp_code"] == "535"
+                for e in record["email_transport_failures"]
+            )
+            print(
+                "PASS: deliberate local SMTP 535 rejection recorded without secrets; normal cleanup; no external mail sent"
+            )
+            return
         assert len(messages) == 2, messages
         assert "FIRING" in messages[0]["subject"] and "RESOLVED" in messages[1]["subject"]
         assert all(m["tls"] and "local-mail-check" in m["subject"] for m in messages)

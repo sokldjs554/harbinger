@@ -1,0 +1,49 @@
+.................FF.                                                     [100%]
+=================================== FAILURES ===================================
+________ test_previous_evidence_read_failure_aborts_before_overwrite[1] ________
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-100/test_previous_evidence_read_fa0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7800f2ae70>
+returncode = 1
+
+    @pytest.mark.parametrize("returncode", [1, 255])
+    def test_previous_evidence_read_failure_aborts_before_overwrite(tmp_path, monkeypatch, returncode):
+        from scripts import deploy_external_alerts as runner
+    
+        class Remote:
+            options = []
+            ip = "127.0.0.1"
+            def authorize(self):
+                pass
+    
+        monkeypatch.setattr(runner.subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a, returncode, "", "private error"))
+>       with pytest.raises(RuntimeError, match="retrieve") as error:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE RuntimeError
+
+tests/test_external_alerts.py:279: Failed
+_______ test_previous_evidence_read_failure_aborts_before_overwrite[255] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-100/test_previous_evidence_read_fa1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7800f29bb0>
+returncode = 255
+
+    @pytest.mark.parametrize("returncode", [1, 255])
+    def test_previous_evidence_read_failure_aborts_before_overwrite(tmp_path, monkeypatch, returncode):
+        from scripts import deploy_external_alerts as runner
+    
+        class Remote:
+            options = []
+            ip = "127.0.0.1"
+            def authorize(self):
+                pass
+    
+        monkeypatch.setattr(runner.subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a, returncode, "", "private error"))
+>       with pytest.raises(RuntimeError, match="retrieve") as error:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE RuntimeError
+
+tests/test_external_alerts.py:279: Failed
+=========================== short test summary info ============================
+FAILED tests/test_external_alerts.py::test_previous_evidence_read_failure_aborts_before_overwrite[1]
+FAILED tests/test_external_alerts.py::test_previous_evidence_read_failure_aborts_before_overwrite[255]

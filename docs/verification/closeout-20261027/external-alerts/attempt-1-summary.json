@@ -1,0 +1,24 @@
+{
+  "scope": "summary of actual first external trial; not SMTP acceptance or operator receipt",
+  "workflow_run": 40366576243,
+  "workflow_url": "https://github.com/sokldjs554/harbinger/actions/runs/40366576243",
+  "source_commit": "3e6b3da81bbd4cab705c2de0027f9740cafedb8d",
+  "verification_id": "mail-40366576243-1",
+  "conclusion": "failure",
+  "failure": "timed out waiting for first email transport success",
+  "provider_failure_reason": "not recorded in first verifier; unknown",
+  "operator_receipt_confirmed": false,
+  "artifacts_uploaded": false,
+  "artifact_omission": "upload-artifact excludes hidden directories by default",
+  "user_report": "SMTP usage setting had not been saved; user subsequently reported saving it and requested retry; exact save time not provided",
+  "log_excerpt": [
+    "2026-10-26T17:19:23.5383531Z     firing = wait_for(lambda: (e := successes()) and e, timeout=240)",
+    "2026-10-26T17:19:23.5387512Z TimeoutError: bounded monitoring condition did not settle",
+    "2026-10-26T17:19:23.6947313Z  Container harbinger-prometheus  Stopped",
+    "2026-10-26T17:19:23.7105316Z  Container harbinger-alertmanager  Stopped",
+    "2026-10-26T17:19:23.7107066Z  Container harbinger-alertmanager  Removed",
+    "2026-10-26T17:19:23.7143329Z  Container harbinger-prometheus  Removed",
+    "2026-10-26T17:19:36.4251397Z   include-hidden-files: false",
+    "2026-10-26T17:19:36.5941210Z ##[warning]No files were found with the provided path: .monitoring-verification/*.json. No artifacts will be uploaded."
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "source_commit": "3e6b3da81bbd4cab705c2de0027f9740cafedb8d",
+  "workflow_run": 40364278833,
+  "artifact_id": 12670810251,
+  "scope": "actual local CI API/browser/mobile and local SMTP; not deployed operator receipt",
+  "files": [
+    {
+      "file": "browser-checks/checks.json",
+      "sha256": "10a16f4af4321d57b67d913ccdeb8889c9744b480b13f8144d27f03c8b1a8908"
+    },
+    {
+      "file": "static-mobile/checks.json",
+      "sha256": "2b6d59d220037e5c58e3ad4836d875449876075e263efe6d32a445e6efa32ecd"
+    },
+    {
+      "file": "policy-display/checks.json",
+      "sha256": "db5d791e8d999e19087a0480fd80359299474a995b7faae5146c8fb5c1f309d4"
+    },
+    {
+      "file": "retest-recorder/checks.json",
+      "sha256": "577d9bd4b1d118e8ae8a568c59457d847a52170de6d6d60e490f104cf7886bf0"
+    },
+    {
+      "file": "protected-checks/checks.json",
+      "sha256": "143cfb5fa75894939087863f1e5461025af12e66d613d3005e69a4b0a1b1eb31"
+    },
+    {
+      "file": "energy-browser/checks.json",
+      "sha256": "75c5b4554a8e113239d22bc8a738b762a20a32de8a7374178bbc05d6ce1ac291"
+    },
+    {
+      "file": "operator-email-local/result.json",
+      "sha256": "5e0b77661763924f6a51f5a02e7de5376d392d4c7ebb1f9f2df18df781989cd6"
+    },
+    {
+      "file": "operator-email-local/smtp-messages.json",
+      "sha256": "c639c1c0f0b8a230308306ba44012853fd4c0dec5f456c6cb3796c83a1fbdf2a"
+    },
+    {
+      "file": "docker/api.json",
+      "sha256": "49fe7ab689827d0878abcdeba907b1efe7f2e65fbb60250cd19af08254b4bfb3"
+    },
+    {
+      "file": "docker/image.json",
+      "sha256": "724b45464b9058df782ef9e27f37fc13646ff742d186a574fac95ef51cf11b14"
+    }
+  ],
+  "conclusion": "success",
+  "docker_artifact_id": 12671205790
+}
