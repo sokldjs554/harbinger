@@ -1,0 +1,164 @@
+[
+  {
+    "data_seed": 202610251,
+    "model_seed": 17,
+    "model": "legacy",
+    "historical_epochs_run": 9,
+    "current_epochs_run": 9,
+    "historical_best_val_nll": 0.7099770903587341,
+    "current_best_val_nll": 0.7103040814399719
+  },
+  {
+    "data_seed": 202610251,
+    "model_seed": 17,
+    "model": "robust",
+    "historical_epochs_run": 8,
+    "current_epochs_run": 8,
+    "historical_best_val_nll": 0.7147629857063293,
+    "current_best_val_nll": 0.7147930860519409
+  },
+  {
+    "data_seed": 202610251,
+    "model_seed": 17,
+    "model": "no_memo",
+    "historical_epochs_run": 10,
+    "current_epochs_run": 10,
+    "historical_best_val_nll": 0.7175472974777222,
+    "current_best_val_nll": 0.7182180881500244
+  },
+  {
+    "data_seed": 202610251,
+    "model_seed": 29,
+    "model": "legacy",
+    "historical_epochs_run": 9,
+    "current_epochs_run": 9,
+    "historical_best_val_nll": 0.7130931615829468,
+    "current_best_val_nll": 0.7133358120918274
+  },
+  {
+    "data_seed": 202610251,
+    "model_seed": 29,
+    "model": "robust",
+    "historical_epochs_run": 8,
+    "current_epochs_run": 9,
+    "historical_best_val_nll": 0.717708170413971,
+    "current_best_val_nll": 0.7167519927024841
+  },
+  {
+    "data_seed": 202610251,
+    "model_seed": 29,
+    "model": "no_memo",
+    "historical_epochs_run": 12,
+    "current_epochs_run": 10,
+    "historical_best_val_nll": 0.7204245328903198,
+    "current_best_val_nll": 0.7208396792411804
+  },
+  {
+    "data_seed": 202610252,
+    "model_seed": 17,
+    "model": "legacy",
+    "historical_epochs_run": 9,
+    "current_epochs_run": 9,
+    "historical_best_val_nll": 0.6947596073150635,
+    "current_best_val_nll": 0.6958966851234436
+  },
+  {
+    "data_seed": 202610252,
+    "model_seed": 17,
+    "model": "robust",
+    "historical_epochs_run": 9,
+    "current_epochs_run": 9,
+    "historical_best_val_nll": 0.6936085224151611,
+    "current_best_val_nll": 0.6950677633285522
+  },
+  {
+    "data_seed": 202610252,
+    "model_seed": 17,
+    "model": "no_memo",
+    "historical_epochs_run": 10,
+    "current_epochs_run": 9,
+    "historical_best_val_nll": 0.70192950963974,
+    "current_best_val_nll": 0.7028135657310486
+  },
+  {
+    "data_seed": 202610252,
+    "model_seed": 29,
+    "model": "legacy",
+    "historical_epochs_run": 9,
+    "current_epochs_run": 9,
+    "historical_best_val_nll": 0.6937596797943115,
+    "current_best_val_nll": 0.6948958039283752
+  },
+  {
+    "data_seed": 202610252,
+    "model_seed": 29,
+    "model": "robust",
+    "historical_epochs_run": 8,
+    "current_epochs_run": 8,
+    "historical_best_val_nll": 0.6951298713684082,
+    "current_best_val_nll": 0.6954649090766907
+  },
+  {
+    "data_seed": 202610252,
+    "model_seed": 29,
+    "model": "no_memo",
+    "historical_epochs_run": 10,
+    "current_epochs_run": 10,
+    "historical_best_val_nll": 0.7011937499046326,
+    "current_best_val_nll": 0.7034026980400085
+  },
+  {
+    "data_seed": 202610253,
+    "model_seed": 17,
+    "model": "legacy",
+    "historical_epochs_run": 7,
+    "current_epochs_run": 7,
+    "historical_best_val_nll": 0.6470431685447693,
+    "current_best_val_nll": 0.647208034992218
+  },
+  {
+    "data_seed": 202610253,
+    "model_seed": 17,
+    "model": "robust",
+    "historical_epochs_run": 8,
+    "current_epochs_run": 9,
+    "historical_best_val_nll": 0.6441172957420349,
+    "current_best_val_nll": 0.6453377604484558
+  },
+  {
+    "data_seed": 202610253,
+    "model_seed": 17,
+    "model": "no_memo",
+    "historical_epochs_run": 8,
+    "current_epochs_run": 8,
+    "historical_best_val_nll": 0.6522652506828308,
+    "current_best_val_nll": 0.654328465461731
+  },
+  {
+    "data_seed": 202610253,
+    "model_seed": 29,
+    "model": "legacy",
+    "historical_epochs_run": 9,
+    "current_epochs_run": 9,
+    "historical_best_val_nll": 0.6426333785057068,
+    "current_best_val_nll": 0.6431297659873962
+  },
+  {
+    "data_seed": 202610253,
+    "model_seed": 29,
+    "model": "robust",
+    "historical_epochs_run": 10,
+    "current_epochs_run": 10,
+    "historical_best_val_nll": 0.6498689651489258,
+    "current_best_val_nll": 0.6496970057487488
+  },
+  {
+    "data_seed": 202610253,
+    "model_seed": 29,
+    "model": "no_memo",
+    "historical_epochs_run": 8,
+    "current_epochs_run": 8,
+    "historical_best_val_nll": 0.6496667265892029,
+    "current_best_val_nll": 0.6496392488479614
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "data_seed": 202610252,
+  "command": [
+    "/tmp/hb-audit-venv/bin/python",
+    "-m",
+    "scripts.memo_robustness",
+    "--data-seed",
+    "202610252",
+    "--work",
+    "/tmp/hb-completion-memo/work",
+    "--out",
+    "/workspace/harbinger-runs/completion-20261026/memo/results"
+  ],
+  "started_utc": "2026-10-26T08:47:34.652492+00:00",
+  "exit_code": 0,
+  "duration_seconds": 1366.2467539420031,
+  "finished_utc": "2026-10-26T09:10:20.899270+00:00"
+}

@@ -1,0 +1,12 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____ test_actual_audit_unequal_dates_are_outcome_independent_and_keep_pairs ____
+
+    def test_actual_audit_unequal_dates_are_outcome_independent_and_keep_pairs():
+>       from scripts.check_patrol_evaluation import uneven_panel
+E       ModuleNotFoundError: No module named 'scripts.check_patrol_evaluation'
+
+tests/test_service_patrol_evaluation.py:217: ModuleNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_service_patrol_evaluation.py::test_actual_audit_unequal_dates_are_outcome_independent_and_keep_pairs
+1 failed, 14 deselected in 0.21s

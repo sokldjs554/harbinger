@@ -1,0 +1,55 @@
+[synth] day 1/1096 inspections=111 workorders=11 elapsed=0.1s
+[synth] day 181/1096 inspections=21208 workorders=2284 elapsed=2.1s
+[synth] day 361/1096 inspections=42306 workorders=5302 elapsed=4.6s
+[synth] day 541/1096 inspections=63306 workorders=8498 elapsed=6.6s
+[synth] day 721/1096 inspections=84336 workorders=11647 elapsed=9.0s
+[synth] day 901/1096 inspections=105386 workorders=14867 elapsed=11.2s
+[synth] day 1081/1096 inspections=126450 workorders=18120 elapsed=13.4s
+[synth] day 1096/1096 inspections=128166 workorders=18418 elapsed=13.6s
+[synth] done sites=25 assets=2274 inspections=128166 workorders=18418 breakdowns=5858 energy_rows=27400 in 14.5s
+[features] rows=128166 features=102 pos_rate(valid)=0.0746 in 41.4s
+world 202610253: rebuilt missing_25
+world 202610253: rebuilt missing_50
+world 202610253: rebuilt missing_100
+/tmp/harbinger-memo-5a/scripts/memo_robustness.py:79: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  dates = pd.date_range(start, end - pd.Timedelta(days=30), freq="W-MON")
+/tmp/harbinger-memo-5a/scripts/memo_robustness.py:79: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  dates = pd.date_range(start, end - pd.Timedelta(days=30), freq="W-MON")
+/tmp/harbinger-memo-5a/scripts/memo_robustness.py:145: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert validation["clean"].decision_at.max() + pd.Timedelta(days=30) <= split.val_end
+world 202610253, seed 17: training legacy
+/tmp/harbinger-memo-5a/src/harbinger/models/deep.py:290: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  tot += float(loss) * len(idx)
+[deep:text] epoch 1 train=1.8535 val=0.6472
+[deep:text] epoch 6 train=1.5874 val=0.6674
+world 202610253, seed 17: training robust
+[deep:text] epoch 1 train=1.9446 val=0.6535
+[deep:text] epoch 6 train=1.6022 val=0.6593
+world 202610253, seed 17: training no_memo
+[deep:notext] epoch 1 train=1.9533 val=0.6574
+[deep:notext] epoch 6 train=1.6071 val=0.6642
+  scored validation/legacy
+  scored validation/robust
+  scored validation/no_memo
+  scored test/legacy
+  scored test/robust
+  scored test/no_memo
+world 202610253, seed 17: COMPLETE; selected=robust
+world 202610253, seed 29: training legacy
+[deep:text] epoch 1 train=1.8465 val=0.6474
+[deep:text] epoch 6 train=1.5919 val=0.6773
+world 202610253, seed 29: training robust
+[deep:text] epoch 1 train=1.9494 val=0.6520
+[deep:text] epoch 6 train=1.6040 val=0.6585
+world 202610253, seed 29: training no_memo
+[deep:notext] epoch 1 train=1.9610 val=0.6524
+[deep:notext] epoch 6 train=1.6059 val=0.6605
+  scored validation/legacy
+  scored validation/robust
+  scored validation/no_memo
+  scored test/legacy
+  scored test/robust
+  scored test/no_memo
+world 202610253, seed 29: COMPLETE; selected=legacy
+world 202610253: COMPLETE in 1387.4s

@@ -1,0 +1,172 @@
+{
+  "source": "uploaded-csv; synthetic-trained-model",
+  "computation": "live-python-model",
+  "model_version": "v20261026-093937",
+  "as_of": "2025-08-01T23:59:59",
+  "observation_end": "2025-10-01T23:59:59",
+  "model_observed_until": "2025-07-01T00:00:00",
+  "selection_test_start": null,
+  "outcomes_observed": false,
+  "observation_confirmed": false,
+  "time_held_out": true,
+  "customer_holdout": "see published LOSO experiment; this session is not LOSO",
+  "evaluation_status": "withheld",
+  "evaluation_reasons": [
+    "고장 기록의 완전성이 확인되지 않았습니다. 시설 데이터 담당자 확인 후 다시 업로드하면 평가할 수 있습니다.",
+    "양성·음성 설비가 각각 3개 이상이어야 성능을 비교합니다."
+  ],
+  "assets": [
+    {
+      "asset_id": "pump-1",
+      "site_id": "client-a",
+      "name": "pump-1",
+      "category": "pump",
+      "floor": 1,
+      "zone": "A",
+      "p30": 0.018916649822230784,
+      "selected_model": "baseline",
+      "policy_revision": null,
+      "policy_reason": "no_policy",
+      "policy_test_start": null,
+      "memo": "약간 소음",
+      "inspection_at": "2025-08-01T00:00:00",
+      "overall": 1,
+      "breakdowns_90d": 0,
+      "days_since_inspection": 0.999988425925926,
+      "failed_within_30d": null,
+      "days_to_failure": null
+    }
+  ],
+  "model_routing": [
+    {
+      "site_id": "client-a",
+      "selected_model": "baseline",
+      "policy_revision": null,
+      "policy_reason": "no_policy",
+      "policy_test_start": null
+    }
+  ],
+  "comparisons": [
+    {
+      "method": "current_model",
+      "status": "withheld",
+      "metrics": {},
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "selected": 1,
+      "selected_asset_ids": [
+        "pump-1"
+      ],
+      "k_per_site": 10
+    },
+    {
+      "method": "logistic",
+      "status": "withheld",
+      "metrics": {},
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "selected": 1,
+      "selected_asset_ids": [
+        "pump-1"
+      ],
+      "k_per_site": 10
+    },
+    {
+      "method": "without_text",
+      "status": "withheld",
+      "metrics": {},
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "selected": 1,
+      "selected_asset_ids": [
+        "pump-1"
+      ],
+      "k_per_site": 10
+    },
+    {
+      "method": "without_history",
+      "status": "withheld",
+      "metrics": {},
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "selected": 1,
+      "selected_asset_ids": [
+        "pump-1"
+      ],
+      "k_per_site": 10
+    },
+    {
+      "method": "last_inspection_rule",
+      "status": "withheld",
+      "metrics": {},
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "selected": 1,
+      "selected_asset_ids": [
+        "pump-1"
+      ],
+      "k_per_site": 10
+    },
+    {
+      "method": "age_rule",
+      "status": "withheld",
+      "metrics": {},
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "selected": 1,
+      "selected_asset_ids": [
+        "pump-1"
+      ],
+      "k_per_site": 10
+    },
+    {
+      "method": "recent_repair_rule",
+      "status": "withheld",
+      "metrics": {},
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "selected": 1,
+      "selected_asset_ids": [
+        "pump-1"
+      ],
+      "k_per_site": 10
+    },
+    {
+      "method": "oldest_inspection_rule",
+      "status": "withheld",
+      "metrics": {},
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "selected": 1,
+      "selected_asset_ids": [
+        "pump-1"
+      ],
+      "k_per_site": 10
+    },
+    {
+      "method": "random_expectation",
+      "status": "withheld",
+      "metrics": {},
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "selected": 1,
+      "k_per_site": 10
+    }
+  ],
+  "per_site": [
+    {
+      "site_id": "client-a",
+      "assets": 1,
+      "positives": null,
+      "status": "withheld",
+      "reason": "고장 기록 완전성·관측 30일·모델 시간 보류·양성/음성 각 3개 조건 확인 필요",
+      "metrics": {}
+    }
+  ],
+  "interpretation": "30일 내 비계획 고장 위험의 탐색적 순위. 합성 학습 모델이며 안전·고장 예방 효과를 보증하지 않습니다.",
+  "export_criteria": {
+    "as_of": "2025-08-01",
+    "site": "",
+    "k": "10"
+  }
+}

@@ -1,0 +1,119 @@
+[
+  {
+    "operation": "analysis",
+    "concurrency": 1,
+    "requests": 20,
+    "status_counts": {
+      "200": 20
+    },
+    "success_latency_seconds": {
+      "p50": 0.10945686349805328,
+      "p95": 0.11279940069907753,
+      "max": 0.11602798899548361
+    },
+    "server_or_transport_failure_rate": 0.0,
+    "intentional_429_rate": 0.0,
+    "wall_seconds": 2.1912012300017523,
+    "cpu_seconds": 2.1799999999999997,
+    "cpu_percent_one_core": 99.48880870235074,
+    "peak_sampled_rss_bytes": 891490304
+  },
+  {
+    "operation": "upload",
+    "concurrency": 1,
+    "requests": 20,
+    "status_counts": {
+      "200": 20
+    },
+    "success_latency_seconds": {
+      "p50": 0.748357381002279,
+      "p95": 1.0528762000507412,
+      "max": 1.0530060849996516
+    },
+    "server_or_transport_failure_rate": 0.0,
+    "intentional_429_rate": 0.0,
+    "wall_seconds": 16.284159358998295,
+    "cpu_seconds": 16.27,
+    "cpu_percent_one_core": 99.91304826558043,
+    "peak_sampled_rss_bytes": 925700096
+  },
+  {
+    "operation": "download",
+    "concurrency": 1,
+    "requests": 20,
+    "status_counts": {
+      "200": 20
+    },
+    "success_latency_seconds": {
+      "p50": 0.13132403200143017,
+      "p95": 0.14484343264775817,
+      "max": 0.1609213589981664
+    },
+    "server_or_transport_failure_rate": 0.0,
+    "intentional_429_rate": 0.0,
+    "wall_seconds": 2.628808002002188,
+    "cpu_seconds": 2.6099999999999994,
+    "cpu_percent_one_core": 99.28454257641243,
+    "peak_sampled_rss_bytes": 923688960
+  },
+  {
+    "operation": "analysis",
+    "concurrency": 4,
+    "requests": 20,
+    "status_counts": {
+      "200": 2,
+      "429": 18
+    },
+    "success_latency_seconds": {
+      "p50": 0.3319196775009914,
+      "p95": 0.3480766372533253,
+      "max": 0.34987185500358464
+    },
+    "server_or_transport_failure_rate": 0.0,
+    "intentional_429_rate": 0.9,
+    "wall_seconds": 0.3511714810010744,
+    "cpu_seconds": 0.379999999999999,
+    "cpu_percent_one_core": 108.20924265169369,
+    "peak_sampled_rss_bytes": 929308672
+  },
+  {
+    "operation": "upload",
+    "concurrency": 4,
+    "requests": 20,
+    "status_counts": {
+      "429": 18,
+      "200": 2
+    },
+    "success_latency_seconds": {
+      "p50": 2.240089781000279,
+      "p95": 2.2408099519991085,
+      "max": 2.2408899709989782
+    },
+    "server_or_transport_failure_rate": 0.0,
+    "intentional_429_rate": 0.9,
+    "wall_seconds": 2.247427456000878,
+    "cpu_seconds": 2.370000000000001,
+    "cpu_percent_one_core": 105.45390435948626,
+    "peak_sampled_rss_bytes": 1017737216
+  },
+  {
+    "operation": "download",
+    "concurrency": 4,
+    "requests": 20,
+    "status_counts": {
+      "200": 2,
+      "429": 18
+    },
+    "success_latency_seconds": {
+      "p50": 0.2672781870023755,
+      "p95": 0.29067267540485775,
+      "max": 0.29327206300513353
+    },
+    "server_or_transport_failure_rate": 0.0,
+    "intentional_429_rate": 0.9,
+    "wall_seconds": 0.29448444000445306,
+    "cpu_seconds": 0.3200000000000003,
+    "cpu_percent_one_core": 108.6644849538269,
+    "peak_sampled_rss_bytes": 1017737216
+  }
+]

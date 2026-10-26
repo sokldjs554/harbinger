@@ -1,0 +1,13 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________ test_publish_patrol_summary_preserves_full_hashed_observations ________
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-72/test_publish_patrol_summary_pr0')
+
+    def test_publish_patrol_summary_preserves_full_hashed_observations(tmp_path):
+>       from harbinger.eval.run import save_patrol_evaluation
+E       ImportError: cannot import name 'save_patrol_evaluation' from 'harbinger.eval.run' (/workspace/harbinger/src/harbinger/eval/run.py)
+
+tests/test_patrol_artifacts.py:9: ImportError
+=========================== short test summary info ============================
+FAILED tests/test_patrol_artifacts.py::test_publish_patrol_summary_preserves_full_hashed_observations

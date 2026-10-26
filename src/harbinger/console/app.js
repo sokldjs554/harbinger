@@ -74,7 +74,7 @@
     const lift = rr > 0 ? ex / rr : null;
     const head = $("#today-head"); clear(head);
     head.appendChild(el("h2", {}, `${s.name} — 오늘 먼저 볼 설비 ${items.length}개`));
-    head.appendChild(el("p", {}, `기준 ${state.asof}. 모델이 보는 이 목록의 기대 고장은 ${fmtN(ex, 2)}건, 가장 오래 안 본 ${p.k}개를 보면 ${fmtN(rr, 2)}건${lift ? ` (×${lift.toFixed(1)})` : ""}. 이것은 모델의 기대치일 뿐 결과가 아닙니다 — 실제로 맞았는지는 “과거 재현” 탭에서 봅니다.`));
+    head.appendChild(el("p", {}, items.length ? `기준 ${state.asof}. 요청 ${p.k}개 · 실제 선택 ${items.length}개 · 필수 ${p.mandatory_count}개 · 예산 초과 ${p.budget_overflow}개. 이 목록의 기대 고장은 ${fmtN(ex, 2)}건, 같은 필수 조건으로 오래 미점검 순 ${p.round_robin_selected_count}개를 고르면 ${fmtN(rr, 2)}건${lift ? ` (×${lift.toFixed(1)})` : ""}. 이것은 모델의 기대치일 뿐 실제 고장 결과가 아닙니다.` : `기준 ${state.asof}. 해당 시점에 유효한 점검 기록이 없어 순찰 비교를 보류합니다.`));
     const k = $("#today-kpis"); clear(k);
     k.appendChild(C.tile("설비 수", fmtN(s.n_assets), `최근 120일 안에 점검된 설비 ${s.assets_with_recent_inspection}개`));
     k.appendChild(C.tile("30일 고장확률 평균", fmtP(s.mean_p30)));

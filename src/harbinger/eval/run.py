@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import gzip
+import hashlib
 import json
 import time
 import warnings
@@ -70,6 +72,19 @@ def _dump(path: Path, obj) -> None:
         return value
 
     path.write_text(json.dumps(finite(obj), ensure_ascii=False, indent=2, default=float, allow_nan=False))
+
+
+def save_patrol_evaluation(patrol: dict, artifact_dir: Path) -> dict:
+    """Archive membership evidence separately from API/demo summary payloads."""
+    path = artifact_dir / "patrol-observations.json.gz"
+    with path.open("wb") as raw, gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=0) as stream:
+        stream.write(json.dumps(patrol, ensure_ascii=False, allow_nan=False, separators=(",", ":")).encode())
+    summary = {key: value for key, value in patrol.items() if key not in {"rows", "snapshots"}}
+    summary["service_policy"] = {
+        key: value for key, value in patrol["service_policy"].items() if key != "rows"
+    }
+    summary["observations"] = {"file": path.name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+    return summary
 
 
 def run(
@@ -317,6 +332,7 @@ def run(
     patrol["recall_top20pct"] = breakdown_recall_at_top(
         te_all, scores["harbinger_hgb"], bd_in_test.head(400 if quick else 2000), 0.2
     )
+    patrol = save_patrol_evaluation(patrol, artifact_dir)
     results["patrol"] = patrol
     _dump(artifact_dir / "patrol.json", patrol)
     print(

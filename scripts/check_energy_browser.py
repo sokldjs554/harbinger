@@ -23,6 +23,7 @@ def main():
         expect(legend).to_contain_text("계산 완료", timeout=120000)
         page.screenshot(path=str(a.out / "energy-desktop.png"), full_page=True)
         available = legend.inner_text()
+        initial_date = page.locator("#asof").input_value()
         # ci-smoke synthetic energy starts Jan 1 2023. Two actual days cannot yield a 7-day statistic.
         page.fill("#asof", "2023-01-02")
         page.click("#apply")
@@ -40,6 +41,19 @@ def main():
         expect(legend).to_contain_text("관측 0일 · 판정 가능 0일 · 이상 여부 판정 보류")
         missing = legend.inner_text()
         page.screenshot(path=str(a.out / "energy-mobile-empty.png"), full_page=True)
+        page.fill("#asof", initial_date)
+        page.click("#apply")
+        expect(legend).to_contain_text("계산 완료", timeout=120000)
+        page.click('[data-tab="today"]')
+        expect(page.locator("#today-head h2")).to_be_visible(timeout=120000)
+        assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+        expect(page.locator("#today-head")).to_contain_text("실제 선택")
+        page.screenshot(path=str(a.out / "patrol-mobile.png"), full_page=True)
+        page.fill("#asof", "2022-12-31")
+        page.click("#apply")
+        expect(page.locator("#today-head")).to_contain_text("순찰 비교를 보류합니다", timeout=120000)
+        assert "undefined" not in page.locator("#today-head").inner_text()
+        page.screenshot(path=str(a.out / "patrol-mobile-empty.png"), full_page=True)
         assert not errors, errors
         (a.out / "checks.json").write_text(
             json.dumps(
@@ -49,6 +63,7 @@ def main():
                     "missing": missing,
                     "errors": errors,
                     "backend": "actual local API; no mocked responses",
+                    "patrol_mobile": "actual selection counts, no horizontal overflow; empty comparison withheld",
                 },
                 ensure_ascii=False,
                 indent=2,

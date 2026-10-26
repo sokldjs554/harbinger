@@ -1,0 +1,29 @@
+[
+  {
+    "operation": "analysis",
+    "status": 200,
+    "seconds": 0.1298805180049385,
+    "bytes": 52977,
+    "rejection": null,
+    "retry_after": null,
+    "capacity_reason": null
+  },
+  {
+    "operation": "upload",
+    "status": 200,
+    "seconds": 0.7239158709999174,
+    "bytes": 840,
+    "rejection": null,
+    "retry_after": null,
+    "capacity_reason": null
+  },
+  {
+    "operation": "download",
+    "status": 200,
+    "seconds": 0.12545477700041374,
+    "bytes": 71313,
+    "rejection": null,
+    "retry_after": null,
+    "capacity_reason": null
+  }
+]

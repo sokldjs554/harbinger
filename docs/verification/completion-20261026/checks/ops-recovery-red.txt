@@ -1,0 +1,15 @@
+
+==================================== ERRORS ====================================
+_________________ ERROR collecting tests/test_ops_recovery.py __________________
+ImportError while importing test module '/workspace/harbinger/tests/test_ops_recovery.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_ops_recovery.py:3: in <module>
+    from scripts.check_local_operations import alert_recovery_complete
+E   ImportError: cannot import name 'alert_recovery_complete' from 'scripts.check_local_operations' (/workspace/harbinger/scripts/check_local_operations.py)
+=========================== short test summary info ============================
+ERROR tests/test_ops_recovery.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!

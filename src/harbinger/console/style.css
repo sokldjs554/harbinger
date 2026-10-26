@@ -148,6 +148,7 @@ textarea.memo-in { width: 100%; font: inherit; font-size: 14px; padding: 8px 10p
 
 /* ---- 오늘 + 현장 앱 ---- */
 .today-grid { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr) 392px; align-items: start; }
+.today-grid > div { min-width: 0; }
 .reasons { color: var(--text-secondary); font-size: 12px; }
 .memo-snip { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
 .phone { width: 380px; max-width: 100%; margin: 0 auto; border: 9px solid var(--bezel); border-radius: 34px; background: var(--page); overflow: hidden; box-shadow: 0 10px 30px var(--shadow); position: sticky; top: 12px; }

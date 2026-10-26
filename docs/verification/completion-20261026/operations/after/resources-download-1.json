@@ -1,0 +1,112 @@
+[
+  {
+    "monotonic_seconds": 62844.102290357,
+    "cpu_seconds": 22.96,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62844.202613234,
+    "cpu_seconds": 23.06,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62844.302971102,
+    "cpu_seconds": 23.16,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62844.403290463,
+    "cpu_seconds": 23.26,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62844.503616854,
+    "cpu_seconds": 23.36,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62844.603989715,
+    "cpu_seconds": 23.46,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62844.704411728,
+    "cpu_seconds": 23.56,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62844.804709737,
+    "cpu_seconds": 23.66,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62844.905051562,
+    "cpu_seconds": 23.76,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62845.005382299,
+    "cpu_seconds": 23.86,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62845.105669533,
+    "cpu_seconds": 23.96,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62845.20598601,
+    "cpu_seconds": 24.06,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62845.306268426,
+    "cpu_seconds": 24.16,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62845.406632398,
+    "cpu_seconds": 24.26,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62845.506918441,
+    "cpu_seconds": 24.36,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62845.608287357,
+    "cpu_seconds": 24.46,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62845.708645315,
+    "cpu_seconds": 24.56,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62845.809048345,
+    "cpu_seconds": 24.66,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62845.909578798,
+    "cpu_seconds": 24.76,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62846.009915785,
+    "cpu_seconds": 24.86,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62846.110208947,
+    "cpu_seconds": 24.95,
+    "rss_bytes": 920596480
+  },
+  {
+    "monotonic_seconds": 62846.210644394,
+    "cpu_seconds": 25.05,
+    "rss_bytes": 920596480
+  }
+]

@@ -13,7 +13,7 @@
   },
   "oracle_check": {
     "summer_corr_resid_vs_cooling_degradation": 0.1372127908999237,
-    "auroc_z_vs_high_degradation": 0.5807307158176463,
+    "auroc_z_vs_high_degradation": 0.5807191342004104,
     "anomaly_day_rate": 0.034666666666666665,
     "rows": 2250
   }

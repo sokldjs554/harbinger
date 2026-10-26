@@ -1,0 +1,14 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________ test_actual_audit_mature_window_has_no_numpy_timedelta_warning ________
+
+    def test_actual_audit_mature_window_has_no_numpy_timedelta_warning():
+        import warnings
+    
+>       from scripts.check_patrol_evaluation import mature_window
+E       ImportError: cannot import name 'mature_window' from 'scripts.check_patrol_evaluation' (/workspace/harbinger/scripts/check_patrol_evaluation.py)
+
+tests/test_service_patrol_evaluation.py:237: ImportError
+=========================== short test summary info ============================
+FAILED tests/test_service_patrol_evaluation.py::test_actual_audit_mature_window_has_no_numpy_timedelta_warning
+1 failed, 15 deselected in 1.16s

@@ -1,0 +1,121 @@
+{
+  "/health": {
+    "status": "ok",
+    "service": "harbinger",
+    "version": "0.1.0"
+  },
+  "/ready": {
+    "status": "ready",
+    "model_version": "v20261026-093937",
+    "assets": 2312,
+    "feature_rows": 131201
+  },
+  "/version": {
+    "service": "0.1.0",
+    "model_version": "v20261026-093937",
+    "git_sha": "def9c94",
+    "feature_hash": "c5a8781533",
+    "n_features": 116,
+    "headline_metrics": {
+      "auroc": 0.7679922529194856,
+      "pr_auc": 0.24055825015023924,
+      "brier": 0.06864776353208472,
+      "ece": 0.010951535639073919,
+      "patrol_precision_at_10": 0.23844444444444446,
+      "patrol_lift_vs_round_robin": 5.588541666666667
+    },
+    "data": {
+      "seed": 20260101,
+      "start": "2023-01-01",
+      "months": 36,
+      "scale": 1.0,
+      "rows": {
+        "sites": 25,
+        "inspectors": 124,
+        "assets": 2312,
+        "inspections": 131201,
+        "workorders": 18666,
+        "energy": 27400,
+        "latent": 2533952
+      },
+      "generated_at": "2026-10-21T09:37:01",
+      "synthetic": true
+    },
+    "synthetic_data": true
+  },
+  "/v1/workbench/info": {
+    "mode": "live",
+    "synthetic_example": true,
+    "model_version": "v20261026-093937",
+    "compute_policy": {
+      "slots": 2,
+      "waiting": 4,
+      "timeout_seconds": 10.0
+    },
+    "limits": {
+      "bytes": 5242880,
+      "rows": 20000,
+      "assets": 500,
+      "sites": 10,
+      "years": 5,
+      "ttl_seconds": 1800
+    },
+    "observation_end": "2026-01-01T00:00:00",
+    "latest_as_of_date": "2025-12-31"
+  },
+  "analysis": {
+    "assets": 104,
+    "model_version": "v20261026-093937",
+    "evaluation_status": "available"
+  },
+  "download_json": {
+    "status": 200,
+    "bytes": 71313
+  },
+  "download_csv": {
+    "status": 200,
+    "bytes": 19772
+  },
+  "download_md": {
+    "status": 200,
+    "bytes": 1237
+  },
+  "upload": {
+    "status": 200,
+    "analysis_status": 200,
+    "assets": 104
+  },
+  "short_energy": {
+    "site_id": "S01",
+    "window_days": 14,
+    "target": "electricity_kwh",
+    "status": "insufficient_observation",
+    "days": [
+      {
+        "day": "2023-01-01",
+        "actual": 8535.3,
+        "expected": 8530.891499955229,
+        "resid_ratio": 0.0005167689736522228,
+        "resid_ma7": null,
+        "z": null,
+        "anomaly": null,
+        "status": "insufficient_observation"
+      },
+      {
+        "day": "2023-01-02",
+        "actual": 14116.2,
+        "expected": 13836.665676008548,
+        "resid_ratio": 0.020202433919910234,
+        "resid_ma7": null,
+        "z": null,
+        "anomaly": null,
+        "status": "insufficient_observation"
+      }
+    ],
+    "anomalies": [],
+    "n_observed_days": 2,
+    "n_evaluable_days": 0,
+    "n_anomaly_days": null
+  },
+  "sessions_closed": true
+}

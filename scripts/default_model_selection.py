@@ -34,10 +34,10 @@ def selection_source_paths():
     return sorted(
         list(Path("src/harbinger/features").glob("*.py"))
         + list(Path("src/harbinger/models").glob("*.py"))
+        + list(Path("src/harbinger/synth").glob("*.py"))
         + [
             Path("src/harbinger/config.py"),
             Path("src/harbinger/schema.py"),
-            Path("src/harbinger/synth/generate.py"),
             Path("src/harbinger/eval/metrics.py"),
             Path("scripts/default_model_selection.py"),
             Path("scripts/memo_robustness.py"),

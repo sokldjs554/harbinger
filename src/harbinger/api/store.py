@@ -33,7 +33,7 @@ from harbinger.monitoring.metrics import (
     PRED_P30,
 )
 from harbinger.prescribe.explain import Explainer, evidence_for_asset
-from harbinger.prescribe.priority import rank_patrol
+from harbinger.prescribe.priority import rank_patrol, select_patrol
 from harbinger.prescribe.schedule import recommend_interval
 
 log = logging.getLogger("harbinger.store")
@@ -250,6 +250,12 @@ class Store:
                 "site_id": site_id,
                 "as_of": as_of.isoformat(),
                 "items": [],
+                "k": k,
+                "requested_k": k,
+                "selected_count": 0,
+                "mandatory_count": 0,
+                "budget_overflow": 0,
+                "round_robin_selected_count": 0,
                 "note": "해당 시점에 유효한 점검 기록이 없습니다.",
             }
         expl = None
@@ -261,13 +267,25 @@ class Store:
             cmap = dict(zip(cand["asset_id"], contrib))
             expl = [cmap.get(a, []) for a in rows["asset_id"]]
         items = rank_patrol(rows, as_of, k=k, explanations=expl)
+        baseline = select_patrol(
+            rows.assign(_oldest=(as_of - rows.t).dt.total_seconds()),
+            as_of,
+            k=k,
+            score_column="_oldest",
+            probability_score=False,
+        )
         return {
             "site_id": site_id,
             "as_of": as_of.isoformat(timespec="minutes"),
             "k": k,
+            "requested_k": k,
+            "selected_count": len(items),
+            "mandatory_count": sum(i.mandatory for i in items),
+            "budget_overflow": max(0, len(items) - k),
+            "round_robin_selected_count": len(baseline),
             "n_assets_considered": int(len(rows)),
             "expected_breakdowns_in_list": float(sum(i.p30 for i in items)),
-            "expected_breakdowns_round_robin": float(rows.nsmallest(k, "t")["p30"].sum()),
+            "expected_breakdowns_round_robin": float(baseline["p30"].sum()),
             "items": [
                 i.to_dict() | self.routing_trace(rows[rows.asset_id == i.asset_id].iloc[0]) for i in items
             ],

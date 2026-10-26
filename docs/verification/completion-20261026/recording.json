@@ -1,0 +1,10 @@
+{
+  "url": "http://127.0.0.1:18032/",
+  "mode": "합성 예제 · 저장 결과 재생",
+  "duration_target_seconds": 80,
+  "elapsed_seconds": 80.00821835099487,
+  "raw_video": "Kept in execution workspace; published MP4 at docs/demo/walkthrough.mp4",
+  "model_version": "v20261026-093937",
+  "mp4_sha256": "30ac2d66576467175e98f86721584e1b0d70e404cb21484ff37ec2a5417a21e6",
+  "mp4_seconds": 79.96
+}

@@ -1,0 +1,12 @@
+{
+  "historical": {
+    "mean_clean_delta_pp": 0.16969696969696968,
+    "mean_missing_delta_pp": 5.296969696969698,
+    "mean_clean_brier_ratio": 1.0059063695759936
+  },
+  "current": {
+    "mean_clean_delta_pp": 0.13939393939394057,
+    "mean_missing_delta_pp": 5.100000000000001,
+    "mean_clean_brier_ratio": 1.0047973717903222
+  }
+}

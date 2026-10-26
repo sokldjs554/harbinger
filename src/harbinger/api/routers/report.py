@@ -108,7 +108,7 @@ def to_markdown(r: dict) -> str:
         else "30일 고장확률 계산 불가 · 해당 시점의 유효한 점검 기록이 없습니다."
     )
     patrol_summary = (
-        f"오늘 순찰 상위 {r['patrol']['k']}개의 기대 고장 수 {r['patrol']['expected_breakdowns_in_list']:.2f} (라운드로빈 {r['patrol']['expected_breakdowns_round_robin']:.2f})"
+        f"오늘 순찰 요청 {r['patrol']['k']}개 · 실제 선택 {r['patrol']['selected_count']}개 · 필수 {r['patrol']['mandatory_count']}개 · 예산 초과 {r['patrol']['budget_overflow']}개. 기대 고장 수 {r['patrol']['expected_breakdowns_in_list']:.2f} (같은 필수 조건의 오래 미점검 순 {r['patrol']['expected_breakdowns_round_robin']:.2f})"
         if r["patrol"]["items"]
         else "오늘 순찰 기대 고장 수 계산 불가 · 해당 시점의 유효한 점검 기록이 없습니다."
     )

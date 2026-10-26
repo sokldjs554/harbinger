@@ -1,0 +1,9 @@
+{
+  "operation": "upload",
+  "status": 429,
+  "seconds": 0.004452345994650386,
+  "bytes": 54,
+  "rejection": "세션 한도 8개에 도달했습니다.",
+  "retry_after": null,
+  "capacity_reason": null
+}

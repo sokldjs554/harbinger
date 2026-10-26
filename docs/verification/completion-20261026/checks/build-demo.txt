@@ -1,0 +1,16 @@
+/workspace/harbinger/scripts/build_workbench_demo.py:31: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  good = min(start + pd.Timedelta(days=62), store.data_end - pd.Timedelta(days=31))
+/workspace/harbinger/scripts/build_workbench_demo.py:32: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  dates = [good.date().isoformat(), (store.data_end - pd.Timedelta(days=1)).date().isoformat()]
+/workspace/harbinger/scripts/build_workbench_demo.py:52: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  asof = pd.Timestamp(date) + pd.Timedelta(hours=23, minutes=59, seconds=59)
+mkdir -p failed for path /home/agent/.config/matplotlib: [Errno 30] Read-only file system: '/home/agent/.config/matplotlib'
+Matplotlib created a temporary cache directory at /tmp/matplotlib-5dppf_ll because there was an issue with the default path (/home/agent/.config/matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+Fontconfig error: No writable cache directories
+saved 2025-09-01 250
+/workspace/harbinger/scripts/build_workbench_demo.py:52: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  asof = pd.Timestamp(date) + pd.Timedelta(hours=23, minutes=59, seconds=59)
+saved 2025-12-31 252
+/workspace/harbinger/scripts/build_workbench_demo.py:85: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  export_example(store.tables, sites[0]["site_id"], store.data_end - pd.Timedelta(seconds=1))
+complete v20261026-093937

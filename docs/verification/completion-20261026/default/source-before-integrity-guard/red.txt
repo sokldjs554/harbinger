@@ -1,0 +1,204 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_ test_test_phase_rejects_changed_or_incomplete_source_before_scoring[changed] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-63/test_test_phase_rejects_change0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f50f0295f10>
+damage = 'changed'
+
+    @pytest.mark.parametrize("damage", ["changed", "missing_required", "legacy"])
+    def test_test_phase_rejects_changed_or_incomplete_source_before_scoring(tmp_path, monkeypatch, damage):
+        import argparse
+        import json
+    
+        import scripts.default_model_selection as module
+    
+        out = tmp_path / "results"
+        out.mkdir()
+        design = tmp_path / "design.md"
+        design.write_text("unchanged decision contract")
+        source = tmp_path / "inference.py"
+        source.write_text("original prediction implementation")
+        snapshot = tmp_path / "snapshot.py"
+        snapshot.write_text("original cohort implementation")
+        monkeypatch.setattr(module, "DESIGN", design)
+        monkeypatch.setattr(module, "selection_source_paths", lambda: [source, snapshot], raising=False)
+        for row in validation_runs():
+            path = out / str(row["data_seed"]) / f"model-{row['model_seed']}" / "validation/run.json"
+            path.parent.mkdir(parents=True)
+            path.write_text(json.dumps(row))
+        hashes = {str(path): module.digest(path) for path in [source, snapshot]}
+        if damage == "missing_required":
+            hashes.pop(str(snapshot))
+        for world in module.DATA_SEEDS:
+            proof = {"source_sha256": hashes}
+            if damage != "legacy":
+                proof["source_integrity_version"] = 1
+            (out / str(world) / "provenance.json").write_text(json.dumps(proof))
+        module.freeze(argparse.Namespace(out=out))
+        if damage == "changed":
+            snapshot.write_text("different labels and snapshot dates")
+        # Old reports remain readable; fresh prediction is guarded before data/model loading.
+        assert module.verify_freeze(out)["selected"] == "no_memo"
+        with pytest.raises(ValueError, match="[Ss]ource"):
+>           module.test(argparse.Namespace(out=out, work=tmp_path / "nonexistent-work"))
+
+tests/test_default_model_selection.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = Namespace(out=PosixPath('/tmp/pytest-of-agent/pytest-63/test_test_phase_rejects_change0/results'), work=PosixPath('/tmp/pytest-of-agent/pytest-63/test_test_phase_rejects_change0/nonexistent-work'))
+
+    def test(args):
+        selected = verify_freeze(args.out)
+        for data_seed in DATA_SEEDS:
+            work, out = args.work / str(data_seed), args.out / str(data_seed)
+            proof = json.loads((out / "provenance.json").read_text())
+>           for name, expected in proof["raw_sha256"].items():
+                                  ^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'raw_sha256'
+
+scripts/default_model_selection.py:234: KeyError
+----------------------------- Captured stdout call -----------------------------
+{"selected": "no_memo", "criteria": {"six_unique_runs": true, "finite": true, "every_precision_nondecreasing": true, "every_brier_nonincreasing": true, "mean_auroc_nondecreasing": true, "mean_pr_auc_nondecreasing": true, "enough_site_clusters": true, "paired_precision_ci_positive": true}, "reasons": [], "precision_delta_ci95": [0.03, 0.03], "run_deltas": [{"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}, {"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}, {"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}, {"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}, {"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}, {"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}], "selection_role": "validation reused for calibration; not independent test", "uncertainty": "2000 paired site-block draws within each fixed synthetic world; same draws across training seeds; equal world/seed weights; not customer confidence"}
+_ test_test_phase_rejects_changed_or_incomplete_source_before_scoring[missing_required] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-63/test_test_phase_rejects_change1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f50c0195940>
+damage = 'missing_required'
+
+    @pytest.mark.parametrize("damage", ["changed", "missing_required", "legacy"])
+    def test_test_phase_rejects_changed_or_incomplete_source_before_scoring(tmp_path, monkeypatch, damage):
+        import argparse
+        import json
+    
+        import scripts.default_model_selection as module
+    
+        out = tmp_path / "results"
+        out.mkdir()
+        design = tmp_path / "design.md"
+        design.write_text("unchanged decision contract")
+        source = tmp_path / "inference.py"
+        source.write_text("original prediction implementation")
+        snapshot = tmp_path / "snapshot.py"
+        snapshot.write_text("original cohort implementation")
+        monkeypatch.setattr(module, "DESIGN", design)
+        monkeypatch.setattr(module, "selection_source_paths", lambda: [source, snapshot], raising=False)
+        for row in validation_runs():
+            path = out / str(row["data_seed"]) / f"model-{row['model_seed']}" / "validation/run.json"
+            path.parent.mkdir(parents=True)
+            path.write_text(json.dumps(row))
+        hashes = {str(path): module.digest(path) for path in [source, snapshot]}
+        if damage == "missing_required":
+            hashes.pop(str(snapshot))
+        for world in module.DATA_SEEDS:
+            proof = {"source_sha256": hashes}
+            if damage != "legacy":
+                proof["source_integrity_version"] = 1
+            (out / str(world) / "provenance.json").write_text(json.dumps(proof))
+        module.freeze(argparse.Namespace(out=out))
+        if damage == "changed":
+            snapshot.write_text("different labels and snapshot dates")
+        # Old reports remain readable; fresh prediction is guarded before data/model loading.
+        assert module.verify_freeze(out)["selected"] == "no_memo"
+        with pytest.raises(ValueError, match="[Ss]ource"):
+>           module.test(argparse.Namespace(out=out, work=tmp_path / "nonexistent-work"))
+
+tests/test_default_model_selection.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = Namespace(out=PosixPath('/tmp/pytest-of-agent/pytest-63/test_test_phase_rejects_change1/results'), work=PosixPath('/tmp/pytest-of-agent/pytest-63/test_test_phase_rejects_change1/nonexistent-work'))
+
+    def test(args):
+        selected = verify_freeze(args.out)
+        for data_seed in DATA_SEEDS:
+            work, out = args.work / str(data_seed), args.out / str(data_seed)
+            proof = json.loads((out / "provenance.json").read_text())
+>           for name, expected in proof["raw_sha256"].items():
+                                  ^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'raw_sha256'
+
+scripts/default_model_selection.py:234: KeyError
+----------------------------- Captured stdout call -----------------------------
+{"selected": "no_memo", "criteria": {"six_unique_runs": true, "finite": true, "every_precision_nondecreasing": true, "every_brier_nonincreasing": true, "mean_auroc_nondecreasing": true, "mean_pr_auc_nondecreasing": true, "enough_site_clusters": true, "paired_precision_ci_positive": true}, "reasons": [], "precision_delta_ci95": [0.03, 0.03], "run_deltas": [{"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}, {"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}, {"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}, {"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}, {"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}, {"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}], "selection_role": "validation reused for calibration; not independent test", "uncertainty": "2000 paired site-block draws within each fixed synthetic world; same draws across training seeds; equal world/seed weights; not customer confidence"}
+_ test_test_phase_rejects_changed_or_incomplete_source_before_scoring[legacy] __
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-63/test_test_phase_rejects_change2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f50bf082d50>
+damage = 'legacy'
+
+    @pytest.mark.parametrize("damage", ["changed", "missing_required", "legacy"])
+    def test_test_phase_rejects_changed_or_incomplete_source_before_scoring(tmp_path, monkeypatch, damage):
+        import argparse
+        import json
+    
+        import scripts.default_model_selection as module
+    
+        out = tmp_path / "results"
+        out.mkdir()
+        design = tmp_path / "design.md"
+        design.write_text("unchanged decision contract")
+        source = tmp_path / "inference.py"
+        source.write_text("original prediction implementation")
+        snapshot = tmp_path / "snapshot.py"
+        snapshot.write_text("original cohort implementation")
+        monkeypatch.setattr(module, "DESIGN", design)
+        monkeypatch.setattr(module, "selection_source_paths", lambda: [source, snapshot], raising=False)
+        for row in validation_runs():
+            path = out / str(row["data_seed"]) / f"model-{row['model_seed']}" / "validation/run.json"
+            path.parent.mkdir(parents=True)
+            path.write_text(json.dumps(row))
+        hashes = {str(path): module.digest(path) for path in [source, snapshot]}
+        if damage == "missing_required":
+            hashes.pop(str(snapshot))
+        for world in module.DATA_SEEDS:
+            proof = {"source_sha256": hashes}
+            if damage != "legacy":
+                proof["source_integrity_version"] = 1
+            (out / str(world) / "provenance.json").write_text(json.dumps(proof))
+        module.freeze(argparse.Namespace(out=out))
+        if damage == "changed":
+            snapshot.write_text("different labels and snapshot dates")
+        # Old reports remain readable; fresh prediction is guarded before data/model loading.
+        assert module.verify_freeze(out)["selected"] == "no_memo"
+        with pytest.raises(ValueError, match="[Ss]ource"):
+>           module.test(argparse.Namespace(out=out, work=tmp_path / "nonexistent-work"))
+
+tests/test_default_model_selection.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = Namespace(out=PosixPath('/tmp/pytest-of-agent/pytest-63/test_test_phase_rejects_change2/results'), work=PosixPath('/tmp/pytest-of-agent/pytest-63/test_test_phase_rejects_change2/nonexistent-work'))
+
+    def test(args):
+        selected = verify_freeze(args.out)
+        for data_seed in DATA_SEEDS:
+            work, out = args.work / str(data_seed), args.out / str(data_seed)
+            proof = json.loads((out / "provenance.json").read_text())
+>           for name, expected in proof["raw_sha256"].items():
+                                  ^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'raw_sha256'
+
+scripts/default_model_selection.py:234: KeyError
+----------------------------- Captured stdout call -----------------------------
+{"selected": "no_memo", "criteria": {"six_unique_runs": true, "finite": true, "every_precision_nondecreasing": true, "every_brier_nonincreasing": true, "mean_auroc_nondecreasing": true, "mean_pr_auc_nondecreasing": true, "enough_site_clusters": true, "paired_precision_ci_positive": true}, "reasons": [], "precision_delta_ci95": [0.03, 0.03], "run_deltas": [{"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}, {"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}, {"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}, {"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}, {"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}, {"auroc": 0.010000000000000009, "pr_auc": 0.010000000000000009, "brier": -0.0010000000000000009, "precision_at_k": 0.03}], "selection_role": "validation reused for calibration; not independent test", "uncertainty": "2000 paired site-block draws within each fixed synthetic world; same draws across training seeds; equal world/seed weights; not customer confidence"}
+_ test_source_snapshot_is_captured_before_validation_and_detects_later_changes _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-63/test_source_snapshot_is_captur0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f50f0256660>
+
+    def test_source_snapshot_is_captured_before_validation_and_detects_later_changes(tmp_path, monkeypatch):
+        import scripts.default_model_selection as module
+    
+        source = tmp_path / "snapshot.py"
+        source.write_text("original")
+        monkeypatch.setattr(module, "selection_source_paths", lambda: [source], raising=False)
+>       hashes = module.capture_source_hashes()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'scripts.default_model_selection' has no attribute 'capture_source_hashes'
+
+tests/test_default_model_selection.py:187: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_default_model_selection.py::test_test_phase_rejects_changed_or_incomplete_source_before_scoring[changed]
+FAILED tests/test_default_model_selection.py::test_test_phase_rejects_changed_or_incomplete_source_before_scoring[missing_required]
+FAILED tests/test_default_model_selection.py::test_test_phase_rejects_changed_or_incomplete_source_before_scoring[legacy]
+FAILED tests/test_default_model_selection.py::test_source_snapshot_is_captured_before_validation_and_detects_later_changes
+4 failed, 11 deselected in 2.24s

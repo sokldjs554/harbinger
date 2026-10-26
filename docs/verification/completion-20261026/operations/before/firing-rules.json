@@ -1,0 +1,103 @@
+{
+  "status": "success",
+  "data": {
+    "groups": [
+      {
+        "name": "harbinger-workbench",
+        "file": "/workspace/harbinger-runs/completion-20261026/operations/before/test-rules.yml",
+        "rules": [
+          {
+            "name": "harbinger:workbench_success_seconds:p95_5m",
+            "query": "histogram_quantile(0.95, sum by (job, instance, route, le) (rate(harbinger_workbench_seconds_bucket{job=\"harbinger\",outcome=\"success\"}[10s])))",
+            "health": "ok",
+            "evaluationTime": 0.000626515,
+            "lastEvaluation": "2026-10-26T09:41:11.221014679Z",
+            "type": "recording"
+          },
+          {
+            "name": "harbinger:workbench_success:increase5m",
+            "query": "sum by (job, instance, route) (increase(harbinger_workbench_seconds_count{job=\"harbinger\",outcome=\"success\"}[10s]))",
+            "health": "ok",
+            "evaluationTime": 0.000219474,
+            "lastEvaluation": "2026-10-26T09:41:11.221646071Z",
+            "type": "recording"
+          },
+          {
+            "state": "inactive",
+            "name": "HarbingerWorkbenchSlow",
+            "query": "(harbinger:workbench_success_seconds:p95_5m > 0.001) and on (job, instance, route) (harbinger:workbench_success:increase5m >= 1) and on (job, instance) (up{job=\"harbinger\"} == 1)",
+            "duration": 2,
+            "keepFiringFor": 0,
+            "labels": {
+              "severity": "warning"
+            },
+            "annotations": {
+              "summary": "Workbench successful-request p95 exceeds 2 seconds with sufficient traffic"
+            },
+            "alerts": [],
+            "health": "ok",
+            "evaluationTime": 0.000124144,
+            "lastEvaluation": "2026-10-26T09:41:11.221868189Z",
+            "type": "alerting"
+          },
+          {
+            "state": "firing",
+            "name": "HarbingerWorkbenchFailures",
+            "query": "(sum by (job, instance, route) (rate(harbinger_workbench_seconds_count{job=\"harbinger\",outcome=\"failed\"}[10s])) > 0) and on (job, instance) (up{job=\"harbinger\"} == 1)",
+            "duration": 2,
+            "keepFiringFor": 0,
+            "labels": {
+              "severity": "critical"
+            },
+            "annotations": {
+              "summary": "Workbench requests are failing with server errors"
+            },
+            "alerts": [
+              {
+                "labels": {
+                  "alertname": "HarbingerWorkbenchFailures",
+                  "instance": "127.0.0.1:18000",
+                  "job": "harbinger",
+                  "route": "/v1/workbench/sessions/{token}/analysis",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "summary": "Workbench requests are failing with server errors"
+                },
+                "state": "firing",
+                "activeAt": "2026-10-26T09:40:58.219908403Z",
+                "value": "2.4444444444444446e+00"
+              }
+            ],
+            "health": "ok",
+            "evaluationTime": 0.000264601,
+            "lastEvaluation": "2026-10-26T09:41:11.221993965Z",
+            "type": "alerting"
+          },
+          {
+            "state": "inactive",
+            "name": "HarbingerWorkbenchCapacity",
+            "query": "(sum by (job, instance, route) (rate(harbinger_workbench_seconds_count{job=\"harbinger\",outcome=\"rejected\"}[10s])) > 0) and on (job, instance) (up{job=\"harbinger\"} == 1)",
+            "duration": 2,
+            "keepFiringFor": 0,
+            "labels": {
+              "severity": "warning"
+            },
+            "annotations": {
+              "summary": "Workbench is intentionally rejecting requests with HTTP 429"
+            },
+            "alerts": [],
+            "health": "ok",
+            "evaluationTime": 9.7834e-05,
+            "lastEvaluation": "2026-10-26T09:41:11.222260369Z",
+            "type": "alerting"
+          }
+        ],
+        "interval": 1,
+        "limit": 0,
+        "evaluationTime": 0.001365467,
+        "lastEvaluation": "2026-10-26T09:41:11.22099516Z"
+      }
+    ]
+  }
+}

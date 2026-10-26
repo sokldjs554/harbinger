@@ -1,0 +1,13 @@
+{
+  "full_run_root": "/workspace/harbinger-runs/completion-20261026/memo",
+  "fixed_source_checkout": "/tmp/harbinger-memo-5a",
+  "source_commit": "5a7f947146dd24b43eb79a8e4744449615dabc17",
+  "raw_tables_and_trained_weights": "/tmp/hb-completion-memo/work",
+  "excluded_from_original_evidence": [],
+  "excluded_from_package": "Generated raw Parquet tables and binary trained weights reside outside the original evidence folder; their hashes and training histories are retained.",
+  "original_manifests": "Every original root/world sha256.json is preserved byte-for-byte; package-sha256.json separately covers additional packaging records.",
+  "stored_prediction_archives": 12,
+  "stored_cohort_files": 12,
+  "stored_memo_snapshots": 12,
+  "retraining_performed_during_packaging": false
+}

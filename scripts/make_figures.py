@@ -156,7 +156,7 @@ def fig_calibration(art: Path, out: Path) -> None:
     ax.plot([0, mx], [0, mx], color=DEEMPH, lw=1)
     for key, color, label in (
         ("uncalibrated", ORANGE, f"캘리브레이션 전 (ECE {c['ece_uncalibrated']:.3f})"),
-        ("calibrated", BLUE, f"isotonic 후 (ECE {c['ece_calibrated']:.3f})"),
+        ("calibrated", BLUE, f"선택된 확률 (ECE {c['ece_calibrated']:.3f})"),
     ):
         xs = [r["pred_mean"] for r in c[key]]
         ys = [r["obs_rate"] for r in c[key]]

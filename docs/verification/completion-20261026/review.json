@@ -1,0 +1,20 @@
+{
+  "base": "5a7f947146dd24b43eb79a8e4744449615dabc17",
+  "technical_checkpoint": "def9c94260c1df70acc218d95b7af743ad3cc28d",
+  "important_unresolved_findings": 0,
+  "independent_checks": [
+    "31 selection/service regressions",
+    "all12 HGB validation/test cohort metrics + frozen choice reproduced",
+    "125 memo package hashes",
+    "4 patrol evidence estimates and intervals",
+    "14 gate/recovery/budget/provenance/artifact regressions",
+    "strict same-runtime/input/measurement hashes and currently inactive alerts"
+  ],
+  "review_fixes": [
+    "source capture includes synth helpers",
+    "release hashes include compressed membership archive",
+    "empty patrol counts and withheld comparison",
+    "actual inactive state + latest resolved receiver notification required"
+  ],
+  "limits": "Review is bounded evidence, not proof of no defects. Final CI/Docker and public deployments tracked by PR checks and workflow links."
+}

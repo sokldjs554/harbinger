@@ -1,0 +1,834 @@
+{
+  "evidence_root": "strict",
+  "scope": "One sequential before/after local synthetic run per condition; not AWS or a capacity guarantee.",
+  "identical_manifest_fields": [
+    "kind",
+    "platform",
+    "python",
+    "cpu_count_host_visible",
+    "cpu_model",
+    "host_mem_total",
+    "container_cpu_max",
+    "container_memory_max",
+    "process_threads_env",
+    "workers",
+    "compute_slots",
+    "requests_per_route_per_concurrency",
+    "concurrency",
+    "as_of",
+    "site",
+    "budget",
+    "csv_bytes",
+    "csv_rows",
+    "csv_assets",
+    "csv_sites",
+    "csv_sha256",
+    "example_summary",
+    "version",
+    "runtime_sha256",
+    "measurement_sha256",
+    "scope"
+  ],
+  "shared_environment_workload": {
+    "kind": "local-synthetic-fixed-workload",
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+    "python": "3.12.14",
+    "cpu_count_host_visible": 5,
+    "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+    "host_mem_total": "MemTotal:       18440112 kB",
+    "container_cpu_max": "400000 100000",
+    "container_memory_max": "17179869184",
+    "process_threads_env": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "workers": 1,
+    "compute_slots": 2,
+    "requests_per_route_per_concurrency": 20,
+    "concurrency": [
+      1,
+      4
+    ],
+    "as_of": "2025-11-17",
+    "site": "S01",
+    "budget": 10,
+    "csv_bytes": 1546864,
+    "csv_rows": 7352,
+    "csv_assets": 104,
+    "csv_sites": 1,
+    "csv_sha256": "e431e8167abffd53389cdd6bb11dffe60b9b12eb0b560b5a57693a1a6a9a3201",
+    "example_summary": {
+      "rows": 131201,
+      "assets": 2312,
+      "sites": 25,
+      "warnings": [
+        "모든 예제 기록과 고장 결과는 합성 데이터입니다."
+      ]
+    },
+    "measurement_sha256": {
+      "scripts/check_local_operations.py": "8894cb325d43d96a883400fde4c6ec86963f540e6464e54be44227b453c686cb",
+      "scripts/audit_fault_server.py": "50359fda695c4b1673585f11425d6ad0094cf3cd8d5f95791228ecfe187b7a8f"
+    }
+  },
+  "shared_runtime_sha256": {
+    "data/assets.parquet": "0eb613982dd86b65c390c29410c62ae2cc90cfb78a0af57ffcc43bb760c51556",
+    "data/energy.parquet": "c1916c3d3ee1a9f99728ecdf0382688ae781c88483ca4b15226b2603e34e46c3",
+    "data/features.parquet": "807a0c637657399bcc3be3567915201f504de90bcd511473d614d9cd15a3f430",
+    "data/features_meta.json": "6dc2d443cf9cd95401980570c44f0166e1b07d3c0de63e9e6ac616e42ed0a1bc",
+    "data/inspections.parquet": "1f02ac47df40ae56190baeafa158adbc618a97e748350d3bc8f6e10371bd3800",
+    "data/inspectors.parquet": "2439a21bda3230166347da5300e2fc72353b511bd754ee579ead9eb44a189e5d",
+    "data/latent.parquet": "fb3e80ef0cde51c937633f6974631565ac825b512968599a0d8945da04f763ae",
+    "data/meta.json": "53b8456516c3ed79a4e0fbc70f91a187d10955f2edc51d8aa5a373ad125fd787",
+    "data/sites.parquet": "2eaf44f4ee4fac94f015343ee67039ecb406900abe8355e769131cf730c83bc5",
+    "data/workorders.parquet": "f6f90901c6fe61e3dddc9f3a58b211ab54ee21f71a7226df0eaf6912b0ed61a8",
+    "models/manifest.json": "9ea5483ba25b8300abd3fab939d367c6972ed9a469f8b4221339e2635b0115c8",
+    "models/v20261026-093937/bundle.json": "e4da38ba6e4e20c1b0fe73281ea21a9f7bd25dde7706003d43aa0780f981776b",
+    "models/v20261026-093937/classifier.joblib": "bbf198adfb0bf6f433607ab85dc561722be3fb4f051c110beacd05a8b0049c18",
+    "models/v20261026-093937/comparators.joblib": "0b313a554f961b6ef8405ad98784e2262b45c96fe0214e539ff42a38fc3a30df",
+    "models/v20261026-093937/deep_meta.json": "b61888b3883ecd9bb086d1eece240c7ee73c2d04c837a6cfa3d589198bc8c3da",
+    "models/v20261026-093937/energy.joblib": "40a5fb30813789abf0b6055b30369eaf566f9d17449f4d5d49db2f22b732c4e8",
+    "models/v20261026-093937/hazardnet.pt": "4f6a4fb5d3acb5c1f71c7670a28276e15972d043ca605d55023e5785fbd5fc9e"
+  },
+  "shared_model_version": "v20261026-093937",
+  "changed_source_files": {
+    "src/harbinger/api/compute.py": {
+      "before": null,
+      "after": "80d84906b4054f2d54ce59651bff3452547024ea032c4022001b79e8152f1e18"
+    },
+    "src/harbinger/api/routers/report.py": {
+      "before": "a74408c6b9b6dbafe226730eb0b2d4112eef93b4ec7528685a7873975940e231",
+      "after": "1c9c9c73736cb90281b8473ed8a1eb3b7b6487222d39742ec8b78001110a5938"
+    },
+    "src/harbinger/api/routers/workbench.py": {
+      "before": "cd1557b2b13bbc9cd5e3c9ac553afc58e1046b3e22db1101eaed9f35f4ded74b",
+      "after": "5de1aa4ec2d8137d752da782a9803e5ae430b0c75de2d670fe77665da4844278"
+    },
+    "src/harbinger/api/store.py": {
+      "before": "dcc9c7c506e74b23d059a6b64ef4789338b5f3d65f453f2d26394b0accce7c70",
+      "after": "ab84845903ba318a535de12092115341afd0eda8f68f35a63969c82e815a6053"
+    },
+    "src/harbinger/eval/run.py": {
+      "before": "f3cd11cc98885b9b3d7acc48d19e0b0fc8903c6b3685cddf2fd3b6ff8da2c3c1",
+      "after": "c2fceb26694e72cc301c8f87061f959eafc4066887dbe9202d78575878c9a1da"
+    }
+  },
+  "unchanged_hot_path_files": [
+    "src/harbinger/api/analysis.py",
+    "src/harbinger/api/upload.py",
+    "src/harbinger/models/classify.py",
+    "src/harbinger/features/build.py",
+    "src/harbinger/features/refresh.py",
+    "src/harbinger/monitoring/metrics.py"
+  ],
+  "policies": {
+    "before": {
+      "slots": 2,
+      "waiting": 0,
+      "timeout_seconds": 0
+    },
+    "after": {
+      "slots": 2,
+      "waiting": 4,
+      "timeout_seconds": 10.0
+    }
+  },
+  "runs": {
+    "before": {
+      "execution": {
+        "command": [
+          "/tmp/hb-audit-venv/bin/python",
+          "-m",
+          "scripts.check_local_operations",
+          "--runtime",
+          "/tmp/hb-completion-final",
+          "--prometheus",
+          "/tmp/hb-monitoring-bin/prometheus",
+          "--out",
+          "/workspace/harbinger-runs/completion-20261026/operations-strict/before"
+        ],
+        "cwd": "/tmp/hb-completion-baseline",
+        "started_unix": 1793008135.3900795,
+        "seconds": 95.05789470672607,
+        "exit_code": 0
+      },
+      "load": [
+        {
+          "operation": "analysis",
+          "concurrency": 1,
+          "requests": 20,
+          "status_counts": {
+            "200": 20
+          },
+          "successes": 20,
+          "successful_latency_seconds": {
+            "p50": 0.10945686349805328,
+            "p95": 0.11279940069907753,
+            "max": 0.11602798899548361
+          },
+          "server_or_transport_failures": 0,
+          "rate_429": 0.0,
+          "wall_seconds": 2.1912012300017523,
+          "cpu_seconds": 2.1799999999999997,
+          "cpu_percent_one_core": 99.48880870235074,
+          "peak_rss_mib": 850.19140625,
+          "interior_peak_rss_mib": 850.19140625,
+          "resource_samples": 21,
+          "endpoint_peak_above_interior_bytes": 0,
+          "total_response_requests_per_second": 9.1274136424175,
+          "successful_requests_per_second": 9.1274136424175
+        },
+        {
+          "operation": "upload",
+          "concurrency": 1,
+          "requests": 20,
+          "status_counts": {
+            "200": 20
+          },
+          "successes": 20,
+          "successful_latency_seconds": {
+            "p50": 0.748357381002279,
+            "p95": 1.0528762000507412,
+            "max": 1.0530060849996516
+          },
+          "server_or_transport_failures": 0,
+          "rate_429": 0.0,
+          "wall_seconds": 16.284159358998295,
+          "cpu_seconds": 16.27,
+          "cpu_percent_one_core": 99.91304826558043,
+          "peak_rss_mib": 882.81640625,
+          "interior_peak_rss_mib": 882.81640625,
+          "resource_samples": 162,
+          "endpoint_peak_above_interior_bytes": 0,
+          "total_response_requests_per_second": 1.2281874402652788,
+          "successful_requests_per_second": 1.2281874402652788
+        },
+        {
+          "operation": "download",
+          "concurrency": 1,
+          "requests": 20,
+          "status_counts": {
+            "200": 20
+          },
+          "successes": 20,
+          "successful_latency_seconds": {
+            "p50": 0.13132403200143017,
+            "p95": 0.14484343264775817,
+            "max": 0.1609213589981664
+          },
+          "server_or_transport_failures": 0,
+          "rate_429": 0.0,
+          "wall_seconds": 2.628808002002188,
+          "cpu_seconds": 2.6099999999999994,
+          "cpu_percent_one_core": 99.28454257641243,
+          "peak_rss_mib": 880.8984375,
+          "interior_peak_rss_mib": 880.08203125,
+          "resource_samples": 26,
+          "endpoint_peak_above_interior_bytes": 856064,
+          "total_response_requests_per_second": 7.6080109253955905,
+          "successful_requests_per_second": 7.6080109253955905
+        },
+        {
+          "operation": "analysis",
+          "concurrency": 4,
+          "requests": 20,
+          "status_counts": {
+            "200": 2,
+            "429": 18
+          },
+          "successes": 2,
+          "successful_latency_seconds": {
+            "p50": 0.3319196775009914,
+            "p95": 0.3480766372533253,
+            "max": 0.34987185500358464
+          },
+          "server_or_transport_failures": 0,
+          "rate_429": 0.9,
+          "wall_seconds": 0.3511714810010744,
+          "cpu_seconds": 0.379999999999999,
+          "cpu_percent_one_core": 108.20924265169369,
+          "peak_rss_mib": 886.2578125,
+          "interior_peak_rss_mib": 886.2578125,
+          "resource_samples": 3,
+          "endpoint_peak_above_interior_bytes": 0,
+          "total_response_requests_per_second": 56.95223297457577,
+          "successful_requests_per_second": 5.695223297457577
+        },
+        {
+          "operation": "upload",
+          "concurrency": 4,
+          "requests": 20,
+          "status_counts": {
+            "200": 2,
+            "429": 18
+          },
+          "successes": 2,
+          "successful_latency_seconds": {
+            "p50": 2.240089781000279,
+            "p95": 2.2408099519991085,
+            "max": 2.2408899709989782
+          },
+          "server_or_transport_failures": 0,
+          "rate_429": 0.9,
+          "wall_seconds": 2.247427456000878,
+          "cpu_seconds": 2.370000000000001,
+          "cpu_percent_one_core": 105.45390435948626,
+          "peak_rss_mib": 970.58984375,
+          "interior_peak_rss_mib": 931.5078125,
+          "resource_samples": 22,
+          "endpoint_peak_above_interior_bytes": 40980480,
+          "total_response_requests_per_second": 8.899063659028373,
+          "successful_requests_per_second": 0.8899063659028372
+        },
+        {
+          "operation": "download",
+          "concurrency": 4,
+          "requests": 20,
+          "status_counts": {
+            "200": 2,
+            "429": 18
+          },
+          "successes": 2,
+          "successful_latency_seconds": {
+            "p50": 0.2672781870023755,
+            "p95": 0.29067267540485775,
+            "max": 0.29327206300513353
+          },
+          "server_or_transport_failures": 0,
+          "rate_429": 0.9,
+          "wall_seconds": 0.29448444000445306,
+          "cpu_seconds": 0.3200000000000003,
+          "cpu_percent_one_core": 108.6644849538269,
+          "peak_rss_mib": 970.58984375,
+          "interior_peak_rss_mib": 970.58984375,
+          "resource_samples": 2,
+          "endpoint_peak_above_interior_bytes": 0,
+          "total_response_requests_per_second": 67.91530309614174,
+          "successful_requests_per_second": 6.791530309614175
+        }
+      ],
+      "load_recovery": {
+        "requests": [
+          {
+            "operation": "analysis",
+            "status": 200,
+            "seconds": 0.12576079800055595,
+            "bytes": 52977,
+            "rejection": null,
+            "retry_after": null,
+            "capacity_reason": null
+          },
+          {
+            "operation": "upload",
+            "status": 200,
+            "seconds": 0.7351869000049192,
+            "bytes": 840,
+            "rejection": null,
+            "retry_after": null,
+            "capacity_reason": null
+          },
+          {
+            "operation": "download",
+            "status": 200,
+            "seconds": 0.11844925399782369,
+            "bytes": 71313,
+            "rejection": null,
+            "retry_after": null,
+            "capacity_reason": null
+          }
+        ],
+        "health": {
+          "status": "ok",
+          "service": "harbinger",
+          "version": "0.1.0"
+        },
+        "usage": {
+          "cpu_seconds": 30.3,
+          "rss_bytes": 1020489728
+        }
+      },
+      "session_capacity": {
+        "operation": "upload",
+        "status": 429,
+        "seconds": 0.004452345994650386,
+        "bytes": 54,
+        "rejection": "세션 한도 8개에 도달했습니다.",
+        "retry_after": null,
+        "capacity_reason": null
+      },
+      "admission": {
+        "hold_seconds": 15,
+        "client_workers": 12,
+        "requests": 20,
+        "status_counts": {
+          "200": 2,
+          "429": 18
+        },
+        "rejection_reasons": {
+          "legacy_immediate_rejection": 18
+        },
+        "recovery": [
+          {
+            "operation": "analysis",
+            "status": 200,
+            "seconds": 0.1298805180049385,
+            "bytes": 52977,
+            "rejection": null,
+            "retry_after": null,
+            "capacity_reason": null
+          },
+          {
+            "operation": "upload",
+            "status": 200,
+            "seconds": 0.7239158709999174,
+            "bytes": 840,
+            "rejection": null,
+            "retry_after": null,
+            "capacity_reason": null
+          },
+          {
+            "operation": "download",
+            "status": 200,
+            "seconds": 0.12545477700041374,
+            "bytes": 71313,
+            "rejection": null,
+            "retry_after": null,
+            "capacity_reason": null
+          }
+        ]
+      },
+      "alert_events": [
+        {
+          "name": "HarbingerWorkbenchSlow",
+          "state": "firing",
+          "at": "2026-10-26T09:49:52.204033+00:00"
+        },
+        {
+          "name": "HarbingerWorkbenchFailures",
+          "state": "firing",
+          "at": "2026-10-26T09:50:08.204089+00:00"
+        },
+        {
+          "name": "HarbingerWorkbenchSlow",
+          "state": "resolved",
+          "at": "2026-10-26T09:50:13.204067+00:00"
+        },
+        {
+          "name": "HarbingerWorkbenchSlow",
+          "state": "firing",
+          "at": "2026-10-26T09:50:22.203762+00:00"
+        },
+        {
+          "name": "HarbingerWorkbenchSlow",
+          "state": "resolved",
+          "at": "2026-10-26T09:50:29.204247+00:00"
+        },
+        {
+          "name": "HarbingerWorkbenchFailures",
+          "state": "resolved",
+          "at": "2026-10-26T09:50:29.205827+00:00"
+        }
+      ],
+      "last_recorded_alert_states": {
+        "HarbingerWorkbenchSlow": "inactive",
+        "HarbingerWorkbenchFailures": "inactive",
+        "HarbingerWorkbenchCapacity": "inactive"
+      },
+      "alerts_both_fired_and_resolved_at_least_once": true,
+      "latest_notification_states": {
+        "HarbingerWorkbenchSlow": "resolved",
+        "HarbingerWorkbenchFailures": "resolved"
+      },
+      "all_required_alerts_currently_settled": true,
+      "alert_fault_injection_status_counts": {
+        "200": 38,
+        "500": 38
+      },
+      "alert_recovery": {
+        "operation": "analysis",
+        "status": 200,
+        "seconds": 0.14020645299751777,
+        "bytes": 52977,
+        "rejection": null,
+        "retry_after": null,
+        "capacity_reason": null
+      }
+    },
+    "after": {
+      "execution": {
+        "command": [
+          "/tmp/hb-audit-venv/bin/python",
+          "-m",
+          "scripts.check_local_operations",
+          "--runtime",
+          "/tmp/hb-completion-final",
+          "--prometheus",
+          "/tmp/hb-monitoring-bin/prometheus",
+          "--out",
+          "/workspace/harbinger-runs/completion-20261026/operations-strict/after"
+        ],
+        "cwd": "/workspace/harbinger",
+        "started_unix": 1793008230.4483087,
+        "seconds": 118.16042470932007,
+        "exit_code": 0
+      },
+      "load": [
+        {
+          "operation": "analysis",
+          "concurrency": 1,
+          "requests": 20,
+          "status_counts": {
+            "200": 20
+          },
+          "successes": 20,
+          "successful_latency_seconds": {
+            "p50": 0.12294000800102367,
+            "p95": 0.1568991130465294,
+            "max": 0.3744780130000436
+          },
+          "server_or_transport_failures": 0,
+          "rate_429": 0.0,
+          "wall_seconds": 2.7631721579964506,
+          "cpu_seconds": 2.74,
+          "cpu_percent_one_core": 99.16139289658837,
+          "peak_rss_mib": 850.109375,
+          "interior_peak_rss_mib": 850.109375,
+          "resource_samples": 27,
+          "endpoint_peak_above_interior_bytes": 0,
+          "total_response_requests_per_second": 7.238057875663385,
+          "successful_requests_per_second": 7.238057875663385
+        },
+        {
+          "operation": "upload",
+          "concurrency": 1,
+          "requests": 20,
+          "status_counts": {
+            "200": 20
+          },
+          "successes": 20,
+          "successful_latency_seconds": {
+            "p50": 0.7372501804966305,
+            "p95": 0.9568173846022546,
+            "max": 0.9924276519959676
+          },
+          "server_or_transport_failures": 0,
+          "rate_429": 0.0,
+          "wall_seconds": 15.560114696003438,
+          "cpu_seconds": 15.549999999999999,
+          "cpu_percent_one_core": 99.93499600612817,
+          "peak_rss_mib": 881.50390625,
+          "interior_peak_rss_mib": 881.50390625,
+          "resource_samples": 155,
+          "endpoint_peak_above_interior_bytes": 0,
+          "total_response_requests_per_second": 1.285337569210652,
+          "successful_requests_per_second": 1.285337569210652
+        },
+        {
+          "operation": "download",
+          "concurrency": 1,
+          "requests": 20,
+          "status_counts": {
+            "200": 20
+          },
+          "successes": 20,
+          "successful_latency_seconds": {
+            "p50": 0.10845851900012349,
+            "p95": 0.12332003204828665,
+            "max": 0.2861183790009818
+          },
+          "server_or_transport_failures": 0,
+          "rate_429": 0.0,
+          "wall_seconds": 2.334340290995897,
+          "cpu_seconds": 2.3100000000000023,
+          "cpu_percent_one_core": 98.95729465452057,
+          "peak_rss_mib": 878.7421875,
+          "interior_peak_rss_mib": 878.7421875,
+          "resource_samples": 23,
+          "endpoint_peak_above_interior_bytes": 0,
+          "total_response_requests_per_second": 8.567731138919521,
+          "successful_requests_per_second": 8.567731138919521
+        },
+        {
+          "operation": "analysis",
+          "concurrency": 4,
+          "requests": 20,
+          "status_counts": {
+            "200": 20
+          },
+          "successes": 20,
+          "successful_latency_seconds": {
+            "p50": 0.5569765255022503,
+            "p95": 0.6290530612986913,
+            "max": 0.6334460380021483
+          },
+          "server_or_transport_failures": 0,
+          "rate_429": 0.0,
+          "wall_seconds": 2.8208781930006808,
+          "cpu_seconds": 3.0799999999999983,
+          "cpu_percent_one_core": 109.18585593813533,
+          "peak_rss_mib": 895.73046875,
+          "interior_peak_rss_mib": 895.73046875,
+          "resource_samples": 28,
+          "endpoint_peak_above_interior_bytes": 0,
+          "total_response_requests_per_second": 7.089990645333467,
+          "successful_requests_per_second": 7.089990645333467
+        },
+        {
+          "operation": "upload",
+          "concurrency": 4,
+          "requests": 20,
+          "status_counts": {
+            "200": 20
+          },
+          "successes": 20,
+          "successful_latency_seconds": {
+            "p50": 4.103216136500123,
+            "p95": 4.463263134248336,
+            "max": 4.702282455000386
+          },
+          "server_or_transport_failures": 0,
+          "rate_429": 0.0,
+          "wall_seconds": 20.66629944399756,
+          "cpu_seconds": 21.720000000000002,
+          "cpu_percent_one_core": 105.09864167437334,
+          "peak_rss_mib": 1001.59765625,
+          "interior_peak_rss_mib": 1001.59765625,
+          "resource_samples": 205,
+          "endpoint_peak_above_interior_bytes": 0,
+          "total_response_requests_per_second": 0.9677591314399017,
+          "successful_requests_per_second": 0.9677591314399017
+        },
+        {
+          "operation": "download",
+          "concurrency": 4,
+          "requests": 20,
+          "status_counts": {
+            "200": 20
+          },
+          "successes": 20,
+          "successful_latency_seconds": {
+            "p50": 0.6271417799980554,
+            "p95": 0.7866285561016412,
+            "max": 0.8030482059984934
+          },
+          "server_or_transport_failures": 0,
+          "rate_429": 0.0,
+          "wall_seconds": 3.2331375750000007,
+          "cpu_seconds": 3.519999999999996,
+          "cpu_percent_one_core": 108.87257094217512,
+          "peak_rss_mib": 1001.59765625,
+          "interior_peak_rss_mib": 1001.59765625,
+          "resource_samples": 32,
+          "endpoint_peak_above_interior_bytes": 0,
+          "total_response_requests_per_second": 6.185941530805412,
+          "successful_requests_per_second": 6.185941530805412
+        }
+      ],
+      "load_recovery": {
+        "requests": [
+          {
+            "operation": "analysis",
+            "status": 200,
+            "seconds": 0.14025330600270536,
+            "bytes": 52977,
+            "rejection": null,
+            "retry_after": null,
+            "capacity_reason": null
+          },
+          {
+            "operation": "upload",
+            "status": 200,
+            "seconds": 0.8350647229963215,
+            "bytes": 840,
+            "rejection": null,
+            "retry_after": null,
+            "capacity_reason": null
+          },
+          {
+            "operation": "download",
+            "status": 200,
+            "seconds": 0.1258510830011801,
+            "bytes": 71313,
+            "rejection": null,
+            "retry_after": null,
+            "capacity_reason": null
+          }
+        ],
+        "health": {
+          "status": "ok",
+          "service": "harbinger",
+          "version": "0.1.0"
+        },
+        "usage": {
+          "cpu_seconds": 55.86,
+          "rss_bytes": 1049735168
+        }
+      },
+      "session_capacity": {
+        "operation": "upload",
+        "status": 429,
+        "seconds": 0.003772340001887642,
+        "bytes": 54,
+        "rejection": "세션 한도 8개에 도달했습니다.",
+        "retry_after": null,
+        "capacity_reason": null
+      },
+      "admission": {
+        "hold_seconds": 15,
+        "client_workers": 12,
+        "requests": 20,
+        "status_counts": {
+          "429": 18,
+          "200": 2
+        },
+        "rejection_reasons": {
+          "queue_full": 14,
+          "wait_timeout": 4
+        },
+        "recovery": [
+          {
+            "operation": "analysis",
+            "status": 200,
+            "seconds": 0.12336095800128533,
+            "bytes": 52977,
+            "rejection": null,
+            "retry_after": null,
+            "capacity_reason": null
+          },
+          {
+            "operation": "upload",
+            "status": 200,
+            "seconds": 0.9536826050025411,
+            "bytes": 840,
+            "rejection": null,
+            "retry_after": null,
+            "capacity_reason": null
+          },
+          {
+            "operation": "download",
+            "status": 200,
+            "seconds": 0.12019384499581065,
+            "bytes": 71313,
+            "rejection": null,
+            "retry_after": null,
+            "capacity_reason": null
+          }
+        ]
+      },
+      "alert_events": [
+        {
+          "name": "HarbingerWorkbenchSlow",
+          "state": "firing",
+          "at": "2026-10-26T09:51:50.330338+00:00"
+        },
+        {
+          "name": "HarbingerWorkbenchFailures",
+          "state": "firing",
+          "at": "2026-10-26T09:52:06.330188+00:00"
+        },
+        {
+          "name": "HarbingerWorkbenchSlow",
+          "state": "resolved",
+          "at": "2026-10-26T09:52:12.329786+00:00"
+        },
+        {
+          "name": "HarbingerWorkbenchSlow",
+          "state": "firing",
+          "at": "2026-10-26T09:52:20.330386+00:00"
+        },
+        {
+          "name": "HarbingerWorkbenchSlow",
+          "state": "resolved",
+          "at": "2026-10-26T09:52:27.329687+00:00"
+        },
+        {
+          "name": "HarbingerWorkbenchFailures",
+          "state": "resolved",
+          "at": "2026-10-26T09:52:27.331099+00:00"
+        }
+      ],
+      "last_recorded_alert_states": {
+        "HarbingerWorkbenchSlow": "inactive",
+        "HarbingerWorkbenchFailures": "inactive",
+        "HarbingerWorkbenchCapacity": "inactive"
+      },
+      "alerts_both_fired_and_resolved_at_least_once": true,
+      "latest_notification_states": {
+        "HarbingerWorkbenchSlow": "resolved",
+        "HarbingerWorkbenchFailures": "resolved"
+      },
+      "all_required_alerts_currently_settled": true,
+      "alert_fault_injection_status_counts": {
+        "200": 39,
+        "500": 38
+      },
+      "alert_recovery": {
+        "operation": "analysis",
+        "status": 200,
+        "seconds": 0.13696802799677243,
+        "bytes": 52977,
+        "rejection": null,
+        "retry_after": null,
+        "capacity_reason": null
+      }
+    }
+  },
+  "resource_reconstruction_limit": "CPU endpoint deltas and wall durations are recorded in load-summary, not independently reconstructable from 100ms interior samples. CPU% is recalculated; RSS sampled maximum is cross-checked. Endpoint-inclusive RSS may exceed the interior sampled peak; each cell records that gap.",
+  "evidence_sha256": {
+    "before/admission-overload.json": "69e1d7b7f07e647f7fdcd3bdc7f2f05955c079a8ed2601947f588519b5acf7e8",
+    "before/admission-recovery.json": "64ff4031b6f67c628014d4eee80aa3ad47a6b76b3f49d80363c44b969343f6cc",
+    "before/alert-requests.json": "c9bdc84425ec36cd0fb9d7184636a7acb41c490cc9003e4700d55487b25fc8af",
+    "before/alert-result.json": "8408190a5fd4c97d965da83a12faf32012943ec6a84b260ac01a601dff3ac6f0",
+    "before/api.log": "8935898b981a2663c49fc5f75378f12b1060712105fccffee28b9aa21f133cec",
+    "before/capacity.json": "fa21349fc1f352362bb6f487d8c499097c922e97027d2f99eb3b20bed557bfea",
+    "before/execution.json": "13b0c0391465c8dac50d4511ba0901b0bfeed00b36b01c1e0093797b975b3588",
+    "before/firing-rules.json": "b08fba16e2e803e4b3c7ed2920bfad19f457a72602eb4429c5ae411e290130e3",
+    "before/load-raw.json": "b40d11a4b9a1bd743d66c5e06b5924454da070590595dcfa0ae63d2f4dd4624e",
+    "before/load-recovery.json": "0716c58dc2ca9892279612313f0b4e2a65486251fddb35fd34f2030e2e674c35",
+    "before/load-summary.json": "43d3ae0df39d0eae66df0f37d2916a6babd625dc33af2265b946cbbaead6be5a",
+    "before/manifest.json": "3485422aa2a517ca2deaeae87b6db7cbffab29f791bdb1c881eabea1905d9c09",
+    "before/metrics.txt": "e0fe33c0f170784485c75b8adf2e4f3a439a39a7baadc6ab5f5c0dd660c64b5c",
+    "before/notifications.json": "f0f1c48864003a49fc5a03d71d7f5a5823a9bfbdc44643300aa075e79b080a4b",
+    "before/prometheus.log": "1f6893be3e0d5fb181f466ae88d2bd4245aa315628baddf2bcd0230a960763d0",
+    "before/prometheus.yml": "6abc144c1ea3884b64ec662c7ee48017be387073f10e86ee686000d9ca1b8e98",
+    "before/recovered-rules.json": "ee5250d1d3e46ff16c15300e030112ed927757a9c1e8c734079855f2bd8a333c",
+    "before/resources-analysis-1.json": "6e895c7128cdd85a909674d9781ff0003b9ce7b86380ef34a359b8a67735eb2c",
+    "before/resources-analysis-4.json": "fd0031417abed239869db3f50b4663f3610f7e4f7e67b7dde8533e476557f1fe",
+    "before/resources-download-1.json": "1c972a7c3d342f211dd24808de1c5a8c6ec5f96753bb44bda0d41f4374c40a44",
+    "before/resources-download-4.json": "add00c8eee1ca524fc5cd360ba1f9c89bf8b6e9f7645b22e8aa631d3d0c66944",
+    "before/resources-upload-1.json": "dfbb75f95075eea633a2ec6326f4b9bb6d61f30d6935b40b00a2ef807b92532d",
+    "before/resources-upload-4.json": "2ab0b61d2e8de2a96434b037336b47eb60e6d8eaa2aa9557e21c4ae2f59445cf",
+    "before/run.log": "c3e8263300555646ee43ad50a46e50a68885b2301fddb8097472843a95da35b5",
+    "before/test-rules.yml": "0892881ffa9937e68194c6240ea855137a0a2daba4a792b81e2ecda8c97acf3b",
+    "before/warmup.json": "91d058db7a42d1af41bacef2b2a607ec476975b199fe67506f4e23779bfb696b",
+    "before/workload.csv": "e431e8167abffd53389cdd6bb11dffe60b9b12eb0b560b5a57693a1a6a9a3201",
+    "after/admission-overload.json": "a2b0b59cc937af48a7562d29726a94dacdb32bef092a76ec96b6c8c33ae8635b",
+    "after/admission-recovery.json": "91cbe2c16451e1edbfb4613f3de1a6c5ddeb22a606d227022b5e2f248cf5dcf1",
+    "after/alert-requests.json": "078a57f079e54c02d7c67b427fa674c9580d06cc1526ad7ad5c78181f5c35e7f",
+    "after/alert-result.json": "7bfa19c06a1a9b7b42c6a87108a0d31c71520fbb1b0bc582b470ac08fa80e3e3",
+    "after/api.log": "6812babcb8d3787538df6eca6c6e4c39bb145612902729450265f8750b788ca3",
+    "after/capacity.json": "4fb03c0a3470a8235260fc8502a60f550153bf3ae634ab089ca0031e1e0ccf01",
+    "after/execution.json": "f5eb1e08b6cc7875c9761ec49c93d0d1421f92efa33b2e8e7c08cea7bec3f44e",
+    "after/firing-rules.json": "e988d999a2eb831e1d0a708a5b7b93adb972266510370c35b727e38cd2ca55d2",
+    "after/load-raw.json": "fb82fd571c630f1bbb7b4ccb7787920e449fb99d4f0fbe895a4d1fa3f3042e3d",
+    "after/load-recovery.json": "268a7c1d3fef8f85f575db67c66f7f1fec03068ba3437e8ee8982a7a3013880c",
+    "after/load-summary.json": "46f1693b90362f57272bcfcab656d2eadef9f921efd431427b81373aada6da8d",
+    "after/manifest.json": "ce8bf1b8352e9b4a888d1ff4a74851270a0b63e82a8afea29b59f27d46f95f95",
+    "after/metrics.txt": "2e5613e54a7f0035b926e08b0a1a42bbb7df26a2687d630a549b08eff53334e4",
+    "after/notifications.json": "e9dfef2b76cc92ecb6c4b2805c4b7faf4491cac89c3b92b87ee9f5148cadabaf",
+    "after/prometheus.log": "e6fa7558b9bf241ad2bf3f6e019739e58b89a448658037d362d65edbe960706f",
+    "after/prometheus.yml": "3d5f28d9c5698eeb014d26d24ab22b7ce1d7c8be06758ffc10c2cd034c118a8a",
+    "after/recovered-rules.json": "c0fc5819848ffc34b64fd47d28665f6772cd6f298ece1bf5e0e214ae9bf47ac5",
+    "after/resources-analysis-1.json": "b522ec5c36538d87e9f38e9f687e9453e0a1d70d7c792993330505022ba85b2c",
+    "after/resources-analysis-4.json": "9797999e572ab330dcf57a1dade2821b6a5db3a13a29931df91feeb57763977d",
+    "after/resources-download-1.json": "c67f03e129cb610263e968351b5405363680f1fb945168e40e08d7723dc53bb3",
+    "after/resources-download-4.json": "7d13a96ec82911b52bf873ffd048c0eb93e05cc53cb4c827d31106f55db3db07",
+    "after/resources-upload-1.json": "ee018d14af764b143679f72252037481066889d0c09edfdf9006fe68789f003e",
+    "after/resources-upload-4.json": "d83fa755f0acfe7b52a39d1b6e8bc022edde761a077a9c4fb11e6dd6ea25b0f4",
+    "after/run.log": "c3e8263300555646ee43ad50a46e50a68885b2301fddb8097472843a95da35b5",
+    "after/test-rules.yml": "0892881ffa9937e68194c6240ea855137a0a2daba4a792b81e2ecda8c97acf3b",
+    "after/warmup.json": "2a6962c4a400f39440d3e3ed2eeaef4ac2c97e3e21d62c669263b0671ffc4cda",
+    "after/workload.csv": "e431e8167abffd53389cdd6bb11dffe60b9b12eb0b560b5a57693a1a6a9a3201"
+  },
+  "raw_measurement_checks_passed": true,
+  "overall_passed": true
+}
