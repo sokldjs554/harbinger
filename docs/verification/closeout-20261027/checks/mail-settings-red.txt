@@ -1,0 +1,251 @@
+FFFFFFFFF                                                                [100%]
+=================================== FAILURES ===================================
+______ test_bundle_keeps_password_out_of_yaml_and_uses_tls_resolved_email ______
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-82/test_bundle_keeps_password_out0')
+
+    def test_bundle_keeps_password_out_of_yaml_and_uses_tls_resolved_email(tmp_path):
+>       module().write_bundle(tmp_path, settings(), "check-123")
+        ^^^^^^^^
+
+tests/test_external_alerts.py:32: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def module():
+        path = Path(__file__).resolve().parents[1] / "scripts/external_alerts.py"
+>       assert path.exists(), "external notification configuration is not implemented"
+E       AssertionError: external notification configuration is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/tmp/harbinger-closeout-20261027/scripts/external_alerts.py').exists
+
+tests/test_external_alerts.py:13: AssertionError
+_ test_invalid_mail_settings_fail_without_echoing_values[HARBINGER_ALERT_TO-first@example.test,second@example.test] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-82/test_invalid_mail_settings_fai0')
+field = 'HARBINGER_ALERT_TO', value = 'first@example.test,second@example.test'
+
+    @pytest.mark.parametrize("field,value", [
+        ("HARBINGER_ALERT_TO", "first@example.test,second@example.test"),
+        ("HARBINGER_SMTP_FROM", "a@example.test\nBcc:other@example.test"),
+        ("HARBINGER_SMTP_HOST", "smtp.example.test/path"),
+        ("HARBINGER_SMTP_PORT", "25"),
+        ("HARBINGER_SMTP_PASSWORD", ""),
+    ])
+    def test_invalid_mail_settings_fail_without_echoing_values(tmp_path, field, value):
+        env = settings()
+        env[field] = value
+        with pytest.raises(ValueError) as error:
+>           module().write_bundle(tmp_path, env, "check-123")
+            ^^^^^^^^
+
+tests/test_external_alerts.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def module():
+        path = Path(__file__).resolve().parents[1] / "scripts/external_alerts.py"
+>       assert path.exists(), "external notification configuration is not implemented"
+E       AssertionError: external notification configuration is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/tmp/harbinger-closeout-20261027/scripts/external_alerts.py').exists
+
+tests/test_external_alerts.py:13: AssertionError
+_ test_invalid_mail_settings_fail_without_echoing_values[HARBINGER_SMTP_FROM-a@example.test\nBcc:other@example.test] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-82/test_invalid_mail_settings_fai1')
+field = 'HARBINGER_SMTP_FROM', value = 'a@example.test\nBcc:other@example.test'
+
+    @pytest.mark.parametrize("field,value", [
+        ("HARBINGER_ALERT_TO", "first@example.test,second@example.test"),
+        ("HARBINGER_SMTP_FROM", "a@example.test\nBcc:other@example.test"),
+        ("HARBINGER_SMTP_HOST", "smtp.example.test/path"),
+        ("HARBINGER_SMTP_PORT", "25"),
+        ("HARBINGER_SMTP_PASSWORD", ""),
+    ])
+    def test_invalid_mail_settings_fail_without_echoing_values(tmp_path, field, value):
+        env = settings()
+        env[field] = value
+        with pytest.raises(ValueError) as error:
+>           module().write_bundle(tmp_path, env, "check-123")
+            ^^^^^^^^
+
+tests/test_external_alerts.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def module():
+        path = Path(__file__).resolve().parents[1] / "scripts/external_alerts.py"
+>       assert path.exists(), "external notification configuration is not implemented"
+E       AssertionError: external notification configuration is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/tmp/harbinger-closeout-20261027/scripts/external_alerts.py').exists
+
+tests/test_external_alerts.py:13: AssertionError
+_ test_invalid_mail_settings_fail_without_echoing_values[HARBINGER_SMTP_HOST-smtp.example.test/path] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-82/test_invalid_mail_settings_fai2')
+field = 'HARBINGER_SMTP_HOST', value = 'smtp.example.test/path'
+
+    @pytest.mark.parametrize("field,value", [
+        ("HARBINGER_ALERT_TO", "first@example.test,second@example.test"),
+        ("HARBINGER_SMTP_FROM", "a@example.test\nBcc:other@example.test"),
+        ("HARBINGER_SMTP_HOST", "smtp.example.test/path"),
+        ("HARBINGER_SMTP_PORT", "25"),
+        ("HARBINGER_SMTP_PASSWORD", ""),
+    ])
+    def test_invalid_mail_settings_fail_without_echoing_values(tmp_path, field, value):
+        env = settings()
+        env[field] = value
+        with pytest.raises(ValueError) as error:
+>           module().write_bundle(tmp_path, env, "check-123")
+            ^^^^^^^^
+
+tests/test_external_alerts.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def module():
+        path = Path(__file__).resolve().parents[1] / "scripts/external_alerts.py"
+>       assert path.exists(), "external notification configuration is not implemented"
+E       AssertionError: external notification configuration is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/tmp/harbinger-closeout-20261027/scripts/external_alerts.py').exists
+
+tests/test_external_alerts.py:13: AssertionError
+_ test_invalid_mail_settings_fail_without_echoing_values[HARBINGER_SMTP_PORT-25] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-82/test_invalid_mail_settings_fai3')
+field = 'HARBINGER_SMTP_PORT', value = '25'
+
+    @pytest.mark.parametrize("field,value", [
+        ("HARBINGER_ALERT_TO", "first@example.test,second@example.test"),
+        ("HARBINGER_SMTP_FROM", "a@example.test\nBcc:other@example.test"),
+        ("HARBINGER_SMTP_HOST", "smtp.example.test/path"),
+        ("HARBINGER_SMTP_PORT", "25"),
+        ("HARBINGER_SMTP_PASSWORD", ""),
+    ])
+    def test_invalid_mail_settings_fail_without_echoing_values(tmp_path, field, value):
+        env = settings()
+        env[field] = value
+        with pytest.raises(ValueError) as error:
+>           module().write_bundle(tmp_path, env, "check-123")
+            ^^^^^^^^
+
+tests/test_external_alerts.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def module():
+        path = Path(__file__).resolve().parents[1] / "scripts/external_alerts.py"
+>       assert path.exists(), "external notification configuration is not implemented"
+E       AssertionError: external notification configuration is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/tmp/harbinger-closeout-20261027/scripts/external_alerts.py').exists
+
+tests/test_external_alerts.py:13: AssertionError
+_ test_invalid_mail_settings_fail_without_echoing_values[HARBINGER_SMTP_PASSWORD-] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-82/test_invalid_mail_settings_fai4')
+field = 'HARBINGER_SMTP_PASSWORD', value = ''
+
+    @pytest.mark.parametrize("field,value", [
+        ("HARBINGER_ALERT_TO", "first@example.test,second@example.test"),
+        ("HARBINGER_SMTP_FROM", "a@example.test\nBcc:other@example.test"),
+        ("HARBINGER_SMTP_HOST", "smtp.example.test/path"),
+        ("HARBINGER_SMTP_PORT", "25"),
+        ("HARBINGER_SMTP_PASSWORD", ""),
+    ])
+    def test_invalid_mail_settings_fail_without_echoing_values(tmp_path, field, value):
+        env = settings()
+        env[field] = value
+        with pytest.raises(ValueError) as error:
+>           module().write_bundle(tmp_path, env, "check-123")
+            ^^^^^^^^
+
+tests/test_external_alerts.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def module():
+        path = Path(__file__).resolve().parents[1] / "scripts/external_alerts.py"
+>       assert path.exists(), "external notification configuration is not implemented"
+E       AssertionError: external notification configuration is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/tmp/harbinger-closeout-20261027/scripts/external_alerts.py').exists
+
+tests/test_external_alerts.py:13: AssertionError
+___ test_controlled_probe_is_separate_from_application_and_has_fixed_budget ____
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-82/test_controlled_probe_is_separ0')
+
+    def test_controlled_probe_is_separate_from_application_and_has_fixed_budget(tmp_path):
+>       module().write_bundle(tmp_path, settings(), "check-123")
+        ^^^^^^^^
+
+tests/test_external_alerts.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def module():
+        path = Path(__file__).resolve().parents[1] / "scripts/external_alerts.py"
+>       assert path.exists(), "external notification configuration is not implemented"
+E       AssertionError: external notification configuration is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/tmp/harbinger-closeout-20261027/scripts/external_alerts.py').exists
+
+tests/test_external_alerts.py:13: AssertionError
+__ test_success_log_parser_excludes_other_receivers_and_does_not_copy_secrets __
+
+    def test_success_log_parser_excludes_other_receivers_and_does_not_copy_secrets():
+        rows = [
+            {"ts": "2026-10-27T01:00:00Z", "msg": "Notify success", "receiver": "verification", "integration": "email[0]", "extra": "private@example.test"},
+            {"ts": "2026-10-27T01:00:01Z", "msg": "Notify attempt failed", "receiver": "verification", "integration": "email[0]"},
+            {"ts": "2026-10-27T01:00:02Z", "msg": "Notify success", "receiver": "operator", "integration": "email[0]"},
+        ]
+>       result = module().email_successes("\n".join(json.dumps(r) for r in rows))
+                 ^^^^^^^^
+
+tests/test_external_alerts.py:86: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def module():
+        path = Path(__file__).resolve().parents[1] / "scripts/external_alerts.py"
+>       assert path.exists(), "external notification configuration is not implemented"
+E       AssertionError: external notification configuration is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/tmp/harbinger-closeout-20261027/scripts/external_alerts.py').exists
+
+tests/test_external_alerts.py:13: AssertionError
+__________ test_invalid_verification_id_is_rejected_before_file_write __________
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-82/test_invalid_verification_id_i0')
+
+    def test_invalid_verification_id_is_rejected_before_file_write(tmp_path):
+        with pytest.raises(ValueError):
+>           module().write_bundle(tmp_path, settings(), "../outside")
+            ^^^^^^^^
+
+tests/test_external_alerts.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def module():
+        path = Path(__file__).resolve().parents[1] / "scripts/external_alerts.py"
+>       assert path.exists(), "external notification configuration is not implemented"
+E       AssertionError: external notification configuration is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/tmp/harbinger-closeout-20261027/scripts/external_alerts.py').exists
+
+tests/test_external_alerts.py:13: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_external_alerts.py::test_bundle_keeps_password_out_of_yaml_and_uses_tls_resolved_email
+FAILED tests/test_external_alerts.py::test_invalid_mail_settings_fail_without_echoing_values[HARBINGER_ALERT_TO-first@example.test,second@example.test]
+FAILED tests/test_external_alerts.py::test_invalid_mail_settings_fail_without_echoing_values[HARBINGER_SMTP_FROM-a@example.test\nBcc:other@example.test]
+FAILED tests/test_external_alerts.py::test_invalid_mail_settings_fail_without_echoing_values[HARBINGER_SMTP_HOST-smtp.example.test/path]
+FAILED tests/test_external_alerts.py::test_invalid_mail_settings_fail_without_echoing_values[HARBINGER_SMTP_PORT-25]
+FAILED tests/test_external_alerts.py::test_invalid_mail_settings_fail_without_echoing_values[HARBINGER_SMTP_PASSWORD-]
+FAILED tests/test_external_alerts.py::test_controlled_probe_is_separate_from_application_and_has_fixed_budget
+FAILED tests/test_external_alerts.py::test_success_log_parser_excludes_other_receivers_and_does_not_copy_secrets
+FAILED tests/test_external_alerts.py::test_invalid_verification_id_is_rejected_before_file_write

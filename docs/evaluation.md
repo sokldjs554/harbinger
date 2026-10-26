@@ -1,6 +1,6 @@
 # 평가 계약과 결과 해석
 
-이 문서의 현재 표는 `artifacts/*.json`의 번들 **<!-- num:metrics.bundle_version -->v20261026-093937<!-- /num -->**에서 생성한다. 교체 전 단일 실행은 [이전 산출물](../artifacts/archive/pre-completion-5a7f947/), 더 이전 수치는 `artifacts/archive/fd346c7/`에 보존한다. `artifacts/before_after.json`은 당시 같은 생성 데이터·패키지·시드로 다시 실행한 역사적 비교이며 현재 번들로 소급 변경하지 않는다. 현재 평가 산출물과 공개 서비스 배포 상태는 별도로 확인한다.
+이 문서의 현재 표는 `artifacts/*.json`의 번들 **<!-- num:metrics.bundle_version -->v20261026-093937<!-- /num -->**에서 생성한다. 교체 전 단일 실행은 [이전 산출물](../artifacts/archive/pre-completion-5a7f947/), 더 이전 수치는 `artifacts/archive/fd346c7/`에 보존한다. `artifacts/before_after.json`은 당시 같은 생성 데이터·패키지·시드로 다시 실행한 역사적 비교이며 현재 번들로 소급 변경하지 않는다. 현재 평가 산출물과 공개 서비스 배포 버전은 [최종 배포 기록](verification/closeout-20261027/README.md)에서 별도로 확인한다.
 
 [평가 보완 1–4](verification/completion-20261026/technical-results.md)는 알려진 세계의 메모 재실행, 새 합성 시드의 HGB 검증 선택, 과거 고정 모델의 순찰 재생을 구분한다. [과거 안정성 실험](verification/robustness-20261025/README.md)과 [초기 감사 전후 비교](verification/requirements-20261026/README.md)도 각각 보존한다. 현재 표의 PyTorch 재학습은 한 번의 epoch별 30% 사이트 마스크와 특징 v3를 사용하며, 과거 기대 51% 중복 마스크 결과와 구분한다.
 

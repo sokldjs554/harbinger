@@ -1,0 +1,16 @@
+Checking /tmp/hb-email-local/bundle/config/prometheus.yml
+  SUCCESS: 1 rule files found
+ SUCCESS: /tmp/hb-email-local/bundle/config/prometheus.yml is valid prometheus config file syntax
+
+Checking /tmp/hb-email-local/bundle/config/rules.yml
+  SUCCESS: 20 rules found
+
+Checking '/tmp/hb-email-local/bundle/config/alertmanager.yml'  SUCCESS
+Found:
+ - global config
+ - route
+ - 0 inhibit rules
+ - 2 receivers
+ - 0 templates
+
+PASS: actual Prometheus/Alertmanager -> local authenticated implicit TLS SMTP sink, firing/resolved, normal cleanup; no external mail sent

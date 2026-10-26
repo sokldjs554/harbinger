@@ -1,0 +1,8 @@
+{
+  "available": "관측 119일 · 판정 가능 119일 · 이상 3일 (계산 완료): 09-23, 09-24, 09-25",
+  "short": "관측 2일 · 판정 가능 0일 · 이상 여부 판정 보류 (관측 부족)",
+  "missing": "관측 0일 · 판정 가능 0일 · 이상 여부 판정 보류 (자료 없음)",
+  "errors": [],
+  "backend": "actual local API; no mocked responses",
+  "patrol_mobile": "actual selection counts, no horizontal overflow; empty comparison withheld"
+}

@@ -1,0 +1,59 @@
+name: Existing AWS operator email verification
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: aws-ec2-harbinger
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.repository == 'sokldjs554/harbinger' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Require successful full CI for this main commit
+        env:
+          CI_READ_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request
+          url = f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/actions/runs?head_sha={os.environ['GITHUB_SHA']}&per_page=100"
+          request = urllib.request.Request(url, headers={"Authorization": "Bearer " + os.environ['CI_READ_TOKEN'], "Accept": "application/vnd.github+json"})
+          with urllib.request.urlopen(request, timeout=30) as response:
+              runs = json.load(response)['workflow_runs']
+          matches = [r for r in runs if r['path'] == '.github/workflows/ci.yml' and r['event'] == 'push' and r['head_sha'] == os.environ['GITHUB_SHA']]
+          run = max(matches, key=lambda r: r['id']) if matches else None
+          assert run and run['status'] == 'completed' and run['conclusion'] == 'success', 'Run this workflow after exact-main full CI passes.'
+          print('Exact-main full CI passed: ' + run['html_url'])
+          PY
+      - name: Configure bounded monitoring and test isolated probe
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          AWS_EC2_SSH_HOST_IDENTITY: ${{ secrets.AWS_EC2_SSH_HOST_IDENTITY }}
+          AWS_REGION: ap-southeast-2
+          AWS_DEFAULT_REGION: ap-southeast-2
+          AWS_EC2_METADATA_DISABLED: "true"
+          AWS_PAGER: ""
+          AWS_MAX_ATTEMPTS: "3"
+          HARBINGER_SMTP_HOST: ${{ secrets.HARBINGER_SMTP_HOST }}
+          HARBINGER_SMTP_PORT: ${{ secrets.HARBINGER_SMTP_PORT }}
+          HARBINGER_SMTP_USERNAME: ${{ secrets.HARBINGER_SMTP_USERNAME }}
+          HARBINGER_SMTP_PASSWORD: ${{ secrets.HARBINGER_SMTP_PASSWORD }}
+          HARBINGER_SMTP_FROM: ${{ secrets.HARBINGER_SMTP_FROM }}
+          HARBINGER_ALERT_TO: ${{ secrets.HARBINGER_ALERT_TO }}
+        run: |
+          pip install 'PyYAML==6.0.3'
+          python3 -m scripts.deploy_external_alerts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: operator-email-verification
+          retention-days: 14
+          path: .monitoring-verification/*.json

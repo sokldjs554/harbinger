@@ -8,7 +8,7 @@ FMS DB(점검·WO·에너지) ──배치/이벤트──▶ features.parquet �
                                          /metrics ──▶ Prometheus
 ```
 
-기동 시 parquet와 번들을 메모리에 올린다. **2 vCPU·2 GiB는 구성 예시이며, 25개 사이트·2,300 설비의 처리 용량 보장이 아니다.** 기존 3~6초 기동·2~4분 부트스트랩 추정에는 동일 조건의 측정 근거가 없어 운영 기준에서 제외했다. 번들이 없고 `HARBINGER_DEMO_BOOTSTRAP=1`이면 축소 합성 자료로 학습한다. **운영에서는 0으로 두고 번들을 마운트한다.** 인스턴스 사양, Docker CPU/메모리 제한, 실제 프로세스 RSS/CPU 사용량은 서로 다른 값이다. 최신 로컬 측정의 환경·입력 해시·동시 요청 수는 [감사 검증 기록](../verification/audit-20261026/README.md)에 남긴다. 로컬 결과를 AWS 처리량으로 환산하지 않는다.
+기동 시 parquet와 번들을 메모리에 올린다. **2 vCPU·2 GiB는 구성 예시이며, 25개 사이트·2,300 설비의 처리 용량 보장이 아니다.** 기존 3~6초 기동·2~4분 부트스트랩 추정에는 동일 조건의 측정 근거가 없어 운영 기준에서 제외했다. 번들이 없고 `HARBINGER_DEMO_BOOTSTRAP=1`이면 축소 합성 자료로 학습한다. **운영에서는 0으로 두고 번들을 마운트한다.** 인스턴스 사양, Docker CPU/메모리 제한, 실제 프로세스 RSS/CPU 사용량은 서로 다른 값이다. 최신 로컬 측정의 환경·입력 해시·동시 요청 수는 [수정 전후 운영 검증](../verification/completion-20261026/operations/README.md)에 남긴다. 로컬 결과를 AWS 처리량으로 환산하지 않는다.
 
 ## 환경변수
 
@@ -81,7 +81,7 @@ prometheus --config.file=deploy/monitoring/prometheus.yml --storage.tsdb.path=/t
 `./deploy/monitoring:/etc/prometheus/monitoring:ro` 볼륨을 마운트한다.
 `http://localhost:9090/api/v1/rules`에서 평가 상태·최근 오류를,
 `http://localhost:9090/api/v1/alerts`에서 pending/firing 상태를 확인한다.
-Alertmanager 수신처·연락 경로 설정은 별도이며 이 규칙 파일만으로 알림이 전달되지는 않는다.
+규칙 파일만으로 이메일이 전달되지는 않는다. 실제 운영자 이메일 설정과 기존 AWS 연결·통제 시험은 [외부 알림 안내](external-alerts.md)를 따른다. 실제 수신 확인은 운영자의 회신과 별도 기록이 있어야 완료로 판단한다.
 고정 시계열 promtool 검사는 유지한다. 별도로 `scripts/check_local_operations.py`는 실제 로컬 API → Prometheus → 로컬 Alertmanager v2 프로토콜 수신기 → 복구를 검사한다. 1초 수집·10초 관측·2초 지속의 가속 테스트 규칙과 고의 계산 예외를 사용한다. 외부 운영 수신처나 실제 사고 대응 훈련을 검증한 것은 아니다.
 
 ## 계산 요청의 대기와 거절

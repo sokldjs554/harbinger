@@ -1,0 +1,85 @@
+{
+  "checked_on_kst": "2026-10-27",
+  "release_commit": "e33072bc88652dc8e4bc50f9e3c68b9d44966379",
+  "pr_head": "55d658fd3e741565d2951167237eb03d33238f76",
+  "aws_model": "v20261026-151241",
+  "saved_model": "v20261026-093937",
+  "feature_semantics_version": 3,
+  "features": 116,
+  "runs": {
+    "pr_ci": 40340725505,
+    "main_ci": 40343231689,
+    "aws": 40343231411,
+    "pages": 40343231487
+  },
+  "all_runs_conclusion": "success",
+  "raw_artifact_ids": {
+    "aws": 12662777394,
+    "main_docker": 12661375552,
+    "main_browser": 12659529619,
+    "pages": 12659753232
+  },
+  "files": [
+    {
+      "file": "aws/deployment.json",
+      "sha256": "5e239afcdccea19ba8376fb82b3d379c10bbc966cf99385975238fc93d711994",
+      "source_path_in_downloaded_artifacts": "aws/deployment.json"
+    },
+    {
+      "file": "aws/deployment-result.json",
+      "sha256": "bd1bd4d7c39f6450f0cdc4689c0c3aafb42b2deed2bd5ebfc12f475b7dd32526",
+      "source_path_in_downloaded_artifacts": "aws/deployment-result.json"
+    },
+    {
+      "file": "aws/metrics.json",
+      "sha256": "91031e45085a038acaba5485ec659f2e7b5aa8a1655613bafbf54015d199df59",
+      "source_path_in_downloaded_artifacts": "aws/runtime/artifacts/metrics.json"
+    },
+    {
+      "file": "aws/browser-checks.json",
+      "sha256": "b6708a29508438cd4b1c99e07a15613a6aac6b752f889d76526794e178ef94a0",
+      "source_path_in_downloaded_artifacts": "aws/browser/checks.json"
+    },
+    {
+      "file": "aws/energy-checks.json",
+      "sha256": "9381a09457a59a632baf0dce96287f35c1959845a89bb10e258445898d092727",
+      "source_path_in_downloaded_artifacts": "aws/browser/energy/checks.json"
+    },
+    {
+      "file": "main-ci/docker-api.json",
+      "sha256": "69ef784ed7adda2c953d2cb6fd5a704b5f3b37bed5c2d30b921a1da6c5e5c2b5",
+      "source_path_in_downloaded_artifacts": "main-ci/docker-audit/api.json"
+    },
+    {
+      "file": "main-ci/docker-image.json",
+      "sha256": "6ce9de7992e2fd7bc727a31d22186163f467d0b3c79a1152b69f5436d597ea5f",
+      "source_path_in_downloaded_artifacts": "main-ci/docker-audit/image.json"
+    },
+    {
+      "file": "main-ci/browser-checks.json",
+      "sha256": "10a16f4af4321d57b67d913ccdeb8889c9744b480b13f8144d27f03c8b1a8908",
+      "source_path_in_downloaded_artifacts": "main-ci/browser-verification/browser-checks/checks.json"
+    },
+    {
+      "file": "main-ci/energy-checks.json",
+      "sha256": "75c5b4554a8e113239d22bc8a738b762a20a32de8a7374178bbc05d6ce1ac291",
+      "source_path_in_downloaded_artifacts": "main-ci/browser-verification/energy-browser/checks.json"
+    },
+    {
+      "file": "pages/browser-checks.json",
+      "sha256": "2b6d59d220037e5c58e3ad4836d875449876075e263efe6d32a445e6efa32ecd",
+      "source_path_in_downloaded_artifacts": "pages/tmp/static-browser/checks.json"
+    },
+    {
+      "file": "pages/recording.json",
+      "sha256": "144e9b15f62285f1d8a18052b3eaec2558ad73416e576f55939fa3c5ef694ecd",
+      "source_path_in_downloaded_artifacts": "pages/tmp/walkthrough/recording.json"
+    }
+  ],
+  "notes": [
+    "Original selected JSON files copied byte for byte; no replacement of original experiments.",
+    "AWS energy checker backend text says local API; actual execution URL is public AWS in browser-checks and workflow.",
+    "AWS deployment skips LOSO; eight-site LOSO was completed in separate full local training.",
+    "Direct executor AWS request failed TLS IP name verification; trusted TLS public checks passed in GitHub Actions."
+  ]
+}

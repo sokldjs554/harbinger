@@ -1,5 +1,7 @@
 # PR #16 후속 평가·운영·제출 검증
 
+**최종 상태(2026-10-27 KST):** PR #16은 `e33072bc88652dc8e4bc50f9e3c68b9d44966379`로 병합됐고, main CI·AWS·Pages 배포가 성공했다. AWS 모델은 `v20261026-151241`, 저장 예제는 `v20261026-093937`, 특징 정의 3·116개다. [고정 실행 링크·배포 원본·클론 재현 로그 복구](../closeout-20261027/README.md)를 확인한다. 운영 로그가 로컬에만 있어 새 클론에서 실패하던 문제는 원본 해시와 같은 파일을 복구했고 기존 검사를 유지했다.
+
 기준 소스는 `5a7f947146dd24b43eb79a8e4744449615dabc17`이다. 기존 기록을 보존하고 별도 작업 브랜치에서 진행했다. 사전 계약은 `744e6d0`, 평가 통합은 `def9c94`에 기록했다. 모든 성능은 합성 자료의 결과이며 실제 고객 실증·현장 개선·개인 경력을 뜻하지 않는다.
 
 [PR #16](https://github.com/sokldjs554/harbinger/pull/16) · [최종 PR 검사](https://github.com/sokldjs554/harbinger/pull/16/checks) · [AWS 실행](https://github.com/sokldjs554/harbinger/actions/workflows/aws-ec2.yml) · [Pages 실행](https://github.com/sokldjs554/harbinger/actions/workflows/pages.yml)

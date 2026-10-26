@@ -17,6 +17,7 @@ models/**
 artifacts/*.png
 !artifacts/.gitkeep
 .env
+.monitoring-verification/
 *.log
 .DS_Store
 

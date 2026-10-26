@@ -1,0 +1,85 @@
+F.....F..                                                                [100%]
+=================================== FAILURES ===================================
+______ test_bundle_keeps_password_out_of_yaml_and_uses_tls_resolved_email ______
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-85/test_bundle_keeps_password_out0')
+
+    def test_bundle_keeps_password_out_of_yaml_and_uses_tls_resolved_email(tmp_path):
+>       module().write_bundle(tmp_path, settings(), "check-123")
+
+tests/test_external_alerts.py:32: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+directory = PosixPath('/tmp/pytest-of-agent/pytest-85/test_bundle_keeps_password_out0')
+env = {'HARBINGER_SMTP_HOST': 'smtp.example.test', 'HARBINGER_SMTP_PORT': '465', 'HARBINGER_SMTP_USERNAME': 'sender@example.test', 'HARBINGER_SMTP_PASSWORD': 'test-only-password-do-not-send', ...}
+verification_id = 'check-123'
+
+    def write_bundle(directory, env, verification_id):
+        """Validate first; secrets go only to a private deployment bundle."""
+        import yaml
+    
+        if not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", verification_id):
+            raise ValueError("invalid verification ID")
+        names = ("HOST", "PORT", "USERNAME", "PASSWORD", "FROM")
+        values = {}
+        for name in names:
+            key = "HARBINGER_SMTP_" + name
+            value = env.get(key, "")
+            if not value or any(c in value for c in "\r\n\x00"):
+                raise ValueError("missing or invalid " + key)
+            values[name] = value
+        recipient = env.get("HARBINGER_ALERT_TO", "")
+        address = r"[^\s<>@,;]+@[^\s<>@,;]+\.[^\s<>@,;]+"
+        for key, value in (("HARBINGER_SMTP_FROM", values["FROM"]), ("HARBINGER_ALERT_TO", recipient)):
+            if not re.fullmatch(address, value):
+                raise ValueError("invalid " + key)
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9.-]*\.[A-Za-z0-9.-]+", values["HOST"]):
+            raise ValueError("invalid HARBINGER_SMTP_HOST")
+        if values["PORT"] != "587":
+>           raise ValueError("HARBINGER_SMTP_PORT must use the supported STARTTLS port")
+E           ValueError: HARBINGER_SMTP_PORT must use the supported STARTTLS port
+
+scripts/external_alerts.py:47: ValueError
+___ test_controlled_probe_is_separate_from_application_and_has_fixed_budget ____
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-85/test_controlled_probe_is_separ0')
+
+    def test_controlled_probe_is_separate_from_application_and_has_fixed_budget(tmp_path):
+>       module().write_bundle(tmp_path, settings(), "check-123")
+
+tests/test_external_alerts.py:71: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+directory = PosixPath('/tmp/pytest-of-agent/pytest-85/test_controlled_probe_is_separ0')
+env = {'HARBINGER_SMTP_HOST': 'smtp.example.test', 'HARBINGER_SMTP_PORT': '465', 'HARBINGER_SMTP_USERNAME': 'sender@example.test', 'HARBINGER_SMTP_PASSWORD': 'test-only-password-do-not-send', ...}
+verification_id = 'check-123'
+
+    def write_bundle(directory, env, verification_id):
+        """Validate first; secrets go only to a private deployment bundle."""
+        import yaml
+    
+        if not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", verification_id):
+            raise ValueError("invalid verification ID")
+        names = ("HOST", "PORT", "USERNAME", "PASSWORD", "FROM")
+        values = {}
+        for name in names:
+            key = "HARBINGER_SMTP_" + name
+            value = env.get(key, "")
+            if not value or any(c in value for c in "\r\n\x00"):
+                raise ValueError("missing or invalid " + key)
+            values[name] = value
+        recipient = env.get("HARBINGER_ALERT_TO", "")
+        address = r"[^\s<>@,;]+@[^\s<>@,;]+\.[^\s<>@,;]+"
+        for key, value in (("HARBINGER_SMTP_FROM", values["FROM"]), ("HARBINGER_ALERT_TO", recipient)):
+            if not re.fullmatch(address, value):
+                raise ValueError("invalid " + key)
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9.-]*\.[A-Za-z0-9.-]+", values["HOST"]):
+            raise ValueError("invalid HARBINGER_SMTP_HOST")
+        if values["PORT"] != "587":
+>           raise ValueError("HARBINGER_SMTP_PORT must use the supported STARTTLS port")
+E           ValueError: HARBINGER_SMTP_PORT must use the supported STARTTLS port
+
+scripts/external_alerts.py:47: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_external_alerts.py::test_bundle_keeps_password_out_of_yaml_and_uses_tls_resolved_email
+FAILED tests/test_external_alerts.py::test_controlled_probe_is_separate_from_application_and_has_fixed_budget

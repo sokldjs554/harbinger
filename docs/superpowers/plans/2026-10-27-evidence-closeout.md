@@ -16,7 +16,7 @@
 - No removal of evidence checks or favorable revision of performance numbers.
 - No new paid resources or public load testing; never commit secrets.
 - Source baseline: `e33072bc88652dc8e4bc50f9e3c68b9d44966379`; preserve the previous worktree and its original logs.
-- Existing recipient/channel is not configured. Ask for the actual recipient before sending an external notification; don't substitute local acceptance for operator receipt.
+- User selected their Naver inbox and registered six GitHub Secrets, explicitly requiring smtp.naver.com:465 SSL. Use Alertmanager 0.33.0 implicit TLS; do not read/output secrets or substitute local acceptance for operator receipt.
 
 ## Review Focus
 
@@ -66,3 +66,5 @@
 - [ ] Fresh whole-branch review; fix material findings and create a follow-up PR with explicit completed/pending items.
 
 **Ruling:** The user has already requested execution and preservation; routine recovery, documentation and test preparation proceed inline without another design approval. Missing actual recipient and human observations are data dependencies, not permission gates for the independent tasks.
+
+**Implementation choice:** Existing EC2 hosts a separate resource-limited Prometheus/Alertmanager Compose project. The test stops only a loopback probe; production API and models remain running. Normal monitoring remains installed after cleanup. Same-host failure detection is a documented limitation. Local Docker pull failed for disk capacity; own new unused image was removed, and checksum-verified native binaries passed the SSL protocol check.

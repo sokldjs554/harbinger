@@ -68,6 +68,11 @@ jobs:
       - name: Local main-path load and real Prometheus firing/recovery
         run: |
           python -m scripts.check_local_operations --runtime /tmp/hb --prometheus /tmp/hb-monitoring-bin/prometheus --out /tmp/local-operations
+      - name: Actual implicit TLS email route against local test mailbox
+        run: |
+          bash -n deploy/monitoring/install_external.sh
+          bash scripts/check_alertmanager.sh /tmp/hb-alertmanager-bin
+          python scripts/check_external_alerts.py --api-url http://127.0.0.1:8000 --prometheus /tmp/hb-monitoring-bin/prometheus --alertmanager /tmp/hb-alertmanager-bin/alertmanager --out /tmp/operator-email-local
       - name: Protected API and separate-user browser checks
         run: |
           python -m scripts.check_protected_stack --data /tmp/hb/data --models /tmp/hb/models --artifacts /tmp/hb/artifacts --out /tmp/protected-checks
@@ -93,6 +98,8 @@ jobs:
             /tmp/local-operations/*.log
             /tmp/local-operations/metrics.txt
             /tmp/local-operations/workload.csv
+            /tmp/operator-email-local/result.json
+            /tmp/operator-email-local/smtp-messages.json
       - name: Docs numbers match artifacts
         run: |
           python scripts/fill_numbers.py --check
