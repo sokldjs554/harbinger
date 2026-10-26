@@ -1,0 +1,25 @@
+................F                                                        [100%]
+=================================== FAILURES ===================================
+_____ test_capture_preserves_previous_trial_without_misattributing_current _____
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-96/test_capture_preserves_previou0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f0d8933b0e0>
+
+    def test_capture_preserves_previous_trial_without_misattributing_current(tmp_path, monkeypatch):
+        from scripts import deploy_external_alerts as runner
+    
+        class Remote:
+            options = []
+            ip = "127.0.0.1"
+            def authorize(self):
+                pass
+    
+        record = {"verification_id": "mail-123-1", "transport_verified": False, "error_type": "TimeoutError"}
+        monkeypatch.setattr(runner.subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a, 0, json.dumps(record), ""))
+>       runner.capture_result(Remote(), tmp_path / "previous.json")
+        ^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'scripts.deploy_external_alerts' has no attribute 'capture_result'
+
+tests/test_external_alerts.py:259: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_external_alerts.py::test_capture_preserves_previous_trial_without_misattributing_current

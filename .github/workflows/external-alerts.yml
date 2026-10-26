@@ -57,3 +57,5 @@ jobs:
           name: operator-email-verification
           retention-days: 14
           path: .monitoring-verification/*.json
+          include-hidden-files: true
+          if-no-files-found: error

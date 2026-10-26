@@ -3,6 +3,7 @@
 import ipaddress
 import json
 import os
+import re
 import shutil
 import subprocess
 import tarfile
@@ -32,6 +33,35 @@ def closed_ssh_group(groups):
     ):
         raise ValueError("Pre-existing SSH access must be reviewed first")
     return group["GroupId"]
+
+
+def capture_result(remote, path, expected_id=None):
+    """Preserve a prior public-format result before the next trial replaces it."""
+    remote.authorize()
+    result = subprocess.run(
+        [
+            "ssh",
+            *remote.options,
+            f"ubuntu@{remote.ip}",
+            "sudo sh -c 'if test -e /opt/harbinger-monitoring/result.json; then cat /opt/harbinger-monitoring/result.json; else exit 44; fi'",
+        ],
+        capture_output=True,
+        text=True,
+        timeout=30,
+        env=deploy.remote_environment(),
+    )
+    if result.returncode == 44:
+        return
+    if result.returncode != 0:
+        raise RuntimeError(
+            "Could not retrieve previous/current verification evidence; installation must not overwrite it"
+        )
+    record = json.loads(result.stdout)
+    identifier = record.get("verification_id", "")
+    if not re.fullmatch(r"mail-\d+-\d+", identifier):
+        raise RuntimeError("Unexpected verification identifier; preserve remote evidence for review")
+    if expected_id is None or identifier == expected_id:
+        Path(path).write_text(json.dumps(record, indent=2) + "\n")
 
 
 def main():
@@ -74,6 +104,7 @@ def main():
             runner_ip = str(ipaddress.IPv4Address(response.read().decode().strip()))
         try:
             with deploy.temporary_ssh(deploy.aws, group_id, runner_ip):
+                capture_result(remote, out / "previous-result.json")
                 remote.run("mkdir -p -m 700 /home/ubuntu/harbinger-package")
                 try:
                     remote.copy([archive, Path("deploy/monitoring/install_external.sh")])
@@ -83,23 +114,7 @@ def main():
                     )
                 finally:
                     remote.run("rm -f /home/ubuntu/harbinger-package/monitoring-bundle.tar.gz", timeout=30)
-                    remote.authorize()
-                    result = subprocess.run(
-                        [
-                            "ssh",
-                            *remote.options,
-                            f"ubuntu@{remote.ip}",
-                            "sudo cat /opt/harbinger-monitoring/result.json",
-                        ],
-                        capture_output=True,
-                        text=True,
-                        timeout=30,
-                        env=deploy.remote_environment(),
-                    )
-                    if result.returncode == 0:
-                        record = json.loads(result.stdout)
-                        if record.get("verification_id") == test_id:
-                            (out / "result.json").write_text(json.dumps(record, indent=2) + "\n")
+                    capture_result(remote, out / "result.json", test_id)
         finally:
             current = deploy.aws("ec2", "describe-security-groups", "--group-ids", group_id)["SecurityGroups"]
             assert closed_ssh_group(current) == group_id

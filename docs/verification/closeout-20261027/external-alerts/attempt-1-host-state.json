@@ -1,0 +1,26 @@
+{
+  "instance_id": "i-0aaec13273afe3197",
+  "state": "running",
+  "ip": "13.236.137.0",
+  "console": [
+    {
+      "latest": true,
+      "timestamp": "2026-10-26T17:21:55+00:00",
+      "output_length": 65535,
+      "output_sha256": "a49e10c1ed3bd74e67f89bc51fbf65cdf46ce5f20438a0f0a26f8ac9fbba7473",
+      "key_lines": [],
+      "current_parser_key": null,
+      "text_host_key_markers": 0
+    },
+    {
+      "latest": false,
+      "timestamp": "2026-10-26T15:29:34+00:00",
+      "output_length": 65369,
+      "output_sha256": "1751002d4789b7355460f5dc449535b76a75d2823e1dbd0432ead9bc198fa533",
+      "key_lines": [],
+      "current_parser_key": null,
+      "text_host_key_markers": 0
+    }
+  ],
+  "ssh_ingress_present": false
+}

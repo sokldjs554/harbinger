@@ -1,0 +1,32 @@
+..............FF                                                         [100%]
+=================================== FAILURES ===================================
+____ test_notification_failures_expose_only_safe_categories_and_smtp_codes _____
+
+    def test_notification_failures_expose_only_safe_categories_and_smtp_codes():
+        rows = [
+            {"time": "2026-10-26T17:00:00Z", "msg": "Notify attempt failed, will retry later", "receiver": "verification", "integration": "email[0]", "err": "*email.loginAuth: 535 5.7.1 authentication rejected private@example.test test-secret"},
+            {"time": "2026-10-26T17:00:01Z", "msg": "Notify attempt failed", "receiver": "verification", "integration": "email[0]", "err": "dial tcp smtp.example.test:465: i/o timeout private@example.test"},
+            {"time": "2026-10-26T17:00:02Z", "msg": "Notify attempt failed", "receiver": "verification", "integration": "email[0]", "err": "tls: x509 certificate private@example.test"},
+            {"time": "2026-10-26T17:00:03Z", "msg": "Notify attempt failed", "receiver": "operator", "integration": "email[0]", "err": "535 private@example.test"},
+        ]
+>       actual = module().email_failures("\n".join(json.dumps(row) for row in rows))
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'external_alerts' has no attribute 'email_failures'
+
+tests/test_external_alerts.py:202: AttributeError
+_____ test_failure_json_in_hidden_output_directory_is_included_in_artifact _____
+
+    def test_failure_json_in_hidden_output_directory_is_included_in_artifact():
+        workflow = yaml.safe_load((Path(__file__).resolve().parents[1] / ".github/workflows/external-alerts.yml").read_text())
+        step = next(s for s in workflow["jobs"]["verify"]["steps"] if s.get("uses", "").startswith("actions/upload-artifact@"))
+        assert step["if"] == "always()"
+        assert step["with"]["path"] == ".monitoring-verification/*.json"
+>       assert step["with"].get("include-hidden-files") is True
+E       AssertionError: assert None is True
+E        +  where None = <built-in method get of dict object at 0x7fb7382f5200>('include-hidden-files')
+E        +    where <built-in method get of dict object at 0x7fb7382f5200> = {'name': 'operator-email-verification', 'retention-days': 14, 'path': '.monitoring-verification/*.json'}.get
+
+tests/test_external_alerts.py:214: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_external_alerts.py::test_notification_failures_expose_only_safe_categories_and_smtp_codes
+FAILED tests/test_external_alerts.py::test_failure_json_in_hidden_output_directory_is_included_in_artifact

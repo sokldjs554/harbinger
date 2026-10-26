@@ -209,6 +209,43 @@ def now():
     return datetime.now(UTC).isoformat()
 
 
+def email_failures(logs):
+    """Keep failure classification, never provider messages or account values."""
+    events = []
+    for line in logs.splitlines():
+        try:
+            row = json.loads(line)
+        except ValueError:
+            continue
+        if (
+            row.get("receiver") != "verification"
+            or not str(row.get("integration", "")).startswith("email[")
+            or not str(row.get("msg", "")).startswith("Notify attempt failed")
+        ):
+            continue
+        error = str(row.get("err", ""))
+        code = re.search(r"\b([45][0-5][0-9])[ -]", error)
+        lowered = error.lower()
+        if "auth" in lowered or (code and code[1] in {"534", "535", "538"}):
+            category = "authentication"
+        elif any(s in lowered for s in ("x509", "tls", "certificate")):
+            category = "tls"
+        elif any(s in lowered for s in ("timeout", "dial tcp", "connection refused", "no such host")):
+            category = "network"
+        else:
+            category = "smtp_rejection" if code else "unclassified"
+        events.append(
+            {
+                "at": row.get("ts") or row.get("time"),
+                "receiver": "verification",
+                "integration": "email[0]",
+                "category": category,
+                "smtp_code": code[1] if code else None,
+            }
+        )
+    return events
+
+
 def request(url, post=False):
     with urlopen(Request(url, data=b"" if post else None), timeout=5) as response:
         data = response.read()
@@ -267,7 +304,7 @@ def verify_on_host(release, out):
             None,
         )
 
-    def successes():
+    def notification_logs():
         result = subprocess.run(
             ["docker", "logs", "--since", started, "harbinger-alertmanager"],
             capture_output=True,
@@ -275,7 +312,10 @@ def verify_on_host(release, out):
             check=True,
             timeout=10,
         )
-        return email_successes(result.stdout + "\n" + result.stderr)
+        return result.stdout + "\n" + result.stderr
+
+    def successes():
+        return email_successes(notification_logs())
 
     try:
         report["health_before"] = request("http://127.0.0.1:8000/health")
@@ -307,6 +347,10 @@ def verify_on_host(release, out):
     except Exception as error:
         report["transport_verified"] = False
         report["error_type"] = type(error).__name__
+        try:
+            report["email_transport_failures"] = email_failures(notification_logs())
+        except Exception as diagnostic_error:
+            report["diagnostic_error_type"] = type(diagnostic_error).__name__
         raise
     finally:
         try:
