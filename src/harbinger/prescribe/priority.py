@@ -63,14 +63,25 @@ def rule_reasons(row: pd.Series) -> list[str]:
     return r
 
 
-def rank_patrol(
-    latest: pd.DataFrame, today: pd.Timestamp, k: int = 10, explanations: list[list[dict]] | None = None
-) -> list[PatrolItem]:
-    """latest: 설비당 1행(가장 최근 피처 행) + 'p30' 열. 반환: 순찰 순서(동선 정렬된 상위 k)."""
+def select_patrol(
+    latest: pd.DataFrame,
+    today: pd.Timestamp,
+    k: int = 10,
+    *,
+    score_column: str = "p30",
+    probability_score: bool = True,
+) -> pd.DataFrame:
+    """Shared service/evaluation selector, including every legally mandatory asset.
+
+    Probabilities use criticality weights. Rule scores retain their original
+    priority scale; they are never interpreted as probabilities. Ties use asset ID.
+    """
+    if k < 1:
+        raise ValueError("k must be positive")
     df = latest.copy()
     df["days_since_inspection"] = (today - df["t"]).dt.total_seconds() / 86400
     df["weight"] = df["st_criticality"].map(lambda c: CRITICALITY_WEIGHT.get(int(c), 1.0))
-    df["score"] = df["p30"] * df["weight"]
+    df["score"] = df[score_column] * df["weight"] if probability_score else df[score_column]
     legal_max = df["category"].map(
         lambda c: (
             LEGAL_MAX_INTERVAL_DAYS.get(AssetCategory(c)) if c in AssetCategory._value2member_map_ else None
@@ -79,13 +90,20 @@ def rank_patrol(
     df["mandatory"] = legal_max.notna() & (
         df["days_since_inspection"] >= (legal_max.fillna(10**6) - LEGAL_DUE_SOON_DAYS)
     )
-    df = df.sort_values(["mandatory", "score"], ascending=[False, False])
+    df = df.sort_values(["mandatory", "score", "asset_id"], ascending=[False, False, True])
     chosen = pd.concat(
         [df[df["mandatory"]], df[~df["mandatory"]].head(max(0, k - int(df["mandatory"].sum())))]
     )
-    chosen = chosen.head(max(k, int(df["mandatory"].sum())))
+    return chosen
+
+
+def rank_patrol(
+    latest: pd.DataFrame, today: pd.Timestamp, k: int = 10, explanations: list[list[dict]] | None = None
+) -> list[PatrolItem]:
+    """latest: 설비당 1행(가장 최근 피처 행) + 'p30' 열. 반환: 순찰 순서(동선 정렬된 상위 k)."""
+    chosen = select_patrol(latest, today, k)
     # 동선: 지하 기계실 → 저층 → 고층, 같은 층은 구역순
-    chosen = chosen.sort_values(["st_floor", "zone"]).reset_index(drop=True)
+    chosen = chosen.sort_values(["st_floor", "zone", "asset_id"]).reset_index(drop=True)
     expl_map = {}
     if explanations is not None:
         expl_map = {aid: ex for aid, ex in zip(latest["asset_id"], explanations)}

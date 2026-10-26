@@ -11,7 +11,9 @@ import numpy as np
 import pandas as pd
 
 from harbinger.config import HORIZON_DAYS
+from harbinger.eval.patrol_summary import summarize_patrol_rows
 from harbinger.features.refresh import Refresher
+from harbinger.prescribe.priority import select_patrol
 
 
 def latest_rows_asof(X: pd.DataFrame, day: pd.Timestamp, max_age_days: int = 120) -> pd.DataFrame:
@@ -31,27 +33,68 @@ def simulate_patrol(
     k: int = 10,
     step_days: int = 7,
     seed: int = 0,
+    *,
+    assets: pd.DataFrame | None = None,
+    start: pd.Timestamp | None = None,
+    end: pd.Timestamp | None = None,
+    evaluation_days=None,
+    max_age_days: int = 120,
 ) -> dict:
-    """매주 사이트마다 방법별 상위 k 를 뽑아 이후 30일의 실제 고장 비율을 센다.
+    """Report raw top-K risk separately from actual mandatory/criticality selection.
 
-    score_fns: 이름 → (행 DataFrame → 확률). 점수는 **그날(as_of)에 맞춰 시간 의존 피처를 갱신한 행**으로 매기므로,
-    점검 뒤에 고장나 수리된 설비가 계속 고위험으로 남지 않는다. 운영 경로(Store.latest_rows)와 같은 갱신을 쓴다.
+    Pass full historical features plus inclusive start/end snapshot bounds to
+    reproduce Store.latest_rows eligibility (source t > day - 120 days). The
+    caller must end snapshots at least HORIZON_DAYS before observation ends.
+    Without bounds, retain the historical test-frame date range. score_fns are
+    learned probability scores; built-in rule priorities keep their own scales.
     """
+    if k < 1 or step_days < 1 or max_age_days < 1:
+        raise ValueError("k, step_days and max_age_days must be positive")
+    if evaluation_days is not None and (start is not None or end is not None):
+        raise ValueError("use evaluation_days or start/end, not both")
+    rules = {"random", "round_robin", "age", "recent_repair", "last_inspection"}
+    if rules.intersection(score_fns):
+        raise ValueError("learned methods cannot replace built-in rule names")
     rng = np.random.default_rng(seed)
-    bd = {k_: v["opened_at"].to_numpy() for k_, v in breakdowns.groupby("asset_id")}
-    days = pd.date_range(
-        X_test["t"].min().normalize() + pd.Timedelta(days=30),
-        X_test["t"].max().normalize() - pd.Timedelta(days=HORIZON_DAYS),
-        freq=f"{step_days}D",
-    )
-    rows = []
+    bd = {a: v["opened_at"].to_numpy() for a, v in breakdowns.groupby("asset_id")}
+    if X_test.empty:
+        days = []
+    elif evaluation_days is not None:
+        days = sorted(set(pd.to_datetime(evaluation_days)))
+    else:
+        days = pd.date_range(
+            pd.Timestamp(start)
+            if start is not None
+            else X_test["t"].min().normalize() + pd.Timedelta(days=30),
+            pd.Timestamp(end)
+            if end is not None
+            else X_test["t"].max().normalize() - pd.Timedelta(days=HORIZON_DAYS),
+            freq=f"{step_days}D",
+        )
+    rows, service_rows, snapshots = [], [], []
     for d in days:
-        latest = latest_rows_asof(X_test, d)
+        latest = latest_rows_asof(X_test, d, max_age_days=max_age_days)
         if latest.empty:
             continue
+        if assets is not None:
+            cols = [
+                c
+                for c in ("category", "name", "zone", "st_floor", "st_criticality")
+                if c in assets and c not in latest
+            ]
+            latest = latest.merge(
+                assets[["asset_id", *cols]], on="asset_id", how="left", validate="many_to_one"
+            )
         latest = refresher.apply(latest, d).copy()
         for name, fn in score_fns.items():
-            latest[f"score__{name}"] = fn(latest)
+            values = np.asarray(fn(latest), dtype=float)
+            if (
+                values.shape != (len(latest),)
+                or not np.isfinite(values).all()
+                or ((values < 0) | (values > 1)).any()
+            ):
+                raise ValueError(f"{name} must return one finite probability in [0, 1] per asset")
+            latest[f"score__{name}"] = values
         latest["score__random"] = rng.random(len(latest))
         latest["score__round_robin"] = (d - latest["t"]).dt.total_seconds()
         latest["score__age"] = latest["st_age_years"]
@@ -59,76 +102,88 @@ def simulate_patrol(
         latest["score__last_inspection"] = (
             latest["ck_overall"] * 1000 + (d - latest["t"]).dt.total_seconds() / 86400
         )
-        end = (d + pd.Timedelta(days=HORIZON_DAYS)).to_datetime64()
-        d64 = d.to_datetime64()
+        end64 = (d + pd.Timedelta(days=HORIZON_DAYS)).to_datetime64()
         empty = np.array([], dtype="datetime64[ns]")
         latest["hit"] = [
-            bool(np.any((bd.get(a, empty) > d64) & (bd.get(a, empty) <= end))) for a in latest["asset_id"]
+            bool(np.any((bd.get(a, empty) > d.to_datetime64()) & (bd.get(a, empty) <= end64)))
+            for a in latest["asset_id"]
         ]
-        for _sid, g in latest.groupby("site_id"):
-            kk = min(k, len(g))
+        for sid, g in latest.groupby("site_id"):
+            candidate_ids = sorted(g.asset_id.astype(str).tolist())
+            # The production selector computes mandatory status once per score;
+            # every comparator receives the same candidate rows and date.
+            snapshot = dict(
+                site_id=str(sid),
+                day=d.isoformat(),
+                candidate_asset_ids=candidate_ids,
+                source_t={str(r.asset_id): r.t.isoformat() for r in g.itertuples()},
+            )
+            snapshots.append(snapshot)
             for col in [c for c in g.columns if c.startswith("score__")]:
-                top = g.nlargest(kk, col)
-                rows.append(
-                    {
-                        "day": d,
-                        "site_id": _sid,
-                        "hits": int(top["hit"].sum()),
-                        "positives": int(g["hit"].sum()),
-                        "picks": kk,
-                        "method": col[7:],
-                        "precision": float(top["hit"].mean()),
-                        "base_rate": float(g["hit"].mean()),
-                    }
-                )
-    res = pd.DataFrame(rows)
-    if res.empty:
-        return {"methods": {}, "days": 0}
-    summary = res.groupby("method")["precision"].agg(["mean", "std", "count"]).reset_index()
-    rr = (
-        float(summary.loc[summary["method"] == "round_robin", "mean"].iloc[0])
-        if (summary["method"] == "round_robin").any()
-        else float("nan")
+                name = col[7:]
+                raw = g.sort_values([col, "asset_id"], ascending=[False, True]).head(k)
+                service = select_patrol(g, d, k, score_column=col, probability_score=name in score_fns)
+                mandatory_ids = sorted(service.loc[service.mandatory, "asset_id"].astype(str).tolist())
+                optional = g.loc[~g.asset_id.astype(str).isin(mandatory_ids)]
+                random_hits = float(service.loc[service.mandatory, "hit"].sum())
+                optional_slots = len(service) - len(mandatory_ids)
+                if optional_slots:
+                    random_hits += optional_slots * float(optional.hit.mean())
+                for target, selected, kind in (
+                    (rows, raw, "raw_risk"),
+                    (service_rows, service, "service_policy"),
+                ):
+                    target.append(
+                        dict(
+                            day=d.isoformat(),
+                            site_id=str(sid),
+                            method=name,
+                            hits=int(selected.hit.sum()),
+                            positives=int(g.hit.sum()),
+                            picks=len(selected),
+                            precision=float(selected.hit.mean()),
+                            base_rate=float(g.hit.mean()),
+                            random_expected_precision=random_hits / len(service)
+                            if kind == "service_policy"
+                            else float(g.hit.mean()),
+                            requested_k=k,
+                            mandatory_count=len(mandatory_ids),
+                            overflow=max(0, len(selected) - k),
+                            candidate_asset_ids=candidate_ids,
+                            mandatory_asset_ids=mandatory_ids,
+                            selected_asset_ids=selected.asset_id.astype(str).tolist(),
+                            score_kind="probability" if name in score_fns else "rule_priority",
+                            selection=kind,
+                        )
+                    )
+    result = summarize_patrol_rows(pd.DataFrame(rows), seed=seed)
+    service_result = summarize_patrol_rows(pd.DataFrame(service_rows), seed=seed, service_policy=True)
+    service_result.update(
+        rows=service_rows,
+        k=k,
+        selection="all mandatory assets; remaining budget by probability × criticality or unchanged rule priority",
     )
-    rnd = (
-        float(summary.loc[summary["method"] == "random", "mean"].iloc[0])
-        if (summary["method"] == "random").any()
-        else float("nan")
+    result.update(
+        k=k,
+        rows=rows,
+        service_policy=service_result,
+        snapshots=snapshots,
+        per_archetype=None,
+        scored_at="as_of(시간 의존 피처 갱신)",
+        provenance=dict(
+            max_age_days=max_age_days,
+            source_timestamp="t",
+            eligible="day-max_age_days < t <= day",
+            start=days[0].isoformat() if len(days) else None,
+            end=days[-1].isoformat() if len(days) else None,
+            horizon_days=HORIZON_DAYS,
+            bootstrap_seed=seed,
+            bootstrap_replicates=2000,
+            tie_break="asset_id ascending",
+            selector="harbinger.prescribe.priority.select_patrol",
+        ),
     )
-    methods = {}
-    for _, r in summary.iterrows():
-        methods[r["method"]] = {
-            "precision_at_k": float(r["mean"]),
-            "std": float(r["std"]),
-            "n_site_days": int(r["count"]),
-            "lift_vs_round_robin": float(r["mean"] / rr) if rr and rr > 0 else float("nan"),
-            "lift_vs_random": float(r["mean"] / rnd) if rnd and rnd > 0 else float("nan"),
-        }
-    # Paired site-cluster bootstrap keeps all overlapping weeks and assets
-    # within each site together. It does not assume weekly rows independent.
-    wide = res.pivot_table(index="site_id", columns="method", values="precision", aggfunc="mean")
-    boot_rng = np.random.default_rng(seed)
-    for name, m in methods.items():
-        per_site = wide[name].to_numpy()
-        ix = boot_rng.integers(0, len(wide), size=(2000, len(wide)))
-        means = per_site[ix].mean(axis=1)
-        diff = (wide[name] - wide["last_inspection"]).to_numpy()[ix].mean(axis=1)
-        m["site_cluster_ci95"] = np.quantile(means, [0.025, 0.975]).tolist()
-        m["delta_vs_last_inspection_ci95"] = np.quantile(diff, [0.025, 0.975]).tolist()
-        subset = res[res.method == name]
-        m["recall_at_k"] = (
-            float(subset.hits.sum() / subset.positives.sum()) if subset.positives.sum() else None
-        )
-    return {
-        "uncertainty": "2000 paired site-cluster bootstrap; weeks/assets kept together; synthetic sites only",
-        "random_expected_precision": float(res.base_rate.mean()),
-        "k": k,
-        "days": int(res["day"].nunique()),
-        "base_rate": float(res["base_rate"].mean()),
-        "methods": methods,
-        "per_archetype": None,
-        "scored_at": "as_of(시간 의존 피처 갱신)",
-    }
+    return result
 
 
 def breakdown_recall_at_top(
@@ -158,5 +213,5 @@ def breakdown_recall_at_top(
     return {
         "top_frac": top_frac,
         "breakdowns_evaluated": total,
-        "recall": float(hits / total) if total else float("nan"),
+        "recall": float(hits / total) if total else None,
     }

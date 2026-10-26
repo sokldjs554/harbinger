@@ -296,7 +296,20 @@ def run(
     }
     if deep_full is not None:
         score_fns["harbinger_deep"] = lambda df: deep_full.p_fail_within(df, 30)
-    patrol = simulate_patrol(te_all, score_fns, bd_test, refresher, k=10, step_days=7, seed=seed)
+    # Eligibility must match the live service, including inspections preceding
+    # the held-out period. Only decision dates/outcomes are restricted to test.
+    patrol = simulate_patrol(
+        X,
+        score_fns,
+        bd_test,
+        refresher,
+        k=10,
+        step_days=7,
+        seed=seed,
+        assets=tables["assets"],
+        start=split.val_end + pd.Timedelta(days=30),
+        end=pd.Timestamp(provenance["observation_end"]) - pd.Timedelta(days=30),
+    )
     scores = {
         "harbinger_hgb": hgb.predict_proba(te_all)
     }  # 행 시점 점수 — 직전 점검 기준 재현율(breakdown_recall_at_top)용
