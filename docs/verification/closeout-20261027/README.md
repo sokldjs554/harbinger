@@ -43,7 +43,7 @@ Docker는 CI에서 비루트 UID 10001·소스 80개 해시·실제 API를 확�
 
 ## 4. 외부 알림 상태
 
-운영자는 프로젝트 소유자이며 이메일 수신을 선택했다. 수신 주소와 SMTP 비밀값은 공개 저장소에 기록하지 않는다. [외부 알림 실행 안내](../../ops/external-alerts.md)의 비밀값 설정, 시험 발화·복구·운영자 실제 수신 확인이 필요하다. 로컬 Prometheus 수신기 통과는 외부 수신 완료로 대체하지 않는다. 실제 시험 결과는 수신 확인 후 별도 기록한다.
+운영자는 프로젝트 소유자이며 이메일 수신을 선택했다. 수신 주소와 SMTP 비밀값은 공개 저장소에 기록하지 않는다. [외부 알림 실행 안내](../../ops/external-alerts.md)에 네이버 SSL 465 설정, 실제 시험 발화·복구·운영자 수신 회신을 기록했다. 로컬 Prometheus 수신기 통과와 외부 수신 확인은 별도 증거로 구분한다. 시스템 전송·복구 결과와 운영자 실제 수신을 분리해 아래 후속 기록에 남긴다.
 
 모든 모델 성능은 합성 데이터 검증이다. 실제 고객 성능, 장기 SLA, AWS 처리량, 사람의 미측정 개선 효과는 확인되지 않았다.
 
@@ -55,4 +55,14 @@ Docker는 CI에서 비루트 UID 10001·소스 80개 해시·실제 API를 확�
 
 [PR #17](https://github.com/sokldjs554/harbinger/pull/17)은 `3e6b3da81bbd4cab705c2de0027f9740cafedb8d`로 병합했다. [PR CI](https://github.com/sokldjs554/harbinger/actions/runs/40362387991)와 [병합본 CI](https://github.com/sokldjs554/harbinger/actions/runs/40364278833)의 test·tensorflow·image가 모두 통과했다. [병합본 원본 검사·해시](main-ci/manifest.json)를 보관했다. 이 CI의 소규모 합성 모델은 검사 전용이며 공개 AWS/Pages 모델을 교체하지 않았다.
 
-[첫 외부 이메일 시험](https://github.com/sokldjs554/harbinger/actions/runs/40366576243)은 실패했다. SMTP 전송 성공을 확인하지 못했으며 운영자 수신도 미확인이다. [실패 사실·로그 발췌](external-alerts/attempt-1-summary.json), [별도 종료 후 AWS 조회 원본](external-alerts/attempt-1-host-state.json)을 보존했다. 숨김 폴더 때문에 결과 JSON 업로드가 누락된 문제를 수정하고, 사용자 SMTP 사용 설정 저장 회신에 따라 재시험을 준비한다. 이 시점에서 외부 알림 연결 완료라고 표현하지 않는다.
+[첫 외부 이메일 시험](https://github.com/sokldjs554/harbinger/actions/runs/40366576243)은 실패했다. SMTP 전송 성공을 확인하지 못했으며 운영자 수신도 미확인이다. [실패 사실·로그 발췌](external-alerts/attempt-1-summary.json), [별도 종료 후 AWS 조회 원본](external-alerts/attempt-1-host-state.json)을 보존했다. 숨김 폴더 때문에 결과 JSON 업로드가 누락된 문제를 수정하고, 당시에는 사용자 SMTP 사용 설정 저장 회신에 따라 재시험을 준비했다. 첫 실패 시점에는 외부 알림 연결 완료라고 표현하지 않았으며 실제 재시험 결과는 다음 절에 기록한다.
+
+## 7. PR #18 병합과 네이버 SSL 재시험
+
+[PR #18](https://github.com/sokldjs554/harbinger/pull/18)은 `530faf0f8ae678f6f29c85c1e222edc742e7d83c`로 병합했다. [PR CI](https://github.com/sokldjs554/harbinger/actions/runs/40369464258), [병합본 CI](https://github.com/sokldjs554/harbinger/actions/runs/40371570771)의 test·tensorflow·image가 모두 통과했다. 로컬 최종 전체 검사는 378개 통과이며, 실제 로컬 SSL 정상 전송과 SMTP 535 거절·정리를 CI에서도 검증했다.
+
+사용자가 SMTP 사용 설정을 저장했다고 회신한 후 [재시험 40373254666](https://github.com/sokldjs554/harbinger/actions/runs/40373254666)을 실행했다. `mail-40373254666-1`의 장애·복구 이메일 전송 성공, 시험 규칙 제거, health 정상, 모델 `v20261026-151241` 유지, 남은 firing 경보 없음, 임시 SSH 제거를 확인했다. 새 인스턴스나 공개 부하 시험은 없었다. [원본 결과·출처·해시](external-alerts/manifest.json), [상세 시각과 수신 상태](../../ops/external-alerts.md).
+
+첫 실패 결과도 다음 시험 전에 원격 원본을 회수해 [그대로 보존](external-alerts/attempt-1-result.json)했다. 이전 결함으로 업로드되지 않았던 JSON을 새로 만들어 채우지 않았다. 기존의 첫 실패 요약은 당시 상태로 유지한다.
+
+운영자가 해당 시험 번호의 장애·복구 두 메일 수신을 회신했다. [별도 실제 회신 기록](external-alerts/operator-receipt.json)을 남겼다. 운영자가 추가로 전달한 표시 시각은 2026-10-27 02:58 KST(분 단위)다. 메일별 시각 구분·메일함 종류는 미제공이며, 자동 전송 시각을 실제 도착 시각으로 바꾸거나 전달 지연을 계산하지 않는다. 동료 A·친구 B의 새 7과업 재검토도 아직 미수신이며 양식 준비와 도구 검증까지만 완료했다. 실제 서비스/Pages 소스·모델은 PR #16의 배포 상태를 유지하고, 이후 커밋은 증거·문서·모니터링 변경으로 구분한다.

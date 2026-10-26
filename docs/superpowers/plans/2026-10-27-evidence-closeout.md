@@ -58,7 +58,7 @@
 
 - [x] Obtain recipient/channel and securely configured credentials; check the chosen existing route.
 - [x] Prepare bounded test identification, firing/recovery and receipt timestamps, current alert state and teardown proof. Keep public service available.
-- [ ] Execute with actual receiver only when configured, obtain real operator receipt, check resolved/inactive and restore normal state. Until then mark this task pending, with no fabricated receipt.
+- [x] Execute with actual receiver only when configured, obtain real operator receipt, check resolved/inactive and restore normal state. Until then mark this task pending, with no fabricated receipt.
 
 ### Final verification
 
@@ -70,3 +70,5 @@
 **Implementation choice:** Existing EC2 hosts a separate resource-limited Prometheus/Alertmanager Compose project. The test stops only a loopback probe; production API and models remain running. Normal monitoring remains installed after cleanup. Same-host failure detection is a documented limitation. Local Docker pull failed for disk capacity; own new unused image was removed, and checksum-verified native binaries passed the SSL protocol check.
 
 **Actual external attempt:** PR #17 merged as `3e6b3da`; PR/main full CI passed. Trial40366576243 failed waiting SMTP acceptance. User reports SMTP usage setting was unsaved and is now saved; retry authorized. Fix hidden artifact upload and preserve prior remote result before retry. Real operator receipt and A/B human retests remain pending.
+
+**Final external result:** PR #18 merged `530faf0`, exact-main CI40371570771 passed. Retry40373254666 preserved the prior original and uploaded all3JSON files; fault/recovery SMTP accepted, normal health/model and SSH cleanup verified. Owner confirmed both messages and then supplied common displayed receipt minute 2026-10-27 02:58 KST. Keep automatic receipt=false records immutable; human confirmation is separate. Per-message times/folder unprovided; A/B seven-task retests still not received.

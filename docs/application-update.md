@@ -29,3 +29,5 @@ Harbinger를 검증하면서 학습·보정 구간 이후의 고장이 앞 구�
 ---
 
 근거: [최종 병합·CI·AWS/Pages 배포와 버전](verification/closeout-20261027/README.md) · [수정 후 반복 실험](verification/completion-20261026/memo/README.md) · [HGB 선택·별도 테스트](verification/completion-20261026/default/README.md) · [사용자 검토](user-reviews/README.md) · [모델 선택 기준](model-selection.md). 사용자 검토를 실제 고객 성능 실증으로, 합성 실험을 현장 성능으로 표현하지 않았습니다.
+
+후속 운영 확인에서는 기존 EC2의 별도 시험 대상을 중단·복구하며 Prometheus→Alertmanager→네이버 SSL 465 경로를 검증했습니다. 저는 SMTP 사용 설정을 저장하고 장애·복구 두 이메일의 실제 수신을 확인했습니다. 연결 코드와 실패 기록 보완·실행·문서화에는 Codex를 활용했습니다. 이 통제 시험을 실제 고객 장애 대응이나 장기 운영 SLA 검증으로 표현하지 않았습니다. [원본·수신 회신](ops/external-alerts.md)

@@ -81,7 +81,7 @@ prometheus --config.file=deploy/monitoring/prometheus.yml --storage.tsdb.path=/t
 `./deploy/monitoring:/etc/prometheus/monitoring:ro` 볼륨을 마운트한다.
 `http://localhost:9090/api/v1/rules`에서 평가 상태·최근 오류를,
 `http://localhost:9090/api/v1/alerts`에서 pending/firing 상태를 확인한다.
-규칙 파일만으로 이메일이 전달되지는 않는다. 실제 운영자 이메일 설정과 기존 AWS 연결·통제 시험은 [외부 알림 안내](external-alerts.md)를 따른다. 실제 수신 확인은 운영자의 회신과 별도 기록이 있어야 완료로 판단한다.
+규칙 파일만으로 이메일이 전달되지는 않는다. 실제 운영자 이메일 설정과 기존 AWS 연결·통제 시험은 [외부 알림 안내](external-alerts.md)를 따른다. 실제 수신 확인은 운영자의 회신과 별도 기록이 있어야 완료로 판단한다. 2026-10-27 KST에는 기존 EC2에서 통제된 장애·복구 이메일 두 건의 전송과 운영자 수신 회신을 확인했다. [시각·원본·회신·한계](external-alerts.md)를 참조한다.
 고정 시계열 promtool 검사는 유지한다. 별도로 `scripts/check_local_operations.py`는 실제 로컬 API → Prometheus → 로컬 Alertmanager v2 프로토콜 수신기 → 복구를 검사한다. 1초 수집·10초 관측·2초 지속의 가속 테스트 규칙과 고의 계산 예외를 사용한다. 외부 운영 수신처나 실제 사고 대응 훈련을 검증한 것은 아니다.
 
 ## 계산 요청의 대기와 거절
