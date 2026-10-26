@@ -1,0 +1,209 @@
+[
+  {
+    "data_seed": 202610251,
+    "condition": "missing_25",
+    "historical": {
+      "eligible_rows": 42208,
+      "changed_rows": 10490,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 0.25,
+      "seed": 202611251
+    },
+    "current": {
+      "eligible_rows": 42208,
+      "changed_rows": 10490,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 0.25,
+      "seed": 202611251
+    },
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "condition": "missing_50",
+    "historical": {
+      "eligible_rows": 42208,
+      "changed_rows": 21036,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 0.5,
+      "seed": 202611251
+    },
+    "current": {
+      "eligible_rows": 42208,
+      "changed_rows": 21036,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 0.5,
+      "seed": 202611251
+    },
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "condition": "missing_100",
+    "historical": {
+      "eligible_rows": 42208,
+      "changed_rows": 42208,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 1.0,
+      "seed": 202611251
+    },
+    "current": {
+      "eligible_rows": 42208,
+      "changed_rows": 42208,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 1.0,
+      "seed": 202611251
+    },
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "condition": "missing_25",
+    "historical": {
+      "eligible_rows": 41203,
+      "changed_rows": 10135,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 0.25,
+      "seed": 202611252
+    },
+    "current": {
+      "eligible_rows": 41203,
+      "changed_rows": 10135,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 0.25,
+      "seed": 202611252
+    },
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "condition": "missing_50",
+    "historical": {
+      "eligible_rows": 41203,
+      "changed_rows": 20360,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 0.5,
+      "seed": 202611252
+    },
+    "current": {
+      "eligible_rows": 41203,
+      "changed_rows": 20360,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 0.5,
+      "seed": 202611252
+    },
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "condition": "missing_100",
+    "historical": {
+      "eligible_rows": 41203,
+      "changed_rows": 41203,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 1.0,
+      "seed": 202611252
+    },
+    "current": {
+      "eligible_rows": 41203,
+      "changed_rows": 41203,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 1.0,
+      "seed": 202611252
+    },
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "condition": "missing_25",
+    "historical": {
+      "eligible_rows": 42667,
+      "changed_rows": 10719,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 0.25,
+      "seed": 202611253
+    },
+    "current": {
+      "eligible_rows": 42667,
+      "changed_rows": 10719,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 0.25,
+      "seed": 202611253
+    },
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "condition": "missing_50",
+    "historical": {
+      "eligible_rows": 42667,
+      "changed_rows": 21357,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 0.5,
+      "seed": 202611253
+    },
+    "current": {
+      "eligible_rows": 42667,
+      "changed_rows": 21357,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 0.5,
+      "seed": 202611253
+    },
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "condition": "missing_100",
+    "historical": {
+      "eligible_rows": 42667,
+      "changed_rows": 42667,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 1.0,
+      "seed": 202611253
+    },
+    "current": {
+      "eligible_rows": 42667,
+      "changed_rows": 42667,
+      "eligible_characters": 0,
+      "deleted_characters": 0,
+      "kind": "missing",
+      "requested_rate": 1.0,
+      "seed": 202611253
+    },
+    "equal": true
+  }
+]

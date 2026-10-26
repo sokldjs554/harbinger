@@ -1,0 +1,9 @@
+{
+  "historical_files_unchanged": 118,
+  "raw_source_tables_equal": true,
+  "cohorts_and_labels_equal": true,
+  "damage_counts_equal": true,
+  "feature_semantics_version": 3,
+  "existing_summary_exit_code": 0,
+  "failures": []
+}

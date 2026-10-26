@@ -74,7 +74,7 @@
     const lift = rr > 0 ? ex / rr : null;
     const head = $("#today-head"); clear(head);
     head.appendChild(el("h2", {}, `${s.name} — 오늘 먼저 볼 설비 ${items.length}개`));
-    head.appendChild(el("p", {}, `기준 ${state.asof}. 모델이 보는 이 목록의 기대 고장은 ${fmtN(ex, 2)}건, 가장 오래 안 본 ${p.k}개를 보면 ${fmtN(rr, 2)}건${lift ? ` (×${lift.toFixed(1)})` : ""}. 이것은 모델의 기대치일 뿐 결과가 아닙니다 — 실제로 맞았는지는 “과거 재현” 탭에서 봅니다.`));
+    head.appendChild(el("p", {}, items.length ? `기준 ${state.asof}. 요청 ${p.k}개 · 실제 선택 ${items.length}개 · 필수 ${p.mandatory_count}개 · 예산 초과 ${p.budget_overflow}개. 이 목록의 기대 고장은 ${fmtN(ex, 2)}건, 같은 필수 조건으로 오래 미점검 순 ${p.round_robin_selected_count}개를 고르면 ${fmtN(rr, 2)}건${lift ? ` (×${lift.toFixed(1)})` : ""}. 이것은 모델의 기대치일 뿐 실제 고장 결과가 아닙니다.` : `기준 ${state.asof}. 해당 시점에 유효한 점검 기록이 없어 순찰 비교를 보류합니다.`));
     const k = $("#today-kpis"); clear(k);
     k.appendChild(C.tile("설비 수", fmtN(s.n_assets), `최근 120일 안에 점검된 설비 ${s.assets_with_recent_inspection}개`));
     k.appendChild(C.tile("30일 고장확률 평균", fmtP(s.mean_p30)));
@@ -454,7 +454,7 @@
     a.appendChild(el("h2", {}, "가정과 한계 — 어디까지가 데이터이고 어디부터가 가정인가"));
     const items = [
       ["메모가 체크리스트보다 먼저 움직인다", "생성기에 직접 넣은 가정입니다. “메모 읽기”의 신호와 절제 실험의 메모 기여(+0.04 안팎)는 이 가정에서 나옵니다. 실데이터에서 가장 먼저 확인할 것.", "docs/synthetic-generator.md"],
-      ["고장은 열화에 의해 주도된다", "열화-고장 결합 강도(BETA_SCALE)를 모델 간 차이가 보이도록 올렸습니다. 오라클 상한이 그 선택에 달려 있습니다.", "docs/synthetic-generator.md"],
+      ["고장은 열화에 의해 주도된다", "열화-고장 결합 강도(BETA_SCALE)를 모델 간 차이가 보이도록 올렸습니다. 숨은 상태의 위험률로 계산하는 오라클 참고 점수도 이 선택에 영향을 받습니다.", "docs/synthetic-generator.md"],
       ["불량으로 적으면 위험이 내려간다", "라벨이 “조치되지 않은 고장”이기 때문입니다 — 불량은 곧 수리로 이어집니다. What-if 의 D 시나리오가 그 결과입니다. 배포 후 재학습에서는 개입 효과를 따로 다뤄야 합니다.", "docs/limitations.md"],
       ["점검 내용은 다음 점검 때만 갱신된다", "고장·정비 이력과 시간 경과는 기준 시각에 맞춰 갱신하지만, 체크리스트·메모·점검 품질은 점검 시점 값입니다.", "docs/limitations.md"],
       ["회사에 대한 판단은 추정입니다", "유비스 마스터의 실제 DB 를 보지 못했고 공개 기사에서 역추론했습니다. 센서 계측이 있을 수 있습니다.", "docs/company-research.md"],

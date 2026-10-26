@@ -73,7 +73,7 @@ class ScenarioIn(BaseModel):
     id: str | None = None
     name: str | None = None
     description: str = ""
-    items: dict[str, int] = Field(
+    items: dict[str, CheckResult] = Field(
         default_factory=dict, description="체크리스트 항목 → 0 양호 / 1 주의 / 2 불량"
     )
     overall: int | None = Field(None, ge=0, le=2, description="생략하면 항목 최댓값")

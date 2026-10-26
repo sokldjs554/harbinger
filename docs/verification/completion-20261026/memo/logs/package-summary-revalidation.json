@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/tmp/hb-audit-venv/bin/python",
+    "-m",
+    "scripts.memo_summary",
+    "/workspace/harbinger/docs/verification/completion-20261026/memo/results"
+  ],
+  "cwd": "/tmp/harbinger-memo-5a",
+  "exit_code": 0,
+  "duration_seconds": 12.956602475002,
+  "finished_utc": "2026-10-26T09:16:48.389642+00:00"
+}

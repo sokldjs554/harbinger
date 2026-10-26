@@ -1,0 +1,60 @@
+FFFFFF                                                                   [100%]
+=================================== FAILURES ===================================
+________ test_waiting_request_runs_after_release_and_excess_is_rejected ________
+
+    def test_waiting_request_runs_after_release_and_excess_is_rejected():
+>       from harbinger.api.compute import ComputeGate
+E       ModuleNotFoundError: No module named 'harbinger.api.compute'
+
+tests/test_compute_limits.py:11: ModuleNotFoundError
+_________ test_timeout_and_computation_exception_do_not_leak_capacity __________
+
+    def test_timeout_and_computation_exception_do_not_leak_capacity():
+>       from harbinger.api.compute import ComputeGate
+E       ModuleNotFoundError: No module named 'harbinger.api.compute'
+
+tests/test_compute_limits.py:49: ModuleNotFoundError
+________________ test_active_limit_and_fifo_order_are_preserved ________________
+
+    def test_active_limit_and_fifo_order_are_preserved():
+>       from harbinger.api.compute import ComputeGate
+E       ModuleNotFoundError: No module named 'harbinger.api.compute'
+
+tests/test_compute_limits.py:65: ModuleNotFoundError
+_______________ test_invalid_compute_limits_are_rejected[0-1-1] ________________
+
+slots = 0, waiting = 1, timeout = 1
+
+    @pytest.mark.parametrize("slots,waiting,timeout", [(0, 1, 1), (1, -1, 1), (1, 1, 0)])
+    def test_invalid_compute_limits_are_rejected(slots, waiting, timeout):
+>       from harbinger.api.compute import ComputeGate
+E       ModuleNotFoundError: No module named 'harbinger.api.compute'
+
+tests/test_compute_limits.py:90: ModuleNotFoundError
+_______________ test_invalid_compute_limits_are_rejected[1--1-1] _______________
+
+slots = 1, waiting = -1, timeout = 1
+
+    @pytest.mark.parametrize("slots,waiting,timeout", [(0, 1, 1), (1, -1, 1), (1, 1, 0)])
+    def test_invalid_compute_limits_are_rejected(slots, waiting, timeout):
+>       from harbinger.api.compute import ComputeGate
+E       ModuleNotFoundError: No module named 'harbinger.api.compute'
+
+tests/test_compute_limits.py:90: ModuleNotFoundError
+_______________ test_invalid_compute_limits_are_rejected[1-1-0] ________________
+
+slots = 1, waiting = 1, timeout = 0
+
+    @pytest.mark.parametrize("slots,waiting,timeout", [(0, 1, 1), (1, -1, 1), (1, 1, 0)])
+    def test_invalid_compute_limits_are_rejected(slots, waiting, timeout):
+>       from harbinger.api.compute import ComputeGate
+E       ModuleNotFoundError: No module named 'harbinger.api.compute'
+
+tests/test_compute_limits.py:90: ModuleNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_compute_limits.py::test_waiting_request_runs_after_release_and_excess_is_rejected
+FAILED tests/test_compute_limits.py::test_timeout_and_computation_exception_do_not_leak_capacity
+FAILED tests/test_compute_limits.py::test_active_limit_and_fifo_order_are_preserved
+FAILED tests/test_compute_limits.py::test_invalid_compute_limits_are_rejected[0-1-1]
+FAILED tests/test_compute_limits.py::test_invalid_compute_limits_are_rejected[1--1-1]
+FAILED tests/test_compute_limits.py::test_invalid_compute_limits_are_rejected[1-1-0]

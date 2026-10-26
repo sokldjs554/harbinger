@@ -1,0 +1,12 @@
+{
+  "source_commit": "5a7f947146dd24b43eb79a8e4744449615dabc17",
+  "cwd": "/tmp/harbinger-memo-5a",
+  "environment": {
+    "PYTHONPATH": "/tmp/harbinger-memo-5a/src",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MPLCONFIGDIR": "/tmp/hb-completion-mpl"
+  },
+  "started_utc": "2026-10-26T08:47:34.648513+00:00",
+  "parallel_worlds": 3
+}

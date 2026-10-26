@@ -1,0 +1,123 @@
+......F.FFFFF                                                            [100%]
+=================================== FAILURES ===================================
+____________ test_same_commit_deploy_keeps_previous_release_intact _____________
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-37/test_same_commit_deploy_keeps_0')
+
+    def test_same_commit_deploy_keeps_previous_release_intact(tmp_path):
+        """Run the actual installer prefix with harmless local replacements for host tools."""
+        installer = Path("deploy/aws/ec2/install.sh").read_text().split("docker load -i")[0]
+        root = tmp_path / "host"
+        sha = "a" * 40
+        previous = root / "releases" / sha
+        previous.mkdir(parents=True)
+        (previous / "marker").write_text("previous runtime")
+        (root / "current").symlink_to(previous)
+        installer = installer.replace("/opt/harbinger", str(root))
+        installer = installer.replace("/var/log/harbinger-deploy.log", str(tmp_path / "deploy.log"))
+        installer = installer.replace("/var/www/harbinger-acme", str(tmp_path / "acme"))
+        installer += '\nprintf "RELEASE=%s\\nPREVIOUS=%s\\n" "$release" "$previous"\n'
+        image_id = "sha256:" + "b" * 64
+        stubs = f"apt-get() {{ :; }}; systemctl() {{ :; }}; python3() {{ :; }}; docker() {{ echo {image_id}; }};\n"
+        result = subprocess.run(
+            ["bash", "-c", stubs + installer, "audit", sha, "8.8.8.8"], text=True, capture_output=True, check=True
+        )
+        release = next(
+            line.removeprefix("RELEASE=") for line in result.stdout.splitlines() if line.startswith("RELEASE=")
+        )
+        assert Path(release) != previous
+        assert (previous / "marker").read_text() == "previous runtime"
+        override = root / "pending-deployment" / "previous-image.yml"
+>       assert image_id in override.read_text()
+                           ^^^^^^^^^^^^^^^^^^^^
+
+tests/test_service_audit_regressions.py:132:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('/tmp/pytest-of-agent/pytest-37/test_same_commit_deploy_keeps_0/host/pending-deployment/previous-image.yml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-agent/pytest-37/test_same_commit_deploy_keeps_0/host/pending-deployment/previous-image.yml'
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_query_dates_reject_missing_or_timezone_aware_values[as_of-2025-08-01T00:00:00Z] _
+
+value = '2025-08-01T00:00:00Z', parser = 'as_of'
+
+    @pytest.mark.parametrize("value", ["NaT", "2025-08-01T00:00:00Z", "2025-08-01T09:00:00+09:00"])
+    @pytest.mark.parametrize("parser", ["as_of", "replay"])
+    def test_query_dates_reject_missing_or_timezone_aware_values(value, parser):
+>       with pytest.raises(HTTPException) as error:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE HTTPException
+
+tests/test_service_audit_regressions.py:138: Failed
+_ test_query_dates_reject_missing_or_timezone_aware_values[as_of-2025-08-01T09:00:00+09:00] _
+
+value = '2025-08-01T09:00:00+09:00', parser = 'as_of'
+
+    @pytest.mark.parametrize("value", ["NaT", "2025-08-01T00:00:00Z", "2025-08-01T09:00:00+09:00"])
+    @pytest.mark.parametrize("parser", ["as_of", "replay"])
+    def test_query_dates_reject_missing_or_timezone_aware_values(value, parser):
+>       with pytest.raises(HTTPException) as error:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE HTTPException
+
+tests/test_service_audit_regressions.py:138: Failed
+_____ test_query_dates_reject_missing_or_timezone_aware_values[replay-NaT] _____
+
+value = 'NaT', parser = 'replay'
+
+    @pytest.mark.parametrize("value", ["NaT", "2025-08-01T00:00:00Z", "2025-08-01T09:00:00+09:00"])
+    @pytest.mark.parametrize("parser", ["as_of", "replay"])
+    def test_query_dates_reject_missing_or_timezone_aware_values(value, parser):
+>       with pytest.raises(HTTPException) as error:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE HTTPException
+
+tests/test_service_audit_regressions.py:138: Failed
+_ test_query_dates_reject_missing_or_timezone_aware_values[replay-2025-08-01T00:00:00Z] _
+
+value = '2025-08-01T00:00:00Z', parser = 'replay'
+
+    @pytest.mark.parametrize("value", ["NaT", "2025-08-01T00:00:00Z", "2025-08-01T09:00:00+09:00"])
+    @pytest.mark.parametrize("parser", ["as_of", "replay"])
+    def test_query_dates_reject_missing_or_timezone_aware_values(value, parser):
+>       with pytest.raises(HTTPException) as error:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE HTTPException
+
+tests/test_service_audit_regressions.py:138: Failed
+_ test_query_dates_reject_missing_or_timezone_aware_values[replay-2025-08-01T09:00:00+09:00] _
+
+value = '2025-08-01T09:00:00+09:00', parser = 'replay'
+
+    @pytest.mark.parametrize("value", ["NaT", "2025-08-01T00:00:00Z", "2025-08-01T09:00:00+09:00"])
+    @pytest.mark.parametrize("parser", ["as_of", "replay"])
+    def test_query_dates_reject_missing_or_timezone_aware_values(value, parser):
+>       with pytest.raises(HTTPException) as error:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE HTTPException
+
+tests/test_service_audit_regressions.py:138: Failed
+=========================== short test summary info ============================
+FAILED tests/test_service_audit_regressions.py::test_same_commit_deploy_keeps_previous_release_intact
+FAILED tests/test_service_audit_regressions.py::test_query_dates_reject_missing_or_timezone_aware_values[as_of-2025-08-01T00:00:00Z]
+FAILED tests/test_service_audit_regressions.py::test_query_dates_reject_missing_or_timezone_aware_values[as_of-2025-08-01T09:00:00+09:00]
+FAILED tests/test_service_audit_regressions.py::test_query_dates_reject_missing_or_timezone_aware_values[replay-NaT]
+FAILED tests/test_service_audit_regressions.py::test_query_dates_reject_missing_or_timezone_aware_values[replay-2025-08-01T00:00:00Z]
+FAILED tests/test_service_audit_regressions.py::test_query_dates_reject_missing_or_timezone_aware_values[replay-2025-08-01T09:00:00+09:00]

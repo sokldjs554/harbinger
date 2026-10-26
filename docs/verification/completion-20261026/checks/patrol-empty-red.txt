@@ -1,0 +1,16 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____ test_empty_online_patrol_reports_zero_selection_with_requested_budget _____
+
+    def test_empty_online_patrol_reports_zero_selection_with_requested_budget():
+        store = SimpleNamespace(latest_rows=lambda *args: pd.DataFrame())
+        result = Store.patrol(store, "S01", pd.Timestamp("2025-06-01"), k=2, explain=False)
+        assert result["requested_k"] == 2
+        assert result["selected_count"] == result["mandatory_count"] == result["budget_overflow"] == 0
+>       assert result["round_robin_selected_count"] == 0
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'round_robin_selected_count'
+
+tests/test_patrol_budget_reporting.py:45: KeyError
+=========================== short test summary info ============================
+FAILED tests/test_patrol_budget_reporting.py::test_empty_online_patrol_reports_zero_selection_with_requested_budget

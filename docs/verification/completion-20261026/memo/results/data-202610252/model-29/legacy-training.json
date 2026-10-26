@@ -1,0 +1,59 @@
+{
+  "best_val_nll": 0.6948958039283752,
+  "epochs_run": 9,
+  "history": [
+    {
+      "epoch": 1,
+      "train_nll": 1.8534843610487202,
+      "val_nll": 0.6952192783355713
+    },
+    {
+      "epoch": 2,
+      "train_nll": 1.6682289375842758,
+      "val_nll": 0.6961608529090881
+    },
+    {
+      "epoch": 3,
+      "train_nll": 1.6519260389826158,
+      "val_nll": 0.6948958039283752
+    },
+    {
+      "epoch": 4,
+      "train_nll": 1.6369989556685254,
+      "val_nll": 0.6989341378211975
+    },
+    {
+      "epoch": 5,
+      "train_nll": 1.6252969505858132,
+      "val_nll": 0.7027000188827515
+    },
+    {
+      "epoch": 6,
+      "train_nll": 1.6114516067525682,
+      "val_nll": 0.7093827128410339
+    },
+    {
+      "epoch": 7,
+      "train_nll": 1.6000970838420434,
+      "val_nll": 0.7184732556343079
+    },
+    {
+      "epoch": 8,
+      "train_nll": 1.5872284185144845,
+      "val_nll": 0.7281768321990967
+    },
+    {
+      "epoch": 9,
+      "train_nll": 1.5733134105050872,
+      "val_nll": 0.7517918944358826
+    }
+  ],
+  "n_params": 96828,
+  "missing_aware": false,
+  "memo_dropout": 0,
+  "memo_rows_dropped": 0,
+  "saved_model_sha256": {
+    "deep_meta.json": "74d9e4d67e7a91ed0ff4f2136368f7c460229db174e6fcd9816752a93906859a",
+    "hazardnet.pt": "cbe4707863717b06af6cb6054c365cff629ac4fe0c7d27e84f11ab6c875989b7"
+  }
+}

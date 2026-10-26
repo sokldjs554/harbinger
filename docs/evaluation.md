@@ -1,8 +1,8 @@
 # 평가 계약과 결과 해석
 
-이 문서의 현재 수치는 `artifacts/*.json`에서 생성한다. 수정 전 수치는 `artifacts/archive/fd346c7/`에 보존하며 현재 결과와 혼용하지 않는다. `artifacts/before_after.json`은 같은 생성 데이터·패키지·시드로 다시 실행한 비교다. 기존 공개 수치를 그대로 수정 전 재현값이라고 부르지 않는다.
+이 문서의 현재 표는 `artifacts/*.json`의 번들 **<!-- num:metrics.bundle_version -->v20261026-093937<!-- /num -->**에서 생성한다. 교체 전 단일 실행은 [이전 산출물](../artifacts/archive/pre-completion-5a7f947/), 더 이전 수치는 `artifacts/archive/fd346c7/`에 보존한다. `artifacts/before_after.json`은 당시 같은 생성 데이터·패키지·시드로 다시 실행한 역사적 비교이며 현재 번들로 소급 변경하지 않는다. 현재 평가 산출물과 공개 서비스 배포 상태는 별도로 확인한다.
 
-생성·학습 시드, 메모 손상, 점검 기록 지연과 설비·시간 분할 보정의 추가 실험은 [평가 안정성 결과](verification/robustness-20261025/README.md)에 별도로 보존합니다. 기존 `artifacts/*.json`의 단일 실행 수치를 덮어쓰지 않습니다.
+[평가 보완 1–4](verification/completion-20261026/technical-results.md)는 알려진 세계의 메모 재실행, 새 합성 시드의 HGB 검증 선택, 과거 고정 모델의 순찰 재생을 구분한다. [과거 안정성 실험](verification/robustness-20261025/README.md)과 [초기 감사 전후 비교](verification/requirements-20261026/README.md)도 각각 보존한다. 현재 표의 PyTorch 재학습은 한 번의 epoch별 30% 사이트 마스크와 특징 v3를 사용하며, 과거 기대 51% 중복 마스크 결과와 구분한다.
 
 ## 시간 경계
 
@@ -17,9 +17,9 @@ HGB 내부 조기종료는 성숙한 학습 자료의 무작위 일부를 사용
 - 분류: HGB, 전체 특징 로지스틱, 연식/최근 판정만 학습한 제한 모델. AUROC, PR-AUC, Brier, ECE.
 - 생존: Cox, AFT, PyTorch 위험 네트. C-index와 IPCW Brier. 테스트 추적 기간 밖이거나 검열 생존확률이 0.05 이하인 평가 시점은 보류한다. 서로 다른 지원 시점의 IBS를 직접 비교하지 않는다.
 - 에너지: 별도 kWh 회귀의 MAE/MAPE/R². 고장 분류 점수와 혼합하지 않는다.
-- 순찰: 동일 날짜·사이트·K=10에서 HGB, 딥러닝, 로지스틱, 메모/이력 제거 모델, 최근 판정·연식·최근 고장·오래 미점검 규칙 및 무작위 기대치를 비교한다. 순수 위험순 평가와 중요도·기한 규칙을 포함하는 기존 처방 목록은 다른 정책이다.
+- 순찰: 같은 날짜·고객사·설비·요청 K=10에서 HGB, 딥러닝, 로지스틱, 메모/이력 제거 모델과 규칙 비교군을 평가한다. 원시 확률 순위의 Precision@10는 `methods`, 필수 대상과 중요도 가중을 반영한 실제 선택 적중률은 `service_policy.methods`에 나눠 저장한다. 서비스와 평가가 공동 선택 함수를 사용하며 규칙 점수의 고유 우선순위도 보존한다. 필수 수>K이면 모두 포함하고 실제 선택 수·필수 수·초과량을 기록한다.
 
-30일 창은 겹치고 같은 설비가 반복된다. 주간 행을 독립 표본으로 간주하지 않는다. 전체 고객사 시계열을 묶어 재표집하는 paired site-cluster bootstrap 2,000회로 Precision@K 및 최근 판정 규칙 대비 차이의 95% 구간을 계산한다. 이는 합성 고객사 간 변동을 반영하며 현실의 분포 변화까지 보장하지 않는다. 단일 날짜 웹 분석은 신뢰구간 없이 기술통계만 제공한다.
+30일 창은 겹치고 같은 설비가 반복된다. 주간 행을 독립 표본으로 간주하지 않는다. 주 순찰 지표는 고객사 안의 날짜별 적중률 평균을 구한 뒤 고객사를 같은 가중으로 평균한다. 전체 고객사 시계열을 묶어 재표집하는 paired site-cluster bootstrap 2,000회도 같은 고객사 평균을 계산하며, Precision@K·실제 선택 적중률 및 최근 판정 규칙 대비 차이의 95% 구간을 남긴다. 공통 고객사·날짜·후보를 요구하며 불완전 쌍·고객사 부족에서는 구간을 보류한다. 과거 날짜 가중 값은 `historical_date_weighted_*`에 보존한다. 이는 합성 고객사 간 변동을 반영하며 현실의 분포 변화까지 보장하지 않는다. 단일 날짜 웹 분석은 신뢰구간 없이 기술통계만 제공한다.
 
 ## 기여도와 고객사 보류
 
@@ -27,12 +27,20 @@ HGB 내부 조기종료는 성숙한 학습 자료의 무작위 일부를 사용
 
 현재 웹의 고객사별 표는 한 기준일의 결과다. 별도 LOSO 결과와 같은 것으로 표시하지 않는다. 업로드는 합성 학습 모델을 적용하는 탐색적 계산이며, 고객 고유 모델 학습이나 실제 고객 실증 완료를 뜻하지 않는다.
 
-## 현재 합성 실험
+## 기본 모델 선택과 현재 단일 실행의 구분
+
+전체 HGB 기본값은 새 자료 시드 202610261/262/263 × 학습 시드 17/29의 **검증 구간**으로 결정했다. 메모 제외 후보의 P@10 비감소·Brier 비증가·평균 AUROC/PR-AUC 비감소·paired 구간 하한>0 조건이 충족되지 않아 전체 특징을 유지했다. 선택·검증 예측 해시를 저장한 뒤 여섯 테스트를 계산했으며 테스트 결과로 선택을 바꾸지 않았다. 보정과 선택에 같은 검증 기간을 사용했고, 같은 생성기의 새 시드는 실제 신규 고객 자료가 아니다. [선택·동결·모든 지표·반복 편차](verification/completion-20261026/technical-results.md#2-hgb-기본-모델의-새-검증-선택)를 참조한다.
+
+아래 현재 번들의 단일 실행 표는 그 검증 선택을 대신하지 않는다. 메모의 입력 제거 효과도 해당 합성 조건에서 해석하며 원문을 기록 확인·설명에 제공하는 가치는 예측 이득과 구분한다.
+
+## 현재 평가 산출물의 합성 실험
 
 | 분류 모델 | AUROC | PR-AUC | Brier |
 |---|---:|---:|---:|
-| HGB | <!-- num:metrics.classifier.hgb_full.auroc|.4f -->0.7696<!-- /num --> | <!-- num:metrics.classifier.hgb_full.pr_auc|.4f -->0.2445<!-- /num --> | <!-- num:metrics.classifier.hgb_full.brier|.4f -->0.0684<!-- /num --> |
-| 로지스틱 | <!-- num:metrics.baselines.logistic_full.auroc|.4f -->0.7514<!-- /num --> | <!-- num:metrics.baselines.logistic_full.pr_auc|.4f -->0.2134<!-- /num --> | <!-- num:metrics.baselines.logistic_full.brier|.4f -->0.0703<!-- /num --> |
-| PyTorch | <!-- num:survival.deep.text+site.p30.auroc|.4f -->0.7643<!-- /num --> | <!-- num:survival.deep.text+site.p30.pr_auc|.4f -->0.2282<!-- /num --> | <!-- num:survival.deep.text+site.p30.brier|.4f -->0.0701<!-- /num --> |
+| HGB | <!-- num:metrics.classifier.hgb_full.auroc|.4f -->0.7680<!-- /num --> | <!-- num:metrics.classifier.hgb_full.pr_auc|.4f -->0.2406<!-- /num --> | <!-- num:metrics.classifier.hgb_full.brier|.4f -->0.0686<!-- /num --> |
+| 로지스틱 | <!-- num:metrics.baselines.logistic_full.auroc|.4f -->0.7518<!-- /num --> | <!-- num:metrics.baselines.logistic_full.pr_auc|.4f -->0.2140<!-- /num --> | <!-- num:metrics.baselines.logistic_full.brier|.4f -->0.0702<!-- /num --> |
+| PyTorch | <!-- num:survival.deep.text+site.p30.auroc|.4f -->0.7637<!-- /num --> | <!-- num:survival.deep.text+site.p30.pr_auc|.4f -->0.2266<!-- /num --> | <!-- num:survival.deep.text+site.p30.brier|.4f -->0.0702<!-- /num --> |
 
 원시 JSON과 모델 번들 버전, 재현 명령, 실행 기록은 [검증 기록](verification/README.md)을 참고한다. 합성 고장 정의는 예방적으로 수리된 사건을 양성에서 제외할 수 있으므로 “불량” 메모의 위험이 낮아지는 현상은 수리의 인과 효과로 해석하지 않는다.
+
+주 점검대장의 기본 위험순 목록은 원시 P30 순위이고, 고급 순찰은 필수 포함·중요도 가중을 적용한다. 현재 HGB의 원시 위험순 P@10는 **<!-- num:patrol.methods.harbinger_hgb.precision_at_k|.1% -->23.8%<!-- /num -->**, 실제 순찰 선택 적중률은 **<!-- num:patrol.service_policy.methods.harbinger_hgb.selection_hit_rate|.1% -->20.3%<!-- /num -->**다. 두 값의 선택 집합과 목적이 다르며 차이를 모델 성능 하락으로 단정하지 않는다. 방법별 구간·선택 수·필수 수·초과량은 [현재 순찰 JSON](../artifacts/patrol.json)에 있다. 기존 메모 반복 실험의 합계 적중/합계 선택 비율은 점 추정과 bootstrap에서 같은 비율을 재계산하는 원래 계약으로 유지했다.

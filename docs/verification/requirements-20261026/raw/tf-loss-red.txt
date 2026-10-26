@@ -1,0 +1,39 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_______ test_tensorflow_loss_matches_hand_calculation_and_torch_gradient _______
+
+    @pytest.mark.skipif(not tf_available(), reason='TensorFlow optional dependency absent')
+    def test_tensorflow_loss_matches_hand_calculation_and_torch_gradient():
+        code = '''
+    import numpy as np
+    import torch
+    from harbinger.models.deep import discrete_nll
+    from harbinger.models.keras_parity import _targets, discrete_hazard_nll
+    import tensorflow as tf
+    days=np.array([30.,60.,30.,60.])
+    event=np.array([1,1,0,0])
+    targets=_targets(days,event,n_bins=2)
+    # h=.5: event30 ->1 term, event60 ->2, censor30 ->1, censor60 ->2.
+    tv=torch.zeros((4,2),requires_grad=True)
+    pt=discrete_nll(tv,torch.tensor(days),torch.tensor(event));pt.backward()
+    kv=tf.Variable(np.zeros((4,2),dtype=np.float32))
+    with tf.GradientTape() as tape:
+     loss=discrete_hazard_nll(tf.constant(targets),kv)
+    grad=tape.gradient(loss,kv).numpy()
+    np.testing.assert_allclose(float(loss),1.5*np.log(2),rtol=1e-6)
+    np.testing.assert_allclose(float(loss),float(pt.detach()),rtol=1e-6)
+    np.testing.assert_allclose(grad,tv.grad.numpy(),atol=1e-7)
+    '''
+        proc = subprocess.run([sys.executable, '-c', code], capture_output=True, text=True, timeout=120)
+>       assert proc.returncode == 0, proc.stderr[-3000:]
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 5, in <module>
+E         ImportError: cannot import name 'discrete_hazard_nll' from 'harbinger.models.keras_parity' (/workspace/harbinger/src/harbinger/models/keras_parity.py)
+E
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/tmp/hb-tf-audit-venv/bin/python', '-c', '\nimport numpy as np\nimport torch\nfrom harbinger.m...ete_hazard_nll\' from \'harbinger.models.keras_parity\' (/workspace/harbinger/src/harbinger/models/keras_parity.py)\n').returncode
+
+tests/test_keras_parity.py:70: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_keras_parity.py::test_tensorflow_loss_matches_hand_calculation_and_torch_gradient
+1 failed, 10 deselected in 1.90s

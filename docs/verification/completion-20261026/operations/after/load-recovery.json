@@ -1,0 +1,40 @@
+{
+  "requests": [
+    {
+      "operation": "analysis",
+      "status": 200,
+      "seconds": 0.11381166000501253,
+      "bytes": 52977,
+      "rejection": null,
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "upload",
+      "status": 200,
+      "seconds": 0.8297899479948683,
+      "bytes": 840,
+      "rejection": null,
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "download",
+      "status": 200,
+      "seconds": 0.10988461500528501,
+      "bytes": 71313,
+      "rejection": null,
+      "retry_after": null,
+      "capacity_reason": null
+    }
+  ],
+  "health": {
+    "status": "ok",
+    "service": "harbinger",
+    "version": "0.1.0"
+  },
+  "usage": {
+    "cpu_seconds": 52.0,
+    "rss_bytes": 1050001408
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "ols": {
+    "actual_min": 30.0,
+    "unsupported_forecast": -50.00000000000003,
+    "ratio": 29999999.0
+  }
+}
+{
+  "sparse_energy_sigma": {
+    "stored_sigma": 0.01014530590113635,
+    "calendar_7d_evaluable_training_windows": 0,
+    "inference_evaluable_days": 0
+  }
+}

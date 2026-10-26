@@ -1,0 +1,528 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________ test_analysis_upload_download_and_evidence_share_gate _____________
+  + Exception Group Traceback (most recent call last):
+  |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/_utils.py", line 104, in create_collapsing_task_group
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 847, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/_pytest/runner.py", line 361, in from_call
+    |     result: TResult | None = func()
+    |                              ^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/_pytest/runner.py", line 250, in <lambda>
+    |     lambda: runtest_hook(item=item, **kwds),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/pluggy/_caller.py", line 197, in __call__
+    |     return self._hookexec(
+    |            ^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/pluggy/_manager.py", line 183, in _hookexec
+    |     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/pluggy/_execution.py", line 195, in _multicall
+    |     raise exception
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/pluggy/_execution.py", line 167, in _multicall
+    |     teardown.throw(exception)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/_pytest/logging.py", line 865, in pytest_runtest_call
+    |     yield
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/pluggy/_execution.py", line 167, in _multicall
+    |     teardown.throw(exception)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/_pytest/capture.py", line 900, in pytest_runtest_call
+    |     return (yield)
+    |             ^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/pluggy/_execution.py", line 167, in _multicall
+    |     teardown.throw(exception)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/_pytest/skipping.py", line 268, in pytest_runtest_call
+    |     return (yield)
+    |             ^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/pluggy/_execution.py", line 147, in _multicall
+    |     res = hook_impl.function(*args)
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/_pytest/runner.py", line 184, in pytest_runtest_call
+    |     item.runtest()
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/_pytest/python.py", line 1707, in runtest
+    |     self.ihook.pytest_pyfunc_call(pyfuncitem=self)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/pluggy/_caller.py", line 197, in __call__
+    |     return self._hookexec(
+    |            ^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/pluggy/_manager.py", line 183, in _hookexec
+    |     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/pluggy/_execution.py", line 195, in _multicall
+    |     raise exception
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/pluggy/_execution.py", line 147, in _multicall
+    |     res = hook_impl.function(*args)
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/_pytest/python.py", line 167, in pytest_pyfunc_call
+    |     result = testfunction(**testargs)
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/tests/test_compute_limits.py", line 116, in test_analysis_upload_download_and_evidence_share_gate
+    |     analysis = client.get(base + "/analysis", params=params)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1053, in get
+    |     return self.request(
+    |            ^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 518, in request
+    |     return super().request(
+    |            ^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/httpx/_client.py", line 825, in request
+    |     return self.send(request, auth=auth, follow_redirects=follow_redirects)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/httpx/_client.py", line 928, in send
+    |     raise exc
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/httpx/_client.py", line 922, in send
+    |     response.read()
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/httpx/_models.py", line 881, in read
+    |     self._content = b"".join(self.iter_bytes())
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/httpx/_models.py", line 897, in iter_bytes
+    |     for raw_bytes in self.iter_raw():
+    |                      ^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/httpx/_models.py", line 951, in iter_raw
+    |     for raw_stream_bytes in self.stream:
+    |                             ^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/httpx/_client.py", line 153, in __iter__
+    |     for chunk in self._stream:
+    |                  ^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 384, in iter_body
+    |     exit_stack.close()
+    |   File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py", line 618, in close
+    |     self.__exit__(None, None, None)
+    |   File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py", line 610, in __exit__
+    |     raise exc_details[1]
+    |   File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py", line 595, in __exit__
+    |     if cb(*exc_details):
+    |        ^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 399, in close_app
+    |     raise exception
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/anyio/from_thread.py", line 265, in _call_func
+    |     retval = await retval_or_awaitable
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 366, in run_app
+    |     await self.app(scope, receive, send)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1194, in __call__
+    |     await super().__call__(scope, receive, send)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    |     raise exc
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/src/harbinger/api/main.py", line 97, in metrics_middleware
+    |     resp = await call_next(request)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/src/harbinger/api/auth.py", line 185, in enforce_auth
+    |     return await call_next(request)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/routing.py", line 678, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2811, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1839, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2894, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1865, in _handle_selected
+    |     await original_route.handle(scope, receive, send)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1328, in handle
+    |     await effective_context.app(scope, receive, send)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 166, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 152, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 745, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 374, in run_endpoint_function
+    |     return await run_in_threadpool(
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/concurrency.py", line 34, in run_in_threadpool
+    |     return await anyio.to_thread.run_sync(func)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/anyio/to_thread.py", line 65, in run_sync
+    |     return await get_async_backend().run_sync_in_worker_thread(
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2706, in run_sync_in_worker_thread
+    |     return await future
+    |            ^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 1100, in run
+    |     result = context.run(func, *args)
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py", line 244, in _run_sync_endpoint
+    |     return function(**arguments)
+    |            ^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/src/harbinger/api/routers/workbench.py", line 235, in analysis
+    |     return result(token, as_of, site, k, owner(request))
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/workspace/harbinger/src/harbinger/api/routers/workbench.py", line 215, in result
+    |     if not compute.acquire(blocking=False):
+    |            ^^^^^^^^^^^^^^^
+    | AttributeError: 'ObservedGate' object has no attribute 'acquire'
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/workspace/harbinger/tests/test_compute_limits.py", line 116, in test_analysis_upload_download_and_evidence_share_gate
+    analysis = client.get(base + "/analysis", params=params)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1053, in get
+    return self.request(
+           ^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 518, in request
+    return super().request(
+           ^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/httpx/_client.py", line 825, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/httpx/_client.py", line 928, in send
+    raise exc
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/httpx/_client.py", line 922, in send
+    response.read()
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/httpx/_models.py", line 881, in read
+    self._content = b"".join(self.iter_bytes())
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/httpx/_models.py", line 897, in iter_bytes
+    for raw_bytes in self.iter_raw():
+                     ^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/httpx/_models.py", line 951, in iter_raw
+    for raw_stream_bytes in self.stream:
+                            ^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/httpx/_client.py", line 153, in __iter__
+    for chunk in self._stream:
+                 ^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 384, in iter_body
+    exit_stack.close()
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py", line 618, in close
+    self.__exit__(None, None, None)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py", line 610, in __exit__
+    raise exc_details[1]
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py", line 595, in __exit__
+    if cb(*exc_details):
+       ^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 399, in close_app
+    raise exception
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/anyio/from_thread.py", line 265, in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 366, in run_app
+    await self.app(scope, receive, send)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1194, in __call__
+    await super().__call__(scope, receive, send)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/src/harbinger/api/main.py", line 97, in metrics_middleware
+    resp = await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/src/harbinger/api/auth.py", line 185, in enforce_auth
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/routing.py", line 678, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2811, in app
+    await route.handle(scope, receive, send)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1839, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2894, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1865, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1328, in handle
+    await effective_context.app(scope, receive, send)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 166, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 152, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 745, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 374, in run_endpoint_function
+    return await run_in_threadpool(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/starlette/concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/anyio/to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2706, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 1100, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py", line 244, in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/src/harbinger/api/routers/workbench.py", line 235, in analysis
+    return result(token, as_of, site, k, owner(request))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/harbinger/src/harbinger/api/routers/workbench.py", line 215, in result
+    if not compute.acquire(blocking=False):
+           ^^^^^^^^^^^^^^^
+AttributeError: 'ObservedGate' object has no attribute 'acquire'
+
+The above exception was the direct cause of the following exception:
+
+client = <starlette.testclient.TestClient object at 0x7f4cf6067aa0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f4cf5822ab0>
+
+    def test_analysis_upload_download_and_evidence_share_gate(client, monkeypatch):
+        from contextlib import contextmanager
+    
+        from harbinger.api.compute import ComputeGate
+        from harbinger.api.routers import workbench
+    
+        calls = []
+    
+        class ObservedGate(ComputeGate):
+            @contextmanager
+            def slot(self):
+                with super().slot():
+                    calls.append(1)
+                    yield
+    
+        monkeypatch.setattr(workbench, "compute", ObservedGate())
+        example = client.post("/v1/workbench/example").json()
+        token = example["session_id"]
+        params = {"as_of": example["default_as_of"]}
+        base = f"/v1/workbench/sessions/{token}"
+>       analysis = client.get(base + "/analysis", params=params)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_compute_limits.py:116: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/httpx/_client.py:1053: in get
+    return self.request(
+.venv/lib/python3.12/site-packages/starlette/testclient.py:518: in request
+    return super().request(
+.venv/lib/python3.12/site-packages/httpx/_client.py:825: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_client.py:928: in send
+    raise exc
+.venv/lib/python3.12/site-packages/httpx/_client.py:922: in send
+    response.read()
+.venv/lib/python3.12/site-packages/httpx/_models.py:881: in read
+    self._content = b"".join(self.iter_bytes())
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_models.py:897: in iter_bytes
+    for raw_bytes in self.iter_raw():
+                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_models.py:951: in iter_raw
+    for raw_stream_bytes in self.stream:
+                            ^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_client.py:153: in __iter__
+    for chunk in self._stream:
+                 ^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:384: in iter_body
+    exit_stack.close()
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py:618: in close
+    self.__exit__(None, None, None)
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py:610: in __exit__
+    raise exc_details[1]
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py:595: in __exit__
+    if cb(*exc_details):
+       ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:399: in close_app
+    raise exception
+.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:366: in run_app
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1194: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/base.py:203: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/harbinger/api/main.py:97: in metrics_middleware
+    resp = await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/middleware/base.py:179: in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+.venv/lib/python3.12/site-packages/starlette/middleware/base.py:149: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+.venv/lib/python3.12/site-packages/starlette/middleware/base.py:203: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/harbinger/api/auth.py:185: in enforce_auth
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/middleware/base.py:179: in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+.venv/lib/python3.12/site-packages/starlette/middleware/base.py:149: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:678: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2811: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1839: in handle
+    await self.original_router.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2894: in handle
+    await included_router._handle_selected(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1865: in _handle_selected
+    await original_route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1328: in handle
+    await effective_context.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:166: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:152: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:745: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:374: in run_endpoint_function
+    return await run_in_threadpool(
+.venv/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/anyio/to_thread.py:65: in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py:244: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+src/harbinger/api/routers/workbench.py:235: in analysis
+    return result(token, as_of, site, k, owner(request))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+token = 'gPHDWIl_jNOwslSUOU--tcqooY87TjUN', as_of = '2024-09-17', site = None
+k = 10, owner_id = None
+
+    def result(token, as_of, site, k, owner_id=None):
+        s = session(token, owner_id)
+        try:
+            cutoff = timestamp(as_of, end_of_day=True)
+        except UploadError as exc:
+            raise HTTPException(422, str(exc)) from exc
+        if cutoff > s.store.data_end:
+            raise HTTPException(422, "예측 기준일은 데이터 관측 종료일을 넘을 수 없습니다.")
+        if site and site not in set(s.store.tables["sites"].site_id):
+            raise HTTPException(404, "알 수 없는 고객사입니다.")
+>       if not compute.acquire(blocking=False):
+               ^^^^^^^^^^^^^^^
+E       AttributeError: 'ObservedGate' object has no attribute 'acquire'
+
+src/harbinger/api/routers/workbench.py:215: AttributeError
+---------------------------- Captured stdout setup -----------------------------
+[features] rows=7013 features=102 pos_rate(valid)=0.0654 in 1.4s
+[eval] split={'train': {'rows': 4208, 'mature_labels': 3510, 'immature_labels': 698, 'from': '2024-01-01', 'to': '2024-07-01'}, 'val': {'rows': 708, 'to': '2024-08-01', 'mature_labels': 20, 'immature_labels': 688}, 'test': {'rows': 2097, 'to': '2024-10-31'}} features=116 labeled train/val/test=3510/20/1414
+[eval] HGB full: {'n': 1414, 'pos_rate': 0.09405940594059406, 'auroc': 0.6460237244164275, 'pr_auc': 0.14778656437634152, 'brier': 0.09623639560654175, 'ece': 0.09566248024707605, 'pr_auc_lift': 1.5712045265274204, 'c_index': 0.6311815329605805, 'calibration_method': 'Platt 스케일링', 'calibration_val_logloss_raw': 0.6685828425242324, 'calibration_val_brier_raw': 0.20881963022855748, 'calibration_val_logloss_platt': 0.5993283591198705, 'calibration_val_brier_platt': 0.20083838461143433, 'calibration_val_logloss_isotonic': 1.0377381923910558, 'calibration_val_brier_isotonic': 0.17068529363926033}
+[eval] baselines: {'logistic_full': 0.573, 'age_only': 0.525, 'last_inspection': 0.618, 'oracle_latent_state': 0.81, 'constant_prior': 0.5}
+[eval] ablation: {'checklist_only': 0.591, '+text': 0.643, '+text+quality': 0.637, '+text+quality+history': 0.664, 'full(+energy)': 0.646, 'full−text': 0.649, 'full−quality': 0.641, 'full−history': 0.635}
+[eval] survival cox: c=0.715 ibs=0.0932 p30_auroc=0.739
+[eval] survival aft: c=0.710 ibs=0.0889 p30_auroc=0.735
+[deep:text] epoch 1 train=1.3677 val=0.1090
+[deep:text] epoch 6 train=0.5702 val=0.1079
+[deep:text] epoch 8 train=0.5648 val=0.1093
+[eval] deep text+site: p30_auroc=0.699 c=0.680 ibs=0.0793
+[eval] energy: {'mae': 692.0486276262701, 'mape': 0.04189773732672829, 'r2': 0.9910151723354313, 'rows': 368} oracle={'summer_corr_resid_vs_cooling_degradation': 0.4137477174394356, 'auroc_z_vs_high_degradation': 0.6879249257876089, 'anomaly_day_rate': 0.3559322033898305, 'rows': 236}
+[eval] patrol@10: {'age': 0.105, 'harbinger_deep': 0.245, 'harbinger_hgb': 0.16, 'last_inspection': 0.17, 'logistic': 0.125, 'random': 0.075, 'recent_repair': 0.025, 'round_robin': 0.055, 'without_history': 0.14, 'without_text': 0.16} recall@20%={'top_frac': 0.2, 'breakdowns_evaluated': 80, 'recall': 0.3375}
+[eval] top features: [('tx_weak_score_ewm', 0.43), ('wo_days_since_pm', 0.378), ('q_evidence_sum6', 0.177), ('tx_n_groups_ewm', 0.148), ('q_dwell_rel', 0.146), ('st_age_years', 0.14), ('st_floor', 0.117), ('ck_days_since_caution', 0.113)]
+[eval] saved bundle v20261026-092617; total 20.1s
+---------------------------- Captured stderr setup -----------------------------
+Fontconfig error: No writable cache directories
+{"ts": "2026-10-26T09:26:18", "level": "INFO", "logger": "harbinger.store", "msg": "store loaded: assets=444 features_rows=7013 bundle=v20261026-092617 in 0.2s"}
+------------------------------ Captured log setup ------------------------------
+WARNING  matplotlib:__init__.py:573 mkdir -p failed for path /home/agent/.config/matplotlib: [Errno 30] Read-only file system: '/home/agent/.config/matplotlib'
+WARNING  matplotlib:__init__.py:596 Matplotlib created a temporary cache directory at /tmp/matplotlib-xgt8w_x6 because there was an issue with the default path (/home/agent/.config/matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+----------------------------- Captured stderr call -----------------------------
+{"ts": "2026-10-26T09:26:18", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: POST http://testserver/v1/workbench/example \"HTTP/1.1 200 OK\""}
+{"ts": "2026-10-26T09:26:18", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: GET http://testserver/v1/workbench/sessions/gPHDWIl_jNOwslSUOU--tcqooY87TjUN/analysis?as_of=2024-09-17 \"HTTP/1.1 500 Internal Server Error\""}
+------------------------------ Captured log call -------------------------------
+INFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/v1/workbench/example "HTTP/1.1 200 OK"
+INFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/v1/workbench/sessions/gPHDWIl_jNOwslSUOU--tcqooY87TjUN/analysis?as_of=2024-09-17 "HTTP/1.1 500 Internal Server Error"
+=========================== short test summary info ============================
+FAILED tests/test_compute_limits.py::test_analysis_upload_download_and_evidence_share_gate

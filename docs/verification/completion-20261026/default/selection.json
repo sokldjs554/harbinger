@@ -1,0 +1,64 @@
+{
+  "selected": "full",
+  "criteria": {
+    "six_unique_runs": true,
+    "finite": true,
+    "every_precision_nondecreasing": false,
+    "every_brier_nonincreasing": false,
+    "mean_auroc_nondecreasing": false,
+    "mean_pr_auc_nondecreasing": false,
+    "enough_site_clusters": true,
+    "paired_precision_ci_positive": false
+  },
+  "reasons": [
+    "every_precision_nondecreasing",
+    "every_brier_nonincreasing",
+    "mean_auroc_nondecreasing",
+    "mean_pr_auc_nondecreasing",
+    "paired_precision_ci_positive"
+  ],
+  "precision_delta_ci95": [
+    -0.007715079365079367,
+    0.001555555555555555
+  ],
+  "run_deltas": [
+    {
+      "auroc": -0.001989071545283716,
+      "pr_auc": -0.001523559311253142,
+      "brier": 0.00013454883196503675,
+      "precision_at_k": -0.0005714285714285006
+    },
+    {
+      "auroc": -0.005861269552755899,
+      "pr_auc": 0.00014922356159946526,
+      "brier": 0.00014614387926825678,
+      "precision_at_k": -0.00038095238095242623
+    },
+    {
+      "auroc": -0.0026654594124143616,
+      "pr_auc": 0.0034378450093940915,
+      "brier": 2.925758028732295e-05,
+      "precision_at_k": -0.005714285714285783
+    },
+    {
+      "auroc": -0.0036564123192592834,
+      "pr_auc": 0.0029092822333915414,
+      "brier": 8.758190311078384e-05,
+      "precision_at_k": -0.0003809523809523707
+    },
+    {
+      "auroc": -0.005817627594547514,
+      "pr_auc": -0.0005798124118444326,
+      "brier": 0.00013693106026041457,
+      "precision_at_k": -0.005142857142857171
+    },
+    {
+      "auroc": -0.009726543524110065,
+      "pr_auc": -0.016389681648245252,
+      "brier": 0.0009097761166674406,
+      "precision_at_k": -0.00723809523809521
+    }
+  ],
+  "selection_role": "validation reused for calibration; not independent test",
+  "uncertainty": "2000 paired site-block draws within each fixed synthetic world; same draws across training seeds; equal world/seed weights; not customer confidence"
+}

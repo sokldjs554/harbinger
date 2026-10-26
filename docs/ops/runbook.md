@@ -45,7 +45,7 @@ harbinger eval --data data --models models --artifacts artifacts
 | `HarbingerModelUnavailable` | 정상 scrape에 모델 gauge가 없거나 로드값 1인 버전 없음 / 5분 | 로그·번들 볼륨·manifest 확인 |
 | `HarbingerWorkbenchSlow` | 각 주 화면 경로의 성공 p95 > 2초, 성공 ≥ 20 / 5분 | 자료 크기·동시 계산·모델 정책 검증 비용 확인 |
 | `HarbingerWorkbenchFailures` | 각 주 화면 경로의 5xx 증가 / 2분 | 오류 로그·모델·입력 처리 확인 |
-| `HarbingerWorkbenchCapacity` | 각 주 화면 경로의 429 증가 / 2분 | 계산 슬롯 2개·세션 한도 8개 확인. 실패율과 별도 집계 |
+| `HarbingerWorkbenchCapacity` | 각 주 화면 경로의 429 증가 / 2분 | 계산 슬롯 2개·대기 최대 4개/10초·세션 한도 8개 확인. 실패율과 별도 집계 |
 | `HarbingerPatrolSlow` | 최근 5분 p95 > 2초, 요청 ≥ 20 / 5분 | 설명기(SHAP) 비용·후보 수 확인. `explain=false` 비교. 20건 미만이면 이 경보는 판단 보류 |
 | `HarbingerServerErrors` | 최근 5분 5xx 증가율 > 0 / 2분 | JSON 오류 로그와 요청 라우트 확인 |
 | `HarbingerFeatureDrift` | 성공한 계산, 성공 시각이 24시간 이내, 경보 피처 ≥ 3 / 5분 | 입력 스키마·누락·분포·관측 창 확인 후 재학습 검토 |
@@ -84,6 +84,14 @@ prometheus --config.file=deploy/monitoring/prometheus.yml --storage.tsdb.path=/t
 Alertmanager 수신처·연락 경로 설정은 별도이며 이 규칙 파일만으로 알림이 전달되지는 않는다.
 고정 시계열 promtool 검사는 유지한다. 별도로 `scripts/check_local_operations.py`는 실제 로컬 API → Prometheus → 로컬 Alertmanager v2 프로토콜 수신기 → 복구를 검사한다. 1초 수집·10초 관측·2초 지속의 가속 테스트 규칙과 고의 계산 예외를 사용한다. 외부 운영 수신처나 실제 사고 대응 훈련을 검증한 것은 아니다.
 
+## 계산 요청의 대기와 거절
+
+현재 코드는 한 프로세스에서 계산 **2개**를 유지하고, 먼저 들어온 순서대로 최대 **4개**를 기다리게 한다. 대기 시간 한도는 **10초**다. 4개는 활성 슬롯의 두 배로 제한한 구현자의 초기 burst 예산이며, 10초도 고객 합의 SLO나 보편적인 용량 기준이 아니다. 실제 계산을 시작한 뒤의 실행 시간을 강제로 끊는 기능은 아니다. 여러 worker를 추가하면 이 한도와 메모리 세션도 worker별로 분리되므로 전역 한도라고 해석하지 않는다.
+
+계산 대기 초과의 429는 `X-Harbinger-Capacity: queue_full`, 대기 시간초과는 `wait_timeout`과 `Retry-After: 1`을 반환한다. 재시도 간격 안내가 곧 성공 보장은 아니다. 기존 세션 8개 한도의 429는 별도 사유이며 세션을 닫거나 만료를 기다려야 한다. 계산 예외·대기 시간초과 후에도 슬롯과 대기 자리를 반환한다. 기존 분석·업로드·다운로드의 성공/429/5xx 관측은 유지한다.
+
+수정 전 즉시 거절 정책과의 비교는 같은 최종 모델·입력·호스트에서 순서대로 실행하고, 성공한 요청의 지연과 거절 비율을 별도로 비교한다. 고의 15초 지연으로 대기 초과/복구를 검사한 결과는 정상 처리량에 섞지 않는다. 원시 응답·CPU·RSS·환경·입력 해시는 [이번 완료 검증](../verification/completion-20261026/README.md)에 연결한다. 짧은 burst의 성공률이 높아져도 지속적인 처리량이나 AWS 용량이 늘었다고 주장하지 않는다.
+
 공식 문서: [규칙 설정](https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/),
 [규칙 단위 검사](https://prometheus.io/docs/prometheus/latest/configuration/unit_testing_rules/).
 
@@ -101,3 +109,5 @@ Alertmanager 수신처·연락 경로 설정은 별도이며 이 규칙 파일�
 ## 기존 공개 환경 갱신
 
 AWS 배포 workflow는 호스트 확인과 실제 배포 단계에 `HARBINGER_EXISTING_INSTANCE_ONLY=1`을 설정한다. 기존 프로젝트 태그의 서버를 찾지 못하면 새 인스턴스·볼륨을 만들지 않고 중단한다. 정확한 main 커밋의 CI 통과 후 기존 서버를 갱신한다. Pages는 `artifacts/release.json` 변경에도 재배포·검증하며, 저장 응답과 AWS 실제 계산을 구분한다. 배포 후 기능 확인은 소수의 순차 요청으로 진행하고 공개 서버에 부하 검사를 수행하지 않는다.
+
+동일 커밋의 배포 재실행도 매번 별도의 릴리스 디렉터리를 사용합니다. 새 이미지를 로드하기 전에 기존 컨테이너의 이미지 ID를 보존하고, 롤백에서는 기존 태그까지 그 ID로 복구합니다. 이번 수정의 근거는 로컬 셸 계약 검사이며 새 AWS 서버 장애/롤백 실증으로 부르지 않습니다. 특징 버전 3으로 이동할 때에는 자료·특징·모델을 함께 생성해 배포해야 합니다.

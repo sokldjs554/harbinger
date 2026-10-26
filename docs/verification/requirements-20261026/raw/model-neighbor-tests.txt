@@ -1,0 +1,14 @@
+......................................................................   [100%]
+=============================== warnings summary ===============================
+tests/test_models.py::test_classifier_beats_baselines_on_tiny
+tests/test_models.py::test_classifier_beats_baselines_on_tiny
+  /workspace/harbinger/src/harbinger/models/survival.py:75: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+    Z["tte_days"] = df["tte_days"].to_numpy()
+
+tests/test_models.py::test_classifier_beats_baselines_on_tiny
+tests/test_models.py::test_classifier_beats_baselines_on_tiny
+  /workspace/harbinger/src/harbinger/models/survival.py:76: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+    Z["event"] = df["event"].to_numpy()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+70 passed, 4 warnings in 31.02s

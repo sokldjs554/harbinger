@@ -10,6 +10,8 @@
 
 ## 감사 지적 보완
 
+[공고의 업무·자격·우대 항목 전체 대조](docs/job-requirements-audit.md)에서 코드·실행 근거와 확인할 수 없는 조건을 구분했습니다. FastAPI·AWS를 유지하며 TensorFlow 실제 학습·수치 대조를 추가했습니다. 에너지 전처리·사이트 가리기·평가 집단의 결함을 수정하고, 메모 누락 재실행·새 검증 시드의 HGB 선택·실제 순찰 평가·고객사 가중 집계를 보완했습니다. 아래 현재 평가 표의 번들은 **<!-- num:metrics.bundle_version -->v20261026-093937<!-- /num -->**이며 `artifacts/*.json`에서 수치를 채웁니다. 교체 전 단일 실행은 [이전 산출물 보관본](artifacts/archive/pre-completion-5a7f947/)에, 반복 실험은 각 검증 문서에 보존합니다. [평가 보완 1–4의 근거](docs/verification/completion-20261026/technical-results.md)와 [초기 감사의 수정 전후 재실행](docs/verification/requirements-20261026/README.md)을 구분합니다.
+
 고객사 모델 선택은 같은 기준일의 상위 10개 적중률과 Brier를 함께 확인하고, 반복 설비·날짜의 안정성이 부족하면 기본 모델을 유지하도록 수정했습니다. 에너지는 자료 없음·모델 없음·관측 부족을 정상/0일과 구분합니다. 주 분석·업로드·다운로드는 실패와 429를 별도로 관측합니다. [재현·수정·로컬 부하와 경보 검증](docs/verification/audit-20261026/README.md)에 원시 결과와 한계를 남겼습니다. 최신 배포 상태는 [AWS 배포 실행](https://github.com/sokldjs554/harbinger/actions/workflows/aws-ec2.yml)과 [Pages 배포 실행](https://github.com/sokldjs554/harbinger/actions/workflows/pages.yml)에서 확인할 수 있습니다.
 
 ## 주제를 선택한 이유
@@ -40,37 +42,41 @@
 
 [검토 기록·개선 대응·재검토 절차](docs/user-reviews/README.md)에 근거와 한계를 구분했습니다. 수정 후 추가 문제가 없다는 회신을 사용자에게 전달받았습니다. 응답자별 과업 결과와 재측정 시간은 받지 않았으며, 친구 B의 최초 시간 실측 여부도 미확인입니다. 저장 예제의 위치 검색은 상세 근거가 저장된 설비에 한정됩니다.
 
-## 모델 비교와 선택
+## 현재 평가 산출물의 모델 비교와 선택
 
-점검 시점에 알 수 있는 정보로 향후 30일 내 비계획 고장 가능성을 추정합니다. 시간 순서로 학습·보정·테스트를 나누고, 30일의 관측이 끝난 테스트 18,439행에서 비교했습니다.
+점검 시점에 알 수 있는 정보로 향후 30일 내 비계획 고장 가능성을 추정합니다. 시간 순서로 학습·보정·테스트를 나누고, 30일의 관측이 끝난 테스트 <!-- num:metrics.classifier.hgb_full.n|,d -->18,439<!-- /num -->행에서 비교했습니다.
 
 | 모델 | AUROC ↑ | PR-AUC ↑ | Brier ↓ |
 |---|---:|---:|---:|
-| HGB 분류 모델 | <!-- num:metrics.classifier.hgb_full.auroc|.4f -->0.7696<!-- /num --> | <!-- num:metrics.classifier.hgb_full.pr_auc|.4f -->0.2445<!-- /num --> | <!-- num:metrics.classifier.hgb_full.brier|.4f -->0.0684<!-- /num --> |
-| 로지스틱 회귀 | <!-- num:metrics.baselines.logistic_full.auroc|.4f -->0.7514<!-- /num --> | <!-- num:metrics.baselines.logistic_full.pr_auc|.4f -->0.2134<!-- /num --> | <!-- num:metrics.baselines.logistic_full.brier|.4f -->0.0703<!-- /num --> |
-| PyTorch 생존 모델¹ | <!-- num:survival.deep.text+site.p30.auroc|.4f -->0.7643<!-- /num --> | <!-- num:survival.deep.text+site.p30.pr_auc|.4f -->0.2282<!-- /num --> | <!-- num:survival.deep.text+site.p30.brier|.4f -->0.0701<!-- /num --> |
+| HGB 분류 모델 | <!-- num:metrics.classifier.hgb_full.auroc|.4f -->0.7680<!-- /num --> | <!-- num:metrics.classifier.hgb_full.pr_auc|.4f -->0.2406<!-- /num --> | <!-- num:metrics.classifier.hgb_full.brier|.4f -->0.0686<!-- /num --> |
+| 로지스틱 회귀 | <!-- num:metrics.baselines.logistic_full.auroc|.4f -->0.7518<!-- /num --> | <!-- num:metrics.baselines.logistic_full.pr_auc|.4f -->0.2140<!-- /num --> | <!-- num:metrics.baselines.logistic_full.brier|.4f -->0.0702<!-- /num --> |
+| PyTorch 생존 모델¹ | <!-- num:survival.deep.text+site.p30.auroc|.4f -->0.7637<!-- /num --> | <!-- num:survival.deep.text+site.p30.pr_auc|.4f -->0.2266<!-- /num --> | <!-- num:survival.deep.text+site.p30.brier|.4f -->0.0702<!-- /num --> |
 
-이 실험의 분류 성능을 근거로 HGB를 현재 모델로 사용했습니다. 생존 모델은 고장까지의 시간과 관측 종료를 다루며, 건물 에너지 회귀는 별도로 평가합니다. AUROC·PR-AUC는 높을수록, 확률 오차인 Brier는 낮을수록 좋습니다.
+기본 HGB의 전체 특징 유지 결정은 이 단일 실행 표와 별도로, 새 자료 시드 202610261/262/263 × 학습 시드 17/29의 검증 결과에서 고정했습니다. 메모 제외 후보가 정한 교체 조건에 못 미쳐 전체 모델을 유지했고, 이후 여섯 테스트를 계산했습니다. [선택·동결·평균과 실행별 편차](docs/verification/completion-20261026/technical-results.md#2-hgb-기본-모델의-새-검증-선택)를 확인할 수 있습니다. 생존 모델은 고장까지의 시간과 관측 종료를 다루며, 건물 에너지 회귀는 별도로 평가합니다. AUROC·PR-AUC는 높을수록, 확률 오차인 Brier는 낮을수록 좋습니다.
 
-¹ 메모·사이트 임베딩을 포함한 `text+site` 변형입니다. 모든 PyTorch 변형 중 최고 결과라는 뜻은 아닙니다. [모델 설계](docs/modeling.md) · [평가 조건과 변형별 결과](docs/evaluation.md)
+¹ 메모·사이트 임베딩을 포함한 `text+site` 변형입니다. 모든 PyTorch 변형 중 최고 결과라는 뜻은 아닙니다. 현재 재학습은 epoch마다 한 번 새로 뽑는 30% 고객사 ID 마스크와 특징 정의 v3를 사용합니다. 과거 중복 마스크의 기대 51%는 이전 저장 모델·반복 실험에 해당하며 현재 표의 학습 설정이 아닙니다. [모델 설계](docs/modeling.md) · [평가 조건과 변형별 결과](docs/evaluation.md)
 
 ## 입력별 기여도와 우선 점검 결과
 
 | 입력 조건 | 시간 보류 AUROC | 시간 보류 PR-AUC |
 |---|---:|---:|
-| 전체 모델 | <!-- num:ablation.full(+energy).auroc|.4f -->0.7696<!-- /num --> | <!-- num:ablation.full(+energy).pr_auc|.4f -->0.2445<!-- /num --> |
-| 메모 및 메모 파생 특징 제거 | <!-- num:ablation.full−text.auroc|.4f -->0.7702<!-- /num --> | <!-- num:ablation.full−text.pr_auc|.4f -->0.2463<!-- /num --> |
-| 고장·정비 이력 제거 | <!-- num:ablation.full−history.auroc|.4f -->0.7467<!-- /num --> | <!-- num:ablation.full−history.pr_auc|.4f -->0.2183<!-- /num --> |
+| 전체 모델 | <!-- num:ablation.full(+energy).auroc|.4f -->0.7680<!-- /num --> | <!-- num:ablation.full(+energy).pr_auc|.4f -->0.2406<!-- /num --> |
+| 메모 및 메모 파생 특징 제거 | <!-- num:ablation.full−text.auroc|.4f -->0.7732<!-- /num --> | <!-- num:ablation.full−text.pr_auc|.4f -->0.2470<!-- /num --> |
+| 고장·정비 이력 제거 | <!-- num:ablation.full−history.auroc|.4f -->0.7460<!-- /num --> | <!-- num:ablation.full−history.pr_auc|.4f -->0.2163<!-- /num --> |
 
-이 실험에서는 고장·정비 이력의 기여를 확인했습니다. **전체 모델에서 메모의 추가 예측 성능 이득은 확인하지 못했습니다.** 원문 메모는 사용자가 기록을 검토하는 데 제공합니다.
+이 표는 현재 단일 합성 실행의 입력 제거 비교입니다. 메모의 예측 이득을 모든 자료에서 같다고 가정하지 않습니다. 별도의 새 합성 세계 검증에서는 전체 HGB가 메모 제외 후보보다 평균 P@10·AUROC·PR-AUC가 높고 Brier가 낮아 전체 특징을 유지했습니다. 반대로 메모 제외가 높았던 과거 조건과 새 테스트의 일부 실행도 보존합니다. 원문 메모는 모델 선택 결과와 별개로 사용자가 기록과 설명을 검토하는 데 제공합니다.
 
-처음 보는 합성 고객사 8곳의 LOSO 평균 AUROC는 전체 0.7706, 메모 제거 0.7620, 이력 제거 0.7429였습니다. 25곳 전체 LOSO가 아니며 고객별 변화도 일관되지 않습니다. 실제 고객 일반화나 통계적 유의성을 주장하지 않습니다. 자체 정답을 더한 보정도 항상 좋아지지 않았습니다.
+교체 전 저장 예제의 [과거 8개 고객사 LOSO 비교](artifacts/archive/pre-completion-5a7f947/contribution.json)에서 평균 AUROC는 전체 0.7706, 메모 제거 0.7620, 이력 제거 0.7429였습니다. 현재 번들의 LOSO 결과는 [현재 산출물](artifacts/loso.json)에서 따로 확인합니다. 25곳 전체 LOSO가 아니며 고객별 변화도 일관되지 않습니다. 실제 고객 일반화나 통계적 유의성을 주장하지 않습니다. 자체 정답을 더한 보정도 항상 좋아지지 않았습니다.
 
-25개 합성 사이트의 18개 주간 기준일에서 사이트별 상위 10개를 선택했습니다. **선택한 설비 중 이후 30일 내 고장이 발생한 비율**은 현재 모델 **<!-- num:patrol.methods.harbinger_hgb.precision_at_k|.1% -->24.8%<!-- /num -->**, 로지스틱 **<!-- num:patrol.methods.logistic.precision_at_k|.1% -->20.8%<!-- /num -->**, 최근 점검 판정 규칙 **<!-- num:patrol.methods.last_inspection.precision_at_k|.1% -->12.2%<!-- /num -->**, 무작위 기대치 **<!-- num:patrol.random_expected_precision|.1% -->7.2%<!-- /num -->**입니다. 현재 모델의 고객사 단위 bootstrap 95% 구간은 21.3–28.1%입니다. 현장의 숙련자 판단과 직접 비교한 결과는 아닙니다.
+현재 순수 위험순 평가는 <!-- num:patrol.methods.harbinger_hgb.n_sites|,d -->25<!-- /num -->개 합성 고객사의 <!-- num:patrol.days|,d -->18<!-- /num -->개 주간 기준일에서 고객사별 상위 10개를 선택합니다. 고객사 안의 날짜별 적중률을 평균한 뒤 고객사를 같은 가중으로 평균합니다. **선택한 설비 중 이후 30일 내 고장이 발생한 비율**은 현재 모델 **<!-- num:patrol.methods.harbinger_hgb.precision_at_k|.1% -->23.8%<!-- /num -->**, 로지스틱 **<!-- num:patrol.methods.logistic.precision_at_k|.1% -->21.0%<!-- /num -->**, 최근 점검 판정 규칙 **<!-- num:patrol.methods.last_inspection.precision_at_k|.1% -->12.2%<!-- /num -->**, 무작위 기대치 **<!-- num:patrol.random_expected_precision|.1% -->7.2%<!-- /num -->**입니다. 현재 모델의 고객사 블록 bootstrap 95% 구간과 최근 판정 규칙 대비 paired 차이는 [순찰 산출물](artifacts/patrol.json)의 `site_cluster_ci95`와 `delta_vs_last_inspection_ci95`에 보존합니다. 현장의 숙련자 판단과 직접 비교한 결과는 아닙니다.
+
+주 점검대장의 기본 위험순 목록은 원시 P30 순위입니다. 고급 순찰은 **모든 필수 대상 포함 후 확률 × 중요도 가중(1/1.8/3)**으로 나머지 예산을 채우므로 다른 선택 정책입니다. 같은 후보·날짜·요청 K로 평가한 실제 순찰 선택 적중률은 HGB **<!-- num:patrol.service_policy.methods.harbinger_hgb.selection_hit_rate|.1% -->20.3%<!-- /num -->**, 최근 점검 판정 규칙 **<!-- num:patrol.service_policy.methods.last_inspection.selection_hit_rate|.1% -->11.2%<!-- /num -->**입니다. 필수 수가 K를 넘으면 모두 선택하므로 이 값을 Precision@10라고 부르지 않습니다. 실제 선택 수·필수 수·초과량·구간은 같은 산출물의 `service_policy`에 기록합니다.
 
 생성 시드 3개 × 학습 시드 2개에서 모델 순위와 메모 누락·문자 손상·기록 지연을 별도로 비교했습니다. 반복 설비와 30일 관측 기간 중복을 고려한 보정 선택도 다시 검증했습니다. 평균뿐 아니라 실행별 범위와 악화한 조건을 [평가 안정성 결과](docs/verification/robustness-20261025/README.md)에 남겼습니다. 실제 사용자 검토나 고객 실증 결과와는 구분합니다. 전체 HGB와 메모 제외 HGB의 순위가 조건에 따라 달랐으므로, [고객별 모델 선택 기준](docs/model-selection.md)은 기록 품질과 동일 점검 예산의 시간 분리 검증을 중심으로 정리했습니다. 후속 보완에서는 검증 자료로 고객사별 후보를 선택하고, 정책을 활성화·롤백하는 절차를 구현했습니다. 실제 고객별 최적 모델을 입증한 결과는 아닙니다.
 
-PyTorch 메모 누락 대응도 새 합성 세계 3개 × 학습 시드 2개에서 비교했습니다. 메모 25% 누락 시 상위 10개 적중률은 기존 17.64%, 누락 대응 개선형 22.90%, 메모 미사용 모델 23.73%였습니다. 검증 기준은 메모 미사용 모델 5회·기존 모델 유지 1회를 선택했고, 고정한 선택의 최종 테스트 채택 기준을 통과했습니다. 개선형의 정상 입력 성능 하락과 확률 오차도 [전체 결과·방법·복구 기록](docs/verification/memo-20261025/README.md)에 함께 남겼습니다. 공개 서비스 HGB의 교체나 실제 고객 실증을 뜻하지 않습니다.
+과거 PyTorch 메모 누락 대응도 합성 세계 3개 × 학습 시드 2개에서 비교했습니다. 이 기록은 사이트 가리기 중복 수정 전 구현의 결과이며 수정 후 재검증으로 소급하지 않습니다. 메모 25% 누락 시 상위 10개 적중률은 기존 17.64%, 누락 대응 개선형 22.90%, 메모 미사용 모델 23.73%였습니다. 검증 기준은 메모 미사용 모델 5회·기존 모델 유지 1회를 선택했고, 고정한 선택의 최종 테스트 채택 기준을 통과했습니다. 개선형의 정상 입력 성능 하락과 확률 오차도 [전체 결과·방법·복구 기록](docs/verification/memo-20261025/README.md)에 함께 남겼습니다. 공개 서비스 HGB의 교체나 실제 고객 실증을 뜻하지 않습니다.
+
+수정 후에는 같은 알려진 세계를 다시 실행했습니다. 선택 정책의 25/50% 누락 평균 향상은 같은 실행의 legacy 대비 +5.100%p, 정상 입력 변화는 +0.139%p였고 원래 판정을 재통과했습니다. [수정 후 메모 결과·모든 실행·편차](docs/verification/completion-20261026/memo/README.md)는 후향적 재실행이며 새로운 독립 성능 입증이 아닙니다. 새 HGB 검증 선택과도 별도 실험입니다.
 
 ## 계산 결과를 운영과 재검토로 연결했습니다
 
@@ -136,7 +142,7 @@ UTF-8/BOM CSV, 최대 **5 MiB / 20,000행 / 설비 500개 / 고객사 10개 / �
 
 검증 명령과 브라우저 검사 방법은 [개발자 검사 안내](docs/running.md#개발자-검사)를 참고하세요.
 
-모델 버전 **v20261021-103259**, 원자료 해시와 평가 파일 버전은 `artifacts/release.json`에 기록합니다. 모델·원자료 바이너리는 로컬 생성물이며 공개 정적 데모에는 합성 계산 응답만 넣습니다. 입력·모니터링 보완 당시 AWS 런타임은 같은 전체 합성 조건을 재학습한 `v20261024-152504`이며, [당시 배포·평가 기록](docs/verification/aws-20261025/README.md)에 보존했습니다. 사용자 검토 의견을 반영한 소스 `4965901`의 배포 상태와 새 런타임 모델 정보는 [AWS 배포 실행·산출물](https://github.com/sokldjs554/harbinger/actions/runs/40189712992)에서 확인할 수 있습니다. 선택적 TensorFlow 패리티는 이번 버전에서 재실행하지 않았습니다. 기존 산출물은 `artifacts/archive/fd346c7/`와 Git 이력에 보존합니다.
+현재 평가 산출물의 모델 버전은 **<!-- num:metrics.bundle_version -->v20261026-093937<!-- /num -->**입니다. 원자료 해시·평가 파일 버전은 `artifacts/release.json`과 실행 기록을 함께 확인합니다. 이 버전 표기만으로 공개 AWS·Pages의 배포 완료를 뜻하지 않습니다. 모델·원자료 바이너리는 로컬 생성물이며 공개 정적 데모에는 합성 계산 응답만 넣습니다. 입력·모니터링 보완 당시 AWS 런타임은 같은 전체 합성 조건을 재학습한 `v20261024-152504`이며, [당시 배포·평가 기록](docs/verification/aws-20261025/README.md)에 보존했습니다. 사용자 검토 의견을 반영한 과거 소스 `4965901`의 당시 배포·런타임 모델 정보는 [AWS 배포 실행·산출물](https://github.com/sokldjs554/harbinger/actions/runs/40189712992)에서 확인할 수 있습니다. TensorFlow 실제 실행·경계/손실 검증과 통제 학습 결과는 [공고 요구 기술 감사](docs/job-requirements-audit.md)에 별도로 기록했습니다. 기존 독립 초기화 차이 기준 실패는 숨기지 않았습니다. 이전 단일 실행은 `artifacts/archive/pre-completion-5a7f947/`, 더 이전 산출물은 `artifacts/archive/fd346c7/`와 Git 이력에 보존합니다. 위 `before_after` 표는 당시의 고정 비교이며 현재 번들 교체로 다시 계산하지 않습니다.
 
 ## 개발 방식
 

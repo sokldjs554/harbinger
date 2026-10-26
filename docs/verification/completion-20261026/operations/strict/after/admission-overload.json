@@ -1,0 +1,186 @@
+{
+  "injected_hold_seconds": 15,
+  "concurrency": 12,
+  "requests": [
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 10.00427892600419,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "wait_timeout"
+    },
+    {
+      "operation": "analysis",
+      "status": 200,
+      "seconds": 15.252211054998043,
+      "bytes": 52977,
+      "rejection": null,
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 200,
+      "seconds": 15.263359730000957,
+      "bytes": 52977,
+      "rejection": null,
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 10.002842386005796,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "wait_timeout"
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 10.003888633000315,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "wait_timeout"
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 10.00356320199353,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "wait_timeout"
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.005383978997997474,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "queue_full"
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.005576190000283532,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "queue_full"
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.008845547003147658,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "queue_full"
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.008959797996794805,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "queue_full"
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.009305814004619606,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "queue_full"
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.007821241997589823,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "queue_full"
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.011708846999681555,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "queue_full"
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.006854277002275921,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "queue_full"
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.005547939996176865,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "queue_full"
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.00807277500280179,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "queue_full"
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.007564189996628556,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "queue_full"
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.006516210996778682,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "queue_full"
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.004324197994719725,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "queue_full"
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.002963177001220174,
+      "bytes": 78,
+      "rejection": "계산 요청이 많습니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": "1",
+      "capacity_reason": "queue_full"
+    }
+  ]
+}

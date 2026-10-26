@@ -1,0 +1,5 @@
+# Optional comparison environment, verified on Python 3.12 / Linux CPU.
+# Main service constraints remain in constraints.txt; TensorFlow is not a serving dependency.
+tensorflow-cpu==2.21.0; sys_platform == 'linux'
+tensorflow==2.21.0; sys_platform != 'linux'
+keras==3.15.1

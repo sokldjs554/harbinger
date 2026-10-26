@@ -1,0 +1,224 @@
+[
+  {
+    "document": "README.md",
+    "key": "metrics.classifier.hgb_full.auroc",
+    "formatted_value": "0.7696",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "metrics.classifier.hgb_full.pr_auc",
+    "formatted_value": "0.2445",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "metrics.classifier.hgb_full.brier",
+    "formatted_value": "0.0684",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "metrics.baselines.logistic_full.auroc",
+    "formatted_value": "0.7514",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "metrics.baselines.logistic_full.pr_auc",
+    "formatted_value": "0.2134",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "metrics.baselines.logistic_full.brier",
+    "formatted_value": "0.0703",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "survival.deep.text+site.p30.auroc",
+    "formatted_value": "0.7643",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "survival.deep.text+site.p30.pr_auc",
+    "formatted_value": "0.2282",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "survival.deep.text+site.p30.brier",
+    "formatted_value": "0.0701",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "ablation.full(+energy).auroc",
+    "formatted_value": "0.7696",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "ablation.full(+energy).pr_auc",
+    "formatted_value": "0.2445",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "ablation.full−text.auroc",
+    "formatted_value": "0.7702",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "ablation.full−text.pr_auc",
+    "formatted_value": "0.2463",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "ablation.full−history.auroc",
+    "formatted_value": "0.7467",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "ablation.full−history.pr_auc",
+    "formatted_value": "0.2183",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "patrol.methods.harbinger_hgb.precision_at_k",
+    "formatted_value": "24.8%",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "patrol.methods.logistic.precision_at_k",
+    "formatted_value": "20.8%",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "patrol.methods.last_inspection.precision_at_k",
+    "formatted_value": "12.2%",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "patrol.random_expected_precision",
+    "formatted_value": "7.2%",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "before_after.before.auroc",
+    "formatted_value": "0.7736",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "before_after.after.auroc",
+    "formatted_value": "0.7696",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "before_after.before.pr_auc",
+    "formatted_value": "0.2520",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "before_after.after.pr_auc",
+    "formatted_value": "0.2445",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "before_after.before.brier",
+    "formatted_value": "0.0680",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "before_after.after.brier",
+    "formatted_value": "0.0684",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "before_after.before.ece",
+    "formatted_value": "0.0061",
+    "matches": true
+  },
+  {
+    "document": "README.md",
+    "key": "before_after.after.ece",
+    "formatted_value": "0.0092",
+    "matches": true
+  },
+  {
+    "document": "docs/evaluation.md",
+    "key": "metrics.classifier.hgb_full.auroc",
+    "formatted_value": "0.7696",
+    "matches": true
+  },
+  {
+    "document": "docs/evaluation.md",
+    "key": "metrics.classifier.hgb_full.pr_auc",
+    "formatted_value": "0.2445",
+    "matches": true
+  },
+  {
+    "document": "docs/evaluation.md",
+    "key": "metrics.classifier.hgb_full.brier",
+    "formatted_value": "0.0684",
+    "matches": true
+  },
+  {
+    "document": "docs/evaluation.md",
+    "key": "metrics.baselines.logistic_full.auroc",
+    "formatted_value": "0.7514",
+    "matches": true
+  },
+  {
+    "document": "docs/evaluation.md",
+    "key": "metrics.baselines.logistic_full.pr_auc",
+    "formatted_value": "0.2134",
+    "matches": true
+  },
+  {
+    "document": "docs/evaluation.md",
+    "key": "metrics.baselines.logistic_full.brier",
+    "formatted_value": "0.0703",
+    "matches": true
+  },
+  {
+    "document": "docs/evaluation.md",
+    "key": "survival.deep.text+site.p30.auroc",
+    "formatted_value": "0.7643",
+    "matches": true
+  },
+  {
+    "document": "docs/evaluation.md",
+    "key": "survival.deep.text+site.p30.pr_auc",
+    "formatted_value": "0.2282",
+    "matches": true
+  },
+  {
+    "document": "docs/evaluation.md",
+    "key": "survival.deep.text+site.p30.brier",
+    "formatted_value": "0.0701",
+    "matches": true
+  },
+  {
+    "document": "docs/data-model.md",
+    "key": "metrics.n_features",
+    "formatted_value": "116",
+    "matches": true
+  }
+]

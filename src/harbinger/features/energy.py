@@ -36,8 +36,17 @@ def energy_residuals(energy: pd.DataFrame, fit_until: pd.Timestamp) -> pd.DataFr
                 if fit.sum() < 60:
                     continue
                 coef, *_ = np.linalg.lstsq(X[fit], y[fit], rcond=None)
-                yhat = np.maximum(X[predict] @ coef, 1e-6)
-                out.loc[predict, name] = (y[predict] - yhat) / yhat
+                yhat = X[predict] @ coef
+                # OLS can extrapolate below zero outside the fitted weather range.
+                # A nonphysical expected usage is unavailable evidence; flooring it
+                # to epsilon turns ordinary readings into billion-scale features.
+                valid = np.isfinite(yhat) & (yhat > 0) & np.isfinite(y[predict])
+                out.loc[predict, name] = np.divide(
+                    y[predict] - yhat,
+                    yhat,
+                    out=np.full(predict.sum(), np.nan),
+                    where=valid,
+                )
         rows.append(out)
     return (
         pd.concat(rows, ignore_index=True)

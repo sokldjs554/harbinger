@@ -1,0 +1,14 @@
+.............F                                                           [100%]
+=================================== FAILURES ===================================
+________________ test_no_evaluable_breakdowns_returns_json_null ________________
+
+    def test_no_evaluable_breakdowns_returns_json_null():
+        X, tables = _fixture()
+        result = patrol.breakdown_recall_at_top(X.iloc[:0], np.array([]), tables["workorders"])
+>       assert result["recall"] is None
+E       assert nan is None
+
+tests/test_service_patrol_evaluation.py:176: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_service_patrol_evaluation.py::test_no_evaluable_breakdowns_returns_json_null
+1 failed, 13 passed in 2.16s

@@ -1,0 +1,12 @@
+{
+  "role": "new controlled comparison; does not replace failed independent-initialization result",
+  "seed": 0,
+  "epochs": 12,
+  "train_months": 5,
+  "val_months": 2,
+  "nll_gap_lt": 0.25,
+  "auroc_gap_lt": 0.12,
+  "initialization": "shared weights before any training",
+  "independent_test": false,
+  "frozen_before_execution": true
+}

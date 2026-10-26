@@ -4,6 +4,7 @@ Not imported by production. Bind loopback only; uses the real routes/store/model
 """
 
 import os
+import time
 from pathlib import Path
 
 import uvicorn
@@ -13,9 +14,12 @@ from harbinger.api.routers import workbench
 
 original = workbench.analyze
 marker = Path(os.environ["HARBINGER_AUDIT_FAULT_FILE"])
+hold = marker.with_name("hold-computation")
 
 
 def controlled_analysis(*args, **kwargs):
+    if hold.exists():
+        time.sleep(15)  # LOCAL admission timeout test; excluded from throughput measurements.
     if marker.exists():
         raise RuntimeError("LOCAL audit injected analysis failure")
     return original(*args, **kwargs)

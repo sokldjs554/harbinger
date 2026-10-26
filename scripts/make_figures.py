@@ -156,7 +156,7 @@ def fig_calibration(art: Path, out: Path) -> None:
     ax.plot([0, mx], [0, mx], color=DEEMPH, lw=1)
     for key, color, label in (
         ("uncalibrated", ORANGE, f"캘리브레이션 전 (ECE {c['ece_uncalibrated']:.3f})"),
-        ("calibrated", BLUE, f"isotonic 후 (ECE {c['ece_calibrated']:.3f})"),
+        ("calibrated", BLUE, f"선택된 확률 (ECE {c['ece_calibrated']:.3f})"),
     ):
         xs = [r["pred_mean"] for r in c[key]]
         ys = [r["obs_rate"] for r in c[key]]
@@ -273,11 +273,14 @@ def fig_survival(art: Path, out: Path) -> None:
     if not s:
         return
     rows = []
+    horizons = []
     for k, v in s["lifelines"].items():
         if "c_index" in v:
             rows.append((k, v["c_index"], v.get("ibs")))
+            horizons.append(tuple(sorted(map(float, v.get("brier_at", {})))))
     for k, v in s["deep"].items():
         rows.append((f"deep {k}", v["c_index"], v.get("ibs")))
+        horizons.append(tuple(sorted(map(float, v.get("brier_at", {})))))
     if not rows:
         return
     names = {
@@ -285,7 +288,7 @@ def fig_survival(art: Path, out: Path) -> None:
         "aft": "Weibull AFT",
         "hgb_constant_hazard": "HGB P30 → 일정위험",
         "deep text+site": "위험 네트 (메모+사이트)",
-        "deep notext+site": "위험 네트 (메모 없음)",
+        "deep notext+site": "위험 네트 (문자 CNN 없음·메모 수치 유지)",
         "deep text+nosite": "위험 네트 (사이트 없음)",
     }
     fig, axes = plt.subplots(1, 2, figsize=(8.6, 3.2))
@@ -296,8 +299,11 @@ def fig_survival(art: Path, out: Path) -> None:
     axes[0].set_title("C-index (높을수록 좋음)", loc="left", color=INK, fontsize=10)
     axes[0].invert_yaxis()
     axes[1].barh(y, [r[2] or 0 for r in rows], color=BLUE, height=0.55)
-    axes[1].set_yticks(y, [""] * len(rows))
-    axes[1].set_title("IBS 30~360일 (낮을수록 좋음)", loc="left", color=INK, fontsize=10)
+    ranges = [f"{h[0]:g}~{h[-1]:g}일" if h else "평가 시점 미상" for h in horizons]
+    same_horizons = all(h == horizons[0] for h in horizons)
+    axes[1].set_yticks(y, [""] * len(rows) if same_horizons else ranges)
+    horizon_label = ranges[0] if same_horizons else "행별 평가 시점 상이·직접 비교 불가"
+    axes[1].set_title(f"IBS {horizon_label} (낮을수록 좋음)", loc="left", color=INK, fontsize=10)
     axes[1].invert_yaxis()
     for ax, idx, fmt in ((axes[0], 1, "{:.3f}"), (axes[1], 2, "{:.4f}")):
         for yi, r in zip(y, rows):

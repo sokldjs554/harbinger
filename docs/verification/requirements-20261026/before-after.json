@@ -1,0 +1,227 @@
+{
+  "synthetic": true,
+  "seed": 20260101,
+  "scale": 1,
+  "months": 36,
+  "baseline_commit": "27051f07bd7597bd53442c98c281f9240f942e4f",
+  "thread_limits": {
+    "OMP_NUM_THREADS": 2,
+    "OPENBLAS_NUM_THREADS": 2
+  },
+  "same_raw_data": true,
+  "note": "Separate full reruns including LOSO. Source changes are combined; no single-change causal attribution. New working-tree source hashes are authoritative, not the checkout ancestor in git_sha. Historical saved-demo artifacts are untouched.",
+  "results": {
+    "before": {
+      "bundle_version": "v20261026-072939",
+      "classifier": {
+        "n": 18439,
+        "pos_rate": 0.08156624545799664,
+        "auroc": 0.7696088847219343,
+        "pr_auc": 0.24449641253191173,
+        "brier": 0.0683772795542356,
+        "ece": 0.00919572851961906,
+        "pr_auc_lift": 2.997519515077075,
+        "c_index": 0.7051560920181699,
+        "calibration_method": "원시 확률(보정 없음)",
+        "calibration_val_logloss_raw": 0.23471478646922722,
+        "calibration_val_brier_raw": 0.06503256364221287,
+        "calibration_val_logloss_platt": 0.23436953624614273,
+        "calibration_val_brier_platt": 0.06493412938866845,
+        "calibration_val_logloss_isotonic": 0.23543521674928453,
+        "calibration_val_brier_isotonic": 0.06493716765875872
+      },
+      "deep_text_site": {
+        "n": 18439,
+        "pos_rate": 0.08156624545799664,
+        "auroc": 0.7642697909403289,
+        "pr_auc": 0.22849022953235998,
+        "brier": 0.07009644193128545,
+        "ece": 0.019900645436624613,
+        "pr_auc_lift": 2.8012841371989268
+      },
+      "hgb_survival": {
+        "c_index": 0.7051560920181699,
+        "brier_at": {
+          "30": 0.06366782323791714,
+          "60": 0.1006418378106551,
+          "90": 0.1208161939512583,
+          "180": 0.09979045525950092
+        },
+        "ibs": 0.10475876404427632,
+        "withheld_horizons": [
+          360.0
+        ]
+      },
+      "patrol_precision_at_10": 0.24844444444444444,
+      "energy": {
+        "mae": 335.7359364119677,
+        "mape": 0.025541058456592894,
+        "r2": 0.9969996586606829,
+        "rows": 4600
+      },
+      "loso_mean_by_months": {
+        "0": {
+          "auroc": 0.770607618414418,
+          "pr_auc": 0.265859566348438,
+          "brier": 0.07026992603145932,
+          "ece": 0.01828219506680711
+        },
+        "3": {
+          "auroc": 0.770607618414418,
+          "pr_auc": 0.265859566348438,
+          "brier": 0.07066348541585497,
+          "ece": 0.023892790068026474
+        },
+        "6": {
+          "auroc": 0.770607618414418,
+          "pr_auc": 0.265859566348438,
+          "brier": 0.07101936896050845,
+          "ece": 0.02582614946255632
+        },
+        "12": {
+          "auroc": 0.770607618414418,
+          "pr_auc": 0.265859566348438,
+          "brier": 0.07030793495396001,
+          "ece": 0.019898030887953465
+        }
+      },
+      "source_sha256": {
+        "assets.parquet": "0eb613982dd86b65c390c29410c62ae2cc90cfb78a0af57ffcc43bb760c51556",
+        "energy.parquet": "c1916c3d3ee1a9f99728ecdf0382688ae781c88483ca4b15226b2603e34e46c3",
+        "inspections.parquet": "1f02ac47df40ae56190baeafa158adbc618a97e748350d3bc8f6e10371bd3800",
+        "inspectors.parquet": "2439a21bda3230166347da5300e2fc72353b511bd754ee579ead9eb44a189e5d",
+        "latent.parquet": "fb3e80ef0cde51c937633f6974631565ac825b512968599a0d8945da04f763ae",
+        "sites.parquet": "2eaf44f4ee4fac94f015343ee67039ecb406900abe8355e769131cf730c83bc5",
+        "workorders.parquet": "f6f90901c6fe61e3dddc9f3a58b211ab54ee21f71a7226df0eaf6912b0ed61a8"
+      },
+      "feature_parquet_sha256": "c950eca43215fde52e2d05648f43251351aa2a60cd66690d5a679aeb602a170e",
+      "feature_semantics_version": 2,
+      "split": {
+        "train": {
+          "rows": 87577,
+          "mature_labels": 84002,
+          "immature_labels": 3575,
+          "from": "2023-01-01",
+          "to": "2025-01-01"
+        },
+        "val": {
+          "rows": 21623,
+          "to": "2025-07-01",
+          "mature_labels": 18055,
+          "immature_labels": 3568
+        },
+        "test": {
+          "rows": 22001,
+          "to": "2025-12-31"
+        }
+      }
+    },
+    "after": {
+      "bundle_version": "v20261026-074224",
+      "classifier": {
+        "n": 18439,
+        "pos_rate": 0.08156624545799664,
+        "auroc": 0.7679922529194856,
+        "pr_auc": 0.24055825015023924,
+        "brier": 0.06864776353208472,
+        "ece": 0.010951535639073919,
+        "pr_auc_lift": 2.9492377490161314,
+        "c_index": 0.703426317199942,
+        "calibration_method": "원시 확률(보정 없음)",
+        "calibration_val_logloss_raw": 0.2357578397853822,
+        "calibration_val_brier_raw": 0.06530979223696401,
+        "calibration_val_logloss_platt": 0.2353603865744026,
+        "calibration_val_brier_platt": 0.06523622864491524,
+        "calibration_val_logloss_isotonic": 0.23641954535884435,
+        "calibration_val_brier_isotonic": 0.06541192477258363
+      },
+      "deep_text_site": {
+        "n": 18439,
+        "pos_rate": 0.08156624545799664,
+        "auroc": 0.7638045028236874,
+        "pr_auc": 0.22679183658720573,
+        "brier": 0.07012733868877312,
+        "ece": 0.019542325237347,
+        "pr_auc_lift": 2.7804618848613605
+      },
+      "hgb_survival": {
+        "c_index": 0.7072246118117111,
+        "brier_at": {
+          "30": 0.06395310866499669,
+          "60": 0.10137263793026528,
+          "90": 0.12176725259566824,
+          "180": 0.10117884771881783
+        },
+        "ibs": 0.10573039380646537,
+        "withheld_horizons": [
+          360.0
+        ],
+        "rows": 22001,
+        "cohort": "all_test_rows_including_censored"
+      },
+      "patrol_precision_at_10": 0.23822222222222222,
+      "energy": {
+        "mae": 335.7359364119677,
+        "mape": 0.025541058456592894,
+        "r2": 0.9969996586606829,
+        "rows": 4600
+      },
+      "loso_mean_by_months": {
+        "0": {
+          "auroc": 0.770607618414418,
+          "pr_auc": 0.265859566348438,
+          "brier": 0.07026992603145932,
+          "ece": 0.01828219506680711
+        },
+        "3": {
+          "auroc": 0.770607618414418,
+          "pr_auc": 0.265859566348438,
+          "brier": 0.07066348541585497,
+          "ece": 0.023892790068026474
+        },
+        "6": {
+          "auroc": 0.770607618414418,
+          "pr_auc": 0.265859566348438,
+          "brier": 0.07101936896050845,
+          "ece": 0.02582614946255632
+        },
+        "12": {
+          "auroc": 0.770607618414418,
+          "pr_auc": 0.265859566348438,
+          "brier": 0.07030793495396001,
+          "ece": 0.019898030887953465
+        }
+      },
+      "source_sha256": {
+        "assets.parquet": "0eb613982dd86b65c390c29410c62ae2cc90cfb78a0af57ffcc43bb760c51556",
+        "energy.parquet": "c1916c3d3ee1a9f99728ecdf0382688ae781c88483ca4b15226b2603e34e46c3",
+        "inspections.parquet": "1f02ac47df40ae56190baeafa158adbc618a97e748350d3bc8f6e10371bd3800",
+        "inspectors.parquet": "2439a21bda3230166347da5300e2fc72353b511bd754ee579ead9eb44a189e5d",
+        "latent.parquet": "fb3e80ef0cde51c937633f6974631565ac825b512968599a0d8945da04f763ae",
+        "sites.parquet": "2eaf44f4ee4fac94f015343ee67039ecb406900abe8355e769131cf730c83bc5",
+        "workorders.parquet": "f6f90901c6fe61e3dddc9f3a58b211ab54ee21f71a7226df0eaf6912b0ed61a8"
+      },
+      "feature_parquet_sha256": "807a0c637657399bcc3be3567915201f504de90bcd511473d614d9cd15a3f430",
+      "feature_semantics_version": 3,
+      "split": {
+        "train": {
+          "rows": 87577,
+          "mature_labels": 84002,
+          "immature_labels": 3575,
+          "from": "2023-01-01",
+          "to": "2025-01-01"
+        },
+        "val": {
+          "rows": 21623,
+          "to": "2025-07-01",
+          "mature_labels": 18055,
+          "immature_labels": 3568
+        },
+        "test": {
+          "rows": 22001,
+          "to": "2025-12-31"
+        }
+      }
+    }
+  }
+}

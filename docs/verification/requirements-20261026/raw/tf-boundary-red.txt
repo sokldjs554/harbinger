@@ -1,0 +1,65 @@
+.F.F....                                                                 [100%]
+=================================== FAILURES ===================================
+_____ test_keras_target_bins_include_events_at_right_edge[30-1-expected1] ______
+
+day = 30, event = 1, expected = [1, 0, 0, 0]
+
+    @pytest.mark.parametrize(
+        'day,event,expected',
+        [(0, 1, [1, 0, 0, 0]), (30, 1, [1, 0, 0, 0]),
+         (30.1, 1, [0, 1, 1, 0]), (60, 1, [0, 1, 1, 0]),
+         (60.1, 1, [0, 0, 1, 1]), (29.9, 0, [0, 0, 0, 0]),
+         (30, 0, [0, 0, 1, 0]), (60, 0, [0, 0, 1, 1])],
+    )
+    def test_keras_target_bins_include_events_at_right_edge(day, event, expected):
+        from harbinger.models.keras_parity import _targets
+
+        actual = _targets(np.array([day]), np.array([event]), n_bins=2, bin_days=30)
+>       np.testing.assert_array_equal(actual[0], expected)
+E       AssertionError:
+E       Arrays are not equal
+E
+E       Mismatched elements: 3 / 4 (75%)
+E       Mismatch at indices:
+E        [0]: 0.0 (ACTUAL), 1 (DESIRED)
+E        [1]: 1.0 (ACTUAL), 0 (DESIRED)
+E        [2]: 1.0 (ACTUAL), 0 (DESIRED)
+E       Max absolute difference among violations: 1.
+E       Max relative difference among violations: 1.
+E        ACTUAL: array([0., 1., 1., 0.], dtype=float32)
+E        DESIRED: array([1, 0, 0, 0])
+
+tests/test_keras_parity.py:25: AssertionError
+_____ test_keras_target_bins_include_events_at_right_edge[60-1-expected3] ______
+
+day = 60, event = 1, expected = [0, 1, 1, 0]
+
+    @pytest.mark.parametrize(
+        'day,event,expected',
+        [(0, 1, [1, 0, 0, 0]), (30, 1, [1, 0, 0, 0]),
+         (30.1, 1, [0, 1, 1, 0]), (60, 1, [0, 1, 1, 0]),
+         (60.1, 1, [0, 0, 1, 1]), (29.9, 0, [0, 0, 0, 0]),
+         (30, 0, [0, 0, 1, 0]), (60, 0, [0, 0, 1, 1])],
+    )
+    def test_keras_target_bins_include_events_at_right_edge(day, event, expected):
+        from harbinger.models.keras_parity import _targets
+
+        actual = _targets(np.array([day]), np.array([event]), n_bins=2, bin_days=30)
+>       np.testing.assert_array_equal(actual[0], expected)
+E       AssertionError:
+E       Arrays are not equal
+E
+E       Mismatched elements: 2 / 4 (50%)
+E       Mismatch at indices:
+E        [1]: 0.0 (ACTUAL), 1 (DESIRED)
+E        [3]: 1.0 (ACTUAL), 0 (DESIRED)
+E       Max absolute difference among violations: 1.
+E       Max relative difference among violations: 1.
+E        ACTUAL: array([0., 0., 1., 1.], dtype=float32)
+E        DESIRED: array([0, 1, 1, 0])
+
+tests/test_keras_parity.py:25: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_keras_parity.py::test_keras_target_bins_include_events_at_right_edge[30-1-expected1]
+FAILED tests/test_keras_parity.py::test_keras_target_bins_include_events_at_right_edge[60-1-expected3]
+2 failed, 6 passed, 2 deselected in 0.12s

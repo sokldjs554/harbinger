@@ -1,0 +1,7 @@
+{
+  "archived_executed_script_sha256": "84bec704656c9cadcf5340959abfe90a222ba2ed2a2b0bbf66cd1506e7e109e9",
+  "guarded_script_sha256": "4f5746c2e80933957c3f17122c4c0bd77258c78c918841fd79025907509d4858",
+  "choose_default_ast_unchanged": true,
+  "historical_freeze_and_provenance_modified": false,
+  "scope": "Source integrity guard added after the completed historical experiment; selection criteria/model fitting/test predictions were not rerun."
+}

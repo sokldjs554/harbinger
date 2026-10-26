@@ -1,0 +1,194 @@
+[
+  {
+    "data_seed": 202610251,
+    "file": "assets.parquet",
+    "historical": "f2b55a7e50b6da6e915262bf62025c1c262dde3717230aaf7c757afaf96f7fc4",
+    "current": "f2b55a7e50b6da6e915262bf62025c1c262dde3717230aaf7c757afaf96f7fc4",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "energy.parquet",
+    "historical": "6249d5f9055c7efda56752b6c6d1f62062729cc9aef3469d9b961568d4226bd5",
+    "current": "6249d5f9055c7efda56752b6c6d1f62062729cc9aef3469d9b961568d4226bd5",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "features.parquet",
+    "historical": "2d6ce147ee45a85f0e24dfae0bf9448ed988f217719ef9f22eb39d474f599e72",
+    "current": "d3f2952009730decbaa06b0386d445ac95e5395688dce6624c67b992d38438b0",
+    "equal": false,
+    "generated_source_table": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "inspections.parquet",
+    "historical": "96a58bbcc1486a5fa349c1604fe1e3c8c3252f7cd3491eb6681f2be97689fffc",
+    "current": "96a58bbcc1486a5fa349c1604fe1e3c8c3252f7cd3491eb6681f2be97689fffc",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "inspectors.parquet",
+    "historical": "e21b8328d197cb1979e1c6de29a7ff1528cd1c2c9026e3d5ae57d4ad4ed9a1ac",
+    "current": "e21b8328d197cb1979e1c6de29a7ff1528cd1c2c9026e3d5ae57d4ad4ed9a1ac",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "latent.parquet",
+    "historical": "dd91ff80771e609f22ed6de1b3e6be3c68892a5dca27fd813e0b66fc5c8af493",
+    "current": "dd91ff80771e609f22ed6de1b3e6be3c68892a5dca27fd813e0b66fc5c8af493",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "sites.parquet",
+    "historical": "4dc95d38fbcb5857672a6217e8302e057dc44b00a20cd553c40d020640f9d8b3",
+    "current": "4dc95d38fbcb5857672a6217e8302e057dc44b00a20cd553c40d020640f9d8b3",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "workorders.parquet",
+    "historical": "480f313451ab43011bd4d22a6f503d8131a73f8b1e9d37adc4af970b3b0608d8",
+    "current": "480f313451ab43011bd4d22a6f503d8131a73f8b1e9d37adc4af970b3b0608d8",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "assets.parquet",
+    "historical": "296b4483b8eb0f2442f65e354cdf62736ea7130360a529fcc802df186d4c435a",
+    "current": "296b4483b8eb0f2442f65e354cdf62736ea7130360a529fcc802df186d4c435a",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "energy.parquet",
+    "historical": "3828623a18de19d354be3b08d702b6df96193f9e12371abdbe81ed88e4cd06eb",
+    "current": "3828623a18de19d354be3b08d702b6df96193f9e12371abdbe81ed88e4cd06eb",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "features.parquet",
+    "historical": "3215dcd6c1e93b46ad0ce58a91fed1f612e5696bd240c17c0d18f360be4469fd",
+    "current": "53932c689781bc5e8db2e3dc305df195b60e486050cdbf59f2aaaefe942a921d",
+    "equal": false,
+    "generated_source_table": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "inspections.parquet",
+    "historical": "10f0993a122611477f9c8f00930bb577c51b248b50b52d76c34f141725313c03",
+    "current": "10f0993a122611477f9c8f00930bb577c51b248b50b52d76c34f141725313c03",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "inspectors.parquet",
+    "historical": "8b72d8988164d41cd716737310f07374b7840aaa9b0a376d420c3b71116f5f2a",
+    "current": "8b72d8988164d41cd716737310f07374b7840aaa9b0a376d420c3b71116f5f2a",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "latent.parquet",
+    "historical": "03ed565e7ffc97dc1462bc1d477138f33e02c27568f2354d485162a4d85ba5dd",
+    "current": "03ed565e7ffc97dc1462bc1d477138f33e02c27568f2354d485162a4d85ba5dd",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "sites.parquet",
+    "historical": "a145f9b524da7ceac7221f0233cb5a8b309762723664c5f038792674a7318b4a",
+    "current": "a145f9b524da7ceac7221f0233cb5a8b309762723664c5f038792674a7318b4a",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "workorders.parquet",
+    "historical": "32dd7ade2e67e42dcf8d5ec57d7e0ec6c017ef48706ecd64b1f49cfd468ae154",
+    "current": "32dd7ade2e67e42dcf8d5ec57d7e0ec6c017ef48706ecd64b1f49cfd468ae154",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "assets.parquet",
+    "historical": "b12152f5fb9e5bfaa4efdc4eac5292f6d83b9e0fd90fc957ac4e6961609e1467",
+    "current": "b12152f5fb9e5bfaa4efdc4eac5292f6d83b9e0fd90fc957ac4e6961609e1467",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "energy.parquet",
+    "historical": "fea21b12fa847d034d1d912ef703cdaffabd57faf132264b93a8a78824617515",
+    "current": "fea21b12fa847d034d1d912ef703cdaffabd57faf132264b93a8a78824617515",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "features.parquet",
+    "historical": "09ad594b01eeff18c9704fd598bb08c5651b8f890460cbfa895bf330c4b2ad77",
+    "current": "a252a48f3297d612a7e29013a189b0e77c61ab715fe8854a783245e1ce512d72",
+    "equal": false,
+    "generated_source_table": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "inspections.parquet",
+    "historical": "34d43ff46a84b506ae31b63cda687f4e66fe576c45e6cfd7bb8bfb2734eb5049",
+    "current": "34d43ff46a84b506ae31b63cda687f4e66fe576c45e6cfd7bb8bfb2734eb5049",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "inspectors.parquet",
+    "historical": "c131741643a46c8c33b5cfa5084a82ba84274e89c6596d93b6851fcf51fe4a8b",
+    "current": "c131741643a46c8c33b5cfa5084a82ba84274e89c6596d93b6851fcf51fe4a8b",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "latent.parquet",
+    "historical": "8773ab9fd6435234d2e49181c516c7294f1e9ca01521a66ff63bca087bff6872",
+    "current": "8773ab9fd6435234d2e49181c516c7294f1e9ca01521a66ff63bca087bff6872",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "sites.parquet",
+    "historical": "d58fbcacba2f112260a5ac91b9fca28dd73144ad423f03b8331749e3d1fd2e09",
+    "current": "d58fbcacba2f112260a5ac91b9fca28dd73144ad423f03b8331749e3d1fd2e09",
+    "equal": true,
+    "generated_source_table": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "workorders.parquet",
+    "historical": "1baaae5e6bcdf01b90f1d9411bcb502ad28b8abb63763568d5e9632d93766d89",
+    "current": "1baaae5e6bcdf01b90f1d9411bcb502ad28b8abb63763568d5e9632d93766d89",
+    "equal": true,
+    "generated_source_table": true
+  }
+]

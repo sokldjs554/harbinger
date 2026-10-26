@@ -1,0 +1,54 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_____ test_energy_residuals_withhold_nonpositive_extrapolated_expectation ______
+
+    def test_energy_residuals_withhold_nonpositive_extrapolated_expectation():
+        from harbinger.features.energy import energy_residuals
+
+        n = 100
+        temperature = np.r_[np.linspace(1, 8, 60), np.full(n - 60, 18.0)]
+        actual = np.r_[10 * (18 - temperature[:60]) - 50, np.full(n - 60, 30.0)]
+        energy = pd.DataFrame(dict(site_id="S", day=pd.date_range("2024-01-01", periods=n),
+                                   temp_mean_c=temperature, occupancy_index=1.0,
+                                   electricity_kwh=actual, gas_m3=actual))
+        residual = energy_residuals(energy, pd.Timestamp("2024-03-01"))
+        # All observations are positive, but the winter linear relationship predicts
+        # -50 at the later temperature. This is unavailable evidence, not a huge anomaly.
+        assert (actual > 0).all()
+>       assert residual.loc[energy.day >= "2024-03-01", "en_resid_ratio"].isna().all()
+E       assert np.False_
+E        +  where np.False_ = all()
+E        +    where all = 60    False\n61    False\n62    False\n63    False\n64    False\n65    False\n66    False\n67    False\n68    False\n69    Fals...e\n93    False\n94    False\n95    False\n96    False\n97    False\n98    False\n99    False\nName: en_resid_ratio, dtype: bool.all
+E        +      where 60    False\n61    False\n62    False\n63    False\n64    False\n65    False\n66    False\n67    False\n68    False\n69    Fals...e\n93    False\n94    False\n95    False\n96    False\n97    False\n98    False\n99    False\nName: en_resid_ratio, dtype: bool = isna()
+E        +        where isna = 60    29999999.0\n61    29999999.0\n62    29999999.0\n63    29999999.0\n64    29999999.0\n65    29999999.0\n66    29999999.0...    29999999.0\n96    29999999.0\n97    29999999.0\n98    29999999.0\n99    29999999.0\nName: en_resid_ratio, dtype: float64.isna
+
+tests/test_model_audit_regressions.py:138: AssertionError
+______ test_energy_sigma_uses_calendar_window_and_withholds_sparse_sites _______
+
+    def test_energy_sigma_uses_calendar_window_and_withholds_sparse_sites():
+        from harbinger.models.energy import train_energy
+
+        n = 40
+        frames = []
+        for site, frequency in [("daily", "D"), ("weekly", "7D")]:
+            frames.append(pd.DataFrame(dict(site_id=site, day=pd.date_range("2024-01-01", periods=n, freq=frequency),
+                                            temp_mean_c=20.0, occupancy_index=1.0,
+                                            electricity_kwh=100 + 10 * np.sin(np.arange(n)))))
+        energy = pd.concat(frames, ignore_index=True)
+        bundle = train_energy(energy, seed=1)
+        daily = energy[energy.site_id == "daily"]
+        ratios = bundle.residual_ratio(daily)
+        ratios.index = daily.day
+        expected = ratios.rolling("7D", min_periods=3).mean().std()
+>       assert bundle.resid_sigma["daily"] == pytest.approx(expected)
+E       assert 0.0084828677513461 == 0.009222120616856826 ± 9.2e-09
+E
+E         comparison failed
+E         Obtained: 0.0084828677513461
+E         Expected: 0.009222120616856826 ± 9.2e-09
+
+tests/test_model_audit_regressions.py:157: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_model_audit_regressions.py::test_energy_residuals_withhold_nonpositive_extrapolated_expectation
+FAILED tests/test_model_audit_regressions.py::test_energy_sigma_uses_calendar_window_and_withholds_sparse_sites
+2 failed, 10 deselected in 2.42s

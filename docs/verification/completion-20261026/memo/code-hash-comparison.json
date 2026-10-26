@@ -1,0 +1,1409 @@
+[
+  {
+    "data_seed": 202610251,
+    "file": "scripts/memo_artifacts.py",
+    "historical": null,
+    "current": "37cfc7fe294cdf72b118d8c310be2fed825f82832429414b382c24e069075989",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "scripts/memo_robustness.py",
+    "historical": "720780808863f1f6cd7a3b6e41a2b4af29df050eb2bfe830b43d7635c4cbf487",
+    "current": "629c22c1c8c03b83eb0071bd5559a15090905bbde6d0c3c917c490a231efb833",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "scripts/robustness/contracts.py",
+    "historical": "239b47080e5379cb42a80ac38b98c747b3bac7b9ee5068c57dbc93cca069c71e",
+    "current": "239b47080e5379cb42a80ac38b98c747b3bac7b9ee5068c57dbc93cca069c71e",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "scripts/robustness/run.py",
+    "historical": "c0e3ab6052e9b99e2eb789bcfd00b83b4cff0229b5299ceacad3db693355c4c2",
+    "current": "c0e3ab6052e9b99e2eb789bcfd00b83b4cff0229b5299ceacad3db693355c4c2",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/__init__.py",
+    "historical": "cd93906046fbab2ee0f7ad8c7b76c959542138ff234ebf0313c32a33e57eea40",
+    "current": "cd93906046fbab2ee0f7ad8c7b76c959542138ff234ebf0313c32a33e57eea40",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/__init__.py",
+    "historical": "827755bc09d72242f225d145bb2a5f075d63096ec77281b588416d077c0b14d4",
+    "current": "827755bc09d72242f225d145bb2a5f075d63096ec77281b588416d077c0b14d4",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/analysis.py",
+    "historical": "ae9d0cd242eda83c4d72ac0f9d1644ceea2f8a397c7a52522808d3cb9e2f4e91",
+    "current": "61d37f725e68fc571c263c234f95c54a19cb5f4950e2ca8c0998afca822782d0",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/auth.py",
+    "historical": null,
+    "current": "613eaddbb2a5f6256aa33c1346ced3b2a56981ee4ae83d0cd42fa4d4c2c65fab",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/backtest.py",
+    "historical": "faeb7e71548e3c4045ad36437619a70fb4f107275fe99d9a5c30f746808f683f",
+    "current": "e6f135165796e2d1d00196d9984ec315faa234852c564142b95f224689b12b54",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/deps.py",
+    "historical": "52a10fc56ea134b18371e0e281433806776080f25c2e268fe89580b0e48c9fce",
+    "current": "b731b83a07036ebde763119029d5ccfaa3da064a5b7ed53b494ff9eba5fc887d",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/main.py",
+    "historical": "283ecef07a33c85a42ca5b4455f8b99cab2f32fafdf229725c36424a0463c1f0",
+    "current": "b7cad86dbe701f64bd08fafde31087c2db99339822da361271c759e0e796a5bd",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/records.py",
+    "historical": "f8b54ebe60e13f65c30ca8ea1506aef6a2dedf0cc016d660464b99593b197936",
+    "current": "f8b54ebe60e13f65c30ca8ea1506aef6a2dedf0cc016d660464b99593b197936",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/routers/__init__.py",
+    "historical": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "current": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/routers/admin.py",
+    "historical": "3cb8455f680b16ccd672050927346386598c2652d6677b9c795666a6d9b4da16",
+    "current": "3cb8455f680b16ccd672050927346386598c2652d6677b9c795666a6d9b4da16",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/routers/energy.py",
+    "historical": "213c982490df21aec6cfb741aae9d12d1b9522aaf6167ed78c0eeaf527edd9a9",
+    "current": "213c982490df21aec6cfb741aae9d12d1b9522aaf6167ed78c0eeaf527edd9a9",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/routers/health.py",
+    "historical": "3e171f17ef55f2de71c8b912b9874a0d546ee0ac2154b544b7ec6a0cbefcab22",
+    "current": "3e171f17ef55f2de71c8b912b9874a0d546ee0ac2154b544b7ec6a0cbefcab22",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/routers/patrol.py",
+    "historical": "de69fdcf9028163139cd30a42ec6fd7d25b8001cb1100586798f7f3de44429ff",
+    "current": "de69fdcf9028163139cd30a42ec6fd7d25b8001cb1100586798f7f3de44429ff",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/routers/replay.py",
+    "historical": "c948b589b0d08662b61891449b089a5307c88f6a73f9f68d4f2320c0533bcb3b",
+    "current": "437e8d5b2063570cdaa42cc3a05c7a7db654d7167478666a3fed65d7ae7ac618",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/routers/report.py",
+    "historical": "0f2f0a6ed701c56a442bf2da2526dddf0e85b39a7e62b2bb258ffa6405f3e211",
+    "current": "a74408c6b9b6dbafe226730eb0b2d4112eef93b4ec7528685a7873975940e231",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/routers/risk.py",
+    "historical": "4fe86e9d03e30fa27244e8202869afd79c59d5f1a603b5bbae8bf5b880e61746",
+    "current": "61d3c9ea358f024fcfd2512cc64c871df7d9095508448a3e94cb20a09e5e54f5",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/routers/sites.py",
+    "historical": "9233b61f8170fb00da6d60b0b1ed48627ea970d883565096a5f37adf2cfaba1e",
+    "current": "9233b61f8170fb00da6d60b0b1ed48627ea970d883565096a5f37adf2cfaba1e",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/routers/text.py",
+    "historical": "375fb7c25f46f41719aa946639210ada0d5b967601aa046bab3c2e6a6f3a3016",
+    "current": "375fb7c25f46f41719aa946639210ada0d5b967601aa046bab3c2e6a6f3a3016",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/routers/workbench.py",
+    "historical": "a701ee6a551428514243aa1c21ea86c77868538a65f901f4f5485fb3d59bccff",
+    "current": "cd1557b2b13bbc9cd5e3c9ac553afc58e1046b3e22db1101eaed9f35f4ded74b",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/store.py",
+    "historical": "3065a0718ee122929dba5ddd046b82627e0b17cdad5ab89aae8e69911b3cc5e7",
+    "current": "dcc9c7c506e74b23d059a6b64ef4789338b5f3d65f453f2d26394b0accce7c70",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/upload.py",
+    "historical": "b362985f525420cc5850453d48b2e5484cc00629b433a435f8091caffcd22567",
+    "current": "b362985f525420cc5850453d48b2e5484cc00629b433a435f8091caffcd22567",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/api/whatif.py",
+    "historical": "c0ef628fd920889bd54dee56617ff601b58c28faa24d9d33fa08c4dd8fb401fc",
+    "current": "16c9773d6056725c48892207beae83f498460f2ebc1abfc57fa5828d8ef120ee",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/auth_users.py",
+    "historical": null,
+    "current": "1c33b48affc2857e7e12789f1f0a1de706247b05c23ccec834c8ce44f5e7ae86",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/cli.py",
+    "historical": "01e268a0637ff2f921ec5673ff70738e440227726a7cfc8d4e2c955a037c1b0f",
+    "current": "01e268a0637ff2f921ec5673ff70738e440227726a7cfc8d4e2c955a037c1b0f",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/config.py",
+    "historical": "cdbabd143bb0e6aed483862e9b5ab8a89f7da7c9ccd9a428a98479f871409be7",
+    "current": "7287e360838e0d56e355f2f30287cafe64fef907f3fe95f86ee87a2b94c98b85",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/console/__init__.py",
+    "historical": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "current": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/eval/__init__.py",
+    "historical": "4a7716790e0abb39286044b56fb85d3ec507827fbcb895c350103faf008e8e94",
+    "current": "4a7716790e0abb39286044b56fb85d3ec507827fbcb895c350103faf008e8e94",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/eval/metrics.py",
+    "historical": "eb2aa20776b2291968c23658d5126e58d15d436d00f29f0f51d268a180a4adf1",
+    "current": "eb2aa20776b2291968c23658d5126e58d15d436d00f29f0f51d268a180a4adf1",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/eval/patrol.py",
+    "historical": "d69c4853c39acb2887c28b4fe9bcf5189d0227b6b1e43eead82e3594344986ea",
+    "current": "d69c4853c39acb2887c28b4fe9bcf5189d0227b6b1e43eead82e3594344986ea",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/eval/run.py",
+    "historical": "2ff17f5545c6543e856a2cf668c670e886eb488c25b7a22b436c65a43377d560",
+    "current": "58eeafc6ec36d99102df58d1ca132f78bc4b9831bde61abeb21c5069fc3894de",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/eval/signals.py",
+    "historical": "422805d78c8fa7be4808cf0c815168fafe1bd49032890f70ea0a25247c293abd",
+    "current": "74039154633d488d8da043c151b25487887bbdfb5eb4097034ccd92abe7ff3b5",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/features/__init__.py",
+    "historical": "3eb1b79d4adb722d936690d38233982ce4714bd52cf51f2b275f87c0a2aa318f",
+    "current": "3eb1b79d4adb722d936690d38233982ce4714bd52cf51f2b275f87c0a2aa318f",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/features/build.py",
+    "historical": "2ef1ba8941f6d02c7e815becf0a4388320ae33d4806e68f68559678d73653857",
+    "current": "50415246188d21c7e6fcc6793d3857861e6b7ec5df29f3800f7bb97225a9d02c",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/features/cache.py",
+    "historical": "8b5e085a5a83bede917d96ea0a649c25fdadcc0544470083f8b0361bb3c1f620",
+    "current": "8b5e085a5a83bede917d96ea0a649c25fdadcc0544470083f8b0361bb3c1f620",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/features/energy.py",
+    "historical": "79bc7a19aac3ebdf314097ec4ee73a0abd07b368464490159f4ebdeaf810fe5e",
+    "current": "f620aa0dd8ee4fcfae05ce0f7fc0e45a4cd4ee98b16a22524a8e91c87f798900",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/features/refresh.py",
+    "historical": "5df33cc949f7c434593e5039b746dfcaf797a5bed9729e533ab73bf6a0057ed4",
+    "current": "5df33cc949f7c434593e5039b746dfcaf797a5bed9729e533ab73bf6a0057ed4",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/features/text.py",
+    "historical": "839acaac8bf68cce46be85d194ed04f4ed618ce007e452c6af208c2f82e3c578",
+    "current": "839acaac8bf68cce46be85d194ed04f4ed618ce007e452c6af208c2f82e3c578",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/models/__init__.py",
+    "historical": "8e0bfb88b74970e167b56d970c410b05bf7c0f2b6c6ee019ab385b89df27827d",
+    "current": "8e0bfb88b74970e167b56d970c410b05bf7c0f2b6c6ee019ab385b89df27827d",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/models/calibration.py",
+    "historical": "4b1928074c4aa3a846c7ebe776e36fd713ad8e8e32589f79a306fd39597543e4",
+    "current": "4b1928074c4aa3a846c7ebe776e36fd713ad8e8e32589f79a306fd39597543e4",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/models/classify.py",
+    "historical": "c01fa14ab5bf4aeed98f924eb2d5c595f081a98b46ec9fdb546076373faddb2d",
+    "current": "c01fa14ab5bf4aeed98f924eb2d5c595f081a98b46ec9fdb546076373faddb2d",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/models/coldstart.py",
+    "historical": "f55c50453c0c16e51e84f745a0b830015c20ee93307821916546dd384d2a40d6",
+    "current": "f55c50453c0c16e51e84f745a0b830015c20ee93307821916546dd384d2a40d6",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/models/common.py",
+    "historical": "552b8dc120ba45ac559755898d327861ff3e927d4df97e0f120df438170da5ab",
+    "current": "552b8dc120ba45ac559755898d327861ff3e927d4df97e0f120df438170da5ab",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/models/deep.py",
+    "historical": "f8ce67fa4dbd988d53df6f5b28e0a1a1263fbe5075492bb2b15c85e5b0a30335",
+    "current": "5a717c1d8ad32fb024e15725ddac63823aea81a9309891c03b01b17ab161e28d",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/models/energy.py",
+    "historical": "9316b3a9d965631498ae264d8a4a21744a3c9ee6f768c6ac44d5eecedfa501f6",
+    "current": "5d8de741b3d18bcbde1b2300ded40ec732800f7981c2d6481103d7922dd6765a",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/models/keras_parity.py",
+    "historical": "36d3a6966ea4b84ce5894932cdcedf188c9afd8907c4912392ed35918aee9af2",
+    "current": "10603b963febdf0e4f63d739f96aa95d69958af3f7edccb34187fad494ed4f53",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/models/policy_evaluation.py",
+    "historical": null,
+    "current": "f176f4e7014598b385e0b07f7aae2e3649d1da6baffa440c53614bbb723ecc37",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/models/registry.py",
+    "historical": "e7d0eecfef02410bea990899e36f8c0154b0983b9d493416d2859a260d700b68",
+    "current": "e7d0eecfef02410bea990899e36f8c0154b0983b9d493416d2859a260d700b68",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/models/site_policy.py",
+    "historical": null,
+    "current": "8d7693a798607b96f0d197c8460ae9de03a23531b30f9892856f782fb95bd8ab",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/models/survival.py",
+    "historical": "c49e1d5a65fb53a0b052dea1c774d1f87989288d712a75301d40f9613c7822a7",
+    "current": "c49e1d5a65fb53a0b052dea1c774d1f87989288d712a75301d40f9613c7822a7",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/monitoring/__init__.py",
+    "historical": "c443658701e7dfcc572c8c2a2253c41946d65ded796345a701340dd669095e96",
+    "current": "c443658701e7dfcc572c8c2a2253c41946d65ded796345a701340dd669095e96",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/monitoring/drift.py",
+    "historical": "2a2f883d7c4a2e267d8e7000df4fe6e12f2d77f5c696054899ccd6488a27cfe5",
+    "current": "2a2f883d7c4a2e267d8e7000df4fe6e12f2d77f5c696054899ccd6488a27cfe5",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/monitoring/metrics.py",
+    "historical": "a16ce61e9ef65e797a37f7bf9d0cc594bebf7c79a49bf73fa336c6c38c007698",
+    "current": "0fec936c3ca49f39019d06051f5cd13607e5b74a5b2b07adb366afe199ac3cf3",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/prescribe/__init__.py",
+    "historical": "29594b260915747a9dde797d753dd3676bbd1d3c03216b1753ae8d930927c67c",
+    "current": "29594b260915747a9dde797d753dd3676bbd1d3c03216b1753ae8d930927c67c",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/prescribe/explain.py",
+    "historical": "e4144a5f08d03cb5e50f42c0237e4cb2695068ceb101bd8b1e09d62eed64764f",
+    "current": "e4144a5f08d03cb5e50f42c0237e4cb2695068ceb101bd8b1e09d62eed64764f",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/prescribe/priority.py",
+    "historical": "dd7f5aaff32a3e92ee1b942dcd0385bd5e1378e053007826a820b529cf6732e7",
+    "current": "dd7f5aaff32a3e92ee1b942dcd0385bd5e1378e053007826a820b529cf6732e7",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/prescribe/scenarios.py",
+    "historical": "52f0688b248b66077e9787e0b375fecf5485ecda4fb22092ae39f4679837d97e",
+    "current": "52f0688b248b66077e9787e0b375fecf5485ecda4fb22092ae39f4679837d97e",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/prescribe/schedule.py",
+    "historical": "29a2d9aea54ec1c3fdebdc0cdfba34be837e4fd4501137b15a78c24eaf347eb0",
+    "current": "29a2d9aea54ec1c3fdebdc0cdfba34be837e4fd4501137b15a78c24eaf347eb0",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/schema.py",
+    "historical": "b4dfefb8100b1d73a461399d8869b05b54ce800a7bd5fc61b8dbb87978c61d56",
+    "current": "b4dfefb8100b1d73a461399d8869b05b54ce800a7bd5fc61b8dbb87978c61d56",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/synth/__init__.py",
+    "historical": "6a61dbfddf320269b6d41caabde2d375a757034a937892159c868b95293a40e5",
+    "current": "6a61dbfddf320269b6d41caabde2d375a757034a937892159c868b95293a40e5",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/synth/calendar_kr.py",
+    "historical": "5bf994a74bf1219f16c0bf616abd0c3424f3cda69a7d35213b7f46b809de6ab7",
+    "current": "5bf994a74bf1219f16c0bf616abd0c3424f3cda69a7d35213b7f46b809de6ab7",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/synth/generate.py",
+    "historical": "03599d9954e83e9527f4f7b3fd3df21da38f2aba7d127e68c6dce75f2bf05a34",
+    "current": "de12d59d2086fd59e36f34ef11b4984902a3a3a535751afe69583bc033317eb4",
+    "equal": false
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/synth/memos.py",
+    "historical": "877da8dadd74c3aa671f16d15e5204247d5188713d0de4b1ca38365078d97668",
+    "current": "877da8dadd74c3aa671f16d15e5204247d5188713d0de4b1ca38365078d97668",
+    "equal": true
+  },
+  {
+    "data_seed": 202610251,
+    "file": "src/harbinger/synth/sites.py",
+    "historical": "786960a0af3aa7beb3f1307d3d08a04867a1a779e1aafc1ec1d68b4a807a8353",
+    "current": "c078bc576e3ab8b3ea663efa1249b9817125660c851a7378ad21d441bb02fabb",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "scripts/memo_artifacts.py",
+    "historical": null,
+    "current": "37cfc7fe294cdf72b118d8c310be2fed825f82832429414b382c24e069075989",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "scripts/memo_robustness.py",
+    "historical": "720780808863f1f6cd7a3b6e41a2b4af29df050eb2bfe830b43d7635c4cbf487",
+    "current": "629c22c1c8c03b83eb0071bd5559a15090905bbde6d0c3c917c490a231efb833",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "scripts/robustness/contracts.py",
+    "historical": "239b47080e5379cb42a80ac38b98c747b3bac7b9ee5068c57dbc93cca069c71e",
+    "current": "239b47080e5379cb42a80ac38b98c747b3bac7b9ee5068c57dbc93cca069c71e",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "scripts/robustness/run.py",
+    "historical": "c0e3ab6052e9b99e2eb789bcfd00b83b4cff0229b5299ceacad3db693355c4c2",
+    "current": "c0e3ab6052e9b99e2eb789bcfd00b83b4cff0229b5299ceacad3db693355c4c2",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/__init__.py",
+    "historical": "cd93906046fbab2ee0f7ad8c7b76c959542138ff234ebf0313c32a33e57eea40",
+    "current": "cd93906046fbab2ee0f7ad8c7b76c959542138ff234ebf0313c32a33e57eea40",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/__init__.py",
+    "historical": "827755bc09d72242f225d145bb2a5f075d63096ec77281b588416d077c0b14d4",
+    "current": "827755bc09d72242f225d145bb2a5f075d63096ec77281b588416d077c0b14d4",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/analysis.py",
+    "historical": "ae9d0cd242eda83c4d72ac0f9d1644ceea2f8a397c7a52522808d3cb9e2f4e91",
+    "current": "61d37f725e68fc571c263c234f95c54a19cb5f4950e2ca8c0998afca822782d0",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/auth.py",
+    "historical": null,
+    "current": "613eaddbb2a5f6256aa33c1346ced3b2a56981ee4ae83d0cd42fa4d4c2c65fab",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/backtest.py",
+    "historical": "faeb7e71548e3c4045ad36437619a70fb4f107275fe99d9a5c30f746808f683f",
+    "current": "e6f135165796e2d1d00196d9984ec315faa234852c564142b95f224689b12b54",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/deps.py",
+    "historical": "52a10fc56ea134b18371e0e281433806776080f25c2e268fe89580b0e48c9fce",
+    "current": "b731b83a07036ebde763119029d5ccfaa3da064a5b7ed53b494ff9eba5fc887d",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/main.py",
+    "historical": "283ecef07a33c85a42ca5b4455f8b99cab2f32fafdf229725c36424a0463c1f0",
+    "current": "b7cad86dbe701f64bd08fafde31087c2db99339822da361271c759e0e796a5bd",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/records.py",
+    "historical": "f8b54ebe60e13f65c30ca8ea1506aef6a2dedf0cc016d660464b99593b197936",
+    "current": "f8b54ebe60e13f65c30ca8ea1506aef6a2dedf0cc016d660464b99593b197936",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/routers/__init__.py",
+    "historical": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "current": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/routers/admin.py",
+    "historical": "3cb8455f680b16ccd672050927346386598c2652d6677b9c795666a6d9b4da16",
+    "current": "3cb8455f680b16ccd672050927346386598c2652d6677b9c795666a6d9b4da16",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/routers/energy.py",
+    "historical": "213c982490df21aec6cfb741aae9d12d1b9522aaf6167ed78c0eeaf527edd9a9",
+    "current": "213c982490df21aec6cfb741aae9d12d1b9522aaf6167ed78c0eeaf527edd9a9",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/routers/health.py",
+    "historical": "3e171f17ef55f2de71c8b912b9874a0d546ee0ac2154b544b7ec6a0cbefcab22",
+    "current": "3e171f17ef55f2de71c8b912b9874a0d546ee0ac2154b544b7ec6a0cbefcab22",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/routers/patrol.py",
+    "historical": "de69fdcf9028163139cd30a42ec6fd7d25b8001cb1100586798f7f3de44429ff",
+    "current": "de69fdcf9028163139cd30a42ec6fd7d25b8001cb1100586798f7f3de44429ff",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/routers/replay.py",
+    "historical": "c948b589b0d08662b61891449b089a5307c88f6a73f9f68d4f2320c0533bcb3b",
+    "current": "437e8d5b2063570cdaa42cc3a05c7a7db654d7167478666a3fed65d7ae7ac618",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/routers/report.py",
+    "historical": "0f2f0a6ed701c56a442bf2da2526dddf0e85b39a7e62b2bb258ffa6405f3e211",
+    "current": "a74408c6b9b6dbafe226730eb0b2d4112eef93b4ec7528685a7873975940e231",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/routers/risk.py",
+    "historical": "4fe86e9d03e30fa27244e8202869afd79c59d5f1a603b5bbae8bf5b880e61746",
+    "current": "61d3c9ea358f024fcfd2512cc64c871df7d9095508448a3e94cb20a09e5e54f5",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/routers/sites.py",
+    "historical": "9233b61f8170fb00da6d60b0b1ed48627ea970d883565096a5f37adf2cfaba1e",
+    "current": "9233b61f8170fb00da6d60b0b1ed48627ea970d883565096a5f37adf2cfaba1e",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/routers/text.py",
+    "historical": "375fb7c25f46f41719aa946639210ada0d5b967601aa046bab3c2e6a6f3a3016",
+    "current": "375fb7c25f46f41719aa946639210ada0d5b967601aa046bab3c2e6a6f3a3016",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/routers/workbench.py",
+    "historical": "a701ee6a551428514243aa1c21ea86c77868538a65f901f4f5485fb3d59bccff",
+    "current": "cd1557b2b13bbc9cd5e3c9ac553afc58e1046b3e22db1101eaed9f35f4ded74b",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/store.py",
+    "historical": "3065a0718ee122929dba5ddd046b82627e0b17cdad5ab89aae8e69911b3cc5e7",
+    "current": "dcc9c7c506e74b23d059a6b64ef4789338b5f3d65f453f2d26394b0accce7c70",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/upload.py",
+    "historical": "b362985f525420cc5850453d48b2e5484cc00629b433a435f8091caffcd22567",
+    "current": "b362985f525420cc5850453d48b2e5484cc00629b433a435f8091caffcd22567",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/api/whatif.py",
+    "historical": "c0ef628fd920889bd54dee56617ff601b58c28faa24d9d33fa08c4dd8fb401fc",
+    "current": "16c9773d6056725c48892207beae83f498460f2ebc1abfc57fa5828d8ef120ee",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/auth_users.py",
+    "historical": null,
+    "current": "1c33b48affc2857e7e12789f1f0a1de706247b05c23ccec834c8ce44f5e7ae86",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/cli.py",
+    "historical": "01e268a0637ff2f921ec5673ff70738e440227726a7cfc8d4e2c955a037c1b0f",
+    "current": "01e268a0637ff2f921ec5673ff70738e440227726a7cfc8d4e2c955a037c1b0f",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/config.py",
+    "historical": "cdbabd143bb0e6aed483862e9b5ab8a89f7da7c9ccd9a428a98479f871409be7",
+    "current": "7287e360838e0d56e355f2f30287cafe64fef907f3fe95f86ee87a2b94c98b85",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/console/__init__.py",
+    "historical": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "current": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/eval/__init__.py",
+    "historical": "4a7716790e0abb39286044b56fb85d3ec507827fbcb895c350103faf008e8e94",
+    "current": "4a7716790e0abb39286044b56fb85d3ec507827fbcb895c350103faf008e8e94",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/eval/metrics.py",
+    "historical": "eb2aa20776b2291968c23658d5126e58d15d436d00f29f0f51d268a180a4adf1",
+    "current": "eb2aa20776b2291968c23658d5126e58d15d436d00f29f0f51d268a180a4adf1",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/eval/patrol.py",
+    "historical": "d69c4853c39acb2887c28b4fe9bcf5189d0227b6b1e43eead82e3594344986ea",
+    "current": "d69c4853c39acb2887c28b4fe9bcf5189d0227b6b1e43eead82e3594344986ea",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/eval/run.py",
+    "historical": "2ff17f5545c6543e856a2cf668c670e886eb488c25b7a22b436c65a43377d560",
+    "current": "58eeafc6ec36d99102df58d1ca132f78bc4b9831bde61abeb21c5069fc3894de",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/eval/signals.py",
+    "historical": "422805d78c8fa7be4808cf0c815168fafe1bd49032890f70ea0a25247c293abd",
+    "current": "74039154633d488d8da043c151b25487887bbdfb5eb4097034ccd92abe7ff3b5",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/features/__init__.py",
+    "historical": "3eb1b79d4adb722d936690d38233982ce4714bd52cf51f2b275f87c0a2aa318f",
+    "current": "3eb1b79d4adb722d936690d38233982ce4714bd52cf51f2b275f87c0a2aa318f",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/features/build.py",
+    "historical": "2ef1ba8941f6d02c7e815becf0a4388320ae33d4806e68f68559678d73653857",
+    "current": "50415246188d21c7e6fcc6793d3857861e6b7ec5df29f3800f7bb97225a9d02c",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/features/cache.py",
+    "historical": "8b5e085a5a83bede917d96ea0a649c25fdadcc0544470083f8b0361bb3c1f620",
+    "current": "8b5e085a5a83bede917d96ea0a649c25fdadcc0544470083f8b0361bb3c1f620",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/features/energy.py",
+    "historical": "79bc7a19aac3ebdf314097ec4ee73a0abd07b368464490159f4ebdeaf810fe5e",
+    "current": "f620aa0dd8ee4fcfae05ce0f7fc0e45a4cd4ee98b16a22524a8e91c87f798900",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/features/refresh.py",
+    "historical": "5df33cc949f7c434593e5039b746dfcaf797a5bed9729e533ab73bf6a0057ed4",
+    "current": "5df33cc949f7c434593e5039b746dfcaf797a5bed9729e533ab73bf6a0057ed4",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/features/text.py",
+    "historical": "839acaac8bf68cce46be85d194ed04f4ed618ce007e452c6af208c2f82e3c578",
+    "current": "839acaac8bf68cce46be85d194ed04f4ed618ce007e452c6af208c2f82e3c578",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/models/__init__.py",
+    "historical": "8e0bfb88b74970e167b56d970c410b05bf7c0f2b6c6ee019ab385b89df27827d",
+    "current": "8e0bfb88b74970e167b56d970c410b05bf7c0f2b6c6ee019ab385b89df27827d",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/models/calibration.py",
+    "historical": "4b1928074c4aa3a846c7ebe776e36fd713ad8e8e32589f79a306fd39597543e4",
+    "current": "4b1928074c4aa3a846c7ebe776e36fd713ad8e8e32589f79a306fd39597543e4",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/models/classify.py",
+    "historical": "c01fa14ab5bf4aeed98f924eb2d5c595f081a98b46ec9fdb546076373faddb2d",
+    "current": "c01fa14ab5bf4aeed98f924eb2d5c595f081a98b46ec9fdb546076373faddb2d",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/models/coldstart.py",
+    "historical": "f55c50453c0c16e51e84f745a0b830015c20ee93307821916546dd384d2a40d6",
+    "current": "f55c50453c0c16e51e84f745a0b830015c20ee93307821916546dd384d2a40d6",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/models/common.py",
+    "historical": "552b8dc120ba45ac559755898d327861ff3e927d4df97e0f120df438170da5ab",
+    "current": "552b8dc120ba45ac559755898d327861ff3e927d4df97e0f120df438170da5ab",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/models/deep.py",
+    "historical": "f8ce67fa4dbd988d53df6f5b28e0a1a1263fbe5075492bb2b15c85e5b0a30335",
+    "current": "5a717c1d8ad32fb024e15725ddac63823aea81a9309891c03b01b17ab161e28d",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/models/energy.py",
+    "historical": "9316b3a9d965631498ae264d8a4a21744a3c9ee6f768c6ac44d5eecedfa501f6",
+    "current": "5d8de741b3d18bcbde1b2300ded40ec732800f7981c2d6481103d7922dd6765a",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/models/keras_parity.py",
+    "historical": "36d3a6966ea4b84ce5894932cdcedf188c9afd8907c4912392ed35918aee9af2",
+    "current": "10603b963febdf0e4f63d739f96aa95d69958af3f7edccb34187fad494ed4f53",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/models/policy_evaluation.py",
+    "historical": null,
+    "current": "f176f4e7014598b385e0b07f7aae2e3649d1da6baffa440c53614bbb723ecc37",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/models/registry.py",
+    "historical": "e7d0eecfef02410bea990899e36f8c0154b0983b9d493416d2859a260d700b68",
+    "current": "e7d0eecfef02410bea990899e36f8c0154b0983b9d493416d2859a260d700b68",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/models/site_policy.py",
+    "historical": null,
+    "current": "8d7693a798607b96f0d197c8460ae9de03a23531b30f9892856f782fb95bd8ab",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/models/survival.py",
+    "historical": "c49e1d5a65fb53a0b052dea1c774d1f87989288d712a75301d40f9613c7822a7",
+    "current": "c49e1d5a65fb53a0b052dea1c774d1f87989288d712a75301d40f9613c7822a7",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/monitoring/__init__.py",
+    "historical": "c443658701e7dfcc572c8c2a2253c41946d65ded796345a701340dd669095e96",
+    "current": "c443658701e7dfcc572c8c2a2253c41946d65ded796345a701340dd669095e96",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/monitoring/drift.py",
+    "historical": "2a2f883d7c4a2e267d8e7000df4fe6e12f2d77f5c696054899ccd6488a27cfe5",
+    "current": "2a2f883d7c4a2e267d8e7000df4fe6e12f2d77f5c696054899ccd6488a27cfe5",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/monitoring/metrics.py",
+    "historical": "a16ce61e9ef65e797a37f7bf9d0cc594bebf7c79a49bf73fa336c6c38c007698",
+    "current": "0fec936c3ca49f39019d06051f5cd13607e5b74a5b2b07adb366afe199ac3cf3",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/prescribe/__init__.py",
+    "historical": "29594b260915747a9dde797d753dd3676bbd1d3c03216b1753ae8d930927c67c",
+    "current": "29594b260915747a9dde797d753dd3676bbd1d3c03216b1753ae8d930927c67c",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/prescribe/explain.py",
+    "historical": "e4144a5f08d03cb5e50f42c0237e4cb2695068ceb101bd8b1e09d62eed64764f",
+    "current": "e4144a5f08d03cb5e50f42c0237e4cb2695068ceb101bd8b1e09d62eed64764f",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/prescribe/priority.py",
+    "historical": "dd7f5aaff32a3e92ee1b942dcd0385bd5e1378e053007826a820b529cf6732e7",
+    "current": "dd7f5aaff32a3e92ee1b942dcd0385bd5e1378e053007826a820b529cf6732e7",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/prescribe/scenarios.py",
+    "historical": "52f0688b248b66077e9787e0b375fecf5485ecda4fb22092ae39f4679837d97e",
+    "current": "52f0688b248b66077e9787e0b375fecf5485ecda4fb22092ae39f4679837d97e",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/prescribe/schedule.py",
+    "historical": "29a2d9aea54ec1c3fdebdc0cdfba34be837e4fd4501137b15a78c24eaf347eb0",
+    "current": "29a2d9aea54ec1c3fdebdc0cdfba34be837e4fd4501137b15a78c24eaf347eb0",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/schema.py",
+    "historical": "b4dfefb8100b1d73a461399d8869b05b54ce800a7bd5fc61b8dbb87978c61d56",
+    "current": "b4dfefb8100b1d73a461399d8869b05b54ce800a7bd5fc61b8dbb87978c61d56",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/synth/__init__.py",
+    "historical": "6a61dbfddf320269b6d41caabde2d375a757034a937892159c868b95293a40e5",
+    "current": "6a61dbfddf320269b6d41caabde2d375a757034a937892159c868b95293a40e5",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/synth/calendar_kr.py",
+    "historical": "5bf994a74bf1219f16c0bf616abd0c3424f3cda69a7d35213b7f46b809de6ab7",
+    "current": "5bf994a74bf1219f16c0bf616abd0c3424f3cda69a7d35213b7f46b809de6ab7",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/synth/generate.py",
+    "historical": "03599d9954e83e9527f4f7b3fd3df21da38f2aba7d127e68c6dce75f2bf05a34",
+    "current": "de12d59d2086fd59e36f34ef11b4984902a3a3a535751afe69583bc033317eb4",
+    "equal": false
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/synth/memos.py",
+    "historical": "877da8dadd74c3aa671f16d15e5204247d5188713d0de4b1ca38365078d97668",
+    "current": "877da8dadd74c3aa671f16d15e5204247d5188713d0de4b1ca38365078d97668",
+    "equal": true
+  },
+  {
+    "data_seed": 202610252,
+    "file": "src/harbinger/synth/sites.py",
+    "historical": "786960a0af3aa7beb3f1307d3d08a04867a1a779e1aafc1ec1d68b4a807a8353",
+    "current": "c078bc576e3ab8b3ea663efa1249b9817125660c851a7378ad21d441bb02fabb",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "scripts/memo_artifacts.py",
+    "historical": null,
+    "current": "37cfc7fe294cdf72b118d8c310be2fed825f82832429414b382c24e069075989",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "scripts/memo_robustness.py",
+    "historical": "720780808863f1f6cd7a3b6e41a2b4af29df050eb2bfe830b43d7635c4cbf487",
+    "current": "629c22c1c8c03b83eb0071bd5559a15090905bbde6d0c3c917c490a231efb833",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "scripts/robustness/contracts.py",
+    "historical": "239b47080e5379cb42a80ac38b98c747b3bac7b9ee5068c57dbc93cca069c71e",
+    "current": "239b47080e5379cb42a80ac38b98c747b3bac7b9ee5068c57dbc93cca069c71e",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "scripts/robustness/run.py",
+    "historical": "c0e3ab6052e9b99e2eb789bcfd00b83b4cff0229b5299ceacad3db693355c4c2",
+    "current": "c0e3ab6052e9b99e2eb789bcfd00b83b4cff0229b5299ceacad3db693355c4c2",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/__init__.py",
+    "historical": "cd93906046fbab2ee0f7ad8c7b76c959542138ff234ebf0313c32a33e57eea40",
+    "current": "cd93906046fbab2ee0f7ad8c7b76c959542138ff234ebf0313c32a33e57eea40",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/__init__.py",
+    "historical": "827755bc09d72242f225d145bb2a5f075d63096ec77281b588416d077c0b14d4",
+    "current": "827755bc09d72242f225d145bb2a5f075d63096ec77281b588416d077c0b14d4",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/analysis.py",
+    "historical": "ae9d0cd242eda83c4d72ac0f9d1644ceea2f8a397c7a52522808d3cb9e2f4e91",
+    "current": "61d37f725e68fc571c263c234f95c54a19cb5f4950e2ca8c0998afca822782d0",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/auth.py",
+    "historical": null,
+    "current": "613eaddbb2a5f6256aa33c1346ced3b2a56981ee4ae83d0cd42fa4d4c2c65fab",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/backtest.py",
+    "historical": "faeb7e71548e3c4045ad36437619a70fb4f107275fe99d9a5c30f746808f683f",
+    "current": "e6f135165796e2d1d00196d9984ec315faa234852c564142b95f224689b12b54",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/deps.py",
+    "historical": "52a10fc56ea134b18371e0e281433806776080f25c2e268fe89580b0e48c9fce",
+    "current": "b731b83a07036ebde763119029d5ccfaa3da064a5b7ed53b494ff9eba5fc887d",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/main.py",
+    "historical": "283ecef07a33c85a42ca5b4455f8b99cab2f32fafdf229725c36424a0463c1f0",
+    "current": "b7cad86dbe701f64bd08fafde31087c2db99339822da361271c759e0e796a5bd",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/records.py",
+    "historical": "f8b54ebe60e13f65c30ca8ea1506aef6a2dedf0cc016d660464b99593b197936",
+    "current": "f8b54ebe60e13f65c30ca8ea1506aef6a2dedf0cc016d660464b99593b197936",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/routers/__init__.py",
+    "historical": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "current": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/routers/admin.py",
+    "historical": "3cb8455f680b16ccd672050927346386598c2652d6677b9c795666a6d9b4da16",
+    "current": "3cb8455f680b16ccd672050927346386598c2652d6677b9c795666a6d9b4da16",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/routers/energy.py",
+    "historical": "213c982490df21aec6cfb741aae9d12d1b9522aaf6167ed78c0eeaf527edd9a9",
+    "current": "213c982490df21aec6cfb741aae9d12d1b9522aaf6167ed78c0eeaf527edd9a9",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/routers/health.py",
+    "historical": "3e171f17ef55f2de71c8b912b9874a0d546ee0ac2154b544b7ec6a0cbefcab22",
+    "current": "3e171f17ef55f2de71c8b912b9874a0d546ee0ac2154b544b7ec6a0cbefcab22",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/routers/patrol.py",
+    "historical": "de69fdcf9028163139cd30a42ec6fd7d25b8001cb1100586798f7f3de44429ff",
+    "current": "de69fdcf9028163139cd30a42ec6fd7d25b8001cb1100586798f7f3de44429ff",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/routers/replay.py",
+    "historical": "c948b589b0d08662b61891449b089a5307c88f6a73f9f68d4f2320c0533bcb3b",
+    "current": "437e8d5b2063570cdaa42cc3a05c7a7db654d7167478666a3fed65d7ae7ac618",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/routers/report.py",
+    "historical": "0f2f0a6ed701c56a442bf2da2526dddf0e85b39a7e62b2bb258ffa6405f3e211",
+    "current": "a74408c6b9b6dbafe226730eb0b2d4112eef93b4ec7528685a7873975940e231",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/routers/risk.py",
+    "historical": "4fe86e9d03e30fa27244e8202869afd79c59d5f1a603b5bbae8bf5b880e61746",
+    "current": "61d3c9ea358f024fcfd2512cc64c871df7d9095508448a3e94cb20a09e5e54f5",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/routers/sites.py",
+    "historical": "9233b61f8170fb00da6d60b0b1ed48627ea970d883565096a5f37adf2cfaba1e",
+    "current": "9233b61f8170fb00da6d60b0b1ed48627ea970d883565096a5f37adf2cfaba1e",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/routers/text.py",
+    "historical": "375fb7c25f46f41719aa946639210ada0d5b967601aa046bab3c2e6a6f3a3016",
+    "current": "375fb7c25f46f41719aa946639210ada0d5b967601aa046bab3c2e6a6f3a3016",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/routers/workbench.py",
+    "historical": "a701ee6a551428514243aa1c21ea86c77868538a65f901f4f5485fb3d59bccff",
+    "current": "cd1557b2b13bbc9cd5e3c9ac553afc58e1046b3e22db1101eaed9f35f4ded74b",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/store.py",
+    "historical": "3065a0718ee122929dba5ddd046b82627e0b17cdad5ab89aae8e69911b3cc5e7",
+    "current": "dcc9c7c506e74b23d059a6b64ef4789338b5f3d65f453f2d26394b0accce7c70",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/upload.py",
+    "historical": "b362985f525420cc5850453d48b2e5484cc00629b433a435f8091caffcd22567",
+    "current": "b362985f525420cc5850453d48b2e5484cc00629b433a435f8091caffcd22567",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/api/whatif.py",
+    "historical": "c0ef628fd920889bd54dee56617ff601b58c28faa24d9d33fa08c4dd8fb401fc",
+    "current": "16c9773d6056725c48892207beae83f498460f2ebc1abfc57fa5828d8ef120ee",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/auth_users.py",
+    "historical": null,
+    "current": "1c33b48affc2857e7e12789f1f0a1de706247b05c23ccec834c8ce44f5e7ae86",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/cli.py",
+    "historical": "01e268a0637ff2f921ec5673ff70738e440227726a7cfc8d4e2c955a037c1b0f",
+    "current": "01e268a0637ff2f921ec5673ff70738e440227726a7cfc8d4e2c955a037c1b0f",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/config.py",
+    "historical": "cdbabd143bb0e6aed483862e9b5ab8a89f7da7c9ccd9a428a98479f871409be7",
+    "current": "7287e360838e0d56e355f2f30287cafe64fef907f3fe95f86ee87a2b94c98b85",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/console/__init__.py",
+    "historical": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "current": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/eval/__init__.py",
+    "historical": "4a7716790e0abb39286044b56fb85d3ec507827fbcb895c350103faf008e8e94",
+    "current": "4a7716790e0abb39286044b56fb85d3ec507827fbcb895c350103faf008e8e94",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/eval/metrics.py",
+    "historical": "eb2aa20776b2291968c23658d5126e58d15d436d00f29f0f51d268a180a4adf1",
+    "current": "eb2aa20776b2291968c23658d5126e58d15d436d00f29f0f51d268a180a4adf1",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/eval/patrol.py",
+    "historical": "d69c4853c39acb2887c28b4fe9bcf5189d0227b6b1e43eead82e3594344986ea",
+    "current": "d69c4853c39acb2887c28b4fe9bcf5189d0227b6b1e43eead82e3594344986ea",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/eval/run.py",
+    "historical": "2ff17f5545c6543e856a2cf668c670e886eb488c25b7a22b436c65a43377d560",
+    "current": "58eeafc6ec36d99102df58d1ca132f78bc4b9831bde61abeb21c5069fc3894de",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/eval/signals.py",
+    "historical": "422805d78c8fa7be4808cf0c815168fafe1bd49032890f70ea0a25247c293abd",
+    "current": "74039154633d488d8da043c151b25487887bbdfb5eb4097034ccd92abe7ff3b5",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/features/__init__.py",
+    "historical": "3eb1b79d4adb722d936690d38233982ce4714bd52cf51f2b275f87c0a2aa318f",
+    "current": "3eb1b79d4adb722d936690d38233982ce4714bd52cf51f2b275f87c0a2aa318f",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/features/build.py",
+    "historical": "2ef1ba8941f6d02c7e815becf0a4388320ae33d4806e68f68559678d73653857",
+    "current": "50415246188d21c7e6fcc6793d3857861e6b7ec5df29f3800f7bb97225a9d02c",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/features/cache.py",
+    "historical": "8b5e085a5a83bede917d96ea0a649c25fdadcc0544470083f8b0361bb3c1f620",
+    "current": "8b5e085a5a83bede917d96ea0a649c25fdadcc0544470083f8b0361bb3c1f620",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/features/energy.py",
+    "historical": "79bc7a19aac3ebdf314097ec4ee73a0abd07b368464490159f4ebdeaf810fe5e",
+    "current": "f620aa0dd8ee4fcfae05ce0f7fc0e45a4cd4ee98b16a22524a8e91c87f798900",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/features/refresh.py",
+    "historical": "5df33cc949f7c434593e5039b746dfcaf797a5bed9729e533ab73bf6a0057ed4",
+    "current": "5df33cc949f7c434593e5039b746dfcaf797a5bed9729e533ab73bf6a0057ed4",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/features/text.py",
+    "historical": "839acaac8bf68cce46be85d194ed04f4ed618ce007e452c6af208c2f82e3c578",
+    "current": "839acaac8bf68cce46be85d194ed04f4ed618ce007e452c6af208c2f82e3c578",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/models/__init__.py",
+    "historical": "8e0bfb88b74970e167b56d970c410b05bf7c0f2b6c6ee019ab385b89df27827d",
+    "current": "8e0bfb88b74970e167b56d970c410b05bf7c0f2b6c6ee019ab385b89df27827d",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/models/calibration.py",
+    "historical": "4b1928074c4aa3a846c7ebe776e36fd713ad8e8e32589f79a306fd39597543e4",
+    "current": "4b1928074c4aa3a846c7ebe776e36fd713ad8e8e32589f79a306fd39597543e4",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/models/classify.py",
+    "historical": "c01fa14ab5bf4aeed98f924eb2d5c595f081a98b46ec9fdb546076373faddb2d",
+    "current": "c01fa14ab5bf4aeed98f924eb2d5c595f081a98b46ec9fdb546076373faddb2d",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/models/coldstart.py",
+    "historical": "f55c50453c0c16e51e84f745a0b830015c20ee93307821916546dd384d2a40d6",
+    "current": "f55c50453c0c16e51e84f745a0b830015c20ee93307821916546dd384d2a40d6",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/models/common.py",
+    "historical": "552b8dc120ba45ac559755898d327861ff3e927d4df97e0f120df438170da5ab",
+    "current": "552b8dc120ba45ac559755898d327861ff3e927d4df97e0f120df438170da5ab",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/models/deep.py",
+    "historical": "f8ce67fa4dbd988d53df6f5b28e0a1a1263fbe5075492bb2b15c85e5b0a30335",
+    "current": "5a717c1d8ad32fb024e15725ddac63823aea81a9309891c03b01b17ab161e28d",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/models/energy.py",
+    "historical": "9316b3a9d965631498ae264d8a4a21744a3c9ee6f768c6ac44d5eecedfa501f6",
+    "current": "5d8de741b3d18bcbde1b2300ded40ec732800f7981c2d6481103d7922dd6765a",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/models/keras_parity.py",
+    "historical": "36d3a6966ea4b84ce5894932cdcedf188c9afd8907c4912392ed35918aee9af2",
+    "current": "10603b963febdf0e4f63d739f96aa95d69958af3f7edccb34187fad494ed4f53",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/models/policy_evaluation.py",
+    "historical": null,
+    "current": "f176f4e7014598b385e0b07f7aae2e3649d1da6baffa440c53614bbb723ecc37",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/models/registry.py",
+    "historical": "e7d0eecfef02410bea990899e36f8c0154b0983b9d493416d2859a260d700b68",
+    "current": "e7d0eecfef02410bea990899e36f8c0154b0983b9d493416d2859a260d700b68",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/models/site_policy.py",
+    "historical": null,
+    "current": "8d7693a798607b96f0d197c8460ae9de03a23531b30f9892856f782fb95bd8ab",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/models/survival.py",
+    "historical": "c49e1d5a65fb53a0b052dea1c774d1f87989288d712a75301d40f9613c7822a7",
+    "current": "c49e1d5a65fb53a0b052dea1c774d1f87989288d712a75301d40f9613c7822a7",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/monitoring/__init__.py",
+    "historical": "c443658701e7dfcc572c8c2a2253c41946d65ded796345a701340dd669095e96",
+    "current": "c443658701e7dfcc572c8c2a2253c41946d65ded796345a701340dd669095e96",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/monitoring/drift.py",
+    "historical": "2a2f883d7c4a2e267d8e7000df4fe6e12f2d77f5c696054899ccd6488a27cfe5",
+    "current": "2a2f883d7c4a2e267d8e7000df4fe6e12f2d77f5c696054899ccd6488a27cfe5",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/monitoring/metrics.py",
+    "historical": "a16ce61e9ef65e797a37f7bf9d0cc594bebf7c79a49bf73fa336c6c38c007698",
+    "current": "0fec936c3ca49f39019d06051f5cd13607e5b74a5b2b07adb366afe199ac3cf3",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/prescribe/__init__.py",
+    "historical": "29594b260915747a9dde797d753dd3676bbd1d3c03216b1753ae8d930927c67c",
+    "current": "29594b260915747a9dde797d753dd3676bbd1d3c03216b1753ae8d930927c67c",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/prescribe/explain.py",
+    "historical": "e4144a5f08d03cb5e50f42c0237e4cb2695068ceb101bd8b1e09d62eed64764f",
+    "current": "e4144a5f08d03cb5e50f42c0237e4cb2695068ceb101bd8b1e09d62eed64764f",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/prescribe/priority.py",
+    "historical": "dd7f5aaff32a3e92ee1b942dcd0385bd5e1378e053007826a820b529cf6732e7",
+    "current": "dd7f5aaff32a3e92ee1b942dcd0385bd5e1378e053007826a820b529cf6732e7",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/prescribe/scenarios.py",
+    "historical": "52f0688b248b66077e9787e0b375fecf5485ecda4fb22092ae39f4679837d97e",
+    "current": "52f0688b248b66077e9787e0b375fecf5485ecda4fb22092ae39f4679837d97e",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/prescribe/schedule.py",
+    "historical": "29a2d9aea54ec1c3fdebdc0cdfba34be837e4fd4501137b15a78c24eaf347eb0",
+    "current": "29a2d9aea54ec1c3fdebdc0cdfba34be837e4fd4501137b15a78c24eaf347eb0",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/schema.py",
+    "historical": "b4dfefb8100b1d73a461399d8869b05b54ce800a7bd5fc61b8dbb87978c61d56",
+    "current": "b4dfefb8100b1d73a461399d8869b05b54ce800a7bd5fc61b8dbb87978c61d56",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/synth/__init__.py",
+    "historical": "6a61dbfddf320269b6d41caabde2d375a757034a937892159c868b95293a40e5",
+    "current": "6a61dbfddf320269b6d41caabde2d375a757034a937892159c868b95293a40e5",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/synth/calendar_kr.py",
+    "historical": "5bf994a74bf1219f16c0bf616abd0c3424f3cda69a7d35213b7f46b809de6ab7",
+    "current": "5bf994a74bf1219f16c0bf616abd0c3424f3cda69a7d35213b7f46b809de6ab7",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/synth/generate.py",
+    "historical": "03599d9954e83e9527f4f7b3fd3df21da38f2aba7d127e68c6dce75f2bf05a34",
+    "current": "de12d59d2086fd59e36f34ef11b4984902a3a3a535751afe69583bc033317eb4",
+    "equal": false
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/synth/memos.py",
+    "historical": "877da8dadd74c3aa671f16d15e5204247d5188713d0de4b1ca38365078d97668",
+    "current": "877da8dadd74c3aa671f16d15e5204247d5188713d0de4b1ca38365078d97668",
+    "equal": true
+  },
+  {
+    "data_seed": 202610253,
+    "file": "src/harbinger/synth/sites.py",
+    "historical": "786960a0af3aa7beb3f1307d3d08a04867a1a779e1aafc1ec1d68b4a807a8353",
+    "current": "c078bc576e3ab8b3ea663efa1249b9817125660c851a7378ad21d441bb02fabb",
+    "equal": false
+  }
+]

@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import gzip
+import hashlib
 import json
 import time
 import warnings
@@ -45,6 +47,20 @@ ABLATIONS = {
 SURV_TIMES = [30.0, 60.0, 90.0, 180.0, 360.0]
 
 
+def constant_hazard_metrics(classifier, test: pd.DataFrame, times, km_c) -> dict:
+    """Compare HGB on the same complete test cohort as the survival models."""
+    p = classifier.predict_proba(test)
+    lam = -np.log1p(-p) / 30.0
+    survival = np.exp(-np.outer(lam, np.asarray(times)))
+    tte, event = test["tte_days"].to_numpy(), test["event"].to_numpy()
+    return {
+        "c_index": c_index_from_risk(tte, event, p),
+        **integrated_brier(survival, times, tte, event, km_c),
+        "rows": len(test),
+        "cohort": "all_test_rows_including_censored",
+    }
+
+
 def _dump(path: Path, obj) -> None:
     def finite(value):
         if isinstance(value, dict):
@@ -56,6 +72,19 @@ def _dump(path: Path, obj) -> None:
         return value
 
     path.write_text(json.dumps(finite(obj), ensure_ascii=False, indent=2, default=float, allow_nan=False))
+
+
+def save_patrol_evaluation(patrol: dict, artifact_dir: Path) -> dict:
+    """Archive membership evidence separately from API/demo summary payloads."""
+    path = artifact_dir / "patrol-observations.json.gz"
+    with path.open("wb") as raw, gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=0) as stream:
+        stream.write(json.dumps(patrol, ensure_ascii=False, allow_nan=False, separators=(",", ":")).encode())
+    summary = {key: value for key, value in patrol.items() if key not in {"rows", "snapshots"}}
+    summary["service_policy"] = {
+        key: value for key, value in patrol["service_policy"].items() if key != "rows"
+    }
+    summary["observations"] = {"file": path.name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+    return summary
 
 
 def run(
@@ -135,7 +164,7 @@ def run(
     for name, cols in BASELINE_FEATURES.items():
         b = train_hgb(trL, vaL, cols, seed=seed, name=name)
         base[name] = classification_metrics(teL["y30"], b.predict_proba(teL))
-    # 오라클: 숨은 열화 상태 D(t) — 합성 데이터에서만 가능한 상한선
+    # 오라클 참고선: 현재 숨은 상태 D(t)의 고정 위험률 근사; 성능 상한 아님
     lat = pd.read_parquet(data_dir / "latent.parquet")
     key = teL[["asset_id", "t"]].copy()
     key["day"] = key["t"].dt.normalize()
@@ -194,14 +223,7 @@ def run(
             surv[kind] = {"error": repr(e)}
             print(f"[eval] survival {kind} failed: {e!r}")
     # 분류기의 생존 지표 비교를 위해 HGB 의 P30 을 상수위험으로 펼친 S(t)
-    lam = -np.log(1 - hgb.predict_proba(te_all)) / 30.0
-    S_hgb = np.exp(-np.outer(lam, np.array(SURV_TIMES)))
-    surv["hgb_constant_hazard"] = {
-        "c_index": results["classifier"]["hgb_full"]["c_index"],
-        **integrated_brier(
-            S_hgb, SURV_TIMES, te_all["tte_days"].to_numpy(), te_all["event"].to_numpy(), km_c
-        ),
-    }
+    surv["hgb_constant_hazard"] = constant_hazard_metrics(hgb, te_all, SURV_TIMES, km_c)
 
     # ---------- 5. 이산시간 위험 네트 ----------
     deep_res = {}
@@ -289,7 +311,20 @@ def run(
     }
     if deep_full is not None:
         score_fns["harbinger_deep"] = lambda df: deep_full.p_fail_within(df, 30)
-    patrol = simulate_patrol(te_all, score_fns, bd_test, refresher, k=10, step_days=7, seed=seed)
+    # Eligibility must match the live service, including inspections preceding
+    # the held-out period. Only decision dates/outcomes are restricted to test.
+    patrol = simulate_patrol(
+        X,
+        score_fns,
+        bd_test,
+        refresher,
+        k=10,
+        step_days=7,
+        seed=seed,
+        assets=tables["assets"],
+        start=split.val_end + pd.Timedelta(days=30),
+        end=pd.Timestamp(provenance["observation_end"]) - pd.Timedelta(days=30),
+    )
     scores = {
         "harbinger_hgb": hgb.predict_proba(te_all)
     }  # 행 시점 점수 — 직전 점검 기준 재현율(breakdown_recall_at_top)용
@@ -297,6 +332,7 @@ def run(
     patrol["recall_top20pct"] = breakdown_recall_at_top(
         te_all, scores["harbinger_hgb"], bd_in_test.head(400 if quick else 2000), 0.2
     )
+    patrol = save_patrol_evaluation(patrol, artifact_dir)
     results["patrol"] = patrol
     _dump(artifact_dir / "patrol.json", patrol)
     print(

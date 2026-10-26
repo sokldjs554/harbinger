@@ -1,0 +1,33 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_service_overflow_is_not_raw_precision_at_k_and_rules_keep_their_scores __
+
+    def test_service_overflow_is_not_raw_precision_at_k_and_rules_keep_their_scores():
+        X, tables = _fixture()
+        # Explicit dates avoid making the old stale observation determine the evaluation start.
+        out = patrol.simulate_patrol(
+            X,
+            {"model": lambda x: x.p30.to_numpy()},
+            tables["workorders"],
+            Refresher(tables),
+            k=1,
+            evaluation_days=[pd.Timestamp("2025-01-31")],
+            assets=tables["assets"],
+        )
+        raw = next(r for r in out["rows"] if r["method"] == "model")
+        service = next(r for r in out["service_policy"]["rows"] if r["method"] == "model")
+        assert raw["selected_asset_ids"] == ["c"]
+        assert set(service["selected_asset_ids"]) == {"a", "b"}
+        assert service["picks"] == service["mandatory_count"] == 2
+        assert service["overflow"] == 1
+        assert service["hits"] == 1
+        assert service["precision"] == 0.5
+        assert "precision_at_k" not in out["service_policy"]["methods"]["model"]
+        assert out["service_policy"]["methods"]["model"]["selection_hit_rate"] == 0.5
+>       assert out["service_policy"]["random_expected_precision"] == 0.5
+E       assert 0.25 == 0.5
+
+tests/test_service_patrol_evaluation.py:131: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_service_patrol_evaluation.py::test_service_overflow_is_not_raw_precision_at_k_and_rules_keep_their_scores
+1 failed, 13 deselected in 0.29s

@@ -1,0 +1,78 @@
+{
+  "as_of": "2025-07-31",
+  "patrol": {
+    "site_id": "S04",
+    "as_of": "2025-07-31T23:59",
+    "k": 1,
+    "requested_k": 1,
+    "selected_count": 2,
+    "mandatory_count": 2,
+    "budget_overflow": 1,
+    "round_robin_selected_count": 2,
+    "n_assets_considered": 105,
+    "expected_breakdowns_in_list": 0.05322023430818355,
+    "expected_breakdowns_round_robin": 0.05322023430818355,
+    "items": [
+      {
+        "rank": 1,
+        "asset_id": "A-S04-0101",
+        "name": "승강기 10F-12",
+        "category": "elevator",
+        "floor": 10,
+        "zone": "10F-A",
+        "p30": 0.041233573801524245,
+        "criticality": 3,
+        "score": 0.12370072140457274,
+        "mandatory": true,
+        "days_since_inspection": 30.525771352465277,
+        "reasons": [
+          "법정점검 기한 임박",
+          "양호 판정인데 메모에 약신호 2회",
+          "연식 22년"
+        ],
+        "last_overall": 0,
+        "last_memo": "이상 無.",
+        "last_memo_highlighted": "이상 無.",
+        "last_inspected_at": "2025-07-01T11:21",
+        "selected_model": "baseline",
+        "policy_revision": null,
+        "policy_reason": "no_policy",
+        "policy_test_start": null
+      },
+      {
+        "rank": 2,
+        "asset_id": "A-S04-0035",
+        "name": "승강기 17F-6",
+        "category": "elevator",
+        "floor": 17,
+        "zone": "17F-A",
+        "p30": 0.011986660506659308,
+        "criticality": 3,
+        "score": 0.035959981519977924,
+        "mandatory": true,
+        "days_since_inspection": 30.58770746395833,
+        "reasons": [
+          "법정점검 기한 임박",
+          "양호 판정인데 메모에 약신호 3회",
+          "최근 90일 고장 1회"
+        ],
+        "last_overall": 0,
+        "last_memo": "특이사항 없음",
+        "last_memo_highlighted": "특이사항 없음",
+        "last_inspected_at": "2025-07-01T09:52",
+        "selected_model": "baseline",
+        "policy_revision": null,
+        "policy_reason": "no_policy",
+        "policy_test_start": null
+      }
+    ],
+    "explanation_status": "unavailable_for_selected_model",
+    "selected_model": "baseline",
+    "policy_revision": null,
+    "policy_reason": "no_policy",
+    "policy_test_start": null,
+    "model_version": "v20261026-093937"
+  },
+  "empty_cohort": "withheld; no undefined",
+  "page_errors": []
+}

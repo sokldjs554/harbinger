@@ -1,0 +1,15 @@
+..F                                                                      [100%]
+=================================== FAILURES ===================================
+________________ test_published_patrol_archive_hash_is_verified ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-77/test_published_patrol_archive_0')
+
+    def test_published_patrol_archive_hash_is_verified(tmp_path):
+        import hashlib
+    
+>       from scripts.release_manifest import verify_observations
+E       ImportError: cannot import name 'verify_observations' from 'scripts.release_manifest' (/workspace/harbinger/scripts/release_manifest.py)
+
+tests/test_release_provenance.py:31: ImportError
+=========================== short test summary info ============================
+FAILED tests/test_release_provenance.py::test_published_patrol_archive_hash_is_verified

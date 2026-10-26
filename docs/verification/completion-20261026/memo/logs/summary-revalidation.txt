@@ -1,0 +1,178 @@
+/tmp/harbinger-memo-5a/scripts/memo_summary.py:79: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert phase_rows["validation"].decision_at.max() + pd.Timedelta(days=30) <= val_end
+/tmp/harbinger-memo-5a/scripts/memo_summary.py:79: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert phase_rows["validation"].decision_at.max() + pd.Timedelta(days=30) <= val_end
+/tmp/harbinger-memo-5a/scripts/memo_summary.py:79: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert phase_rows["validation"].decision_at.max() + pd.Timedelta(days=30) <= val_end
+/tmp/harbinger-memo-5a/scripts/memo_summary.py:79: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert phase_rows["validation"].decision_at.max() + pd.Timedelta(days=30) <= val_end
+/tmp/harbinger-memo-5a/scripts/memo_summary.py:79: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert phase_rows["validation"].decision_at.max() + pd.Timedelta(days=30) <= val_end
+/tmp/harbinger-memo-5a/scripts/memo_summary.py:79: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  assert phase_rows["validation"].decision_at.max() + pd.Timedelta(days=30) <= val_end
+{
+  "synthetic": true,
+  "world_count": 3,
+  "training_seeds_per_world": 2,
+  "runs": [
+    {
+      "data_seed": 202610251,
+      "model_seed": 17,
+      "selected": "no_memo",
+      "clean_delta": -0.0001818181818181719,
+      "missing_mean_delta": 0.06063636363636364,
+      "clean_brier": 0.07229703203111684,
+      "legacy_clean_brier": 0.07106071121700747
+    },
+    {
+      "data_seed": 202610251,
+      "model_seed": 29,
+      "selected": "no_memo",
+      "clean_delta": 0.009454545454545465,
+      "missing_mean_delta": 0.08272727272727273,
+      "clean_brier": 0.07171463312477817,
+      "legacy_clean_brier": 0.07110393133488058
+    },
+    {
+      "data_seed": 202610252,
+      "model_seed": 17,
+      "selected": "robust",
+      "clean_delta": -0.0003636363636363438,
+      "missing_mean_delta": 0.05518181818181818,
+      "clean_brier": 0.06778794602899293,
+      "legacy_clean_brier": 0.0677080503036411
+    },
+    {
+      "data_seed": 202610252,
+      "model_seed": 29,
+      "selected": "no_memo",
+      "clean_delta": -0.004545454545454519,
+      "missing_mean_delta": 0.048363636363636386,
+      "clean_brier": 0.06808979730299049,
+      "legacy_clean_brier": 0.06762747762406948
+    },
+    {
+      "data_seed": 202610253,
+      "model_seed": 17,
+      "selected": "robust",
+      "clean_delta": 0.0040000000000000036,
+      "missing_mean_delta": 0.05909090909090911,
+      "clean_brier": 0.06659751207391221,
+      "legacy_clean_brier": 0.06701735832026662
+    },
+    {
+      "data_seed": 202610253,
+      "model_seed": 29,
+      "selected": "legacy",
+      "clean_delta": 0.0,
+      "missing_mean_delta": 0.0,
+      "clean_brier": 0.06599719634573414,
+      "legacy_clean_brier": 0.06599719634573414
+    }
+  ],
+  "test_means": {
+    "legacy": {
+      "clean": {
+        "auroc": 0.7485057491604481,
+        "pr_auc": 0.22697985796384593,
+        "brier": 0.0684191208575999,
+        "logloss": 0.24973364937223752,
+        "precision_at_k": 0.23724242424242425
+      },
+      "missing_25": {
+        "auroc": 0.7027244660222518,
+        "pr_auc": 0.16344814720119266,
+        "brier": 0.07945338240430118,
+        "logloss": 0.28241614870882353,
+        "precision_at_k": 0.17972727272727274
+      },
+      "missing_50": {
+        "auroc": 0.6834250109868251,
+        "pr_auc": 0.161062712490785,
+        "brier": 0.08861267528698359,
+        "logloss": 0.30994447408805015,
+        "precision_at_k": 0.17948484848484847
+      },
+      "missing_100": {
+        "auroc": 0.7031456902866616,
+        "pr_auc": 0.1760573040228756,
+        "brier": 0.10205860034623904,
+        "logloss": 0.3518367580023605,
+        "precision_at_k": 0.19390909090909092
+      }
+    },
+    "robust": {
+      "clean": {
+        "auroc": 0.7465775127962119,
+        "pr_auc": 0.22102069283752276,
+        "brier": 0.068964075091381,
+        "logloss": 0.25116288230281814,
+        "precision_at_k": 0.23224242424242425
+      },
+      "missing_25": {
+        "auroc": 0.7420605316297069,
+        "pr_auc": 0.21690199098272142,
+        "brier": 0.06931025004465041,
+        "logloss": 0.25277211870547717,
+        "precision_at_k": 0.23051515151515153
+      },
+      "missing_50": {
+        "auroc": 0.7392175033197109,
+        "pr_auc": 0.21528624769109586,
+        "brier": 0.06958697489419628,
+        "logloss": 0.25407201256232237,
+        "precision_at_k": 0.22936363636363635
+      },
+      "missing_100": {
+        "auroc": 0.7355767676917341,
+        "pr_auc": 0.21200917749337114,
+        "brier": 0.0701415305349596,
+        "logloss": 0.2564838766000152,
+        "precision_at_k": 0.22696969696969696
+      }
+    },
+    "no_memo": {
+      "clean": {
+        "auroc": 0.7409405202674423,
+        "pr_auc": 0.22603778260746957,
+        "brier": 0.06920556310637023,
+        "logloss": 0.25337131859499185,
+        "precision_at_k": 0.23751515151515148
+      },
+      "missing_25": {
+        "auroc": 0.7409405202674423,
+        "pr_auc": 0.22603778260746957,
+        "brier": 0.06920556310637023,
+        "logloss": 0.25337131859499185,
+        "precision_at_k": 0.23751515151515148
+      },
+      "missing_50": {
+        "auroc": 0.7409405202674423,
+        "pr_auc": 0.22603778260746957,
+        "brier": 0.06920556310637023,
+        "logloss": 0.25337131859499185,
+        "precision_at_k": 0.23751515151515148
+      },
+      "missing_100": {
+        "auroc": 0.7409405202674423,
+        "pr_auc": 0.22603778260746957,
+        "brier": 0.06920556310637023,
+        "logloss": 0.25337131859499185,
+        "precision_at_k": 0.23751515151515148
+      }
+    }
+  },
+  "adoption": {
+    "passed": true,
+    "criteria": {
+      "six_runs": true,
+      "finite": true,
+      "every_clean_drop_at_most_2pp": true,
+      "every_missing_mean_nondecreasing": true,
+      "mean_missing_gain_at_least_2pp": true,
+      "mean_clean_drop_at_most_1pp": true,
+      "mean_clean_brier_at_most_5pct_worse": true
+    }
+  },
+  "note": "Six nested runs, not six independent worlds; validation-selected policy only; no deployment or customer proof."
+}

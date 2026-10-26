@@ -1,0 +1,125 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+__________ test_legacy_bundle_cannot_rebuild_current_features[ingest] __________
+
+trained = {'results': {'split': {'train': {'rows': 4208, 'mature_labels': 3510, 'immature_labels': 698, 'from': '2024-01-01', .....Path('/tmp/pytest-of-agent/pytest-45/tiny0/artifacts'), 'root': PosixPath('/tmp/pytest-of-agent/pytest-45/tiny0'), ...}
+operation = 'ingest'
+
+    @pytest.mark.parametrize('operation', ['ingest', 'whatif', 'upload'])
+    def test_legacy_bundle_cannot_rebuild_current_features(trained, operation):
+        from fastapi import HTTPException
+        from harbinger.api.routers.workbench import create_upload
+        from harbinger.api.upload import export_example
+
+        store = Store(Settings(data_dir=trained['data'], model_dir=trained['models'], artifact_dir=trained['artifacts'], demo_bootstrap=False))
+        store.load()
+        # Simulate an otherwise readable historical bundle. Rebuilding must fail
+        # before touching its tables/cache, regardless of input changes.
+        store.bundle['entry']['feature_semantics_version'] = 2
+        before = store.tables['inspections'].copy(deep=True)
+        features_before = store.X.copy(deep=True)
+        site = str(store.tables['sites'].site_id.iloc[0])
+        asset = str(store.tables['assets'].query('site_id == @site').asset_id.iloc[0])
+        if operation == 'upload':
+            content = export_example(store.tables, site, store.data_end - pd.Timedelta(seconds=1))
+            with pytest.raises(HTTPException, match='재학습') as err:
+                create_upload(content, str(store.data_end.date()), store)
+            assert err.value.status_code == 422
+        elif operation == 'whatif':
+            with pytest.raises(ValueError, match='재학습'):
+                store.whatif(site, asset, [{'items': {}, 'memo': '점검'}])
+        else:
+            row = before[before.site_id == site].iloc[0]
+            record = {'inspection_id': 'legacy-rebuild-probe', 'asset_id': row.asset_id,
+                      'inspector_id': row.inspector_id, 'scheduled_at': row.scheduled_at,
+                      'performed_at': row.performed_at, 'method': row.method,
+                      'dwell_seconds': 60, 'overall': 1, 'items': {}, 'memo': '점검', 'photo_count': 0}
+>           with pytest.raises(ValueError, match='재학습'):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE ValueError
+
+tests/test_feature_bundle_compatibility.py:42: Failed
+---------------------------- Captured stdout setup -----------------------------
+[features] rows=7013 features=102 pos_rate(valid)=0.0654 in 1.4s
+[eval] split={'train': {'rows': 4208, 'mature_labels': 3510, 'immature_labels': 698, 'from': '2024-01-01', 'to': '2024-07-01'}, 'val': {'rows': 708, 'to': '2024-08-01', 'mature_labels': 20, 'immature_labels': 688}, 'test': {'rows': 2097, 'to': '2024-10-31'}} features=116 labeled train/val/test=3510/20/1414
+[eval] HGB full: {'n': 1414, 'pos_rate': 0.09405940594059406, 'auroc': 0.6460237244164275, 'pr_auc': 0.14778656437634152, 'brier': 0.09623639560654175, 'ece': 0.09566248024707605, 'pr_auc_lift': 1.5712045265274204, 'c_index': 0.6311815329605805, 'calibration_method': 'Platt 스케일링', 'calibration_val_logloss_raw': 0.6685828425242324, 'calibration_val_brier_raw': 0.20881963022855748, 'calibration_val_logloss_platt': 0.5993283591198705, 'calibration_val_brier_platt': 0.20083838461143433, 'calibration_val_logloss_isotonic': 1.0377381923910558, 'calibration_val_brier_isotonic': 0.17068529363926033}
+[eval] baselines: {'logistic_full': 0.573, 'age_only': 0.525, 'last_inspection': 0.618, 'oracle_latent_state': 0.81, 'constant_prior': 0.5}
+[eval] ablation: {'checklist_only': 0.591, '+text': 0.643, '+text+quality': 0.637, '+text+quality+history': 0.664, 'full(+energy)': 0.646, 'full−text': 0.649, 'full−quality': 0.641, 'full−history': 0.635}
+[eval] survival cox: c=0.715 ibs=0.0932 p30_auroc=0.739
+[eval] survival aft: c=0.710 ibs=0.0889 p30_auroc=0.735
+[deep:text] epoch 1 train=1.3677 val=0.1090
+[deep:text] epoch 6 train=0.5702 val=0.1079
+[deep:text] epoch 8 train=0.5648 val=0.1093
+[eval] deep text+site: p30_auroc=0.699 c=0.680 ibs=0.0793
+[eval] energy: {'mae': 692.0486276262701, 'mape': 0.04189773732672829, 'r2': 0.9910151723354313, 'rows': 368} oracle={'summer_corr_resid_vs_cooling_degradation': 0.4137477174394356, 'auroc_z_vs_high_degradation': 0.6879249257876089, 'anomaly_day_rate': 0.3559322033898305, 'rows': 236}
+[eval] patrol@10: {'age': 0.11, 'harbinger_deep': 0.245, 'harbinger_hgb': 0.16, 'last_inspection': 0.175, 'logistic': 0.125, 'random': 0.105, 'recent_repair': 0.025, 'round_robin': 0.05, 'without_history': 0.14, 'without_text': 0.16} recall@20%={'top_frac': 0.2, 'breakdowns_evaluated': 80, 'recall': 0.3375}
+[eval] top features: [('tx_weak_score_ewm', 0.43), ('wo_days_since_pm', 0.378), ('q_evidence_sum6', 0.177), ('tx_n_groups_ewm', 0.148), ('q_dwell_rel', 0.146), ('st_age_years', 0.14), ('st_floor', 0.117), ('ck_days_since_caution', 0.113)]
+[eval] saved bundle v20261026-073928; total 20.5s
+---------------------------- Captured stderr setup -----------------------------
+Fontconfig error: No writable cache directories
+------------------------------ Captured log setup ------------------------------
+WARNING  matplotlib:__init__.py:573 mkdir -p failed for path /home/agent/.config/matplotlib: [Errno 30] Read-only file system: '/home/agent/.config/matplotlib'
+WARNING  matplotlib:__init__.py:596 Matplotlib created a temporary cache directory at /tmp/matplotlib-bzwqchrk because there was an issue with the default path (/home/agent/.config/matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+__________ test_legacy_bundle_cannot_rebuild_current_features[whatif] __________
+
+trained = {'results': {'split': {'train': {'rows': 4208, 'mature_labels': 3510, 'immature_labels': 698, 'from': '2024-01-01', .....Path('/tmp/pytest-of-agent/pytest-45/tiny0/artifacts'), 'root': PosixPath('/tmp/pytest-of-agent/pytest-45/tiny0'), ...}
+operation = 'whatif'
+
+    @pytest.mark.parametrize('operation', ['ingest', 'whatif', 'upload'])
+    def test_legacy_bundle_cannot_rebuild_current_features(trained, operation):
+        from fastapi import HTTPException
+        from harbinger.api.routers.workbench import create_upload
+        from harbinger.api.upload import export_example
+
+        store = Store(Settings(data_dir=trained['data'], model_dir=trained['models'], artifact_dir=trained['artifacts'], demo_bootstrap=False))
+        store.load()
+        # Simulate an otherwise readable historical bundle. Rebuilding must fail
+        # before touching its tables/cache, regardless of input changes.
+        store.bundle['entry']['feature_semantics_version'] = 2
+        before = store.tables['inspections'].copy(deep=True)
+        features_before = store.X.copy(deep=True)
+        site = str(store.tables['sites'].site_id.iloc[0])
+        asset = str(store.tables['assets'].query('site_id == @site').asset_id.iloc[0])
+        if operation == 'upload':
+            content = export_example(store.tables, site, store.data_end - pd.Timedelta(seconds=1))
+            with pytest.raises(HTTPException, match='재학습') as err:
+                create_upload(content, str(store.data_end.date()), store)
+            assert err.value.status_code == 422
+        elif operation == 'whatif':
+>           with pytest.raises(ValueError, match='재학습'):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE ValueError
+
+tests/test_feature_bundle_compatibility.py:34: Failed
+__________ test_legacy_bundle_cannot_rebuild_current_features[upload] __________
+
+trained = {'results': {'split': {'train': {'rows': 4208, 'mature_labels': 3510, 'immature_labels': 698, 'from': '2024-01-01', .....Path('/tmp/pytest-of-agent/pytest-45/tiny0/artifacts'), 'root': PosixPath('/tmp/pytest-of-agent/pytest-45/tiny0'), ...}
+operation = 'upload'
+
+    @pytest.mark.parametrize('operation', ['ingest', 'whatif', 'upload'])
+    def test_legacy_bundle_cannot_rebuild_current_features(trained, operation):
+        from fastapi import HTTPException
+        from harbinger.api.routers.workbench import create_upload
+        from harbinger.api.upload import export_example
+
+        store = Store(Settings(data_dir=trained['data'], model_dir=trained['models'], artifact_dir=trained['artifacts'], demo_bootstrap=False))
+        store.load()
+        # Simulate an otherwise readable historical bundle. Rebuilding must fail
+        # before touching its tables/cache, regardless of input changes.
+        store.bundle['entry']['feature_semantics_version'] = 2
+        before = store.tables['inspections'].copy(deep=True)
+        features_before = store.X.copy(deep=True)
+        site = str(store.tables['sites'].site_id.iloc[0])
+        asset = str(store.tables['assets'].query('site_id == @site').asset_id.iloc[0])
+        if operation == 'upload':
+            content = export_example(store.tables, site, store.data_end - pd.Timedelta(seconds=1))
+>           with pytest.raises(HTTPException, match='재학습') as err:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE HTTPException
+
+tests/test_feature_bundle_compatibility.py:30: Failed
+=========================== short test summary info ============================
+FAILED tests/test_feature_bundle_compatibility.py::test_legacy_bundle_cannot_rebuild_current_features[ingest]
+FAILED tests/test_feature_bundle_compatibility.py::test_legacy_bundle_cannot_rebuild_current_features[whatif]
+FAILED tests/test_feature_bundle_compatibility.py::test_legacy_bundle_cannot_rebuild_current_features[upload]
+3 failed, 7 deselected in 27.19s

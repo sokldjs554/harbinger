@@ -1,0 +1,122 @@
+[
+  {
+    "data_seed": 202610251,
+    "model_seed": 17,
+    "phase": "validation",
+    "same_rows_labels": true,
+    "historical_rows": 46326,
+    "current_rows": 46326,
+    "historical_sha256": "153ff6a803d8759779d6aec41b42c0213a1b4e4d3d650e16c8986a834bcbffc3",
+    "current_sha256": "9ef5c7f706e7b9680ac1d35e55df37217b4b07c827abdd18d93a76fdcbc54722"
+  },
+  {
+    "data_seed": 202610251,
+    "model_seed": 17,
+    "phase": "test",
+    "same_rows_labels": true,
+    "historical_rows": 48532,
+    "current_rows": 48532,
+    "historical_sha256": "f221d24348d6ae08311e6cfcdff0a4cc5e40000fef0717510c98a928aaf173eb",
+    "current_sha256": "26282aee667b968d842bb963629efc1c352e21327753f421f32ff6446fb5ca47"
+  },
+  {
+    "data_seed": 202610251,
+    "model_seed": 29,
+    "phase": "validation",
+    "same_rows_labels": true,
+    "historical_rows": 46326,
+    "current_rows": 46326,
+    "historical_sha256": "3acc91e2b48b31882c0ee8698a9e1399991365d266ea8c4caaa9cf0404ed669a",
+    "current_sha256": "9ef5c7f706e7b9680ac1d35e55df37217b4b07c827abdd18d93a76fdcbc54722"
+  },
+  {
+    "data_seed": 202610251,
+    "model_seed": 29,
+    "phase": "test",
+    "same_rows_labels": true,
+    "historical_rows": 48532,
+    "current_rows": 48532,
+    "historical_sha256": "2de744740c5a70462fa95d8dabdd59a00123bf6254606f59380869d0aec39466",
+    "current_sha256": "26282aee667b968d842bb963629efc1c352e21327753f421f32ff6446fb5ca47"
+  },
+  {
+    "data_seed": 202610252,
+    "model_seed": 17,
+    "phase": "validation",
+    "same_rows_labels": true,
+    "historical_rows": 45402,
+    "current_rows": 45402,
+    "historical_sha256": "d454202c3c1546ce1eec671f9ec658ea6cc0c35452e409de9d7b87244a17c756",
+    "current_sha256": "d454202c3c1546ce1eec671f9ec658ea6cc0c35452e409de9d7b87244a17c756"
+  },
+  {
+    "data_seed": 202610252,
+    "model_seed": 17,
+    "phase": "test",
+    "same_rows_labels": true,
+    "historical_rows": 47564,
+    "current_rows": 47564,
+    "historical_sha256": "8bbc75db6b64891660dd06e150ac39a292b9847bb017172d1b9c63554808b3bd",
+    "current_sha256": "e11baf19c9fd7b96eee7abd7a8ece1a4d9ed0c15d3697d65d89436c48cafbb45"
+  },
+  {
+    "data_seed": 202610252,
+    "model_seed": 29,
+    "phase": "validation",
+    "same_rows_labels": true,
+    "historical_rows": 45402,
+    "current_rows": 45402,
+    "historical_sha256": "595be5f6a93389f007d294067605210e19292375de69eed874457b155f24b26b",
+    "current_sha256": "d454202c3c1546ce1eec671f9ec658ea6cc0c35452e409de9d7b87244a17c756"
+  },
+  {
+    "data_seed": 202610252,
+    "model_seed": 29,
+    "phase": "test",
+    "same_rows_labels": true,
+    "historical_rows": 47564,
+    "current_rows": 47564,
+    "historical_sha256": "a724c35c41bd1fbc328c371eb6f915b8cb52aa3d347299ade2af00b79aee713d",
+    "current_sha256": "e11baf19c9fd7b96eee7abd7a8ece1a4d9ed0c15d3697d65d89436c48cafbb45"
+  },
+  {
+    "data_seed": 202610253,
+    "model_seed": 17,
+    "phase": "validation",
+    "same_rows_labels": true,
+    "historical_rows": 47754,
+    "current_rows": 47754,
+    "historical_sha256": "5c54fa3901f789883ff712743ad5a26f10dae2e4d11fe85c38d16541e7ff729f",
+    "current_sha256": "65aa243dd90711ed0fe860c373c118937f421f39c913be86acba99a6b8f2b7a4"
+  },
+  {
+    "data_seed": 202610253,
+    "model_seed": 17,
+    "phase": "test",
+    "same_rows_labels": true,
+    "historical_rows": 50028,
+    "current_rows": 50028,
+    "historical_sha256": "127d7ec8a215602476e4abdd24817bc69a703df574925b85b7858a39b36c8b97",
+    "current_sha256": "92009c0c0311efe0dd36102ec975c669036fcdb4b94dc47e31b55b9d76006968"
+  },
+  {
+    "data_seed": 202610253,
+    "model_seed": 29,
+    "phase": "validation",
+    "same_rows_labels": true,
+    "historical_rows": 47754,
+    "current_rows": 47754,
+    "historical_sha256": "b3326e9dc2a8539d4d4c357683ef2ee13976d16d2efd6d27e9cfb090816b38f5",
+    "current_sha256": "65aa243dd90711ed0fe860c373c118937f421f39c913be86acba99a6b8f2b7a4"
+  },
+  {
+    "data_seed": 202610253,
+    "model_seed": 29,
+    "phase": "test",
+    "same_rows_labels": true,
+    "historical_rows": 50028,
+    "current_rows": 50028,
+    "historical_sha256": "939c13e3da4fb0bf9f339b88c8d25e20cb8b2e1ca6cb303716c97539aaf85650",
+    "current_sha256": "92009c0c0311efe0dd36102ec975c669036fcdb4b94dc47e31b55b9d76006968"
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "fired": [
+    "HarbingerWorkbenchFailures",
+    "HarbingerWorkbenchSlow"
+  ],
+  "resolved": [
+    "HarbingerWorkbenchFailures",
+    "HarbingerWorkbenchSlow"
+  ],
+  "recovery_request": {
+    "operation": "analysis",
+    "status": 200,
+    "seconds": 0.11357957299333066,
+    "bytes": 52977,
+    "rejection": null,
+    "retry_after": null,
+    "capacity_reason": null
+  },
+  "receiver": "local Alertmanager v2 protocol receiver; no external messaging",
+  "test_thresholds": "1s scrape/eval, 10s rate, 2s for, p95 >1ms and >=1 successful request; production thresholds unchanged"
+}

@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+import csv as csv_module
 import hashlib
+import io
 import json
 import os
 import platform
@@ -64,6 +66,16 @@ def proc_usage(pid):
     }
 
 
+def alert_recovery_complete(required, notifications, rules):
+    latest = {n["alert"]["labels"]["alertname"]: n["state"] for n in notifications}
+    states = {
+        r["name"]: r.get("state")
+        for group in rules.get("data", {}).get("groups", [])
+        for r in group.get("rules", [])
+    }
+    return all(latest.get(name) == "resolved" and states.get(name) == "inactive" for name in required)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--runtime", type=Path, required=True)
@@ -73,7 +85,9 @@ def main():
     out = args.out.resolve()
     out.mkdir(parents=True, exist_ok=True)
     fault = out / "inject-failure"
+    hold = out / "hold-computation"
     fault.unlink(missing_ok=True)
+    hold.unlink(missing_ok=True)
     env = {
         **os.environ,
         "OMP_NUM_THREADS": "1",
@@ -106,10 +120,12 @@ def main():
         token = ex["session_id"]
         params = {"as_of": ex["default_as_of"], "site": "S01", "k": 10}
         csv = client.get("/v1/workbench/example.csv?site=S01").content
+        csv_rows = list(csv_module.DictReader(io.StringIO(csv.decode("utf-8-sig"))))
         (out / "workload.csv").write_bytes(csv)
         version = client.get("/version").json()
         manifest = {
             "kind": "local-synthetic-fixed-workload",
+            "started_at_utc": datetime.now(UTC).isoformat(),
             "platform": platform.platform(),
             "python": platform.python_version(),
             "cpu_count_host_visible": os.cpu_count(),
@@ -127,18 +143,28 @@ def main():
             "process_threads_env": {k: env[k] for k in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS")},
             "workers": 1,
             "compute_slots": 2,
+            "compute_policy": client.get("/v1/workbench/info")
+            .json()
+            .get("compute_policy", {"slots": 2, "waiting": 0, "timeout_seconds": 0}),
             "requests_per_route_per_concurrency": 20,
             "concurrency": [1, 4],
             "as_of": params["as_of"],
             "site": "S01",
             "budget": 10,
             "csv_bytes": len(csv),
+            "csv_rows": len(csv_rows),
+            "csv_assets": len({r["asset_id"] for r in csv_rows}),
+            "csv_sites": len({r["site_id"] for r in csv_rows}),
             "csv_sha256": hashlib.sha256(csv).hexdigest(),
             "example_summary": ex["summary"],
             "version": version,
             "startup_seconds": startup,
             "source_sha256": {
                 str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(Path("src").rglob("*.py"))
+            },
+            "measurement_sha256": {
+                str(p): hashlib.sha256(p.read_bytes()).hexdigest()
+                for p in [Path("scripts/check_local_operations.py"), Path("scripts/audit_fault_server.py")]
             },
             "runtime_sha256": {
                 str(p.relative_to(args.runtime)): hashlib.sha256(p.read_bytes()).hexdigest()
@@ -169,9 +195,18 @@ def main():
                     )
                 duration = time.perf_counter() - began
                 code = r.status_code
+                rejection = r.json().get("detail") if code == 429 else None
                 if operation == "upload" and code == 200:
                     client.delete("/v1/workbench/sessions/" + r.json()["session_id"])
-                return {"operation": operation, "status": code, "seconds": duration, "bytes": len(r.content)}
+                return {
+                    "operation": operation,
+                    "status": code,
+                    "seconds": duration,
+                    "bytes": len(r.content),
+                    "rejection": rejection,
+                    "retry_after": r.headers.get("Retry-After"),
+                    "capacity_reason": r.headers.get("X-Harbinger-Capacity"),
+                }
             except httpx.HTTPError as exc:
                 return {
                     "operation": operation,
@@ -190,7 +225,7 @@ def main():
 
                 def sample(stop=stop, samples=samples):
                     while not stop.wait(0.1):
-                        samples.append(proc_usage(server.pid))
+                        samples.append({"monotonic_seconds": time.monotonic(), **proc_usage(server.pid)})
 
                 thread = threading.Thread(target=sample)
                 thread.start()
@@ -202,6 +237,7 @@ def main():
                 usage1 = proc_usage(server.pid)
                 stop.set()
                 thread.join()
+                dump(out / f"resources-{operation}-{concurrency}.json", samples)
                 for r in records:
                     r["concurrency"] = concurrency
                 raw.extend(records)
@@ -257,6 +293,26 @@ def main():
             client.delete("/v1/workbench/sessions/" + sid)
         dump(out / "capacity.json", capacity)
         assert capacity["status"] == 429
+        # Deliberate local hold is separate from throughput/latency claims above.
+        # Same 20 requests/12 workers before and after the admission-policy change.
+        hold.write_text("local 15s computation hold\n")
+        try:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=12) as pool:
+                overload = list(pool.map(lambda _: request("analysis"), range(20)))
+        finally:
+            hold.unlink(missing_ok=True)
+        dump(
+            out / "admission-overload.json",
+            {"injected_hold_seconds": 15, "concurrency": 12, "requests": overload},
+        )
+        assert all(r["status"] in (200, 429) for r in overload)
+        assert any(r["status"] == 429 for r in overload)
+        if manifest["compute_policy"]["waiting"]:
+            reasons = {r["capacity_reason"] for r in overload}
+            assert {"queue_full", "wait_timeout"} <= reasons, reasons
+        overload_recovery = [request(op) for op in ROUTES]
+        dump(out / "admission-recovery.json", overload_recovery)
+        assert all(r["status"] == 200 for r in overload_recovery)
         # Prometheus sends Alertmanager v2 messages directly to a local protocol receiver.
         notifications = []
 
@@ -333,13 +389,14 @@ def main():
         # Stop requests so the 10s observation window expires; await real resolved notifications.
         deadline = time.monotonic() + 45
         required = {"HarbingerWorkbenchSlow", "HarbingerWorkbenchFailures"}
+        final_rules = {}
         while time.monotonic() < deadline:
-            resolved = {n["alert"]["labels"]["alertname"] for n in notifications if n["state"] == "resolved"}
-            if required <= resolved:
+            final_rules = httpx.get(PROM + "/api/v1/rules", trust_env=False).json()
+            if alert_recovery_complete(required, notifications, final_rules):
                 break
             time.sleep(1)
         dump(out / "alert-requests.json", alert_requests)
-        dump(out / "recovered-rules.json", httpx.get(PROM + "/api/v1/rules", trust_env=False).json())
+        dump(out / "recovered-rules.json", final_rules)
         fired = {n["alert"]["labels"]["alertname"] for n in notifications if n["state"] == "firing"}
         resolved = {n["alert"]["labels"]["alertname"] for n in notifications if n["state"] == "resolved"}
         dump(
@@ -347,12 +404,14 @@ def main():
             {
                 "fired": sorted(fired),
                 "resolved": sorted(resolved),
+                "currently_recovered": alert_recovery_complete(required, notifications, final_rules),
                 "recovery_request": recovery_request,
                 "receiver": "local Alertmanager v2 protocol receiver; no external messaging",
                 "test_thresholds": "1s scrape/eval, 10s rate, 2s for, p95 >1ms and >=1 successful request; production thresholds unchanged",
             },
         )
         assert required <= fired and required <= resolved
+        assert alert_recovery_complete(required, notifications, final_rules), "Alerts have not settled"
         print(
             json.dumps(
                 {
@@ -365,6 +424,7 @@ def main():
         )
     finally:
         fault.unlink(missing_ok=True)
+        hold.unlink(missing_ok=True)
         if receiver:
             receiver.shutdown()
             receiver.server_close()

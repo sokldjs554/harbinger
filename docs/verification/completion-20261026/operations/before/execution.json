@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/tmp/hb-audit-venv/bin/python",
+    "-m",
+    "scripts.check_local_operations",
+    "--runtime",
+    "/tmp/hb-completion-final",
+    "--prometheus",
+    "/tmp/hb-monitoring-bin/prometheus",
+    "--out",
+    "/workspace/harbinger-runs/completion-20261026/operations/before"
+  ],
+  "cwd": "/tmp/hb-completion-baseline",
+  "started_unix": 1793007588.8930712,
+  "seconds": 93.09581136703491,
+  "exit_code": 0
+}

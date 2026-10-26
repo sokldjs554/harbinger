@@ -251,7 +251,8 @@ def train_deep(
     bundle = DeepBundle(model, features, medians, means, stds, vocab, site_index, use_text, use_site)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs)
-    tr_t = bundle.tensors(train, train_mode=True, site_dropout=site_dropout, rng=rng)
+    # Preserve original site IDs; the epoch loop samples the only dropout mask.
+    tr_t = bundle.tensors(train)
     y_t = torch.from_numpy(train["tte_days"].to_numpy(dtype=np.float32))
     e_t = torch.from_numpy(train["event"].to_numpy(dtype=np.int64))
     va_t = bundle.tensors(val)

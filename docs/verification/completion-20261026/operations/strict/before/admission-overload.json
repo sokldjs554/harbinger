@@ -1,0 +1,186 @@
+{
+  "injected_hold_seconds": 15,
+  "concurrency": 12,
+  "requests": [
+    {
+      "operation": "analysis",
+      "status": 200,
+      "seconds": 15.553619097998308,
+      "bytes": 52977,
+      "rejection": null,
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 200,
+      "seconds": 15.53013755199936,
+      "bytes": 52977,
+      "rejection": null,
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.004018885003461037,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.006203982004080899,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.009744291004608385,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.009787394999875687,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.00996177300112322,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.00744901699363254,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.009079670999199152,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.010119626997038722,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.009997756998927798,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.00826101099664811,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.011198389998753555,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.010387963004177436,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.006396937998943031,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.008015052997507155,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.007559640005638357,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.005843931998242624,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.006141696001577657,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    },
+    {
+      "operation": "analysis",
+      "status": 429,
+      "seconds": 0.004690817993832752,
+      "bytes": 68,
+      "rejection": "계산 중입니다. 잠시 뒤 다시 시도하세요.",
+      "retry_after": null,
+      "capacity_reason": null
+    }
+  ]
+}

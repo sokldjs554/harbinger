@@ -17,6 +17,7 @@ from starlette.concurrency import run_in_threadpool
 
 from harbinger.api.analysis import analyze, markdown_report, safe_json
 from harbinger.api.auth import owner, principal
+from harbinger.api.compute import ComputeGate
 from harbinger.api.deps import get_store
 from harbinger.api.store import Store
 from harbinger.api.upload import MAX_BYTES, UploadError, export_example, parse_csv, timestamp
@@ -26,7 +27,7 @@ router = APIRouter(prefix="/v1/workbench", tags=["workbench"])
 MAX_SESSIONS = 8
 TTL = 1800
 lock = threading.RLock()
-compute = threading.BoundedSemaphore(2)
+compute = ComputeGate(slots=2, waiting=4, timeout=10.0)
 
 
 @dataclass
@@ -59,6 +60,9 @@ def register(store, source, summary, owner_id=None, auth_manager=None):
         token = secrets.token_urlsafe(24)
         sessions[token] = Session(store, time.monotonic() + TTL, source, summary, owner_id)
     default = min(store.data_end - pd.Timedelta(days=45), store.X.t.max())
+    # Prefer a mature evaluation date, but short uploads must open on an
+    # existing inspection. Analysis still withholds incomplete follow-up.
+    default = max(default, store.X.t.min())
     return {
         "session_id": token,
         "source": source,
@@ -88,6 +92,11 @@ def info(store: Store = Depends(get_store)):
         "mode": "live",
         "synthetic_example": True,
         "model_version": store.bundle["version"],
+        "compute_policy": {
+            "slots": compute.slots,
+            "waiting": compute.waiting,
+            "timeout_seconds": compute.timeout,
+        },
         "limits": {
             "bytes": MAX_BYTES,
             "rows": 20000,
@@ -131,31 +140,32 @@ def example_csv(site: str = "S01", store: Store = Depends(get_store)):
 def create_upload(
     content, end, base, observation_confirmed=False, owner_id=None, allowed_sites=None, auth_manager=None
 ):
-    if not compute.acquire(blocking=False):
-        raise HTTPException(429, "계산 중입니다. 잠시 뒤 다시 시도하세요.")
     try:
-        with lock:
-            cleanup()
-            if len(sessions) >= MAX_SESSIONS:
-                raise HTTPException(429, "세션 한도 8개에 도달했습니다.")
-        tables, summary = parse_csv(content, end)
-        if allowed_sites is not None and not set(tables["sites"].site_id).issubset(allowed_sites):
-            raise HTTPException(403, "CSV contains an unauthorized site")
-        summary["observation_confirmed"] = observation_confirmed
-        if not observation_confirmed:
-            summary["warnings"].append(
-                "고장 기록 완전성 미확인: 예측·원문 탐색만 제공하며 이후 결과와 성능 평가는 보류합니다."
-            )
-        store = Store(base.settings)
-        store.tables = tables
-        store.bundle = base.bundle
-        store._observation_end = pd.Timestamp(summary["observation_end"])
-        store.X = build_features(tables, data_end=store._observation_end, verbose=False)
-        return register(store, "uploaded-csv; synthetic-trained-model", summary, owner_id, auth_manager)
-    except UploadError as exc:
+        base.require_current_feature_builder()
+    except ValueError as exc:
         raise HTTPException(422, str(exc)) from exc
-    finally:
-        compute.release()
+    with compute.slot():
+        try:
+            with lock:
+                cleanup()
+                if len(sessions) >= MAX_SESSIONS:
+                    raise HTTPException(429, "세션 한도 8개에 도달했습니다.")
+            tables, summary = parse_csv(content, end)
+            if allowed_sites is not None and not set(tables["sites"].site_id).issubset(allowed_sites):
+                raise HTTPException(403, "CSV contains an unauthorized site")
+            summary["observation_confirmed"] = observation_confirmed
+            if not observation_confirmed:
+                summary["warnings"].append(
+                    "고장 기록 완전성 미확인: 예측·원문 탐색만 제공하며 이후 결과와 성능 평가는 보류합니다."
+                )
+            store = Store(base.settings)
+            store.tables = tables
+            store.bundle = base.bundle
+            store._observation_end = pd.Timestamp(summary["observation_end"])
+            store.X = build_features(tables, data_end=store._observation_end, verbose=False)
+            return register(store, "uploaded-csv; synthetic-trained-model", summary, owner_id, auth_manager)
+        except UploadError as exc:
+            raise HTTPException(422, str(exc)) from exc
 
 
 @router.post("/upload")
@@ -205,9 +215,7 @@ def result(token, as_of, site, k, owner_id=None):
         raise HTTPException(422, "예측 기준일은 데이터 관측 종료일을 넘을 수 없습니다.")
     if site and site not in set(s.store.tables["sites"].site_id):
         raise HTTPException(404, "알 수 없는 고객사입니다.")
-    if not compute.acquire(blocking=False):
-        raise HTTPException(429, "계산 중입니다. 잠시 뒤 다시 시도하세요.")
-    try:
+    with compute.slot():
         return analyze(
             s.store,
             cutoff,
@@ -217,8 +225,6 @@ def result(token, as_of, site, k, owner_id=None):
             observation_confirmed=s.source == "synthetic-example"
             or s.summary.get("observation_confirmed", False),
         )
-    finally:
-        compute.release()
 
 
 @router.get("/sessions/{token}/analysis")
@@ -241,12 +247,8 @@ def evidence(request: Request, token: str, asset_id: str, as_of: str):
     a = a[a.asset_id == asset_id]
     if a.empty:
         raise HTTPException(404, "알 수 없는 설비입니다.")
-    if not compute.acquire(blocking=False):
-        raise HTTPException(429, "계산 중입니다. 잠시 뒤 다시 시도하세요.")
-    try:
+    with compute.slot():
         return safe_json(s.store.asset_risk(a.iloc[0].site_id, asset_id, cutoff))
-    finally:
-        compute.release()
 
 
 @router.get("/sessions/{token}/download")

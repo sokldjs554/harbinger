@@ -7,7 +7,6 @@ public_ip=${2:?public IPv4 required}
 python3 -c 'import ipaddress,sys; assert ipaddress.IPv4Address(sys.argv[1]).is_global' "$public_ip"
 package=/home/ubuntu/harbinger-package
 root=/opt/harbinger
-release="$root/releases/$release_sha"
 pending="$root/pending-deployment"
 # A prior interrupted invocation keeps its rollback snapshot until restored.
 if [[ -f "$pending/rollback.sh" ]]; then
@@ -26,6 +25,12 @@ pending=/opt/harbinger/pending-deployment
 previous=$(cat "$pending/previous")
 if [[ -n "$previous" ]]; then
     ln -sfn "$previous" /opt/harbinger/current
+    if [[ -f "$pending/previous-image" ]]; then
+        previous_release=$(sed -n 's/^HARBINGER_RELEASE=//p' "$previous/.env")
+        [[ "$previous_release" =~ ^[0-9a-f]{40}$ ]]
+        # Restore the tag as well, so later systemd restarts keep the old image.
+        docker tag "$(cat "$pending/previous-image")" "harbinger:$previous_release"
+    fi
     docker compose -p harbinger --env-file "$previous/.env" -f "$previous/compose.yml" up -d --wait --wait-timeout 180
 else
     docker stop harbinger-api || true
@@ -49,7 +54,19 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -y --no-install-recommends docker.io docker-compose-v2 nginx python3-venv curl ca-certificates openssl
 systemctl enable --now docker nginx
+mkdir -p "$root/releases"
+# A workflow rerun can deploy the same commit with a newly trained bundle.
+# Never overwrite the previous release that rollback still references.
+release=$(mktemp -d "$root/releases/$release_sha.XXXXXXXX")
+chmod 755 "$release"
 mkdir -p "$release/runtime" /var/www/harbinger-acme/.well-known/acme-challenge
+# Loading a rebuilt image can replace the commit tag. Pin the previous running
+# image before that happens so rollback restores its exact runtime image too.
+if [[ -n "$previous" ]]; then
+    previous_image=$(docker inspect --format '{{.Image}}' harbinger-api)
+    [[ "$previous_image" =~ ^sha256:[0-9a-f]{64}$ ]]
+    printf '%s\n' "$previous_image" > "$pending/previous-image"
+fi
 docker load -i "$package/image.tar.gz"
 tar -xzf "$package/runtime.tar.gz" -C "$release/runtime"
 chmod -R a+rX "$release/runtime"

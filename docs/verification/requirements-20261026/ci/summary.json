@@ -1,0 +1,33 @@
+{
+  "verified_implementation_commit": "424ca48ad5e2728b9ce76018edd325f591097383",
+  "run": "https://github.com/sokldjs554/harbinger/actions/runs/40289442379",
+  "conclusion": "success",
+  "jobs": {
+    "tensorflow": 121460765054,
+    "test": 121460765287,
+    "image": 121462939104
+  },
+  "tensorflow_tests": 12,
+  "docker_source_files_verified": 78,
+  "docker_runtime_model": "v20261026-081423",
+  "docker_limits": {
+    "cpu_cores": 2,
+    "memory_bytes": 2147483648
+  },
+  "docker_version_endpoint_git_sha": null,
+  "source_identity_note": "The disposable Docker bootstrap has no git repository. Source identity is verified by 78 source-file hashes against the CI checkout, not by a non-null runtime git_sha.",
+  "artifacts": [
+    {
+      "name": "browser-verification",
+      "id": 12636565987,
+      "sha256": "93dbc941236ab35ec35b79630cb627f44d778e248b7c23d7b6d1ad309321cc18"
+    },
+    {
+      "name": "docker-audit",
+      "id": 12636262077,
+      "sha256": "2c9d110924b096bf9ae0752ef04d04b30681700065825e313c3bc51c76ab7da9"
+    }
+  ],
+  "public_deployment": false,
+  "followup_note": "This evidence records the implementation commit. The subsequent documentation-only commit preserves implementation hashes; its final CI is linked from PR16."
+}

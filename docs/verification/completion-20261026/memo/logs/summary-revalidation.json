@@ -1,0 +1,10 @@
+{
+  "command": [
+    "/tmp/hb-audit-venv/bin/python",
+    "-m",
+    "scripts.memo_summary",
+    "/workspace/harbinger-runs/completion-20261026/memo/results"
+  ],
+  "exit_code": 0,
+  "duration_seconds": 13.207539340000949
+}

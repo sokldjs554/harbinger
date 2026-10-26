@@ -1,0 +1,17 @@
+[
+  {
+    "monotonic_seconds": 63301.119641508,
+    "cpu_seconds": 26.37,
+    "rss_bytes": 929046528
+  },
+  {
+    "monotonic_seconds": 63301.219924888,
+    "cpu_seconds": 26.48,
+    "rss_bytes": 929308672
+  },
+  {
+    "monotonic_seconds": 63301.320333813,
+    "cpu_seconds": 26.59,
+    "rss_bytes": 929308672
+  }
+]

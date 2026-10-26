@@ -1,0 +1,19 @@
+{
+  "url": "http://127.0.0.1:18032/",
+  "static": true,
+  "page_errors": [],
+  "checks": [
+    "list/detail and record dates",
+    "back/focus",
+    "same selected identities as backend metrics",
+    "pending condition export isolation",
+    "withheld outcomes",
+    "customer scope",
+    "three downloads",
+    "CSV sample",
+    "mobile all views",
+    "mobile filter disclosure, applied summary, pending date and history/scroll restoration",
+    "readable direction labels and exact live/saved mode at 320/390/650px",
+    "session close"
+  ]
+}

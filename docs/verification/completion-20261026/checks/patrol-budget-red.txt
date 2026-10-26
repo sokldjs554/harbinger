@@ -1,0 +1,34 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+________ test_online_patrol_reports_actual_budget_and_fair_round_robin _________
+
+    def test_online_patrol_reports_actual_budget_and_fair_round_robin():
+        today = pd.Timestamp("2025-06-01")
+        rows = pd.DataFrame({
+            "asset_id": ["m1", "m2", "m3", "old"],
+            "name": ["m1", "m2", "m3", "old"],
+            "category": ["elevator"] * 3 + ["pump"],
+            "zone": ["A"] * 4, "st_floor": [1] * 4, "st_criticality": [1] * 4,
+            "t": [today - pd.Timedelta(days=30)] * 3 + [today - pd.Timedelta(days=110)],
+            "p30": [.1, .2, .3, .9], "ck_overall": [0] * 4, "memo": [""] * 4,
+        })
+        store = SimpleNamespace(latest_rows=lambda *args: rows, routing_trace=lambda row: {}, bundle={"version":"test"})
+        result = Store.patrol(store, "S01", today, k=2, explain=False)
+>       assert result["requested_k"] == 2
+               ^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'requested_k'
+
+tests/test_patrol_budget_reporting.py:23: KeyError
+____ test_empty_online_patrol_reports_zero_selection_with_requested_budget _____
+
+    def test_empty_online_patrol_reports_zero_selection_with_requested_budget():
+        store = SimpleNamespace(latest_rows=lambda *args: pd.DataFrame())
+        result = Store.patrol(store, "S01", pd.Timestamp("2025-06-01"), k=2, explain=False)
+>       assert result["requested_k"] == 2
+               ^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'requested_k'
+
+tests/test_patrol_budget_reporting.py:35: KeyError
+=========================== short test summary info ============================
+FAILED tests/test_patrol_budget_reporting.py::test_online_patrol_reports_actual_budget_and_fair_round_robin
+FAILED tests/test_patrol_budget_reporting.py::test_empty_online_patrol_reports_zero_selection_with_requested_budget

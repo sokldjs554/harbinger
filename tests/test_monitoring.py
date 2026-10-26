@@ -80,6 +80,7 @@ class SignalClassifier:
 def monitoring_store(tmp_path, monkeypatch):
     from harbinger.api.store import Store
     from harbinger.config import Settings
+    from harbinger.features.build import FEATURE_SEMANTICS_VERSION
 
     data, models = tmp_path / "data", tmp_path / "models"
     data.mkdir()
@@ -98,6 +99,9 @@ def monitoring_store(tmp_path, monkeypatch):
         }
     )
     features.to_parquet(data / "features.parquet")
+    (data / "features_meta.json").write_text(
+        json.dumps({"feature_semantics_version": FEATURE_SEMANTICS_VERSION})
+    )
     tables = {
         "assets": pd.DataFrame({"asset_id": ["A"], "site_id": ["S"], "name": ["Asset"], "zone": ["Z"]}),
         "inspections": pd.DataFrame(
@@ -117,7 +121,15 @@ def monitoring_store(tmp_path, monkeypatch):
     for name, table in tables.items():
         table.to_parquet(data / f"{name}.parquet")
     classifier = SignalClassifier()
-    bundle = {"version": "test", "classifier": classifier, "entry": {"features": ["signal"], "metrics": {}}}
+    bundle = {
+        "version": "test",
+        "classifier": classifier,
+        "entry": {
+            "features": ["signal"],
+            "metrics": {},
+            "feature_semantics_version": FEATURE_SEMANTICS_VERSION,
+        },
+    }
     monkeypatch.setattr("harbinger.api.store.load_bundle", lambda path: bundle)
     return Store(Settings(data_dir=data, model_dir=models, demo_bootstrap=False))
 

@@ -1,0 +1,32 @@
+{
+  "adoption": {
+    "passed": true,
+    "criteria": {
+      "six_runs": true,
+      "finite": true,
+      "every_clean_drop_at_most_2pp": true,
+      "every_missing_mean_nondecreasing": true,
+      "mean_missing_gain_at_least_2pp": true,
+      "mean_clean_drop_at_most_1pp": true,
+      "mean_clean_brier_at_most_5pct_worse": true
+    }
+  },
+  "selected": [
+    "no_memo",
+    "no_memo",
+    "robust",
+    "no_memo",
+    "robust",
+    "legacy"
+  ],
+  "report": "/workspace/harbinger-runs/completion-20261026/memo/report.md",
+  "verification": {
+    "historical_files_unchanged": 118,
+    "raw_source_tables_equal": true,
+    "cohorts_and_labels_equal": true,
+    "damage_counts_equal": true,
+    "feature_semantics_version": 3,
+    "existing_summary_exit_code": 0,
+    "failures": []
+  }
+}
