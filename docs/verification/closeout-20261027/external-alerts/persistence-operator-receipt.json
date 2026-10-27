@@ -1,0 +1,35 @@
+{
+  "verification_id": "mail-40429584833-1",
+  "source": "project owner conversation replies to explicit test-ID and receipt-time questions",
+  "reply_history": [
+    {
+      "raw_reply": "시험 번호: mail-40429584833-1 장애(FIRING): 받음 , 2026-02:58, 받은편지함 / 스팸함 복구(RESOLVED): 받음 , 2026-02:58, 전체메일함",
+      "interpretation_at_that_time": "Receipt claimed; 02:58 time conflicted with this trial, clarification requested."
+    },
+    {
+      "raw_reply": "아 미안 10/27 09:59였어 새 번호 두 메일 확인했어",
+      "interpretation": "Owner explicitly confirmed both messages with the new trial ID and corrected the displayed time."
+    }
+  ],
+  "operator_receipt_confirmed": true,
+  "firing_received": true,
+  "resolved_received": true,
+  "reported_receipt_time": "2026-10-27T09:59+09:00",
+  "receipt_time_precision": "minute",
+  "per_message_times_distinguished": false,
+  "firing_received_at": null,
+  "resolved_received_at": null,
+  "firing_mailbox": null,
+  "firing_mailbox_raw": "받은편지함 / 스팸함",
+  "resolved_mailbox_view": "전체메일함",
+  "resolved_delivery_folder": null,
+  "initial_time_discrepancy_resolved": true,
+  "recorded_at": "2026-10-27T01:40:17.172662+00:00",
+  "recorded_at_note": "Time this record was written, not message arrival time.",
+  "limitations": [
+    "Owner self-report; no mailbox login or message headers collected.",
+    "Common displayed minute only; no separate second-resolution receipt times or delivery latency.",
+    "FIRING folder selection is ambiguous; RESOLVED was seen in All Mail, not evidence of inbox versus spam delivery.",
+    "Original automated JSON remains unmodified and does not assert human receipt."
+  ]
+}

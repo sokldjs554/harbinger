@@ -22,5 +22,6 @@
       "sha256": "b67f71af8609c05daf1a8500aaeecb17b41f07d68b2d6c8494cc484d765c8afd"
     }
   ],
-  "operator_receipt_note": "This new trial has no human receipt reply. The separate operator-receipt.json confirms only mail-40373254666-1."
+  "operator_receipt_note": "Original automatic records retain false. Actual owner confirmation with corrected 2026-10-27 09:59 KST displayed minute is separately recorded in persistence-operator-receipt.json. The earlier operator-receipt.json remains specific to mail-40373254666-1.",
+  "operator_receipt_record": "persistence-operator-receipt.json"
 }
