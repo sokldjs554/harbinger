@@ -1,0 +1,82 @@
+{
+  "verification_id": "mail-40429584833-1",
+  "started_at": "2026-10-27T00:57:38.150498+00:00",
+  "operator_receipt_confirmed": false,
+  "scope": "existing host; real email route; isolated probe fault; no public load",
+  "events": {
+    "fault_injected_at": "2026-10-27T00:57:54.188432+00:00",
+    "firing_observed_at": "2026-10-27T00:58:52.624860+00:00",
+    "probe_restored_at": "2026-10-27T00:59:04.724546+00:00",
+    "inactive_observed_at": "2026-10-27T00:59:22.740425+00:00"
+  },
+  "previous_active_config": {
+    "smtp_password_file_present": false,
+    "alertmanager_config_file_present": false
+  },
+  "health_before": {
+    "status": "ok",
+    "service": "harbinger",
+    "version": "0.1.0"
+  },
+  "version_before": "v20261026-151241",
+  "prometheus_alerts": [
+    {
+      "labels": {
+        "alertname": "HarbingerControlledNotification",
+        "instance": "127.0.0.1:19101",
+        "job": "harbinger-controlled-probe",
+        "severity": "test",
+        "verification_id": "mail-40429584833-1"
+      },
+      "annotations": {
+        "description": "Separate loopback probe stopped/restored for notification verification. This is not a customer incident.",
+        "summary": "Controlled email drill; public Harbinger remains available"
+      },
+      "state": "firing",
+      "activeAt": "2026-10-27T00:58:21.11345161Z",
+      "value": "0e+00"
+    }
+  ],
+  "firing_email_transport_success": {
+    "at": "2026-10-27T00:59:04.161201963Z",
+    "receiver": "verification",
+    "integration": "email[0]"
+  },
+  "resolved_email_transport_success": {
+    "at": "2026-10-27T00:59:23.75463454Z",
+    "receiver": "verification",
+    "integration": "email[0]"
+  },
+  "transport_verified": true,
+  "test_rule_removed": true,
+  "health_after": {
+    "status": "ok",
+    "service": "harbinger",
+    "version": "0.1.0"
+  },
+  "version_after": "v20261026-151241",
+  "remaining_firing_alerts": [],
+  "normal_after_test": true,
+  "finished_at": "2026-10-27T00:59:25.081508+00:00",
+  "release_config_before_restart": {
+    "smtp_password_file_present": true,
+    "alertmanager_config_file_present": true
+  },
+  "post_restart_checks": {
+    "prometheus_ready": true,
+    "alertmanager_ready": true,
+    "application_metrics_scraped": true,
+    "test_rule_present": false,
+    "health_status": "ok",
+    "model_version": "v20261026-151241",
+    "remaining_firing_alerts": []
+  },
+  "persistence_verified": true,
+  "persistence_checked_at": "2026-10-27T00:59:39.833729+00:00",
+  "active_config_after_cleanup": {
+    "smtp_password_file_present": true,
+    "alertmanager_config_file_present": true
+  },
+  "activation_verified": true,
+  "activation_checked_at": "2026-10-27T00:59:39.901560+00:00"
+}

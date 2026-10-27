@@ -1,0 +1,24 @@
+{
+  "source_commit": "4a0e654304d8ee688a8c262804e97ae435c36189",
+  "remote": "https://github.com/sokldjs554/harbinger.git",
+  "fresh_clone": true,
+  "clone_options": [
+    "--depth",
+    "1",
+    "--branch",
+    "fix/monitoring-current-link-20261027"
+  ],
+  "command": "python docs/verification/completion-20261026/operations/verify_comparison.py",
+  "exit_code": 0,
+  "stdout": {
+    "raw_measurement_checks_passed": true,
+    "overall_passed": true,
+    "evidence_root": "strict",
+    "alert_settlement": {
+      "before": true,
+      "after": true
+    }
+  },
+  "stderr": "",
+  "checked_at": "2026-10-27T00:27:59.933955+00:00"
+}

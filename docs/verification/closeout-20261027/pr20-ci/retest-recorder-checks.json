@@ -1,0 +1,13 @@
+{
+  "human_results": false,
+  "checks": [
+    "metadata guard",
+    "single active task",
+    "waiting separated",
+    "assistance preserved",
+    "skipped tasks excluded",
+    "validated JSON export",
+    "mobile no overflow"
+  ],
+  "page_errors": []
+}
