@@ -59,10 +59,14 @@ Docker는 CI에서 비루트 UID 10001·소스 80개 해시·실제 API를 확�
 
 ## 7. PR #18 병합과 네이버 SSL 재시험
 
-[PR #18](https://github.com/sokldjs554/harbinger/pull/18)은 `530faf0f8ae678f6f29c85c1e222edc742e7d83c`로 병합했다. [PR CI](https://github.com/sokldjs554/harbinger/actions/runs/40369464258), [병합본 CI](https://github.com/sokldjs554/harbinger/actions/runs/40371570771)의 test·tensorflow·image가 모두 통과했다. 로컬 최종 전체 검사는 378개 통과이며, 실제 로컬 SSL 정상 전송과 SMTP 535 거절·정리를 CI에서도 검증했다.
+[PR #18](https://github.com/sokldjs554/harbinger/pull/18)은 `530faf0f8ae678f6f29c85c1e222edc742e7d83c`로 병합했다. [PR CI](https://github.com/sokldjs554/harbinger/actions/runs/40369464258), [병합본 CI](https://github.com/sokldjs554/harbinger/actions/runs/40371570771)의 test·tensorflow·image가 모두 통과했다. PR #18 당시 로컬 전체 검사는 378개 통과이며, 실제 로컬 SSL 정상 전송과 SMTP 535 거절·정리를 CI에서도 검증했다.
 
 사용자가 SMTP 사용 설정을 저장했다고 회신한 후 [재시험 40373254666](https://github.com/sokldjs554/harbinger/actions/runs/40373254666)을 실행했다. `mail-40373254666-1`의 장애·복구 이메일 전송 성공, 시험 규칙 제거, health 정상, 모델 `v20261026-151241` 유지, 남은 firing 경보 없음, 임시 SSH 제거를 확인했다. 새 인스턴스나 공개 부하 시험은 없었다. [원본 결과·출처·해시](external-alerts/manifest.json), [상세 시각과 수신 상태](../../ops/external-alerts.md).
 
 첫 실패 결과도 다음 시험 전에 원격 원본을 회수해 [그대로 보존](external-alerts/attempt-1-result.json)했다. 이전 결함으로 업로드되지 않았던 JSON을 새로 만들어 채우지 않았다. 기존의 첫 실패 요약은 당시 상태로 유지한다.
 
 운영자가 해당 시험 번호의 장애·복구 두 메일 수신을 회신했다. [별도 실제 회신 기록](external-alerts/operator-receipt.json)을 남겼다. 운영자가 추가로 전달한 표시 시각은 2026-10-27 02:58 KST(분 단위)다. 메일별 시각 구분·메일함 종류는 미제공이며, 자동 전송 시각을 실제 도착 시각으로 바꾸거나 전달 지연을 계산하지 않는다. 동료 A·친구 B의 새 7과업 재검토도 아직 미수신이며 양식 준비와 도구 검증까지만 완료했다. 실제 서비스/Pages 소스·모델은 PR #16의 배포 상태를 유지하고, 이후 커밋은 증거·문서·모니터링 변경으로 구분한다.
+
+## 8. 알림 설정 지속성 후속 수정
+
+PR #19 이후 마지막 파일 정리까지 점검하여 첫 실패 후 재설치 시 활성 설정 삭제 가능성을 재현했다. 이전 메일 전송·수신을 부정하는 결과는 아니며, 기존 검증에 없던 재기동 지속성의 결함이다. [원인·회귀 검사·독립 검토](review.md)에 기록했다. 정상 설정을 사용한 실제 모니터링 재생성과 마지막 정리 후 활성 파일 보존을 별도 운영 검증한다. 해당 후속 운영 실행 전에는 재기동 검증 완료로 표시하지 않는다.

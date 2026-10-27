@@ -299,3 +299,81 @@ def test_explicitly_absent_previous_evidence_allows_first_install(tmp_path, monk
     monkeypatch.setattr(runner.subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a, 44, "", ""))
     runner.capture_result(Remote(), tmp_path / "previous.json")
     assert not (tmp_path / "previous.json").exists()
+
+
+def test_first_success_after_failed_install_preserves_active_mail_config(tmp_path):
+    script = (Path(__file__).resolve().parents[1] / "deploy/monitoring/install_external.sh").read_text()
+    previous_assignment = next(line for line in script.splitlines() if line.startswith("previous="))
+    finalization = script[script.index('ln -sfn "$release" "$root/current"') :].split("\npython3 ")[0]
+    root = tmp_path / "monitoring"
+    root.mkdir()  # Failed initial install created the directory but no current link.
+    release = root / "releases" / "new"
+    (release / "config").mkdir(parents=True)
+    paths = [release / "config" / name for name in ("smtp-password", "alertmanager.yml")]
+    for path in paths:
+        path.write_text("test fixture")
+    command = (
+        f"set -euo pipefail\nroot={shlex.quote(str(root))}\nrelease={shlex.quote(str(release))}\n"
+        + previous_assignment
+        + "\n"
+        + finalization
+    )
+    result = subprocess.run(["bash", "-c", command], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+    assert all(path.is_file() for path in paths), "cleanup deleted the newly active mail configuration"
+
+
+def test_persistence_check_refuses_recreation_when_files_are_missing(tmp_path, monkeypatch):
+    mod = module()
+    release = tmp_path / "releases" / "mail-123-1"
+    release.mkdir(parents=True)
+    (release / "verification-id").write_text("mail-123-1")
+    out = tmp_path / "result.json"
+    out.write_text(
+        json.dumps({"verification_id": "mail-123-1", "version_before": "v-test", "transport_verified": True})
+    )
+    monkeypatch.setattr(
+        mod.subprocess, "run", lambda *a, **k: pytest.fail("missing config must prevent container recreation")
+    )
+    with pytest.raises(AssertionError, match="persistent config missing"):
+        mod.verify_persistence(release, out)
+    record = json.loads(out.read_text())
+    assert record["transport_verified"] is True
+    assert record["persistence_verified"] is False
+    assert record["release_config_before_restart"] == {
+        "smtp_password_file_present": False,
+        "alertmanager_config_file_present": False,
+    }
+
+
+@pytest.mark.parametrize("correct_target", [True, False])
+def test_activation_requires_persistent_files_and_exact_current_target(tmp_path, correct_target):
+    mod = module()
+    release = tmp_path / "releases" / "mail-123-1"
+    (release / "config").mkdir(parents=True)
+    (release / "verification-id").write_text("mail-123-1")
+    for name in ["smtp-password", "alertmanager.yml"]:
+        (release / "config" / name).write_text("private-test-value")
+    other = tmp_path / "other"
+    other.mkdir()
+    (tmp_path / "current").symlink_to(release if correct_target else other)
+    out = tmp_path / "result.json"
+    out.write_text(
+        json.dumps(
+            {
+                "verification_id": "mail-123-1",
+                "persistence_verified": True,
+                "operator_receipt_confirmed": False,
+            }
+        )
+    )
+    if correct_target:
+        mod.record_activation(release, out)
+    else:
+        with pytest.raises(AssertionError, match="active persistent config missing"):
+            mod.record_activation(release, out)
+    record = json.loads(out.read_text())
+    assert record["activation_verified"] is correct_target
+    assert record["persistence_verified"] is correct_target
+    assert record["operator_receipt_confirmed"] is False
+    assert "private-test-value" not in out.read_text()
