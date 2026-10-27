@@ -265,6 +265,104 @@ def wait_for(check, timeout=180):
     raise TimeoutError("bounded monitoring condition did not settle")
 
 
+def config_state(directory):
+    """Only file presence/size, never credentials or configuration contents."""
+    directory = Path(directory)
+    return {
+        name: (directory / "config" / filename).is_file()
+        and (directory / "config" / filename).stat().st_size > 0
+        for name, filename in (
+            ("smtp_password_file_present", "smtp-password"),
+            ("alertmanager_config_file_present", "alertmanager.yml"),
+        )
+    }
+
+
+def monitoring_root(release):
+    release = Path(release)
+    return release.parent.parent if release.parent.name == "releases" else release.parent
+
+
+def verify_persistence(release, out):
+    """Recreate only the monitoring containers from persistent normal config."""
+    release, out = Path(release), Path(out)
+    report = json.loads(out.read_text())
+    assert report["verification_id"] == (release / "verification-id").read_text().strip()
+    try:
+        report["release_config_before_restart"] = config_state(release)
+        assert all(report["release_config_before_restart"].values()), "persistent config missing"
+        subprocess.run(
+            [
+                "docker",
+                "compose",
+                "-p",
+                "harbinger-monitoring",
+                "-f",
+                str(release / "compose.yml"),
+                "up",
+                "-d",
+                "--force-recreate",
+            ],
+            check=True,
+            timeout=90,
+        )
+
+        def ready(url):
+            with urlopen(url + "/-/ready", timeout=5) as response:
+                return response.status == 200
+
+        wait_for(lambda: ready(PROM) and ready("http://127.0.0.1:19093"))
+        wait_for(
+            lambda: any(
+                t.get("labels", {}).get("job") == "harbinger" and t.get("health") == "up"
+                for t in request(PROM + "/api/v1/targets")["data"]["activeTargets"]
+            )
+        )
+        rules = request(PROM + "/api/v1/rules")["data"]["groups"]
+        assert not any(r["name"] == ALERT for group in rules for r in group["rules"])
+        health = request("http://127.0.0.1:8000/health")
+        version = request("http://127.0.0.1:8000/version")["model_version"]
+        alerts = [
+            a["labels"]["alertname"]
+            for a in request(PROM + "/api/v1/alerts")["data"]["alerts"]
+            if a["state"] == "firing"
+        ]
+        assert health["status"] == "ok" and version == report["version_before"] and not alerts
+        report["post_restart_checks"] = {
+            "prometheus_ready": True,
+            "alertmanager_ready": True,
+            "application_metrics_scraped": True,
+            "test_rule_present": False,
+            "health_status": health["status"],
+            "model_version": version,
+            "remaining_firing_alerts": alerts,
+        }
+        report["persistence_verified"] = True
+    except Exception as error:
+        report["persistence_verified"] = False
+        report["persistence_error_type"] = type(error).__name__
+        raise
+    finally:
+        report["persistence_checked_at"] = now()
+        out.write_text(json.dumps(report, indent=2) + "\n")
+
+
+def record_activation(release, out):
+    release, out = Path(release), Path(out)
+    report = json.loads(out.read_text())
+    assert report["verification_id"] == (release / "verification-id").read_text().strip()
+    current = monitoring_root(release) / "current"
+    report["active_config_after_cleanup"] = config_state(current)
+    report["activation_verified"] = current.resolve() == release.resolve() and all(
+        report["active_config_after_cleanup"].values()
+    )
+    if not report["activation_verified"]:
+        report["persistence_verified"] = False
+    report["activation_checked_at"] = now()
+    out.write_text(json.dumps(report, indent=2) + "\n")
+    assert report["activation_verified"], "active persistent config missing after cleanup"
+
+
 def verify_on_host(release, out):
     """Real Prometheus/Alertmanager -> SMTP; human receipt stays unconfirmed."""
     release, out = Path(release), Path(out)
@@ -276,6 +374,7 @@ def verify_on_host(release, out):
         "operator_receipt_confirmed": False,
         "scope": "existing host; real email route; isolated probe fault; no public load",
         "events": {},
+        "previous_active_config": config_state(monitoring_root(release) / "current"),
     }
     server = None
 
@@ -381,5 +480,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--release", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--verify-persistence", action="store_true")
+    mode.add_argument("--record-activation", action="store_true")
     args = parser.parse_args()
-    verify_on_host(args.release, args.out)
+    if args.verify_persistence:
+        verify_persistence(args.release, args.out)
+    elif args.record_activation:
+        record_activation(args.release, args.out)
+    else:
+        verify_on_host(args.release, args.out)

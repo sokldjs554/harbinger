@@ -10,7 +10,8 @@ test -d /opt/harbinger/current
 test "$(df --output=avail -k /opt | tail -1)" -gt 524288
 release="$root/releases/$test_id"
 test ! -e "$release"
-previous=$(readlink -f "$root/current" 2>/dev/null || true)
+# -f accepts a missing final component; it could later alias the NEW current link.
+previous=$(readlink -e "$root/current" 2>/dev/null || true)
 complete=0
 finish() {
   status=$?
@@ -45,8 +46,10 @@ for attempt in $(seq 1 60); do
   sleep 2
 done
 python3 "$release/external_alerts.py" --release "$release" --out "$root/result.json"
+python3 "$release/external_alerts.py" --release "$release" --out "$root/result.json" --verify-persistence
 ln -sfn "$release" "$root/current"
 complete=1
-if [ -n "$previous" ] && [ "$previous" != "$release" ]; then
+if [ -n "$previous" ] && [ "$previous" != "$release" ] && [ "$(readlink -e "$previous")" != "$(readlink -e "$root/current")" ]; then
   rm -f "$previous/config/smtp-password" "$previous/config/alertmanager.yml"
 fi
+python3 "$release/external_alerts.py" --release "$release" --out "$root/result.json" --record-activation

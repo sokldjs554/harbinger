@@ -1,0 +1,28 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____ test_first_success_after_failed_install_preserves_active_mail_config _____
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-103/test_first_success_after_faile0')
+
+    def test_first_success_after_failed_install_preserves_active_mail_config(tmp_path):
+        script = (Path(__file__).resolve().parents[1] / "deploy/monitoring/install_external.sh").read_text()
+        previous_assignment = next(line for line in script.splitlines() if line.startswith("previous="))
+        finalization = script[script.index('ln -sfn "$release" "$root/current"'):]
+        root = tmp_path / "monitoring"
+        root.mkdir()  # Failed initial install created the directory but no current link.
+        release = root / "releases" / "new"
+        (release / "config").mkdir(parents=True)
+        paths = [release / "config" / name for name in ("smtp-password", "alertmanager.yml")]
+        for path in paths:
+            path.write_text("test fixture")
+        command = f"set -euo pipefail\nroot={shlex.quote(str(root))}\nrelease={shlex.quote(str(release))}\n" + previous_assignment + "\n" + finalization
+        result = subprocess.run(["bash", "-c", command], capture_output=True, text=True)
+        assert result.returncode == 0, result.stderr
+>       assert all(path.is_file() for path in paths), "cleanup deleted the newly active mail configuration"
+E       AssertionError: cleanup deleted the newly active mail configuration
+E       assert False
+E        +  where False = all(<generator object test_first_success_after_failed_install_preserves_active_mail_config.<locals>.<genexpr> at 0x7f91e5ce2400>)
+
+tests/test_external_alerts.py:318: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_external_alerts.py::test_first_success_after_failed_install_preserves_active_mail_config
