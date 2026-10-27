@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-10-27T00:43:42.777753+00:00",
+  "application_baseline": "e33072bc88652dc8e4bc50f9e3c68b9d44966379",
+  "monitoring_source": "c5df2df8943ec5759626a71909ad822bc1baa6cb",
+  "unchanged_paths": [
+    "src",
+    "docs/demo",
+    "artifacts"
+  ],
+  "git_diff_exit_code": 0,
+  "tested_pr_head": "4a0e654304d8ee688a8c262804e97ae435c36189",
+  "merged_tree_equals_tested_pr_tree": true,
+  "scope": "Repository comparison only. Deployment and runtime model checks are separate original records."
+}

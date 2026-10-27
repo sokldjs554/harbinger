@@ -15,7 +15,7 @@
 | 실제 순찰 평가 | 같은 공동 선택 코드·필수 대상·중요도·예산 적용. 과거 고정 모델 재생에서 HGB 실제 선택 적중률 20.3111%, 최근 점검 규칙 11.1778% | 확률 순위 Precision@10와 별도 보고. [방법별 결과·멤버십·제약](verification/completion-20261026/patrol/actual/summary.json) |
 | 평가 가중 | 고객사 안에서 날짜 평균 → 고객사 평균; paired bootstrap도 같은 추정값 재표집 | 균등/불균등 날짜 대조와 과거 가중 결과 보존. [집계 대조](verification/completion-20261026/technical-results.md#4-지표와-bootstrap의-고객사-가중-일치) |
 
-후속 처리량 검토·전체 검사·TensorFlow·API·브라우저·모바일·Docker CI와 PR #16 병합·AWS/Pages 배포까지 완료했다. [최종 커밋·모델·특징 버전과 원본 산출물](verification/closeout-20261027/README.md)을 2026-10-27 KST에 대조했다. 공개 로그 누락으로 클론 재현이 실패한 문제는 원본 로그 복구·새 클론 검사로 보완했다. PR #17·#18 병합 후 기존 AWS의 통제된 SSL 465 장애·복구 이메일 전송과 운영자 실제 수신을 확인했다. [알림 원본·실제 회신](ops/external-alerts.md)에 분리해 기록했으며, 사람의 7과업 재측정은 아직 미실시다.
+후속 처리량 검토·전체 검사·TensorFlow·API·브라우저·모바일·Docker CI와 PR #16 병합·AWS/Pages 배포까지 완료했다. [최종 커밋·모델·특징 버전과 원본 산출물](verification/closeout-20261027/README.md)을 2026-10-27 KST에 대조했다. 공개 로그 누락으로 클론 재현이 실패한 문제는 원본 로그 복구·새 클론 검사로 보완했다. PR #17·#18 병합 후 기존 AWS의 통제된 SSL 465 장애·복구 이메일 전송과 운영자 실제 수신을 확인했다. [알림 원본·실제 회신](ops/external-alerts.md)에 분리해 기록했으며, 사람의 7과업 재측정 기록은 아직 미수신이다.
 
 ## 공고 전체 항목
 
@@ -47,3 +47,5 @@ TensorFlow의 손실·기울기 대조와 두 프레임워크의 독립 학습 �
 실제 고객 자료·현장 실증·학력/경력은 코드 추가로 채울 수 없는 공백이다. Flask/GCP 미사용을 숨기거나 유료 클라우드를 새로 만들어 채용 요건을 충족했다고 표현하지 않는다.
 
 초기 감사 당시의 수정 전후 수치·TensorFlow 실패와 통제 실험·311개 검사·브라우저 캡처·재현 명령은 [초기 감사 검증 기록](verification/requirements-20261026/README.md)에 있다. 후속 평가 수치는 [평가 보완 1–4](verification/completion-20261026/technical-results.md), 역할과 제출 시 해석 범위는 [근거 인계](submission-evidence-20261026.md)로 이어진다.
+
+PR #20에서는 재설치 설정 삭제를 실제 셸 경로로 재현·수정하고, 기존 AWS에서 이전 파일 부재와 수정 후 정상 재생성·활성 파일 보존·API 수집을 확인했다. 로컬 전체 382개 검사, PR·main CI, 실제 운영 재설치가 통과했다. 최신 자동 전송 시험의 사람 수신은 미확인이며 앞선 실제 수신 회신과 구분한다. [원본·시각·수신 범위](ops/external-alerts.md).

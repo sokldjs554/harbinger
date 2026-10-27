@@ -1,0 +1,26 @@
+{
+  "workflow_run": 40429584833,
+  "workflow_url": "https://github.com/sokldjs554/harbinger/actions/runs/40429584833",
+  "artifact_id": 12700739260,
+  "artifact_sha256": "9056960171948837def0c22c819f4b171073f855e11d7186c07334f825ebae11",
+  "source_commit": "c5df2df8943ec5759626a71909ad822bc1baa6cb",
+  "previous_result_equals_archived_retry": true,
+  "files": [
+    {
+      "file": "persistence-result.json",
+      "artifact_path": "result.json",
+      "sha256": "f9211f53dce1a3c8def8308f21feac187d7b962392bd15a77a82193c5733f437"
+    },
+    {
+      "file": "persistence-deployment.json",
+      "artifact_path": "deployment.json",
+      "sha256": "d508056456a15138f9c4105b25797bc6bdeda4c4c48c3a97e5343e2c253d4c76"
+    },
+    {
+      "file": "persistence-previous-result.json",
+      "artifact_path": "previous-result.json",
+      "sha256": "b67f71af8609c05daf1a8500aaeecb17b41f07d68b2d6c8494cc484d765c8afd"
+    }
+  ],
+  "operator_receipt_note": "This new trial has no human receipt reply. The separate operator-receipt.json confirms only mail-40373254666-1."
+}

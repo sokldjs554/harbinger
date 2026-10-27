@@ -1,0 +1,62 @@
+{
+  "workflow_run": 40425947730,
+  "workflow_url": "https://github.com/sokldjs554/harbinger/actions/runs/40425947730",
+  "source_commit": "4a0e654304d8ee688a8c262804e97ae435c36189",
+  "artifact_id": 12699847499,
+  "artifact_sha256": "7318bec2af219d865bfee95c1255595c9ff3d07acbbafa678cb1d659b27fffb5",
+  "files": [
+    {
+      "file": "browser-checks-checks.json",
+      "artifact_path": "browser-checks/checks.json",
+      "sha256": "10a16f4af4321d57b67d913ccdeb8889c9744b480b13f8144d27f03c8b1a8908"
+    },
+    {
+      "file": "static-mobile-checks.json",
+      "artifact_path": "static-mobile/checks.json",
+      "sha256": "2b6d59d220037e5c58e3ad4836d875449876075e263efe6d32a445e6efa32ecd"
+    },
+    {
+      "file": "protected-checks-checks.json",
+      "artifact_path": "protected-checks/checks.json",
+      "sha256": "143cfb5fa75894939087863f1e5461025af12e66d613d3005e69a4b0a1b1eb31"
+    },
+    {
+      "file": "energy-browser-checks.json",
+      "artifact_path": "energy-browser/checks.json",
+      "sha256": "75c5b4554a8e113239d22bc8a738b762a20a32de8a7374178bbc05d6ce1ac291"
+    },
+    {
+      "file": "retest-recorder-checks.json",
+      "artifact_path": "retest-recorder/checks.json",
+      "sha256": "577d9bd4b1d118e8ae8a568c59457d847a52170de6d6d60e490f104cf7886bf0"
+    },
+    {
+      "file": "operator-email-local-result.json",
+      "artifact_path": "operator-email-local/result.json",
+      "sha256": "758ee712ec94202ee273239a780cfe18f8adc520da96751b07e76f70af8fb06f"
+    },
+    {
+      "file": "operator-email-rejected-result.json",
+      "artifact_path": "operator-email-rejected/result.json",
+      "sha256": "02ea17dc1198fbb1df5796f17ee2818b5fe54f825c492cddd708a4dbf9ee1264"
+    },
+    {
+      "file": "docker-api.json",
+      "artifact_path": "api.json",
+      "artifact_id": 12701030490,
+      "sha256": "1e639fcc9ed977cc8f78f00b50c32d825fabca359fcdde64c87dddb4d7b88d2a"
+    },
+    {
+      "file": "docker-image.json",
+      "artifact_path": "image.json",
+      "artifact_id": 12701030490,
+      "sha256": "a770c1de16a12bcc33af1da32d4cb01ec88072ab24971c45968f2d39e7e9d225"
+    }
+  ],
+  "additional_artifacts": [
+    {
+      "id": 12701030490,
+      "sha256": "13a95adc76032aa2feba1d6d5f1b940a5cd988ed4336ef50c944b170ec77bc6a"
+    }
+  ]
+}
