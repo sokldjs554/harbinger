@@ -28,7 +28,8 @@ jobs:
       - name: Actual TensorFlow training and boundary/loss regressions
         run: pytest tests/test_keras_parity.py -ra
   test:
-    runs-on: ubuntu-latest
+    # Playwright 1.56 browser installation requires a supported OS.
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
