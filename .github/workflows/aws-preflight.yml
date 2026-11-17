@@ -19,9 +19,9 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_NEW_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_NEW_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_NEW_SESSION_TOKEN }}
       AWS_REGION: ap-southeast-2
       AWS_DEFAULT_REGION: ap-southeast-2
       AWS_EC2_METADATA_DISABLED: "true"
@@ -33,11 +33,11 @@ jobs:
         run: |
           set -euo pipefail
           if [[ -z "$AWS_ACCESS_KEY_ID" || -z "$AWS_SECRET_ACCESS_KEY" ]]; then
-            echo "::error::Add AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY as repository Actions secrets."
+            echo "::error::Add AWS_NEW_ACCESS_KEY_ID and AWS_NEW_SECRET_ACCESS_KEY as repository Actions secrets."
             exit 1
           fi
           if [[ "$AWS_ACCESS_KEY_ID" == ASIA* && -z "$AWS_SESSION_TOKEN" ]]; then
-            echo "::error::Temporary AWS credentials also require AWS_SESSION_TOKEN."
+            echo "::error::Temporary AWS credentials also require AWS_NEW_SESSION_TOKEN."
             exit 1
           fi
           command -v aws >/dev/null
@@ -45,7 +45,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          aws sts get-caller-identity --query '{Account:Account,Arn:Arn}' --output json
+          account=$(aws sts get-caller-identity --query Account --output text)
+          [[ "$account" == "971966100387" ]] || { echo "::error::Wrong AWS account"; exit 1; }
+          echo "New AWS account verified: $account"
       - name: Check EC2 read access in Sydney
         shell: bash
         run: |
@@ -83,6 +85,8 @@ jobs:
           if len(defaults) != 1:
               raise SystemExit("Expected one default VPC; no resources created.")
           vpc_id = defaults[0]["VpcId"]
+          if vpc_id != "vpc-08b683218cb924bfd":
+              raise SystemExit("Wrong VPC; no resources changed.")
           subnets = aws("ec2", "describe-subnets", "--filters", f"Name=vpc-id,Values={vpc_id}")["Subnets"]
           subnets = sorted([s for s in subnets if s.get("DefaultForAz") and s["State"] == "available"], key=lambda s: s["SubnetId"])
           if not subnets:
@@ -107,8 +111,12 @@ jobs:
                             "--description", "Harbinger demo deployment", "--vpc-id", vpc_id,
                             "--tag-specifications", tags)
               dry_run(*group_args)
-              group_id = aws(*group_args)["GroupId"]
-              print("Created tagged security group without inbound rules:", group_id)
+              # Use the default group ONLY in a dry-run; never launch or modify it.
+              default_groups = aws("ec2", "describe-security-groups", "--filters",
+                                   f"Name=vpc-id,Values={vpc_id}", "Name=group-name,Values=default")["SecurityGroups"]
+              if len(default_groups) != 1:
+                  raise SystemExit("Expected one default group for dry-run")
+              group_id = default_groups[0]["GroupId"]
           tags = [{"Key": "Project", "Value": "harbinger"}, {"Key": "Name", "Value": "harbinger-demo"}]
           request = {
               "ImageId": image["ImageId"], "InstanceType": "c7i-flex.large", "MinCount": 1, "MaxCount": 1,
@@ -125,7 +133,7 @@ jobs:
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
               summary.write("### EC2 launch readiness\n")
               summary.write("- Sydney; Canonical Ubuntu 24.04; c7i-flex.large; 30 GiB encrypted gp3.\n")
-              summary.write("- Tagged security group created or reused; no inbound rules were added.\n")
+              summary.write("- Read-only check: no security group or inbound rule was created.\n")
               summary.write("- RunInstances returned DryRunOperation: IAM authorization verified; actual capacity and account-plan checks still occur at launch.\n")
               summary.write("- No EC2 instance or EBS volume was created. SSH and runtime still require deployment checks.\n")
           PY
