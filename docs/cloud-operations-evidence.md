@@ -1,0 +1,31 @@
+# Harbinger: AWS AI 서비스 운영 근거
+
+시설 점검 기록을 전처리하고 학습 모델을 FastAPI로 제공하는 개인 프로젝트입니다. AWS EC2에서 모델과 API를 실행한 기록은 있지만 생성형 AI 서비스로 소개하지 않습니다. 모델 평가는 합성 데이터에 기반합니다.
+
+## 실제 운영과 설정 파일의 차이
+
+| 구분 | 확인한 코드·실행 기록 | 말할 수 있는 범위 |
+|---|---|---|
+| AWS EC2 | [배포 구현](../deploy/aws/ec2/deploy.py), [배포 workflow](../.github/workflows/aws-ec2.yml), [AWS 운영 안내](../deploy/aws/README.md) | Sydney `ap-southeast-2`, 단일 EC2 `c7i-flex.large`, Docker/FastAPI/Nginx 구성 |
+| 배포 후 검증 | [원본 결과](verification/closeout-20261027/release/aws/deployment-result.json) | `e33072b`의 실제 브라우저·모델 버전·재부팅 복구·인증서 갱신 시험·임시 SSH 종료 기록 |
+| 장애 알림 | [재설치·설정 보존 및 알림 검증](verification/closeout-20261027/README.md), [운영자 수신 기록](verification/closeout-20261027/external-alerts/persistence-operator-receipt.json) | 통제된 장애·복구 시험과 운영자 수신 회신. 장기 장애 탐지 성능·SLA로 확대하지 않음 |
+| 보안 관련 구현 | [배포 경계 테스트](../tests/test_aws_deploy.py) | IMDSv2, 암호화 디스크, 대상 소유 태그·SSH 호스트 신원 검사, 임시 /32 SSH 규칙 정리 |
+| GCP | [설정 디렉터리](../deploy/gcp/) | 배포 설정이 존재함. 이번 조사에서 실제 운영 실행 근거는 확인하지 못함 |
+| Azure | 확인한 코드·문서에서 운영 증거 없음 | 경험으로 기재하지 않음 |
+
+배포 기록의 모델은 `v20261026-151241`이고, README의 평가 번들과 동일하다고 가정하지 않습니다. 앱·모델 배포, 문서 갱신, 모니터링 배포는 서로 다른 커밋입니다.
+
+## 2026-11-17 확인 상태
+
+조사한 main은 `7daa95603d7dc7235135933b8ff18113c8133128`입니다. [해당 CI](https://github.com/sokldjs554/harbinger/actions/runs/40435358083)는 성공 상태였습니다.
+
+- [고정 데모 진입 페이지](https://sokldjs554.github.io/harbinger/live.html)는 HTTP 200이며 `https://13.236.137.0/console/`로 연결합니다.
+- 현재 조사 환경에서 해당 IP의 `/health`는 TLS 이름 검증 오류로 응답 본문을 확인하지 못했습니다. 인증서 검증을 끄지 않았습니다. 이 결과만으로 서버가 중지됐거나 인증서 자체가 만료됐다고 단정하지 않습니다.
+- 새 EC2 배포·재부팅·외부 메일 발송·모델 재학습은 이번 조사에서 수행하지 않았습니다.
+- 배포 경계의 로컬 테스트 **34개 통과**. 이는 모의 AWS 호출을 포함한 코드 검사이고 현재 AWS 운영의 재실증이 아닙니다. [명령·로그](verification/deloitte-20261117/README.md).
+
+## 본인 기여
+
+기존 기록은 사용자의 문제·제품 방향과 기술 범위 선택, 검토 의견 전달·결과 확인, 실제 장애/복구 메일 수신 확인을 구분합니다. 구현·실험 세부 기준·코드·검증·문서화에는 Codex 지원이 기록돼 있습니다. AWS 배포 코드를 독립 작성했거나 모든 운영 명령을 직접 수행했다는 주장에는 추가 확인이 필요합니다.
+
+면접에서는 “AWS에 배포된 개인 ML 서비스의 동작·복구·알림 근거를 확인했고, 운영자 입장에서 장애·복구 메일 수신을 확인했다”는 범위에서 시작하고, 직접 설정·실행한 구체 작업은 본인의 기록과 대조해 덧붙이는 것이 적절합니다.
