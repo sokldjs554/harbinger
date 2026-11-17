@@ -17,7 +17,8 @@ import urllib.request
 from pathlib import Path
 
 REGION = "ap-southeast-2"
-ACCOUNT = "577331852023"
+ACCOUNT = "971966100387"
+VPC_ID = "vpc-08b683218cb924bfd"
 INSTANCE_TYPE = "c7i-flex.large"
 
 
@@ -384,6 +385,8 @@ def main():
     if len(groups) != 1:
         raise ValueError("Run AWS connection check to prepare one tagged security group first")
     group = groups[0]
+    if group["VpcId"] != VPC_ID:
+        raise ValueError("Harbinger security group is outside the reviewed VPC")
     group_id = group["GroupId"]
     if any(
         rule.get("IpProtocol") == "-1"
