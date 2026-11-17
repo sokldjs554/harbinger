@@ -155,8 +155,59 @@ def prepare(apply=False, call=aws):
     return summary
 
 
+def prepare_network(apply=False, call=aws):
+    """Use an existing authorized session; never invoke IAM or launch compute."""
+    if call("sts", "get-caller-identity")["Account"] != ACCOUNT:
+        raise ValueError("Wrong AWS account; nothing changed")
+    vpcs = call("ec2", "describe-vpcs", "--vpc-ids", VPC)["Vpcs"]
+    if len(vpcs) != 1 or vpcs[0].get("State") != "available" or not vpcs[0].get("IsDefault"):
+        raise ValueError("Reviewed default VPC is unavailable")
+    groups = call(
+        "ec2",
+        "describe-security-groups",
+        "--filters",
+        f"Name=vpc-id,Values={VPC}",
+        "Name=group-name,Values=harbinger-web",
+    )["SecurityGroups"]
+    if len(groups) > 1:
+        raise ValueError("Multiple deployment groups")
+    if groups:
+        tags = {t["Key"]: t["Value"] for t in groups[0].get("Tags", [])}
+        if tags.get("Project") != "harbinger" or groups[0]["VpcId"] != VPC:
+            raise ValueError("Existing security group is not owned by this setup")
+    summary = {
+        "account": ACCOUNT,
+        "region": REGION,
+        "vpc": VPC,
+        "applied": apply,
+        "compute_created": False,
+        "iam_changed": False,
+    }
+    if groups:
+        summary["security_group"] = groups[0]["GroupId"]
+    elif apply:
+        response = call(
+            "ec2",
+            "create-security-group",
+            "--group-name",
+            "harbinger-web",
+            "--description",
+            "Harbinger HTTPS; temporary runner-only SSH during deployment",
+            "--vpc-id",
+            VPC,
+            "--tag-specifications",
+            json.dumps([{"ResourceType": "security-group", "Tags": TAGS}]),
+        )
+        summary["security_group"] = response["GroupId"]
+    return summary
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--apply", action="store_true", help="Create IAM connection and empty security group")
+    parser.add_argument(
+        "--network-only", action="store_true", help="Prepare only the tagged security group; no IAM calls"
+    )
     args = parser.parse_args()
-    print(json.dumps(prepare(args.apply), indent=2))
+    handler = prepare_network if args.network_only else prepare
+    print(json.dumps(handler(args.apply), indent=2))
