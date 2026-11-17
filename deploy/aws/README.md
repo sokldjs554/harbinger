@@ -12,7 +12,7 @@
 
 `.github/workflows/aws-ec2.yml`은 main에서 수동 실행만 허용합니다. `allow_create` 기본값은 false이며, 새 서버를 만드는 첫 실행에서만 true로 선택합니다. 기존 서버가 있으면 읽기 전용 AWS 조회로 SSH 신원을 먼저 확인합니다. 같은 커밋의 전체 CI 통과를 확인한 후 이미지 빌드와 전체 합성 모델 학습을 완료하고 서버를 준비합니다. `deploy.py`는 계정·리전·소유 태그·중복 서버를 검사합니다.
 
-GitHub Actions는 OIDC로 새 계정의 `harbinger-github-deploy` 역할을 받아 사용합니다. 이전 계정의 `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN` 시크릿은 이 워크플로에서 읽지 않습니다. 필요한 권한은 [배포 정책](ec2-deploy-policy.json)에 있습니다.
+GitHub Actions는 새 계정의 임시 세션을 `AWS_NEW_ACCESS_KEY_ID`, `AWS_NEW_SECRET_ACCESS_KEY`, `AWS_NEW_SESSION_TOKEN`에서 읽습니다. OIDC 준비는 조직 SCP로 차단되어 사용하지 않습니다. 임시 세션은 만료되면 세 값을 함께 갱신해야 합니다. 이전 계정의 `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN` 시크릿은 이 워크플로에서 읽지 않습니다. 필요한 권한은 [배포 정책](ec2-deploy-policy.json)에 있습니다.
 
 현재 무료 계정 플랜에서 허용되는 유형을 AWS API로 조회해 `c7i-flex.large`(2 vCPU·4GiB)를 선택했습니다. 인스턴스 유형과 Ubuntu 이미지의 `FreeTierEligible` 값을 확인하며, 이 표시는 크레딧 소모 없이 무제한으로 실행할 수 있다는 뜻이 아닙니다. [AWS 무료 플랜의 EC2 조건](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-free-tier-usage.html)
 
