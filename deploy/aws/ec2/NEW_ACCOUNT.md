@@ -1,5 +1,11 @@
 # 새 AWS 계정 연결 · 2026-11-17
 
+## 현재 상태: OIDC 경로 중단
+
+소유자의 CloudShell 실행에서 `iam:GetOpenIDConnectProvider`가 조직 SCP의 명시적 Deny로 거절됐습니다. 역할은 `AccountFullAccessRole`이었으며, 오류는 첫 IAM 조회에서 발생해 이 실행에서는 IAM/보안 그룹/EC2 변경이 없었습니다. 로컬 테스트 성공은 실제 계정의 IAM 사용 가능성을 보장하지 않습니다. 이 OIDC 이전 PR은 Draft로 유지하며 해당 명령을 반복하거나 Deny를 무시하지 않습니다.
+
+AWS의 새 가입 경험은 관리형 프로젝트 계정에 기능 제한을 둡니다. [고급 기능 활성화](https://docs.aws.amazon.com/accounts/latest/reference/activate-advanced-features.html)는 유료 플랜 전환을 선행해야 하며 되돌릴 수 없고 기존 프로젝트 지출 상한도 제거하므로, 단순 연결 오류의 해결책으로 자동 진행하지 않습니다. 무료 플랜을 유지한 채 허용된 EC2 배포 API를 직접 사용하는 경로는 별도의 dry-run으로 권한을 확인한 후 준비합니다. GitHub OIDC 연결 성공이나 AWS 배포 성공은 아직 아닙니다.
+
 대상은 계정 `971966100387`, Sydney `ap-southeast-2`, 기본 VPC `vpc-08b683218cb924bfd`입니다. 소유자가 CloudShell에서 빈 EC2 목록, 사용 가능한 기본 VPC, `c7i-flex.large`와 `t3.small`의 FreeTierEligible=true를 확인했습니다. 잔액 100달러·남은 기간 182일은 소유자 화면 확인값입니다.
 
 ## 비용과 범위
