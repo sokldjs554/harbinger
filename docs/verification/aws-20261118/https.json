@@ -1,0 +1,118 @@
+{
+  "checked_at_utc": "2026-11-17T16:20:09.209626+00:00",
+  "url": "https://3.27.92.108/console/",
+  "tls_verified": true,
+  "certificate": {
+    "subject": [],
+    "issuer": [
+      [
+        [
+          "countryName",
+          "US"
+        ]
+      ],
+      [
+        [
+          "organizationName",
+          "Let's Encrypt"
+        ]
+      ],
+      [
+        [
+          "commonName",
+          "YE2"
+        ]
+      ]
+    ],
+    "version": 3,
+    "serialNumber": "05D984583D59B9C410D3FE5518A3337FD1DD",
+    "notBefore": "Nov 17 15:00:31 2026 GMT",
+    "notAfter": "Nov 24 07:00:30 2026 GMT",
+    "subjectAltName": [
+      [
+        "IP Address",
+        "3.27.92.108"
+      ]
+    ],
+    "caIssuers": [
+      "http://ye2.i.lencr.org/"
+    ],
+    "crlDistributionPoints": [
+      "http://ye2.c.lencr.org/94.crl"
+    ]
+  },
+  "responses": {
+    "/health": {
+      "status": "ok",
+      "service": "harbinger",
+      "version": "0.1.0"
+    },
+    "/deployment.json": {
+      "commit": "5afbeb2131f33802aa4fe075002650be90460a70",
+      "region": "ap-southeast-2",
+      "synthetic": true,
+      "scale": 1,
+      "months": 36,
+      "seed": 20260101,
+      "model_version": "v20261117-155753",
+      "bootstrap_completed": true,
+      "review_stop_at_utc": "2026-11-18 15:44:35 UTC",
+      "note": "Built on EC2 from verified source; historical experiment metrics unchanged.",
+      "renewal_dry_run": true
+    },
+    "/v1/workbench/info": {
+      "mode": "live",
+      "synthetic_example": true,
+      "model_version": "v20261117-155753",
+      "compute_policy": {
+        "slots": 2,
+        "waiting": 4,
+        "timeout_seconds": 10
+      },
+      "limits": {
+        "bytes": 5242880,
+        "rows": 20000,
+        "assets": 500,
+        "sites": 10,
+        "years": 5,
+        "ttl_seconds": 1800
+      },
+      "observation_end": "2026-01-01T00:00:00",
+      "latest_as_of_date": "2025-12-31"
+    },
+    "/version": {
+      "service": "0.1.0",
+      "model_version": "v20261117-155753",
+      "git_sha": null,
+      "feature_hash": "c5a8781533",
+      "n_features": 116,
+      "headline_metrics": {
+        "auroc": 0.7679922529194856,
+        "pr_auc": 0.24055825015023924,
+        "brier": 0.06864776353208472,
+        "ece": 0.010951535639073919,
+        "patrol_precision_at_10": 0.23844444444444446,
+        "patrol_lift_vs_round_robin": 5.588541666666667
+      },
+      "data": {
+        "seed": 20260101,
+        "start": "2023-01-01",
+        "months": 36,
+        "scale": 1,
+        "rows": {
+          "sites": 25,
+          "inspectors": 124,
+          "assets": 2312,
+          "inspections": 131201,
+          "workorders": 18666,
+          "energy": 27400,
+          "latent": 2533952
+        },
+        "generated_at": "2026-11-17T15:48:56",
+        "synthetic": true
+      },
+      "synthetic_data": true
+    }
+  },
+  "reboot_verified": false
+}
