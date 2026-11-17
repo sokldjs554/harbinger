@@ -56,6 +56,22 @@ def test_wrong_account_stops_before_any_mutation():
     assert len(calls) == 1
 
 
+def test_scp_denial_is_not_ignored_and_prevents_all_writes():
+    m = module()
+    calls = []
+    delegate = fake(m, calls)
+
+    def denied(*args, **kwargs):
+        if args[:2] == ("iam", "get-open-id-connect-provider"):
+            calls.append(args)
+            raise RuntimeError("AccessDenied: explicit deny in a service control policy")
+        return delegate(*args, **kwargs)
+
+    with pytest.raises(RuntimeError, match="explicit deny"):
+        m.prepare(True, denied)
+    assert all(args[1].startswith(("get-", "describe-")) for args in calls)
+
+
 def test_apply_only_creates_identity_and_empty_group():
     m = module()
     calls = []
