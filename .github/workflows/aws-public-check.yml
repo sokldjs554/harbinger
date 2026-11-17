@@ -1,0 +1,70 @@
+name: Verify new AWS public demo
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/aws-public-check.yml]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: harbinger-public-verification
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: github.repository == 'sokldjs554/harbinger' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af6834
+        with:
+          persist-credentials: false
+      - name: Verify trusted HTTPS, certificate, source and model
+        run: |
+          mkdir -p public-verification
+          python3 - <<'PY'
+          import datetime, json, socket, ssl, urllib.request
+          from pathlib import Path
+          ip = "3.27.92.108"
+          base = "https://" + ip
+          context = ssl.create_default_context()
+          with socket.create_connection((ip, 443), timeout=20) as connection:
+              with context.wrap_socket(connection, server_hostname=ip) as tls:
+                  cert = tls.getpeercert()
+          results = {}
+          for path in ("/health", "/deployment.json", "/v1/workbench/info", "/version"):
+              with urllib.request.urlopen(base + path, timeout=30) as response:
+                  assert response.status == 200
+                  results[path] = json.load(response)
+          deployment = results["/deployment.json"]
+          assert deployment["commit"] == "5afbeb2131f33802aa4fe075002650be90460a70"
+          assert deployment["bootstrap_completed"] is True
+          assert deployment["renewal_dry_run"] is True
+          assert results["/health"]["status"] == "ok"
+          assert results["/v1/workbench/info"]["mode"] == "live"
+          assert results["/v1/workbench/info"]["model_version"] == deployment["model_version"]
+          assert results["/version"]["model_version"] == deployment["model_version"]
+          evidence = {"checked_at_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                      "url": base + "/console/", "tls_verified": True, "certificate": cert,
+                      "responses": results, "reboot_verified": False}
+          Path("public-verification/https.json").write_text(json.dumps(evidence, indent=2))
+          print(json.dumps(evidence, indent=2))
+          PY
+      - name: Install browser verifier
+        run: |
+          pip install 'playwright==1.56.0'
+          bash scripts/configure_ci_apt.sh
+          playwright install --with-deps chromium
+      - name: Exercise live desktop, mobile, CSV and exports
+        run: python scripts/check_browser.py --url https://3.27.92.108/console/ --out public-verification/browser --record
+      - name: Verify energy withholding and mobile patrol
+        run: python scripts/check_energy_browser.py --url https://3.27.92.108/console/advanced.html#energy --out public-verification/energy
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: new-aws-public-verification
+          retention-days: 14
+          path: public-verification
