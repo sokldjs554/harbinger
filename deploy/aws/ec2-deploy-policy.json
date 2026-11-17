@@ -2,20 +2,37 @@
   "Version": "2012-10-17",
   "Statement": [
     {
+      "Sid": "ReadDeploymentResourcesInSydney",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeInstances",
+        "ec2:DescribeInstanceTypes",
+        "ec2:DescribeImages",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeSecurityGroups"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "ap-southeast-2"
+        }
+      }
+    },
+    {
       "Sid": "UseLaunchDependenciesInSydney",
       "Effect": "Allow",
       "Action": "ec2:RunInstances",
       "Resource": [
         "arn:aws:ec2:ap-southeast-2::image/*",
-        "arn:aws:ec2:ap-southeast-2:577331852023:subnet/*",
-        "arn:aws:ec2:ap-southeast-2:577331852023:network-interface/*"
+        "arn:aws:ec2:ap-southeast-2:971966100387:subnet/*",
+        "arn:aws:ec2:ap-southeast-2:971966100387:network-interface/*"
       ]
     },
     {
       "Sid": "LaunchWithHarbingerSecurityGroup",
       "Effect": "Allow",
       "Action": "ec2:RunInstances",
-      "Resource": "arn:aws:ec2:ap-southeast-2:577331852023:security-group/*",
+      "Resource": "arn:aws:ec2:ap-southeast-2:971966100387:security-group/*",
       "Condition": {
         "StringEquals": {
           "ec2:ResourceTag/Project": "harbinger"
@@ -26,7 +43,7 @@
       "Sid": "LaunchTaggedMediumInstance",
       "Effect": "Allow",
       "Action": "ec2:RunInstances",
-      "Resource": "arn:aws:ec2:ap-southeast-2:577331852023:instance/*",
+      "Resource": "arn:aws:ec2:ap-southeast-2:971966100387:instance/*",
       "Condition": {
         "StringEquals": {
           "aws:RequestTag/Project": "harbinger",
@@ -39,39 +56,22 @@
       "Sid": "CreateTaggedInstanceVolumes",
       "Effect": "Allow",
       "Action": "ec2:RunInstances",
-      "Resource": "arn:aws:ec2:ap-southeast-2:577331852023:volume/*",
+      "Resource": "arn:aws:ec2:ap-southeast-2:971966100387:volume/*",
       "Condition": {
         "StringEquals": {
           "aws:RequestTag/Project": "harbinger"
         }
       }
-    },
-    {
-      "Sid": "CreateTaggedSecurityGroup",
-      "Effect": "Allow",
-      "Action": "ec2:CreateSecurityGroup",
-      "Resource": "arn:aws:ec2:ap-southeast-2:577331852023:security-group/*",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestTag/Project": "harbinger"
-        }
-      }
-    },
-    {
-      "Sid": "UseVpcForSecurityGroupCreation",
-      "Effect": "Allow",
-      "Action": "ec2:CreateSecurityGroup",
-      "Resource": "arn:aws:ec2:ap-southeast-2:577331852023:vpc/*"
     },
     {
       "Sid": "TagResourcesOnlyAtCreation",
       "Effect": "Allow",
       "Action": "ec2:CreateTags",
       "Resource": [
-        "arn:aws:ec2:ap-southeast-2:577331852023:instance/*",
-        "arn:aws:ec2:ap-southeast-2:577331852023:volume/*",
-        "arn:aws:ec2:ap-southeast-2:577331852023:network-interface/*",
-        "arn:aws:ec2:ap-southeast-2:577331852023:security-group/*"
+        "arn:aws:ec2:ap-southeast-2:971966100387:instance/*",
+        "arn:aws:ec2:ap-southeast-2:971966100387:volume/*",
+        "arn:aws:ec2:ap-southeast-2:971966100387:network-interface/*",
+        "arn:aws:ec2:ap-southeast-2:971966100387:security-group/*"
       ],
       "Condition": {
         "StringEquals": {
@@ -90,10 +90,9 @@
         "ec2:StartInstances",
         "ec2:StopInstances",
         "ec2:RebootInstances",
-        "ec2:TerminateInstances",
         "ec2:GetConsoleOutput"
       ],
-      "Resource": "arn:aws:ec2:ap-southeast-2:577331852023:instance/*",
+      "Resource": "arn:aws:ec2:ap-southeast-2:971966100387:instance/*",
       "Condition": {
         "StringEquals": {
           "ec2:ResourceTag/Project": "harbinger"
@@ -105,10 +104,9 @@
       "Effect": "Allow",
       "Action": [
         "ec2:AuthorizeSecurityGroupIngress",
-        "ec2:RevokeSecurityGroupIngress",
-        "ec2:DeleteSecurityGroup"
+        "ec2:RevokeSecurityGroupIngress"
       ],
-      "Resource": "arn:aws:ec2:ap-southeast-2:577331852023:security-group/*",
+      "Resource": "arn:aws:ec2:ap-southeast-2:971966100387:security-group/*",
       "Condition": {
         "StringEquals": {
           "ec2:ResourceTag/Project": "harbinger"
@@ -119,7 +117,7 @@
       "Sid": "ConnectToHarbingerAsUbuntu",
       "Effect": "Allow",
       "Action": "ec2-instance-connect:SendSSHPublicKey",
-      "Resource": "arn:aws:ec2:ap-southeast-2:577331852023:instance/*",
+      "Resource": "arn:aws:ec2:ap-southeast-2:971966100387:instance/*",
       "Condition": {
         "StringEquals": {
           "aws:ResourceTag/Project": "harbinger",
