@@ -1,0 +1,37 @@
+{
+  "run_url": "https://github.com/sokldjs554/harbinger/actions/runs/44124538583",
+  "target": "https://3.27.92.108/console/",
+  "browser": {
+    "url": "https://3.27.92.108/console/",
+    "static": false,
+    "page_errors": [],
+    "checks": [
+      "list/detail and record dates",
+      "back/focus",
+      "same selected identities as backend metrics",
+      "pending condition export isolation",
+      "withheld outcomes",
+      "customer scope",
+      "three downloads",
+      "CSV sample",
+      "mobile all views",
+      "mobile filter disclosure, applied summary, pending date and history/scroll restoration",
+      "readable direction labels and exact live/saved mode at 320/390/650px",
+      "session close",
+      "invalid CSV preserves active records",
+      "valid CSV actual model",
+      "scoring failure preserves previous records",
+      "formula-safe CSV",
+      "upload reload never switches silently to example"
+    ]
+  },
+  "energy": {
+    "available": "관측 119일 · 판정 가능 119일 · 이상 3일 (계산 완료): 09-23, 09-24, 09-25",
+    "short": "관측 2일 · 판정 가능 0일 · 이상 여부 판정 보류 (관측 부족)",
+    "missing": "관측 0일 · 판정 가능 0일 · 이상 여부 판정 보류 (자료 없음)",
+    "errors": [],
+    "backend": "actual local API; no mocked responses",
+    "patrol_mobile": "actual selection counts, no horizontal overflow; empty comparison withheld"
+  },
+  "note": "Energy runner uses a legacy static backend label; this run targeted the external AWS URL shown in the workflow."
+}
