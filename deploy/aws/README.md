@@ -4,11 +4,15 @@
 
 이 구성은 Sydney(`ap-southeast-2`)의 단일 EC2에서 합성 데이터로 학습한 모델과 FastAPI를 실행합니다. GitHub Pages의 저장 결과 재생과 달리 업로드 CSV를 검사하고 새 결과를 계산합니다. 실제 고객 성능을 검증한 서비스는 아닙니다.
 
+## 2026-11-17 새 계정 이전 준비
+
+[새 계정 연결·비용·완료 기준](ec2/NEW_ACCOUNT.md)을 먼저 확인합니다. 현재 배포 대상은 새 계정이며 아래 과거 인스턴스 ID와 SSH 공개키를 새 계정에 재사용하지 않습니다.
+
 ## 배포 흐름
 
-`.github/workflows/aws-ec2.yml`은 `main`의 배포·소스·런타임 의존성 파일 변경 또는 수동 실행으로 동작합니다. 기존 서버가 있으면 읽기 전용 AWS 조회로 SSH 신원을 먼저 확인합니다. 같은 커밋의 전체 CI 통과를 확인한 후 이미지 빌드와 전체 합성 모델 학습을 완료하고 서버를 준비합니다. `deploy.py`는 계정·리전·소유 태그·중복 서버를 검사합니다.
+`.github/workflows/aws-ec2.yml`은 main에서 수동 실행만 허용합니다. `allow_create` 기본값은 false이며, 새 서버를 만드는 첫 실행에서만 true로 선택합니다. 기존 서버가 있으면 읽기 전용 AWS 조회로 SSH 신원을 먼저 확인합니다. 같은 커밋의 전체 CI 통과를 확인한 후 이미지 빌드와 전체 합성 모델 학습을 완료하고 서버를 준비합니다. `deploy.py`는 계정·리전·소유 태그·중복 서버를 검사합니다.
 
-GitHub Actions 저장소 시크릿은 `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`입니다. 세션 자격 증명을 쓸 때만 `AWS_SESSION_TOKEN`을 추가합니다. 키를 서버나 저장소 파일에 복사하지 않습니다. 필요한 권한은 [배포 정책](ec2-deploy-policy.json)에 있습니다.
+GitHub Actions는 OIDC로 새 계정의 `harbinger-github-deploy` 역할을 받아 사용합니다. 이전 계정의 `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN` 시크릿은 이 워크플로에서 읽지 않습니다. 필요한 권한은 [배포 정책](ec2-deploy-policy.json)에 있습니다.
 
 현재 무료 계정 플랜에서 허용되는 유형을 AWS API로 조회해 `c7i-flex.large`(2 vCPU·4GiB)를 선택했습니다. 인스턴스 유형과 Ubuntu 이미지의 `FreeTierEligible` 값을 확인하며, 이 표시는 크레딧 소모 없이 무제한으로 실행할 수 있다는 뜻이 아닙니다. [AWS 무료 플랜의 EC2 조건](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-free-tier-usage.html)
 
@@ -26,13 +30,13 @@ sudo cat /etc/ssh/ssh_host_ed25519_key.pub
 
 `.pub` 파일의 공개키만 사용합니다. 같은 이름에서 `.pub`가 없는 파일은 개인키이므로 읽거나 공유하지 않습니다. 처음 보는 SSH 연결의 확인 질문을 무조건 수락하거나 `ssh-keyscan` 결과를 그대로 믿어서는 안 됩니다. 신뢰 가능한 관리 연결이 없다면 먼저 소유자가 서버 신원을 복구해야 합니다.
 
-GitHub 저장소의 Actions secret **`AWS_EC2_SSH_HOST_IDENTITY`**에 아래 형태의 JSON을 등록합니다. 아래의 `실제...` 값은 예시 자리이며 실행 가능한 키가 아닙니다.
+GitHub 저장소의 Actions secret **`AWS_NEW_EC2_SSH_HOST_IDENTITY`**에 아래 형태의 JSON을 등록합니다. 아래의 `실제...` 값은 예시 자리이며 실행 가능한 키가 아닙니다.
 
 ```json
 {"instance_id":"실제 EC2 인스턴스 ID","host_key":"ssh-ed25519 실제 공개키 본문"}
 ```
 
-현재 진단한 인스턴스 ID는 `i-0aaec13273afe3197`입니다. 등록 전 AWS 콘솔에서 대상 인스턴스를 다시 확인합니다. 키 뒤의 주석은 있어도 되며 저장 시 신뢰 파일에는 알고리즘과 공개키 본문만 사용합니다. 이 값은 AWS access key나 EC2 접속용 개인키와 다릅니다.
+과거 계정에서 진단한 인스턴스 ID는 `i-0aaec13273afe3197`입니다. 등록 전 AWS 콘솔에서 대상 인스턴스를 다시 확인합니다. 키 뒤의 주석은 있어도 되며 저장 시 신뢰 파일에는 알고리즘과 공개키 본문만 사용합니다. 이 값은 AWS access key나 EC2 접속용 개인키와 다릅니다.
 
 배포는 인스턴스 ID, Ed25519 키의 전체 바이너리 구조, 중복 JSON 필드와 추가 필드를 검사합니다. AWS 콘솔에 키가 남아 있다면 등록값과 일치해야 합니다. 인스턴스 교체나 호스트 키 재생성 후에는 소유자가 새 신원을 확인하고 등록값을 갱신해야 합니다. 확인할 키가 없으면 사전 검사에서 중단하며 신원 검사를 끄지 않습니다.
 
