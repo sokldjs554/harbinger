@@ -141,6 +141,61 @@ def test_workflow_cannot_auto_deploy_or_use_old_keys():
     auth = next(
         s
         for s in workflow["jobs"]["deploy"]["steps"]
-        if s.get("name") == "Assume the new account deployment role"
+        if s.get("name") == "Authenticate with the new account temporary session"
     )
     assert auth["with"]["allowed-account-ids"] == "971966100387"
+
+
+def test_network_only_creates_empty_group_without_iam_or_compute():
+    m = module()
+    calls = []
+    result = m.prepare_network(True, fake(m, calls))
+    assert result["security_group"] == "sg-test"
+    assert result["compute_created"] is False and result["iam_changed"] is False
+    assert not any(args[0] == "iam" for args in calls)
+    assert [args[:2] for args in calls if not args[1].startswith(("get-", "describe-"))] == [
+        ("ec2", "create-security-group")
+    ]
+
+
+def test_network_only_wrong_account_has_no_writes():
+    m = module()
+    calls = []
+    with pytest.raises(ValueError, match="Wrong AWS account"):
+        m.prepare_network(True, fake(m, calls, account="577331852023"))
+    assert len(calls) == 1
+
+
+def test_network_only_rejects_foreign_group_before_writes():
+    m = module()
+    calls = []
+    with pytest.raises(ValueError, match="not owned"):
+        m.prepare_network(True, fake(m, calls, groups=[{"VpcId": m.VPC, "Tags": []}]))
+    assert all(args[1].startswith(("get-", "describe-")) for args in calls)
+
+
+def test_network_only_default_is_read_only():
+    m = module()
+    calls = []
+    assert not m.prepare_network(call=fake(m, calls))["applied"]
+    assert all(args[1].startswith(("get-", "describe-")) for args in calls)
+
+
+def test_temporary_session_is_scoped_to_new_secret_names():
+    import yaml
+
+    path = Path(__file__).resolve().parents[1] / ".github/workflows/aws-ec2.yml"
+    workflow = yaml.load(path.read_text(), Loader=yaml.BaseLoader)
+    assert "id-token" not in workflow["permissions"]
+    auth = next(
+        s
+        for s in workflow["jobs"]["deploy"]["steps"]
+        if s.get("name") == "Authenticate with the new account temporary session"
+    )
+    assert "role-to-assume" not in auth["with"]
+    for name, field in (
+        ("ACCESS_KEY_ID", "aws-access-key-id"),
+        ("SECRET_ACCESS_KEY", "aws-secret-access-key"),
+        ("SESSION_TOKEN", "aws-session-token"),
+    ):
+        assert auth["with"][field] == "${{ secrets.AWS_NEW_" + name + " }}"
