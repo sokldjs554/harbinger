@@ -96,7 +96,7 @@ jobs:
                       if attempt==19:
                           raise
                       time.sleep(5)
-          with urllib.request.urlopen('https://13.236.137.0/health',timeout=20) as response:
-              assert response.status==200
-          print('AWS public HTTPS health also passed.')
+          # The live AWS review server is temporary; its public checks run independently.
+          # Keep saved examples available after the review server stops.
+          print('Published entry assets verified; live AWS health is checked by aws-public-check.yml.')
           PY
