@@ -1,8 +1,8 @@
 # 새 AWS 계정 연결 · 2026-11-17
 
-## 현재 상태: OIDC 경로 중단
+## 현재 상태: OIDC 중단 · 임시 세션 인증 확인 중
 
-소유자의 CloudShell 실행에서 `iam:GetOpenIDConnectProvider`가 조직 SCP의 명시적 Deny로 거절됐습니다. 역할은 `AccountFullAccessRole`이었으며, 오류는 첫 IAM 조회에서 발생해 이 실행에서는 IAM/보안 그룹/EC2 변경이 없었습니다. 로컬 테스트 성공은 실제 계정의 IAM 사용 가능성을 보장하지 않습니다. 이 OIDC 이전 PR은 Draft로 유지하며 해당 명령을 반복하거나 Deny를 무시하지 않습니다.
+소유자의 CloudShell 실행에서 `iam:GetOpenIDConnectProvider`가 조직 SCP의 명시적 Deny로 거절됐습니다. 역할은 `AccountFullAccessRole`이었으며, 오류는 첫 IAM 조회에서 발생해 이 실행에서는 IAM/보안 그룹/EC2 변경이 없었습니다. 로컬 테스트 성공은 실제 계정의 IAM 사용 가능성을 보장하지 않습니다. OIDC 준비 명령을 반복하거나 Deny를 무시하지 않습니다. 현재 배포 후보는 기존 허용된 임시 세션을 사용하며 IAM을 호출하지 않습니다.
 
 AWS의 새 가입 경험은 관리형 프로젝트 계정에 기능 제한을 둡니다. [고급 기능 활성화](https://docs.aws.amazon.com/accounts/latest/reference/activate-advanced-features.html)는 유료 플랜 전환을 선행해야 하며 되돌릴 수 없고 기존 프로젝트 지출 상한도 제거하므로, 단순 연결 오류의 해결책으로 자동 진행하지 않습니다. 무료 플랜을 유지한 채 허용된 EC2 배포 API를 직접 사용하는 경로는 별도의 dry-run으로 권한을 확인한 후 준비합니다. GitHub OIDC 연결 성공이나 AWS 배포 성공은 아직 아닙니다.
 
@@ -14,19 +14,19 @@ AWS의 새 가입 경험은 관리형 프로젝트 계정에 기능 제한을 �
 
 2026-11-17 AWS 공식 가격 페이지의 [Sydney Linux 가격 데이터](https://b0.p.awsstatic.com/pricing/2.0/meteredUnitMaps/ec2/USD/current/ec2-ondemand-without-sec-sel/Asia%20Pacific%20%28Sydney%29/Linux/index.json)는 `c7i-flex.large`를 시간당 $0.11072로 표시했습니다. 서버만 24시간 $2.65728, 30일(720시간) $79.7184입니다. 공인 IPv4는 별도 $0.005/시간(30일 $3.60)이며 암호화된 30GiB gp3 저장공간, 트래픽 및 해당되는 기타 비용이 추가됩니다. 100달러로 182일 상시 운영할 수 있다는 뜻이 아닙니다. FreeTierEligible은 크레딧 소모 없는 무제한 무료 표시가 아닙니다.
 
-## 1. CloudShell 연결 준비
+## 1. GitHub 임시 세션 연결
 
-검토한 커밋의 파일들을 내려받아 `python3 deploy/aws/ec2/bootstrap_account.py --apply`를 실행합니다. 기본 실행(옵션 없음)은 읽기 전용 계획입니다.
+소유자가 새 계정의 CloudShell에서 `aws sts get-caller-identity`로 계정을 확인하고 `aws configure export-credentials --format process`로 현재 세션을 확인합니다. 같은 출력의 AccessKeyId, SecretAccessKey, SessionToken 값을 각각 GitHub Actions의 `AWS_NEW_ACCESS_KEY_ID`, `AWS_NEW_SECRET_ACCESS_KEY`, `AWS_NEW_SESSION_TOKEN`에 등록합니다. 따옴표·쉼표·항목명은 포함하지 않으며 채팅이나 저장소 파일에 값을 기록하지 않습니다.
 
-`--apply`가 만드는 것은 GitHub OIDC 연결, 배포 IAM 역할·인라인 정책, 인바운드가 비어 있는 보안 그룹입니다. EC2, 디스크, 공인 IP, 액세스 키는 생성하지 않습니다. 다른 계정, 다른 소유자의 역할/그룹, 변경된 신뢰 조건에서는 쓰기 전에 중단합니다. 전용 역할은 `sokldjs554/harbinger`의 main에서 발급된 토큰만 허용하며 일반 subject와 고정 저장소 ID subject를 모두 정확 일치로 허용합니다. 포크·PR·다른 브랜치는 허용하지 않습니다.
+`.github/workflows/aws-preflight.yml`은 수동 또는 해당 파일의 main 변경 시 읽기 전용 인증·EC2 dry-run을 수행합니다. 보안 그룹이 없으면 기본 그룹을 dry-run 요청에만 사용하며 어떤 자원도 만들지 않습니다. 세 값 존재·형식 검사는 인증 성공과 다릅니다. 2026-11-17 실행 [44108643688](https://github.com/sokldjs554/harbinger/actions/runs/44108643688)은 값 존재 검사 후 STS에서 `InvalidClientTokenId`로 실패했으며 계정 연결이나 배포 성공이 아닙니다.
 
-이 준비 명령은 CloudShell에서 실행하는 사용자의 IAM 생성/정책 부여 권한을 요구합니다. AccessDenied가 나면 오류를 확인하고 필요한 권한만 조정합니다. 장기 액세스 키를 채팅이나 저장소에 넣지 않습니다.
+배포의 `bootstrap_account.py --network-only --apply`는 검토한 계정·VPC·소유 태그를 확인한 뒤 비어 있는 전용 보안 그룹만 준비합니다. IAM·OIDC·역할 생성이나 정책 변경은 하지 않습니다. 기존 OIDC 준비 함수는 과거 실패 경로 기록으로 남기며 현재 워크플로에서 호출하지 않습니다. 계정 정책의 Deny는 그대로 적용됩니다.
 
 ## 2. 배포 실행
 
 워크플로는 **수동 실행만** 허용합니다. main 변경·병합은 서버를 생성하거나 과거 계정에 접속하지 않습니다. `allow_create` 기본값은 false이며, 처음 서버를 만드는 실행에서만 true를 선택합니다. 같은 SHA의 전체 CI 성공 및 이미지·모델 준비가 완료된 뒤에 한 대를 생성합니다. 이전 계정의 저장소 시크릿은 사용하지 않습니다. 새 서버용 선택적 SSH 공개키 기록은 `AWS_NEW_EC2_SSH_HOST_IDENTITY`로 분리합니다.
 
-OIDC 역할은 기존 계정·다른 리전의 자원을 조작할 권한이 없습니다. 계정·리전·VPC·소유 태그·중복 서버·SSH 신원을 코드에서도 검사합니다. 배포 실패 시 이번에 생성하거나 시작한 서버를 중지하려고 시도하며, 삭제하지 않습니다. 중지 후에도 저장공간 비용은 남습니다. GitHub 작업 강제 종료 등에서는 정리 코드가 실행되지 않을 수 있으므로 실제 EC2 상태를 확인합니다.
+현재 임시 세션은 소유자의 계정 역할 권한을 사용하므로 최소 권한 전용 OIDC 역할로 제한된 세션이라고 표현하지 않습니다. 코드에서 계정·리전·VPC·소유 태그·중복 서버·SSH 신원을 검사합니다. 배포 실패 시 이번에 생성하거나 시작한 서버를 중지하려고 시도하며, 삭제하지 않습니다. 중지 후에도 저장공간 비용은 남습니다. GitHub 작업 강제 종료 등에서는 정리 코드가 실행되지 않을 수 있으므로 실제 EC2 상태를 확인합니다.
 
 ## 3. 완료 기준
 
@@ -34,4 +34,4 @@ OIDC 역할은 기존 계정·다른 리전의 자원을 조작할 권한이 없
 
 ## 이번 작업의 역할
 
-소유자는 신규 계정 가입, 잔액·기간 확인 및 CloudShell의 계정·리소스 조회를 수행했습니다. 계정 이전 코드·OIDC 정책·검사 작성은 Codex가 수행했습니다. 실제 CloudShell 설정 결과와 AWS 배포 결과는 실행 후 별도로 기록합니다.
+소유자는 신규 계정 가입, 잔액·기간 확인 및 CloudShell의 계정·리소스 조회를 수행했습니다. 소유자는 새 계정의 임시 자격 증명 세 개를 GitHub Secrets에 등록했다고 확인했습니다. 계정 이전 코드·OIDC 시도 및 임시 세션 방식 변경·검사 작성은 Codex가 수행했습니다. 실제 CloudShell 설정 결과와 AWS 배포 결과는 실행 후 별도로 기록합니다.
