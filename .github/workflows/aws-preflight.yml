@@ -41,6 +41,20 @@ jobs:
             exit 1
           fi
           command -v aws >/dev/null
+      - name: Validate secret formatting without printing values
+        run: |
+          python3 - <<'PYTHON'
+          import os, re
+          checks = {
+              "AWS_NEW_ACCESS_KEY_ID": bool(re.fullmatch(r"ASIA[A-Z0-9]{16}", os.environ["AWS_ACCESS_KEY_ID"])),
+              "AWS_NEW_SECRET_ACCESS_KEY": bool(re.fullmatch(r"[A-Za-z0-9/+=]{40}", os.environ["AWS_SECRET_ACCESS_KEY"])),
+              "AWS_NEW_SESSION_TOKEN": bool(re.fullmatch(r"[A-Za-z0-9/+=]+", os.environ["AWS_SESSION_TOKEN"])),
+          }
+          for name, valid in checks.items():
+              print(f"{name}: {'format OK' if valid else 'FORMAT ERROR: paste only the value, without quotes, labels or whitespace'}")
+          if not all(checks.values()):
+              raise SystemExit(1)
+          PYTHON
       - name: Check AWS identity
         shell: bash
         run: |
