@@ -2,13 +2,16 @@
 
 시설 점검 기록으로 **먼저 확인할 설비를 고르고, 점검 원문과 이후 고장 결과로 판단을 검토하는 서비스**입니다. Python으로 이력을 전처리하고 모델을 비교한 뒤, FastAPI와 웹 화면으로 연결했습니다.
 
-[AWS 실제 계산 데모](https://sokldjs554.github.io/harbinger/live.html) · [저장 예제](https://sokldjs554.github.io/harbinger/) · [80초 예제 영상](https://sokldjs554.github.io/harbinger/walkthrough.mp4) · [로컬 실행](#실행) · [평가 방법](docs/evaluation.md)
+**제가 맡은 작업**  점검 담당자가 먼저 볼 설비와 그 이유를 확인할 수 있도록 제품 범위를 정했습니다. 새 AWS 계정에서 CloudShell 배포 명령을 실행하고 EC2 상태와 설치 완료 로그를 확인했습니다. Codex가 배포 스크립트를 작성하고 외부 HTTPS·브라우저 검사를 수행했습니다. [배포 실행·검증 기록](docs/verification/aws-20261118/README.md) · [기존 계정의 설정과 알림](docs/submission-evidence-20261026.md)
 
-**제가 맡은 배포 작업**  점검 담당자가 먼저 볼 설비를 고를 수 있도록 제품 범위를 정했습니다. 모델 API가 새 AWS 계정에서 시작되는지 확인하려고 CloudShell에서 배포 명령을 실행하고 EC2 상태와 설치 로그의 완료 표시를 확인했습니다. Codex가 배포 스크립트를 작성하고 외부 HTTPS·브라우저 검사를 수행했습니다. [CloudShell 실행과 외부 검증 기록](docs/verification/aws-20261118/README.md) · [기존 환경의 설정·알림 기록](docs/submission-evidence-20261026.md)
+| 데모 | 확인할 수 있는 내용 |
+|---|---|
+| [저장 예제](https://sokldjs554.github.io/harbinger/) | 합성 자료로 미리 계산한 설비 목록과 점검 원문을 탐색합니다. [80초 영상](https://sokldjs554.github.io/harbinger/walkthrough.mp4) |
+| [AWS 실행 화면](https://3.27.92.108/console/) | EC2에서 CSV를 받아 모델이 점검 순위를 새로 계산합니다. [접속 안내](https://sokldjs554.github.io/harbinger/live.html) |
 
-[AWS 운영 근거 확인 안내](docs/cloud-operations-evidence.md): EC2 배포·복구·인증서 갱신·알림 기록과 현재 접속 확인 결과를 구분합니다. GCP 설정 파일의 존재를 실제 GCP 운영으로 표현하지 않습니다.
+**2026년 11월 18일 14:37 KST 확인.** GitHub 실행 환경에서 IP 인증서 검증, API, PC·모바일 브라우저 및 CSV 검사가 성공했습니다. 같은 날 별도 접속 환경에서는 인증서 이름 불일치가 재현됐습니다. 마지막으로 확인한 자동 정지 설정은 **11월 19일 00:44:35 KST**입니다. 이후 연장 여부는 미확인입니다. [외부 검사 로그](https://github.com/sokldjs554/harbinger/actions/runs/44124538583/job/134602338863) · [AWS 운영 근거](docs/cloud-operations-evidence.md)
 
-기본 예제와 아래 성능은 **합성 데이터**에 기반합니다. **AWS 데모에서는 CSV 업로드와 새 계산을 바로 사용할 수 있습니다.** 저장 예제는 미리 계산한 모델 응답을 재생합니다. 실제 고객 성능을 검증한 결과는 아닙니다.
+아래 평가는 합성 데이터로 수행했습니다. [로컬 실행](#실행) · [평가 방법](docs/evaluation.md)
 
 ![설비 목록에서 점검 원문과 판단 근거로 이동하는 화면](docs/verification/aws/list.png)
 
