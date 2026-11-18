@@ -4,6 +4,8 @@
 
 [AWS 실제 계산 데모](https://sokldjs554.github.io/harbinger/live.html) · [저장 예제](https://sokldjs554.github.io/harbinger/) · [80초 예제 영상](https://sokldjs554.github.io/harbinger/walkthrough.mp4) · [로컬 실행](#실행) · [평가 방법](docs/evaluation.md)
 
+**제가 맡은 배포 작업**  점검 담당자가 먼저 볼 설비를 고를 수 있도록 제품 범위를 정했습니다. 모델 API가 새 AWS 계정에서 시작되는지 확인하려고 CloudShell에서 배포 명령을 실행하고 EC2 상태와 설치 로그의 완료 표시를 확인했습니다. Codex가 배포 스크립트를 작성하고 외부 HTTPS·브라우저 검사를 수행했습니다. [CloudShell 실행과 외부 검증 기록](docs/verification/aws-20261118/README.md) · [기존 환경의 설정·알림 기록](docs/submission-evidence-20261026.md)
+
 [AWS 운영 근거 확인 안내](docs/cloud-operations-evidence.md): EC2 배포·복구·인증서 갱신·알림 기록과 현재 접속 확인 결과를 구분합니다. GCP 설정 파일의 존재를 실제 GCP 운영으로 표현하지 않습니다.
 
 기본 예제와 아래 성능은 **합성 데이터**에 기반합니다. **AWS 데모에서는 CSV 업로드와 새 계산을 바로 사용할 수 있습니다.** 저장 예제는 미리 계산한 모델 응답을 재생합니다. 실제 고객 성능을 검증한 결과는 아닙니다.
