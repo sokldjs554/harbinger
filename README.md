@@ -9,7 +9,7 @@
 | [저장 예제](https://sokldjs554.github.io/harbinger/) | 합성 자료로 미리 계산한 설비 목록과 점검 원문을 탐색합니다. [80초 영상](https://sokldjs554.github.io/harbinger/walkthrough.mp4) |
 | [AWS 실행 화면](https://3.27.92.108/console/) | EC2에서 CSV를 받아 모델이 점검 순위를 새로 계산합니다. [접속 안내](https://sokldjs554.github.io/harbinger/live.html) |
 
-**2026년 11월 18일 재검사(KST).** 15:15에 GitHub 실행 환경에서 AWS 주소의 IP와 인증서가 일치했습니다. 인증서 만료는 **11월 24일 16:00:30**입니다. API·PC·모바일·CSV 검사도 15:25에 모두 통과했습니다. 별도 접속 환경에서는 인증서 이름 불일치가 재현됐습니다. [서버 배포 기록](https://3.27.92.108/deployment.json)에 표시된 자동 정지 예정은 **11월 19일 00:44:35**이며, 현재 서버 내부 타이머의 연장 여부는 미확인입니다. [재검사 로그](https://github.com/sokldjs554/harbinger/actions/runs/44124538583/job/134618140757) · [AWS 운영 근거](docs/cloud-operations-evidence.md)
+**2026년 11월 18일 재검사(KST).** 15:15에 GitHub 실행 환경에서 AWS 주소의 IP와 인증서가 일치했습니다. 인증서 만료는 **11월 24일 16:00:30**입니다. API·PC·모바일·CSV 검사도 15:25에 모두 통과했습니다. 별도 접속 환경에서는 인증서 이름 불일치가 재현됐습니다. [재검사 로그](https://github.com/sokldjs554/harbinger/actions/runs/44124538583/job/134618140757) · [AWS 운영 근거](docs/cloud-operations-evidence.md)
 
 아래 평가는 합성 데이터로 수행했습니다. [로컬 실행](#실행) · [평가 방법](docs/evaluation.md)
 
